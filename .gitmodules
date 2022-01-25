@@ -1,0 +1,15 @@
+[submodule "third/glfw"]
+	path = third/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "third/bgfx.cmake"]
+	path = third/bgfx.cmake
+	url = https://github.com/Knot-Alot/bgfx.cmake.git
+[submodule "third/bgfx"]
+	path = third/bgfx
+	url = https://github.com/Knot-Alot/bgfx.cmake.git
+[submodule "third/glm"]
+	path = third/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "third/spdlog"]
+	path = third/spdlog
+	url = https://github.com/gabime/spdlog.git
