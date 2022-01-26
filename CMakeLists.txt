@@ -23,8 +23,13 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dist)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dist/bin)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dist/lib)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dist/res)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dist/res/shaders)
 
 add_subdirectory(third)
+
+include(third/bgfx/cmake/util/ConfigureDebugging.cmake)
+
 add_subdirectory(core)
+add_subdirectory(res)
 add_subdirectory(editor)
 add_subdirectory(untie)

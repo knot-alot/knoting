@@ -1,3 +1,5 @@
+file(GLOB_RECURSE KNOTING_SHADERS LIST_DIRECTORIES false "${CMAKE_SOURCE_DIR}/res/shaders/**/*.sc")
+
 file(GLOB_RECURSE KNOTING_SOURCES
     src/*.cpp
     inc/**/*.h
@@ -15,7 +17,7 @@ set(PRIVATE_LIBS
     bimg
 )
 
-add_library(knoting ${KNOTING_SOURCES})
+add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS})
 
 set_target_properties(knoting PROPERTIES
     CXX_STANDARD 17
@@ -27,7 +29,7 @@ set_target_properties(knoting PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY
 set_target_properties(knoting PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist/lib)
 set_target_properties(knoting PROPERTIES OUTPUT_NAME knoting)
 
-# target_compile_definitions(knoting PUBLIC ENTT_ID_TYPE=std::uint64_t)
+target_compile_definitions(knoting PUBLIC ENTT_ID_TYPE=std::uint64_t)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     target_compile_definitions(knoting PUBLIC KNOTING_DEBUG=1)
@@ -50,3 +52,35 @@ foreach(LIB ${PRIVATE_LIBS})
 endforeach()
 
 target_include_directories(knoting PUBLIC ${CMAKE_SOURCE_DIR}/core/inc)
+
+# BGFX
+# TODO: Move these to a function which can be called from whichever runtime
+
+foreach(SHADER_FILE ${KNOTING_SHADERS})
+    get_filename_component(SHADER_NAME ${SHADER_FILE} NAME)
+    get_filename_component(PARENT_DIR ${SHADER_FILE} DIRECTORY)
+    string(REGEX REPLACE "^${CMAKE_SOURCE_DIR}/res/shaders" "" PARENT_DIR ${PARENT_DIR})
+
+    set(SHADER_TYPE "")
+    if("${SHADER_NAME}" MATCHES "vs_*")
+        message(STATUS "Found vertex shader ${SHADER_NAME}")
+        set(SHADER_TYPE VERTEX)
+    elseif("${SHADER_NAME}" MATCHES "fs_*")
+        message(STATUS "Found fragment shader ${SHADER_NAME}")
+        set(SHADER_TYPE FRAGMENT)
+    elseif("${SHADER_NAME}" MATCHES "cs_*")
+        message(STATUS "Found compute shader ${SHADER_NAME}")
+        set(SHADER_TYPE COMPUTE)
+    else()
+        message(STATUS "Found & Skipped unknown shader ${SHADER_NAME}")
+        continue()
+    endif()
+
+    add_shader(
+        ${SHADER_FILE} ${SHADER_TYPE}
+        OUTPUT ${CMAKE_BINARY_DIR}/dist/res/shaders${PARENT_DIR}
+        DX11_MODEL 5_0
+        GLSL 430
+        INCLUDES "${CMAKE_SOURCE_DIR}/res/shaders/"
+    )
+endforeach()
