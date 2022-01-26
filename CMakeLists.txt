@@ -26,4 +26,4 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/dist/res)
 
 add_subdirectory(third)
 add_subdirectory(core)
-# add_subdirectory(editor)
+add_subdirectory(editor)
