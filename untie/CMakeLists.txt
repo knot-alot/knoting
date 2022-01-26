@@ -19,3 +19,5 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
 endif()
 
 target_link_libraries(untie PRIVATE knoting)
+
+configure_debugging(untie WORKING_DIR ${CMAKE_BINARY_DIR}/dist)
