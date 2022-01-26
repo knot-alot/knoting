@@ -1,6 +1,6 @@
 file(GLOB_RECURSE KNOTING_EDITOR_SOURCES
-    *.cpp
-    *.h
+    **/*.cpp
+    **/*.h
 )
 
 add_executable(knoting_editor ${KNOTING_EDITOR_SOURCES})
