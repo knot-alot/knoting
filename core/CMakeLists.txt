@@ -50,31 +50,3 @@ foreach(LIB ${PRIVATE_LIBS})
 endforeach()
 
 target_include_directories(knoting PUBLIC ${CMAKE_SOURCE_DIR}/core/inc)
-
-# RUNTIME
-
-add_executable(knoting_runtime ${KNOTING_SOURCES})
-
-set_target_properties(knoting_runtime PROPERTIES
-    CXX_STANDARD 17
-    CXX_STANDARD_REQUIRED YES
-    CXX_EXTENSIONS NO
-)
-
-set_target_properties(knoting_runtime PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist/bin)
-set_target_properties(knoting_runtime PROPERTIES OUTPUT_NAME knoting)
-
-foreach(LIB ${PUBLIC_LIBS})
-    target_link_libraries(knoting_runtime PUBLIC ${LIB})
-endforeach()
-
-foreach(LIB ${PRIVATE_LIBS})
-    target_link_libraries(knoting_runtime PRIVATE ${LIB})
-endforeach()
-
-if(CMAKE_BUILD_TYPE MATCHES Debug)
-    target_compile_definitions(knoting_runtime PUBLIC KNOTING_DEBUG=1)
-endif()
-target_compile_definitions(knoting_runtime PUBLIC KNOTING_RUNTIME=1)
-
-target_include_directories(knoting_runtime PUBLIC ${CMAKE_SOURCE_DIR}/core/inc)

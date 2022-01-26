@@ -1,14 +1,11 @@
-#include <iostream>
-
-#ifdef KNOTING_RUNTIME
-
 #include <knoting/log.h>
 #include <knoting/window.h>
+#include <iostream>
 
 using namespace knot;
 
 int main() {
-    log::info("Hi there");
+    log::debug("Hi there");
     Window window(1280, 720, "Knoting");
 
     while (window.is_open()) {
@@ -18,5 +15,3 @@ int main() {
 
     return 0;
 }
-
-#endif
