@@ -1,6 +1,6 @@
 #include <iostream>
 
-// #ifdef KNOTING_RUNTIME
+#ifdef KNOTING_RUNTIME
 
 #include <knoting/log.h>
 #include <knoting/window.h>
@@ -19,4 +19,4 @@ int main() {
     return 0;
 }
 
-// #endif
+#endif
