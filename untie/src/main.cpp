@@ -5,7 +5,8 @@
 using namespace knot;
 
 int main() {
-    log::debug("Hi there");
+    log::Logger::setup();
+
     Window window(1280, 720, "Knoting");
 
     while (window.is_open()) {
