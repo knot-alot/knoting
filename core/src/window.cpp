@@ -101,4 +101,30 @@ void Window::close() {
     glfwSetWindowShouldClose(m_window, true);
 }
 
+void Window::on_awake() {
+
+}
+
+void Window::on_update(double m_delta_time) {
+    update();
+}
+
+void Window::on_late_update() {
+
+}
+
+void Window::on_destroy() {
+
+}
+
+void Window::calculate_delta_time() {
+    m_currentFrame = glfwGetTime();
+    m_deltaTime = m_currentFrame - m_lastFrame;
+    m_lastFrame = m_currentFrame;
+}
+
+double Window::get_delta_time() {
+    return m_deltaTime;
+}
+
 }  // namespace knot

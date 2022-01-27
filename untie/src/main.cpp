@@ -1,17 +1,10 @@
-#include <knoting/log.h>
-#include <knoting/window.h>
-#include <iostream>
+#include "untie.h"
 
 using namespace knot;
 
 int main() {
-    log::debug("Hi there");
-    Window window(1280, 720, "Knoting");
-
-    while (window.is_open()) {
-        window.update();
-        window.draw();
-    }
+    Untie untie;
+    untie.run();
 
     return 0;
 }
