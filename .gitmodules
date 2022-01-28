@@ -10,3 +10,24 @@
 [submodule "third/spdlog"]
 	path = third/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "third/imgui"]
+	path = third/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "third/imguizmo"]
+	path = third/imguizmo
+	url = https://github.com/Knot-Alot/ImGuizmo.git
+[submodule "third/entt"]
+	path = third/entt
+	url = https://github.com/skypjack/entt.git
+[submodule "third/stduuid"]
+	path = third/stduuid
+	url = https://github.com/mariusbancila/stduuid.git
+[submodule "third/json"]
+	path = third/json
+	url = https://github.com/nlohmann/json.git
+[submodule "third/portable-file-dialogs"]
+	path = third/portable-file-dialogs
+	url = https://github.com/samhocevar/portable-file-dialogs.git
+[submodule "third/physx"]
+	path = third/physx
+	url = https://github.com/Knot-Alot/PhysX.git
