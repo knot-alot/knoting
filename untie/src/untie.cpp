@@ -1,9 +1,13 @@
 #include "untie.h"
+
+#include <knoting/log.h>
+
 #include <iostream>
 
 namespace knot {
 
 Untie::Untie() {
+    log::Logger::setup();
     m_engine = std::make_unique<knot::Engine>();
 }
 
