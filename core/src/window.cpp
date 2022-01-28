@@ -1,6 +1,7 @@
 #include <knoting/assert.h>
 #include <knoting/log.h>
 #include <knoting/window.h>
+#include <knoting/engine.h>
 
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
@@ -19,8 +20,8 @@
 
 namespace knot {
 
-Window::Window(int width, int height, std::string title)
-    : m_width(width), m_height(height), m_title(title), m_window(nullptr) {
+Window::Window(int width, int height, std::string title, Engine& engine)
+    : m_width(width), m_height(height), m_title(title), m_window(nullptr), m_engine(engine) {
     int glfw_init_res = glfwInit();
 
     KNOTING_ASSERT_MESSAGE(glfw_init_res == GLFW_TRUE, "Failed to initialize GLFW");
@@ -75,9 +76,7 @@ void Window::window_size_callback(GLFWwindow* window, int width, int height) {
     Window* self = (Window*)glfwGetWindowUserPointer(window);
     self->m_width = width;
     self->m_height = height;
-
-    bgfx::reset((std::uint32_t)width, (std::uint32_t)height, BGFX_RESET_VSYNC);
-    bgfx::setViewRect(self->m_viewId, 0, 0, std::uint16_t(width), std::uint16_t(height));
+    self->m_engine.get_forward_render_module().lock()->recreate_framebuffer(width, height);
 }
 
 void Window::setup_callbacks() {
@@ -88,29 +87,20 @@ bool Window::is_open() {
     return !glfwWindowShouldClose(m_window);
 }
 
-void Window::draw() {
-    bgfx::frame();
-}
-
 void Window::close() {
     glfwSetWindowShouldClose(m_window, true);
 }
 
-void Window::on_awake() {
-
-}
+void Window::on_awake() {}
 
 void Window::on_update(double m_delta_time) {
     glfwPollEvents();
-    bgfx::touch(m_viewId);}
-
-void Window::on_late_update() {
-
+    bgfx::touch(m_viewId);
 }
 
-void Window::on_destroy() {
+void Window::on_late_update() {}
 
-}
+void Window::on_destroy() {}
 
 void Window::calculate_delta_time() {
     double currentFrame = glfwGetTime();
