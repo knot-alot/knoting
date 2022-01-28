@@ -3,7 +3,7 @@ file(GLOB_RECURSE UNTIE_SOURCES
     **/*.h
 )
 
-add_executable(untie ${UNTIE_SOURCES} src/untie.cpp src/untie.h)
+add_executable(untie ${UNTIE_SOURCES})
 
 set_target_properties(untie PROPERTIES
     CXX_STANDARD 17

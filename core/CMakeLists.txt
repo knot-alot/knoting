@@ -17,7 +17,7 @@ set(PRIVATE_LIBS
     bimg
 )
 
-add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS} src/engine.cpp inc/knoting/engine.h inc/knoting/subsystem.h)
+add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS})
 
 set_target_properties(knoting PROPERTIES
     CXX_STANDARD 17

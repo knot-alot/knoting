@@ -88,11 +88,6 @@ bool Window::is_open() {
     return !glfwWindowShouldClose(m_window);
 }
 
-void Window::update() {
-    glfwPollEvents();
-    bgfx::touch(m_viewId);
-}
-
 void Window::draw() {
     bgfx::frame();
 }
@@ -106,8 +101,8 @@ void Window::on_awake() {
 }
 
 void Window::on_update(double m_delta_time) {
-    update();
-}
+    glfwPollEvents();
+    bgfx::touch(m_viewId);}
 
 void Window::on_late_update() {
 
@@ -118,9 +113,9 @@ void Window::on_destroy() {
 }
 
 void Window::calculate_delta_time() {
-    m_currentFrame = glfwGetTime();
-    m_deltaTime = m_currentFrame - m_lastFrame;
-    m_lastFrame = m_currentFrame;
+    double currentFrame = glfwGetTime();
+    m_deltaTime = currentFrame - m_lastFrame;
+    m_lastFrame = currentFrame;
 }
 
 double Window::get_delta_time() {

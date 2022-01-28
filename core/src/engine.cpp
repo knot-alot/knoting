@@ -1,5 +1,5 @@
 
-#include "knoting/engine.h"
+#include <knoting/engine.h>
 
 namespace knot {
 
@@ -29,6 +29,9 @@ Engine::~Engine() {
     for (auto& module : m_engineModules) {
         module->on_destroy();
     }
+}
+bool Engine::is_open() {
+    return m_windowModule->is_open();
 }
 
 }  // namespace knot
