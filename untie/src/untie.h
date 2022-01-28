@@ -1,9 +1,11 @@
 
 #pragma once
 
-#include "knoting/engine.h"
+#include <knoting/engine.h>
 
+namespace knot {
 class Window;
+}
 
 namespace knot {
 class Untie {
@@ -14,7 +16,6 @@ class Untie {
 
    private:
     std::unique_ptr<knot::Engine> m_engine;
-    std::shared_ptr<knot::Window> m_window;
 };
 
 }  // namespace knot

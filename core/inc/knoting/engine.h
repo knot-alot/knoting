@@ -5,8 +5,8 @@
 #include <string>
 #include <vector>
 
-#include "Window.h"
-#include "subsystem.h"
+#include <knoting/subsystem.h>
+#include <knoting/window.h>
 
 namespace knot {
 class Engine {
@@ -16,7 +16,8 @@ class Engine {
 
     void update_modules();
 
-    std::shared_ptr<knot::Window> get_window_module() { return m_windowModule; }
+    std::weak_ptr<knot::Window> get_window_module() { return m_windowModule; }
+    bool is_open();
 
    private:
     int m_windowWidth = 1024;
@@ -24,6 +25,7 @@ class Engine {
     std::string m_windowTitle = "hello knotting!";
 
    private:
+
     std::vector<std::shared_ptr<knot::Subsystem>> m_engineModules;
     std::shared_ptr<knot::Window> m_windowModule;
 };
