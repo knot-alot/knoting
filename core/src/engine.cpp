@@ -4,9 +4,12 @@
 namespace knot {
 
 Engine::Engine() {
-    m_windowModule = std::make_shared<knot::Window>(m_windowWidth, m_windowHeight, m_windowTitle);
+    m_windowModule = std::make_shared<knot::Window>(m_windowWidth, m_windowHeight, m_windowTitle, *this);
+    m_forwardRenderModule = std::make_shared<knot::ForwardRenderer>();
 
+    //order dependent
     m_engineModules.emplace_back(m_windowModule);
+    m_engineModules.emplace_back(m_forwardRenderModule);
 
     for (auto& module : m_engineModules) {
         module->on_awake();
@@ -18,7 +21,8 @@ void Engine::update_modules() {
         module->on_update(0);
     }
 
-    m_windowModule->draw();
+    m_forwardRenderModule->on_render();
+    m_forwardRenderModule->on_post_render();
 
     for (auto& module : m_engineModules) {
         module->on_late_update();
@@ -30,6 +34,7 @@ Engine::~Engine() {
         module->on_destroy();
     }
 }
+
 bool Engine::is_open() {
     return m_windowModule->is_open();
 }

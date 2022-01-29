@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include <knoting/forward_renderer.h>
 #include <knoting/subsystem.h>
 #include <knoting/window.h>
 
@@ -15,9 +16,10 @@ class Engine {
     ~Engine();
 
     void update_modules();
-
-    std::weak_ptr<knot::Window> get_window_module() { return m_windowModule; }
     bool is_open();
+
+    std::weak_ptr<Window> get_window_module() { return m_windowModule; }
+    std::weak_ptr<ForwardRenderer> get_forward_render_module() { return m_forwardRenderModule; }
 
    private:
     int m_windowWidth = 1024;
@@ -25,9 +27,9 @@ class Engine {
     std::string m_windowTitle = "hello knotting!";
 
    private:
-
-    std::vector<std::shared_ptr<knot::Subsystem>> m_engineModules;
-    std::shared_ptr<knot::Window> m_windowModule;
+    std::vector<std::shared_ptr<Subsystem>> m_engineModules;
+    std::shared_ptr<Window> m_windowModule;
+    std::shared_ptr<ForwardRenderer> m_forwardRenderModule;
 };
 
 }  // namespace knot

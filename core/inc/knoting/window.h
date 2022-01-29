@@ -5,13 +5,19 @@
 #include <inttypes.h>
 #include <knoting/subsystem.h>
 
+namespace knot {
+
+class Engine;
+
+}
+
 class GLFWwindow;
 
 namespace knot {
 
 class Window : public Subsystem {
    public:
-    Window(int width, int height, std::string title);
+    Window(int width, int height, std::string title, Engine& engine);
     ~Window();
 
     void on_awake() override;
@@ -21,10 +27,6 @@ class Window : public Subsystem {
 
     void calculate_delta_time();
     double get_delta_time();
-
-    // TODO remove when render is impl
-    void draw();
-    // END TODO
 
     bool is_open();
     void close();
@@ -45,6 +47,7 @@ class Window : public Subsystem {
 
     GLFWwindow* m_window;
     std::uint16_t m_viewId;
+    Engine& m_engine;
 };
 
 }  // namespace knot
