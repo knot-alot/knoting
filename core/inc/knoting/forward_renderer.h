@@ -1,12 +1,26 @@
 #pragma once
 
-#include <subsystem.h>
+#include <knoting/subsystem.h>
+#include <glm/vec3.hpp>
+#include <glm/matrix.hpp>
+#include <knoting/log.h>
 
+#include <knoting/shader_program.h>
+#include "../../../third/bgfx/bgfx/include/bgfx/bgfx.h" //TODO fix this for header files should be <bgfx/bgfx.h>
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
+
+namespace knot {
+
+class Engine;
+
+}
 namespace knot {
 
 class ForwardRenderer : public Subsystem {
    public:
-    ForwardRenderer();
+    ForwardRenderer(Engine& engine);
     ~ForwardRenderer();
 
     void on_render();
@@ -21,7 +35,18 @@ class ForwardRenderer : public Subsystem {
     void clear_framebuffer(uint16_t id = 0);
 
    private:
+    int get_window_width();
+    int get_window_height();
+
+    ShaderProgram shaderProgram;
+
+    bgfx::VertexBufferHandle mVbh;
+    bgfx::IndexBufferHandle mIbh;
+
+    float m_timePassed = 0.01f;
     const uint32_t m_clearColor = 0x303030ff;
+    Engine& m_engine;
+
 };
 
 }  // namespace knot

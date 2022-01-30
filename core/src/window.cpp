@@ -95,7 +95,7 @@ void Window::on_awake() {}
 
 void Window::on_update(double m_delta_time) {
     glfwPollEvents();
-    bgfx::touch(m_viewId);
+    calculate_delta_time();
 }
 
 void Window::on_late_update() {}

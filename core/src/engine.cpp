@@ -1,11 +1,12 @@
 
 #include <knoting/engine.h>
+#include <bx/math.h>
 
 namespace knot {
 
 Engine::Engine() {
     m_windowModule = std::make_shared<knot::Window>(m_windowWidth, m_windowHeight, m_windowTitle, *this);
-    m_forwardRenderModule = std::make_shared<knot::ForwardRenderer>();
+    m_forwardRenderModule = std::make_shared<knot::ForwardRenderer>(*this);
 
     //order dependent
     m_engineModules.emplace_back(m_windowModule);
@@ -17,8 +18,9 @@ Engine::Engine() {
 }
 
 void Engine::update_modules() {
+
     for (auto& module : m_engineModules) {
-        module->on_update(0);
+        module->on_update(m_windowModule->get_delta_time());
     }
 
     m_forwardRenderModule->on_render();
