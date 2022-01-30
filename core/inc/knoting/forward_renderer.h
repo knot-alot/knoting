@@ -6,6 +6,7 @@
 #include <knoting/log.h>
 
 #include <knoting/shader_program.h>
+#include <knoting/mesh.h>
 #include "../../../third/bgfx/bgfx/include/bgfx/bgfx.h" //TODO fix this for header files should be <bgfx/bgfx.h>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -38,10 +39,8 @@ class ForwardRenderer : public Subsystem {
     int get_window_width();
     int get_window_height();
 
-    ShaderProgram shaderProgram;
-
-    bgfx::VertexBufferHandle mVbh;
-    bgfx::IndexBufferHandle mIbh;
+    ShaderProgram m_shaderProgram;
+    Mesh m_cube;
 
     float m_timePassed = 0.01f;
     const uint32_t m_clearColor = 0x303030ff;
