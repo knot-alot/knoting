@@ -1,0 +1,17 @@
+{
+  "configurations": {
+    "launch": {
+      "adapter": "CodeLLDB",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/bld/dist/bin/untie"
+      },
+      "breakpoints": {
+        "exception": {
+          "cpp_throw": "N",
+          "cpp_catch": "N"
+        }
+      }
+    }
+  }
+}
