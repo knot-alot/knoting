@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../../../third/bgfx/bgfx/include/bgfx/bgfx.h"  //TODO fix this for header files should be <bgfx/bgfx.h>
-
+#include <bgfx/bgfx.h>
 #include <string>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -69,6 +68,7 @@ class VertexLayout {
             .add(bgfx::Attrib::Tangent,   4, bgfx::AttribType::Float, true, true)
             .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float, true, true)
             .end();
+
             // TODO when animations are impl
             //.add(bgfx::Attrib::Count, 1, bgfx::AttribType::Uint8)
             //.add(bgfx::Attrib::Weight, 1, bgfx::AttribType::Float)

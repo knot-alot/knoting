@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "../../../third/bgfx/bgfx/include/bgfx/bgfx.h" //TODO fix this for header files should be <bgfx/bgfx.h>
+#include <bgfx/bgfx.h>
 
 namespace knot {
 class ShaderProgram {

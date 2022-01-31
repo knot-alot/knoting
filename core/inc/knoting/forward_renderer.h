@@ -7,8 +7,7 @@
 
 #include <knoting/shader_program.h>
 #include <knoting/mesh.h>
-#include "../../../third/bgfx/bgfx/include/bgfx/bgfx.h" //TODO fix this for header files should be <bgfx/bgfx.h>
-
+#include <bgfx/bgfx.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
@@ -45,6 +44,16 @@ class ForwardRenderer : public Subsystem {
     float m_timePassed = 0.01f;
     const uint32_t m_clearColor = 0x303030ff;
     Engine& m_engine;
+   private:
+    bgfx::UniformHandle s_texColor;
+    bgfx::UniformHandle s_texNormal;
+    bgfx::UniformHandle u_lightPosRadius;
+    bgfx::UniformHandle u_lightRgbInnerR;
+    bgfx::ProgramHandle m_program;
+    bgfx::TextureHandle m_textureColor;
+    bgfx::TextureHandle m_textureNormal;
+    uint16_t m_numLights;
+    bool m_instancingSupported;
 
 };
 

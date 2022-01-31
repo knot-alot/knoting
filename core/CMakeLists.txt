@@ -8,13 +8,13 @@ file(GLOB_RECURSE KNOTING_SOURCES
 set(PUBLIC_LIBS
     glm
     spdlog
+    bgfx
+    bx
+    bimg
 )
 
 set(PRIVATE_LIBS
     glfw
-    bgfx
-    bx
-    bimg
 )
 
 add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS})
