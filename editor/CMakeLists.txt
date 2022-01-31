@@ -19,5 +19,7 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
 endif()
 
 target_link_libraries(tie PRIVATE knoting)
+target_link_libraries(tie PRIVATE portable_file_dialogs)
+target_link_libraries(tie PRIVATE imterm)
 
 configure_debugging(tie WORKING_DIR ${CMAKE_BINARY_DIR}/dist) # BGFX

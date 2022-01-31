@@ -10,11 +10,9 @@ set(PUBLIC_LIBS
     spdlog
     imgui
     imguizmo
-    imterm
     EnTT::EnTT
     nlohmann_json::nlohmann_json
     stduuid
-    portable_file_dialogs
     ${PHYSX_LIBRARIES}
     bgfx
     bx
