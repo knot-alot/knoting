@@ -13,7 +13,10 @@ namespace knot {
 
 Mesh::Mesh() {}
 
-Mesh::~Mesh() {}
+Mesh::~Mesh() {
+    bgfx::destroy(m_vbh);
+    bgfx::destroy(m_ibh);
+}
 
 void knot::Mesh::load_mesh(const std::string& localTexturePath) {
     std::string fullPath = PATH_MODELS + localTexturePath;
@@ -54,15 +57,17 @@ void Mesh::create_cube() {
     CubeVertexLayout::init();
 
     m_cubeVertices = {
-        {-1.0f, 1.0f , 1.0f , 0xff000000},
-        {1.0f , 1.0f , 1.0f , 0xff0000ff},
-        {-1.0f, -1.0f, 1.0f , 0xff00ff00},
-        {1.0f , -1.0f, 1.0f , 0xff00ffff},
-        {-1.0f, 1.0f , -1.0f, 0xffff0000},
-        {1.0f , 1.0f , -1.0f, 0xffff00ff},
-        {-1.0f, -1.0f, -1.0f, 0xffffff00},
-        {1.0f , -1.0f, -1.0f, 0xffffffff},
+        {glm::vec3(-1.0f, 1.0f , 1.0f ), 0xff000000},
+        {glm::vec3(1.0f , 1.0f , 1.0f ), 0xff0000ff},
+        {glm::vec3(-1.0f, -1.0f, 1.0f ), 0xff00ff00},
+        {glm::vec3(1.0f , -1.0f, 1.0f ), 0xff00ffff},
+        {glm::vec3(-1.0f, 1.0f , -1.0f), 0xffff0000},
+        {glm::vec3(1.0f , 1.0f , -1.0f), 0xffff00ff},
+        {glm::vec3(-1.0f, -1.0f, -1.0f), 0xffffff00},
+        {glm::vec3(1.0f , -1.0f, -1.0f), 0xffffffff},
     };
+
+
 
     m_vbh = bgfx::createVertexBuffer(bgfx::makeRef(&m_cubeVertices[0], sizeof(m_cubeVertices[0]) * m_cubeVertices.size()), CubeVertexLayout::ms_layout);
 }

@@ -57,33 +57,29 @@ class IndexBuffer {
 
 class VertexLayout {
    public:
-    VertexLayout() = default;
-
-    glm::vec3 position{};
-    glm::vec3 normal{};
-    glm::vec3 textureCoordinate{};
-    glm::vec3 tangent{};
-    uint32_t boneID{};
-    float boneWeight{};
+    glm::vec3 m_position;
+    glm::vec3 m_normal;
+    glm::vec3 m_tangent;
+    glm::vec2 m_uv;
 
     static void init() {
         meshVertexLayout.begin()
-            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::TexCoord0, 3, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::Tangent, 3, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::Count, 1, bgfx::AttribType::Uint8)
-            .add(bgfx::Attrib::Weight, 1, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+            .add(bgfx::Attrib::Position,  3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Normal,    4, bgfx::AttribType::Float, true, true)
+            .add(bgfx::Attrib::Tangent,   4, bgfx::AttribType::Float, true, true)
+            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float, true, true)
             .end();
+            // TODO when animations are impl
+            //.add(bgfx::Attrib::Count, 1, bgfx::AttribType::Uint8)
+            //.add(bgfx::Attrib::Weight, 1, bgfx::AttribType::Float)
+            //.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+            // end TODO
     }
     static bgfx::VertexLayout meshVertexLayout;
 };
 
 struct CubeVertexLayout {
-    float x;
-    float y;
-    float z;
+    glm::vec3 position;
     uint32_t abgr;
     static void init() {
         ms_layout.begin()
