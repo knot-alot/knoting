@@ -2,6 +2,7 @@
 
 #include <knoting/log.h>
 
+#include <PxActor.h>
 #include <iostream>
 
 namespace knot {

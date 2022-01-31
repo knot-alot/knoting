@@ -8,13 +8,21 @@ file(GLOB_RECURSE KNOTING_SOURCES
 set(PUBLIC_LIBS
     glm
     spdlog
+    imgui
+    imguizmo
+    imterm
+    EnTT::EnTT
+    nlohmann_json::nlohmann_json
+    stduuid
+    portable_file_dialogs
+    ${PHYSX_LIBRARIES}
+    bgfx
+    bx
+    bimg
 )
 
 set(PRIVATE_LIBS
     glfw
-    bgfx
-    bx
-    bimg
 )
 
 add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS})
@@ -33,8 +41,10 @@ target_compile_definitions(knoting PUBLIC ENTT_ID_TYPE=std::uint64_t)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     target_compile_definitions(knoting PUBLIC KNOTING_DEBUG=1)
+    target_compile_definitions(knoting PUBLIC _DEBUG=1)
 else()
     target_compile_definitions(knoting PUBLIC ENTT_DISABLE_ASSERT=1)
+    target_compile_definitions(knoting PUBLIC NDEBUG=1)
 endif()
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -52,6 +62,7 @@ foreach(LIB ${PRIVATE_LIBS})
 endforeach()
 
 target_include_directories(knoting PUBLIC ${CMAKE_SOURCE_DIR}/core/inc)
+target_include_directories(knoting PUBLIC ${PHYSX_INCLUDE_DIRS})
 
 # BGFX
 # TODO: Move these to a function which can be called from whichever runtime

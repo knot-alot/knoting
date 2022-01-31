@@ -31,3 +31,6 @@
 [submodule "third/physx"]
 	path = third/physx
 	url = https://github.com/Knot-Alot/PhysX.git
+[submodule "third/imterm"]
+	path = third/imterm
+	url = https://github.com/knot-alot/ImTerm.git
