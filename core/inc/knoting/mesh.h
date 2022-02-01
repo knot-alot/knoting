@@ -1,5 +1,6 @@
 #pragma once
 
+#include <bx/pixelformat.h>
 #include <bgfx/bgfx.h>
 #include <string>
 
@@ -54,29 +55,69 @@ class IndexBuffer {
     std::vector<uint16_t> indices;
 };
 
+//class VertexLayout {
+//   public:
+//    glm::vec3 m_position;
+//    glm::vec3 m_normal;
+//    glm::vec3 m_tangent;
+//    glm::vec2 m_uv;
+//
+//    static void init() {
+//        meshVertexLayout.begin()
+//            .add(bgfx::Attrib::Position,  3, bgfx::AttribType::Float)
+//            .add(bgfx::Attrib::Normal,    4, bgfx::AttribType::Float, true, true)
+//            .add(bgfx::Attrib::Tangent,   4, bgfx::AttribType::Float, true, true)
+//            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float, true, true)
+//            .end();
+//
+//            // TODO when animations are impl
+//            //.add(bgfx::Attrib::Count, 1, bgfx::AttribType::Uint8)
+//            //.add(bgfx::Attrib::Weight, 1, bgfx::AttribType::Float)
+//            //.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+//            // end TODO
+//    }
+//    static bgfx::VertexLayout meshVertexLayout;
+//};
+
+inline uint32_t encodeNormalRgba8(float _x, float _y = 0.0f, float _z = 0.0f, float _w = 0.0f)
+{
+    const float src[] =
+        {
+            _x * 0.5f + 0.5f,
+            _y * 0.5f + 0.5f,
+            _z * 0.5f + 0.5f,
+            _w * 0.5f + 0.5f,
+        };
+    uint32_t dst;
+    bx::packRgba8(&dst, src);
+    return dst;
+}
+
+
 class VertexLayout {
    public:
-    glm::vec3 m_position;
-    glm::vec3 m_normal;
-    glm::vec3 m_tangent;
-    glm::vec2 m_uv;
+    float m_x;
+    float m_y;
+    float m_z;
+    uint32_t m_normal;
+    uint32_t m_tangent;
+    int16_t m_u;
+    int16_t m_v;
 
-    static void init() {
-        meshVertexLayout.begin()
+    static void init()
+    {
+        meshVertexLayout
+            .begin()
             .add(bgfx::Attrib::Position,  3, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::Normal,    4, bgfx::AttribType::Float, true, true)
-            .add(bgfx::Attrib::Tangent,   4, bgfx::AttribType::Float, true, true)
-            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float, true, true)
+            .add(bgfx::Attrib::Normal,    4, bgfx::AttribType::Uint8, true, true)
+            .add(bgfx::Attrib::Tangent,   4, bgfx::AttribType::Uint8, true, true)
+            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Int16, true, true)
             .end();
-
-            // TODO when animations are impl
-            //.add(bgfx::Attrib::Count, 1, bgfx::AttribType::Uint8)
-            //.add(bgfx::Attrib::Weight, 1, bgfx::AttribType::Float)
-            //.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-            // end TODO
     }
+
     static bgfx::VertexLayout meshVertexLayout;
 };
+
 
 struct CubeVertexLayout {
     glm::vec3 position;

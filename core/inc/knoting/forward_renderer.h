@@ -49,7 +49,6 @@ class ForwardRenderer : public Subsystem {
     bgfx::UniformHandle s_texNormal;
     bgfx::UniformHandle u_lightPosRadius;
     bgfx::UniformHandle u_lightRgbInnerR;
-    bgfx::ProgramHandle m_program;
     bgfx::TextureHandle m_textureColor;
     bgfx::TextureHandle m_textureNormal;
     uint16_t m_numLights;

@@ -36,40 +36,60 @@ void knot::Mesh::load_mesh(const std::string& localTexturePath) {
 
 void Mesh::create_cube() {
     std::vector<uint16_t> tempIndex = {
-        2, 1, 0,
-        2, 3, 1,
-        5, 6, 4,
-        7, 6, 5,
-        4, 2, 0,
-        6, 2, 4,
-        3, 5, 1,
-        3, 7, 5,
-        1, 4, 0,
-        1, 5, 4,
-        6, 3, 2,
-        7, 3, 6};
+        0,  2,  1,
+        1,  2,  3,
+        4,  5,  6,
+        5,  7,  6,
+
+        8, 10,  9,
+        9, 10, 11,
+        12, 13, 14,
+        13, 15, 14,
+
+        16, 18, 17,
+        17, 18, 19,
+        20, 21, 22,
+        21, 23, 22,
+    };
 
     m_indexBuffer = std::make_shared<IndexBuffer>();
     m_indexBuffer->set_index_buffer(tempIndex);
 
     m_ibh = bgfx::createIndexBuffer(bgfx::makeRef(m_indexBuffer->get_index_start(), m_indexBuffer->get_memory_size()));
 
-    CubeVertexLayout::init();
+    VertexLayout::init();
+    m_vertexLayout = {
+            {-1.0f,  1.0f,  1.0f, encodeNormalRgba8( 0.0f,  0.0f,  1.0f), 0,      0,      0 },
+            { 1.0f,  1.0f,  1.0f, encodeNormalRgba8( 0.0f,  0.0f,  1.0f), 0, 0x7fff,      0 },
+            {-1.0f, -1.0f,  1.0f, encodeNormalRgba8( 0.0f,  0.0f,  1.0f), 0,      0, 0x7fff },
+            { 1.0f, -1.0f,  1.0f, encodeNormalRgba8( 0.0f,  0.0f,  1.0f), 0, 0x7fff, 0x7fff },
+            {-1.0f,  1.0f, -1.0f, encodeNormalRgba8( 0.0f,  0.0f, -1.0f), 0,      0,      0 },
+            { 1.0f,  1.0f, -1.0f, encodeNormalRgba8( 0.0f,  0.0f, -1.0f), 0, 0x7fff,      0 },
+            {-1.0f, -1.0f, -1.0f, encodeNormalRgba8( 0.0f,  0.0f, -1.0f), 0,      0, 0x7fff },
+            { 1.0f, -1.0f, -1.0f, encodeNormalRgba8( 0.0f,  0.0f, -1.0f), 0, 0x7fff, 0x7fff },
+            {-1.0f,  1.0f,  1.0f, encodeNormalRgba8( 0.0f,  1.0f,  0.0f), 0,      0,      0 },
+            { 1.0f,  1.0f,  1.0f, encodeNormalRgba8( 0.0f,  1.0f,  0.0f), 0, 0x7fff,      0 },
+            {-1.0f,  1.0f, -1.0f, encodeNormalRgba8( 0.0f,  1.0f,  0.0f), 0,      0, 0x7fff },
+            { 1.0f,  1.0f, -1.0f, encodeNormalRgba8( 0.0f,  1.0f,  0.0f), 0, 0x7fff, 0x7fff },
+            {-1.0f, -1.0f,  1.0f, encodeNormalRgba8( 0.0f, -1.0f,  0.0f), 0,      0,      0 },
+            { 1.0f, -1.0f,  1.0f, encodeNormalRgba8( 0.0f, -1.0f,  0.0f), 0, 0x7fff,      0 },
+            {-1.0f, -1.0f, -1.0f, encodeNormalRgba8( 0.0f, -1.0f,  0.0f), 0,      0, 0x7fff },
+            { 1.0f, -1.0f, -1.0f, encodeNormalRgba8( 0.0f, -1.0f,  0.0f), 0, 0x7fff, 0x7fff },
+            { 1.0f, -1.0f,  1.0f, encodeNormalRgba8( 1.0f,  0.0f,  0.0f), 0,      0,      0 },
+            { 1.0f,  1.0f,  1.0f, encodeNormalRgba8( 1.0f,  0.0f,  0.0f), 0, 0x7fff,      0 },
+            { 1.0f, -1.0f, -1.0f, encodeNormalRgba8( 1.0f,  0.0f,  0.0f), 0,      0, 0x7fff },
+            { 1.0f,  1.0f, -1.0f, encodeNormalRgba8( 1.0f,  0.0f,  0.0f), 0, 0x7fff, 0x7fff },
+            {-1.0f, -1.0f,  1.0f, encodeNormalRgba8(-1.0f,  0.0f,  0.0f), 0,      0,      0 },
+            {-1.0f,  1.0f,  1.0f, encodeNormalRgba8(-1.0f,  0.0f,  0.0f), 0, 0x7fff,      0 },
+            {-1.0f, -1.0f, -1.0f, encodeNormalRgba8(-1.0f,  0.0f,  0.0f), 0,      0, 0x7fff },
+            {-1.0f,  1.0f, -1.0f, encodeNormalRgba8(-1.0f,  0.0f,  0.0f), 0, 0x7fff, 0x7fff },
+        };
 
-    m_cubeVertices = {
-        {glm::vec3(-1.0f, 1.0f , 1.0f ), 0xff000000},
-        {glm::vec3(1.0f , 1.0f , 1.0f ), 0xff0000ff},
-        {glm::vec3(-1.0f, -1.0f, 1.0f ), 0xff00ff00},
-        {glm::vec3(1.0f , -1.0f, 1.0f ), 0xff00ffff},
-        {glm::vec3(-1.0f, 1.0f , -1.0f), 0xffff0000},
-        {glm::vec3(1.0f , 1.0f , -1.0f), 0xffff00ff},
-        {glm::vec3(-1.0f, -1.0f, -1.0f), 0xffffff00},
-        {glm::vec3(1.0f , -1.0f, -1.0f), 0xffffffff},
-    };
 
 
 
-    m_vbh = bgfx::createVertexBuffer(bgfx::makeRef(&m_cubeVertices[0], sizeof(m_cubeVertices[0]) * m_cubeVertices.size()), CubeVertexLayout::ms_layout);
+    m_vbh = bgfx::createVertexBuffer(bgfx::makeRef(&m_vertexLayout[0], sizeof(m_vertexLayout[0]) * m_vertexLayout.size()), VertexLayout::meshVertexLayout);
+//    m_vbh = bgfx::createVertexBuffer(bgfx::makeRef(&m_cubeVertices[0], sizeof(m_cubeVertices[0]) * m_cubeVertices.size()), CubeVertexLayout::ms_layout);
 }
 
 }  // namespace knot

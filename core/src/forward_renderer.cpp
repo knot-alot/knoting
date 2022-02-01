@@ -4,6 +4,7 @@
 #include <knoting/texture.h>
 
 #include <knoting/engine.h>
+#include <knoting/stb_image.h>
 #include <fstream>
 #include <string_view>
 
@@ -11,29 +12,83 @@ namespace knot {
 
 ForwardRenderer::~ForwardRenderer() {}
 
+bgfx::TextureHandle load_texture_2d(const std::string& path,
+                                    bool usingMipMaps = true,
+                                    bool usingAnisotropicFiltering = true) {
+    constexpr char L_PATH_TEXTURE[] = "../res/textures/";
+    std::string fullPath = L_PATH_TEXTURE + path;
+    std::filesystem::path fs_path = fullPath;
+
+    if (exists(fs_path)) {
+        log::debug(fullPath + " - Exists");
+    } else {
+        log::error(fullPath + " - does not Exist");
+        return BGFX_INVALID_HANDLE;
+    }
+
+    // load image with stb_image
+    glm::ivec2 img_size;
+    int channels;
+    stbi_set_flip_vertically_on_load(true);
+    stbi_uc* data = stbi_load(fullPath.c_str(), &img_size.x, &img_size.y, &channels, 0);
+    int numberOfLayers = 1;
+
+    uint32_t textureFlags{0};
+    // TODO check if bgfx has anisotropic is supported flag
+
+    if (usingAnisotropicFiltering) {
+        textureFlags =
+            BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
+    } else {
+        textureFlags = BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT;
+    }
+
+    // TODO stbi does not support mips find a way to get mips working
+    usingMipMaps = false;
+    if (usingMipMaps) {
+        textureFlags += BGFX_CAPS_FORMAT_TEXTURE_MIP_AUTOGEN;
+    }
+
+    bgfx::TextureHandle textureHandle =
+        bgfx::createTexture2D(img_size.x, img_size.y, usingMipMaps, numberOfLayers, bgfx::TextureFormat::RGBA8,
+                              textureFlags, bgfx::copy(data, img_size.x * img_size.y * channels));
+
+    if (!bgfx::isValid(textureHandle)) {
+        log::error("Error loading texture " + path);
+        return BGFX_INVALID_HANDLE;
+    }
+
+    stbi_set_flip_vertically_on_load(false);
+    stbi_image_free(data);
+    return textureHandle;
+}
+
 ForwardRenderer::ForwardRenderer(Engine& engine) : m_engine(engine) {
-    m_shaderProgram.load_shader("vs_cubes.bin", "fs_cubes.bin");
+//    m_shaderProgram.load_shader("cubes","vs_cubes.bin", "fs_cubes.bin");
+    m_shaderProgram.load_shader("bump","vs_bump.bin", "fs_bump.bin");
     m_cube.create_cube();
 
     m_instancingSupported = false;
 
-    // Create texture sampler uniforms.
-    s_texColor = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
-    s_texNormal = bgfx::createUniform("s_texNormal", bgfx::UniformType::Sampler);
 
     m_numLights = 4;
     u_lightPosRadius = bgfx::createUniform("u_lightPosRadius", bgfx::UniformType::Vec4, m_numLights);
     u_lightRgbInnerR = bgfx::createUniform("u_lightRgbInnerR", bgfx::UniformType::Vec4, m_numLights);
 
-//        // Create program from shaders.
-//        m_program = loadProgram(m_instancingSupported ? "vs_bump_instanced" : "vs_bump", "fs_bump");
+    //        // Create program from shaders.
+    //        m_program = loadProgram(m_instancingSupported ? "vs_bump_instanced" : "vs_bump", "fs_bump");
 
-    //TODO Write Texture Loader
-        // Load diffuse texture.
-        //m_textureColor = loadTexture("../res/textures/UV_Grid_test.png");
+    // TODO Write Texture class
 
-        // Load normal texture.
-        //m_textureNormal = loadTexture("../res/textures/UV_Grid_test.png");
+    // Create texture sampler uniforms & load textures
+    s_texColor = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
+    m_textureColor = load_texture_2d("UV_Grid_test.png");
+
+    s_texNormal = bgfx::createUniform("s_texNormal", bgfx::UniformType::Sampler);
+    m_textureNormal = load_texture_2d("normal_tiles_1k.png");
+
+
+
 }
 
 void ForwardRenderer::on_render() {
@@ -46,9 +101,11 @@ void ForwardRenderer::on_render() {
     const glm::vec3 up = {0.0f, 1.0f, 0.0f};
 
     const float fovY = glm::radians(60.0f);
-    const float aspectRatio = float(get_window_width() / get_window_height());
+    const float aspectRatio = float((float)get_window_width() / (float)get_window_height());
     const float zNear = 0.1f;
     const float zFar = 100.0f;
+
+    log::debug(m_timePassed);
 
     // Set view and projection matrix for view 0.
     {
@@ -61,12 +118,10 @@ void ForwardRenderer::on_render() {
 
     float lightPosRadius[4][4];
     for (uint32_t ii = 0; ii < m_numLights; ++ii) {
-        lightPosRadius[ii][0] =
-            glm::sin((m_timePassed * (0.1f + ii * 0.17f) + ii * glm::half_pi<float>() * 1.37f)) * 3.0f;
-        lightPosRadius[ii][1] =
-            glm::cos((m_timePassed * (0.2f + ii * 0.29f) + ii * glm::half_pi<float>() * 1.49f)) * 3.0f;
-        lightPosRadius[ii][2] = -2.5f;
-        lightPosRadius[ii][3] = 3.0f;
+        lightPosRadius[ii][0] = glm::sin( (m_timePassed *(0.1f + ii*0.17f) + ii*glm::half_pi<float>()*1.37f ) )*15.0f;
+        lightPosRadius[ii][1] = glm::cos( (m_timePassed *(0.2f + ii*0.29f) + ii*glm::half_pi<float>()*1.49f ) )*15.0f;
+        lightPosRadius[ii][2] = 15.5f;
+        lightPosRadius[ii][3] = 17.0f;
     }
 
     bgfx::setUniform(u_lightPosRadius, lightPosRadius, m_numLights);
@@ -91,10 +146,9 @@ void ForwardRenderer::on_render() {
             bgfx::setVertexBuffer(0, m_cube.get_vertex_buffer());
             bgfx::setIndexBuffer(m_cube.get_index_buffer());
 
-             //Bind textures.
-            //TODO Write Texture Loader
-             //bgfx::setTexture(0, s_texColor,  m_textureColor);
-             //bgfx::setTexture(1, s_texNormal, m_textureNormal);
+            // Bind textures.
+            bgfx::setTexture(0, s_texColor,  m_textureColor);
+            bgfx::setTexture(1, s_texNormal, m_textureNormal);
 
             bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
                            BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_MSAA);

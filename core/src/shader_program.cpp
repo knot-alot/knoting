@@ -11,9 +11,9 @@ ShaderProgram::~ShaderProgram() {
     bgfx::destroy(m_program);
 }
 
-bool ShaderProgram::load_shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath) {
-    std::string fullVertexPath = get_cross_platform_path(vertexShaderPath);
-    std::string fullFragmentPath = get_cross_platform_path(fragmentShaderPath);
+bool ShaderProgram::load_shader(const std::string& folderName, const std::string& vertexShaderPath, const std::string& fragmentShaderPath) {
+    std::string fullVertexPath = get_cross_platform_path(folderName, vertexShaderPath);
+    std::string fullFragmentPath = get_cross_platform_path(folderName,fragmentShaderPath);
 
     bool has_valid_paths;
     has_valid_paths = does_file_path_exist(fullVertexPath);
@@ -58,36 +58,36 @@ bool ShaderProgram::does_file_path_exist(const std::string& path) {
 
     return true;
 }
-std::string ShaderProgram::get_cross_platform_path(const std::string& path) {
+std::string ShaderProgram::get_cross_platform_path(const std::string& folderName,const std::string& fileName) {
     std::string shaderPath = "SHADER_BINARY_NOT_SET";
     switch (bgfx::getRendererType()) {
         case bgfx::RendererType::Noop:
         case bgfx::RendererType::Direct3D9:
-            shaderPath = "../res/shaders/cubes/dx9/";
+            shaderPath = "../res/shaders/"+ folderName +"/dx9/";
             break;
         case bgfx::RendererType::Direct3D11:
         case bgfx::RendererType::Direct3D12:
-            shaderPath = "../res/shaders/cubes/dx11/";
+            shaderPath = "../res/shaders/"+ folderName +"/dx11/";
             break;
         case bgfx::RendererType::Gnm:
             break;
         case bgfx::RendererType::Metal:
-            shaderPath = "../res/shaders/cubes/metal/";
+            shaderPath = "../res/shaders/"+ folderName +"/metal/";
             break;
         case bgfx::RendererType::OpenGL:
-            shaderPath = "../res/shaders/cubes/glsl/";
+            shaderPath = "../res/shaders/"+ folderName +"/glsl/";
             break;
         case bgfx::RendererType::OpenGLES:
-            shaderPath = "../res/shaders/cubes/essl/";
+            shaderPath = "../res/shaders/"+ folderName +"/essl/";
             break;
         case bgfx::RendererType::Vulkan:
-            shaderPath = "../res/shaders/cubes/spirv/";
+            shaderPath = "../res/shaders/"+ folderName +"/spirv/";
             break;
         case bgfx::RendererType::Count:
             break;
     }
 
-    shaderPath.append(path);
+    shaderPath.append(fileName);
     return shaderPath;
 }
 
