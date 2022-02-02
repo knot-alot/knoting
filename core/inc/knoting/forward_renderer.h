@@ -1,13 +1,15 @@
 #pragma once
 
-#include <knoting/subsystem.h>
-#include <glm/vec3.hpp>
-#include <glm/matrix.hpp>
 #include <knoting/log.h>
+#include <knoting/subsystem.h>
+#include <glm/matrix.hpp>
+#include <glm/vec3.hpp>
 
-#include <knoting/shader_program.h>
-#include <knoting/mesh.h>
 #include <bgfx/bgfx.h>
+#include <knoting/mesh.h>
+#include <knoting/shader_program.h>
+#include <knoting/texture.h>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
@@ -40,11 +42,16 @@ class ForwardRenderer : public Subsystem {
 
     ShaderProgram m_shaderProgram;
     Mesh m_cube;
+    Texture m_colorTexture;
+    Texture m_normalTexture;
 
-    float m_timePassed = 0.01f;
-    const uint32_t m_clearColor = 0x303030ff;
     Engine& m_engine;
+
    private:
+    const uint32_t m_clearColor = 0x303030ff;
+    float m_timePassed = 0.01f;
+
+    // TODO move to pipeline class
     bgfx::UniformHandle s_texColor;
     bgfx::UniformHandle s_texNormal;
     bgfx::UniformHandle u_lightPosRadius;
@@ -52,7 +59,7 @@ class ForwardRenderer : public Subsystem {
     bgfx::TextureHandle m_textureColor;
     bgfx::TextureHandle m_textureNormal;
     uint16_t m_numLights;
-    bool m_instancingSupported;
+    // end TODO
 
 };
 

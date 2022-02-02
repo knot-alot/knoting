@@ -5,8 +5,6 @@
 
 namespace knot {
 bgfx::VertexLayout VertexLayout::meshVertexLayout;
-bgfx::VertexLayout CubeVertexLayout::ms_layout;
-
 }  // namespace knot
 
 namespace knot {
@@ -85,11 +83,7 @@ void Mesh::create_cube() {
             {-1.0f,  1.0f, -1.0f, encodeNormalRgba8(-1.0f,  0.0f,  0.0f), 0, 0x7fff, 0x7fff },
         };
 
-
-
-
     m_vbh = bgfx::createVertexBuffer(bgfx::makeRef(&m_vertexLayout[0], sizeof(m_vertexLayout[0]) * m_vertexLayout.size()), VertexLayout::meshVertexLayout);
-//    m_vbh = bgfx::createVertexBuffer(bgfx::makeRef(&m_cubeVertices[0], sizeof(m_cubeVertices[0]) * m_cubeVertices.size()), CubeVertexLayout::ms_layout);
 }
 
 }  // namespace knot

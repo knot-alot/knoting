@@ -1,22 +1,22 @@
 #pragma once
 
-#include <bx/pixelformat.h>
 #include <bgfx/bgfx.h>
+#include <bx/pixelformat.h>
 #include <string>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <vector>
 
+// TODO Add const variables headers
 constexpr char PATH_SHADER[] = "../res/shaders/";
 constexpr char PATH_TEXTURE[] = "../res/textures/";
 constexpr char PATH_MODELS[] = "../res/models/";
+//end TODO
 
 namespace knot {
 class IndexBuffer;
 class VertexLayout;
-class CubeVertexLayout;
-
 }  // namespace knot
 
 namespace knot {
@@ -37,9 +37,6 @@ class Mesh {
     std::shared_ptr<IndexBuffer> m_indexBuffer;
 
    private:
-    std::vector<CubeVertexLayout> m_cubeVertices;
-
-   private:
     bgfx::VertexBufferHandle m_vbh;
     bgfx::IndexBufferHandle m_ibh;
 };
@@ -55,46 +52,20 @@ class IndexBuffer {
     std::vector<uint16_t> indices;
 };
 
-//class VertexLayout {
-//   public:
-//    glm::vec3 m_position;
-//    glm::vec3 m_normal;
-//    glm::vec3 m_tangent;
-//    glm::vec2 m_uv;
-//
-//    static void init() {
-//        meshVertexLayout.begin()
-//            .add(bgfx::Attrib::Position,  3, bgfx::AttribType::Float)
-//            .add(bgfx::Attrib::Normal,    4, bgfx::AttribType::Float, true, true)
-//            .add(bgfx::Attrib::Tangent,   4, bgfx::AttribType::Float, true, true)
-//            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float, true, true)
-//            .end();
-//
-//            // TODO when animations are impl
-//            //.add(bgfx::Attrib::Count, 1, bgfx::AttribType::Uint8)
-//            //.add(bgfx::Attrib::Weight, 1, bgfx::AttribType::Float)
-//            //.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-//            // end TODO
-//    }
-//    static bgfx::VertexLayout meshVertexLayout;
-//};
-
-inline uint32_t encodeNormalRgba8(float _x, float _y = 0.0f, float _z = 0.0f, float _w = 0.0f)
-{
-    const float src[] =
-        {
-            _x * 0.5f + 0.5f,
-            _y * 0.5f + 0.5f,
-            _z * 0.5f + 0.5f,
-            _w * 0.5f + 0.5f,
-        };
+inline uint32_t encodeNormalRgba8(float _x, float _y = 0.0f, float _z = 0.0f, float _w = 0.0f) {
+    const float src[] = {
+        _x * 0.5f + 0.5f,
+        _y * 0.5f + 0.5f,
+        _z * 0.5f + 0.5f,
+        _w * 0.5f + 0.5f,
+    };
     uint32_t dst;
     bx::packRgba8(&dst, src);
     return dst;
 }
 
-
 class VertexLayout {
+    // TODO update clean this to GLM variables
    public:
     float m_x;
     float m_y;
@@ -104,32 +75,22 @@ class VertexLayout {
     int16_t m_u;
     int16_t m_v;
 
-    static void init()
-    {
-        meshVertexLayout
-            .begin()
-            .add(bgfx::Attrib::Position,  3, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::Normal,    4, bgfx::AttribType::Uint8, true, true)
-            .add(bgfx::Attrib::Tangent,   4, bgfx::AttribType::Uint8, true, true)
+    static void init() {
+        meshVertexLayout.begin()
+            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Normal, 4, bgfx::AttribType::Uint8, true, true)
+            .add(bgfx::Attrib::Tangent, 4, bgfx::AttribType::Uint8, true, true)
             .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Int16, true, true)
             .end();
+
+        // TODO when animations are impl
+        //.add(bgfx::Attrib::Count, 1, bgfx::AttribType::Uint8)
+        //.add(bgfx::Attrib::Weight, 1, bgfx::AttribType::Float)
+        //.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+        // end TODO
     }
 
     static bgfx::VertexLayout meshVertexLayout;
-};
-
-
-struct CubeVertexLayout {
-    glm::vec3 position;
-    uint32_t abgr;
-    static void init() {
-        ms_layout.begin()
-            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-            .end();
-    }
-
-    static bgfx::VertexLayout ms_layout;
 };
 
 }  // namespace knot

@@ -12,81 +12,26 @@ namespace knot {
 
 ForwardRenderer::~ForwardRenderer() {}
 
-bgfx::TextureHandle load_texture_2d(const std::string& path,
-                                    bool usingMipMaps = true,
-                                    bool usingAnisotropicFiltering = true) {
-    constexpr char L_PATH_TEXTURE[] = "../res/textures/";
-    std::string fullPath = L_PATH_TEXTURE + path;
-    std::filesystem::path fs_path = fullPath;
-
-    if (exists(fs_path)) {
-        log::debug(fullPath + " - Exists");
-    } else {
-        log::error(fullPath + " - does not Exist");
-        return BGFX_INVALID_HANDLE;
-    }
-
-    // load image with stb_image
-    glm::ivec2 img_size;
-    int channels;
-    stbi_set_flip_vertically_on_load(true);
-    stbi_uc* data = stbi_load(fullPath.c_str(), &img_size.x, &img_size.y, &channels, 0);
-    int numberOfLayers = 1;
-
-    uint32_t textureFlags{0};
-    // TODO check if bgfx has anisotropic is supported flag
-
-    if (usingAnisotropicFiltering) {
-        textureFlags =
-            BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
-    } else {
-        textureFlags = BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT;
-    }
-
-    // TODO stbi does not support mips find a way to get mips working
-    usingMipMaps = false;
-    if (usingMipMaps) {
-        textureFlags += BGFX_CAPS_FORMAT_TEXTURE_MIP_AUTOGEN;
-    }
-
-    bgfx::TextureHandle textureHandle =
-        bgfx::createTexture2D(img_size.x, img_size.y, usingMipMaps, numberOfLayers, bgfx::TextureFormat::RGBA8,
-                              textureFlags, bgfx::copy(data, img_size.x * img_size.y * channels));
-
-    if (!bgfx::isValid(textureHandle)) {
-        log::error("Error loading texture " + path);
-        return BGFX_INVALID_HANDLE;
-    }
-
-    stbi_set_flip_vertically_on_load(false);
-    stbi_image_free(data);
-    return textureHandle;
-}
-
 ForwardRenderer::ForwardRenderer(Engine& engine) : m_engine(engine) {
 //    m_shaderProgram.load_shader("cubes","vs_cubes.bin", "fs_cubes.bin");
     m_shaderProgram.load_shader("bump","vs_bump.bin", "fs_bump.bin");
     m_cube.create_cube();
-
-    m_instancingSupported = false;
 
 
     m_numLights = 4;
     u_lightPosRadius = bgfx::createUniform("u_lightPosRadius", bgfx::UniformType::Vec4, m_numLights);
     u_lightRgbInnerR = bgfx::createUniform("u_lightRgbInnerR", bgfx::UniformType::Vec4, m_numLights);
 
-    //        // Create program from shaders.
-    //        m_program = loadProgram(m_instancingSupported ? "vs_bump_instanced" : "vs_bump", "fs_bump");
-
-    // TODO Write Texture class
-
     // Create texture sampler uniforms & load textures
     s_texColor = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
-    m_textureColor = load_texture_2d("UV_Grid_test.png");
+    m_colorTexture.load_texture_2d("UV_Grid_test.png");
+    m_textureColor = m_colorTexture.get_texture_handle();
+//    m_textureColor = load_texture_2d("UV_Grid_test.png");
 
     s_texNormal = bgfx::createUniform("s_texNormal", bgfx::UniformType::Sampler);
-    m_textureNormal = load_texture_2d("normal_tiles_1k.png");
-
+//    m_textureNormal = load_texture_2d("normal_tiles_1k.png");
+    m_normalTexture.load_texture_2d("normal_tiles_1k.png");
+    m_textureNormal = m_normalTexture.get_texture_handle();
 
 
 }
