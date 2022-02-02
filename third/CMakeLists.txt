@@ -1,3 +1,14 @@
+# ASSIMP
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+  set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
+else()
+  set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+endif()
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+add_subdirectory(assimp)
+
 # EnTT
 
 add_subdirectory(entt)
@@ -120,6 +131,13 @@ add_subdirectory(portable-file-dialogs)
 
 set(SPDLOG_MASTER_PROJECT OFF CACHE BOOL "" FORCE)
 add_subdirectory(spdlog)
+
+# STB
+
+project(stb)
+add_library(stb INTERFACE)
+
+target_include_directories(stb INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/stb)
 
 # stduuid
 
