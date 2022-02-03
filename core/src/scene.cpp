@@ -83,4 +83,8 @@ std::optional<GameObject> Scene::get_game_object_from_component(T& component) {
     return scene.get_game_object_from_handle(handle);
 }
 
+entt::registry& Scene::get_registry() const {
+    return m_registry;
+}
+
 }  // namespace knot

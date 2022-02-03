@@ -60,6 +60,7 @@ bool ShaderProgram::does_file_path_exist(const std::string& path) {
 
     return true;
 }
+
 std::string ShaderProgram::get_cross_platform_path(const std::string& folderName, const std::string& fileName) {
     std::string shaderPath = "SHADER_BINARY_NOT_SET";
     switch (bgfx::getRendererType()) {

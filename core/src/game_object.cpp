@@ -121,5 +121,8 @@ const uuid GameObject::get_id() const {
 bool GameObject::has_no_components() const {
     return m_scene.get().m_registry.orphan(m_handle);
 }
+const entt::entity GameObject::get_handle() const {
+    return m_handle;
+}
 
 }  // namespace knot

@@ -7,6 +7,8 @@
 #include <stb_image.h>
 #include <fstream>
 #include <string_view>
+#include <knoting/components.h>
+#include <knoting/scene.h>
 
 namespace knot {
 
@@ -33,7 +35,40 @@ ForwardRenderer::ForwardRenderer(Engine& engine) : m_engine(engine) {
     m_textureNormal = m_normalTexture.get_texture_handle();
 }
 
+class Material{
+   public:
+    Material() : x(1){}
+    int x = 0;
+};
+
+void ForwardRenderer::render_pbr(){
+    auto sceneOpt = Scene::get_active_scene();
+    if (!sceneOpt){
+        return;
+    }
+    Scene& scene = sceneOpt.value();
+
+    entt::registry& registry = scene.get_registry();
+
+    auto entities = registry.view<Material,Mesh>();
+
+    for(auto& e : entities){
+        auto goOpt = scene.get_game_object_from_handle(e);
+        if (!goOpt){
+            continue;
+        }
+        GameObject go = goOpt.value();
+        Material& mat = registry.get<Material>(go.get_handle());
+    }
+
+
+
+}
+
 void ForwardRenderer::on_render() {
+
+
+
     clear_framebuffer();
 
     bgfx::touch(0);

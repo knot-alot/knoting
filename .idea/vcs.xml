@@ -2,12 +2,22 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/assimp" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/bgfx" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/bgfx/bgfx" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/bgfx/bimg" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/bgfx/bx" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/entt" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/glfw" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/glm" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/imgui" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/imguizmo" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/imterm" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/json" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/physx" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/portable-file-dialogs" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/spdlog" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/stb" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/stduuid" vcs="Git" />
   </component>
 </project>

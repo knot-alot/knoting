@@ -23,6 +23,7 @@ class ForwardRenderer : public Subsystem {
     ~ForwardRenderer();
 
     void on_render();
+    void render_pbr();
     void on_post_render();
 
     void on_awake() override;

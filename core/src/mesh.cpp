@@ -8,6 +8,7 @@ namespace knot {
 Mesh::Mesh() {}
 
 Mesh::~Mesh() {
+    log::debug("MESH DES");
     bgfx::destroy(m_vbh);
     bgfx::destroy(m_ibh);
 }
