@@ -31,6 +31,9 @@ class Window : public Subsystem {
     bool is_open();
     void close();
 
+    int get_window_width(){return m_width;};
+    int get_window_height(){return m_height;};
+
    protected:
     void setup_callbacks();
     static void window_size_callback(GLFWwindow* window, int width, int height);

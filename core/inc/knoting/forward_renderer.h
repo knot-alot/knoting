@@ -1,12 +1,25 @@
 #pragma once
 
-#include <subsystem.h>
+#include <knoting/log.h>
+#include <knoting/subsystem.h>
+#include <knoting/types.h>
 
+#include <bgfx/bgfx.h>
+#include <knoting/mesh.h>
+#include <knoting/shader_program.h>
+#include <knoting/texture.h>
+
+
+namespace knot {
+
+class Engine;
+
+}
 namespace knot {
 
 class ForwardRenderer : public Subsystem {
    public:
-    ForwardRenderer();
+    ForwardRenderer(Engine& engine);
     ~ForwardRenderer();
 
     void on_render();
@@ -21,7 +34,30 @@ class ForwardRenderer : public Subsystem {
     void clear_framebuffer(uint16_t id = 0);
 
    private:
-    const uint32_t m_clearColor = 0x303030ff;
+    int get_window_width();
+    int get_window_height();
+
+    ShaderProgram m_shaderProgram;
+    Mesh m_cube;
+    Texture m_colorTexture;
+    Texture m_normalTexture;
+
+    Engine& m_engine;
+
+   private:
+    static constexpr uint32_t m_clearColor = 0x303030ff;
+    float m_timePassed = 0.01f;
+
+    // TODO move to pipeline class
+    bgfx::UniformHandle s_texColor;
+    bgfx::UniformHandle s_texNormal;
+    bgfx::UniformHandle u_lightPosRadius;
+    bgfx::UniformHandle u_lightRgbInnerR;
+    bgfx::TextureHandle m_textureColor;
+    bgfx::TextureHandle m_textureNormal;
+    uint16_t m_numLights;
+    // end TODO
+
 };
 
 }  // namespace knot
