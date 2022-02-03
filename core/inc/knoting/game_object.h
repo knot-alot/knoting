@@ -91,9 +91,8 @@ class GameObject {
     T& try_add_component(Args&&... args) {
         if (has_component<T>())
             return get_component<T>();
-        T& t = m_scene.get().m_registry.emplace<T>(m_handle, std::forward<Args>(args)...);
-        t.Init();
-        return t;
+
+        return add_component<T>(std::forward<Args>(args)...);
     }
 
     template <typename T>

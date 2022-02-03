@@ -15,11 +15,11 @@ class Scene {
    public:
     GameObject create_game_object(const std::string& name = "");
     void remove_game_object(GameObject game_object);
-    std::optional<GameObject> game_object_from_id(uuid id);
-    std::optional<GameObject> game_object_from_handle(entt::entity handle);
+    std::optional<GameObject> get_game_object_from_id(uuid id);
+    std::optional<GameObject> get_game_object_from_handle(entt::entity handle);
 
     template <typename T>
-    static std::optional<GameObject> game_object_from_component(T& component);
+    static std::optional<GameObject> get_game_object_from_component(T& component);
 
     static std::optional<std::reference_wrapper<Scene>> get_active_scene();
     static void set_active_scene(Scene& scene);

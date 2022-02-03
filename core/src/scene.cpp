@@ -47,7 +47,7 @@ void Scene::remove_game_object(GameObject game_object) {
     log::debug("Removed game object with id {}", to_string(game_object.m_id));
 }
 
-std::optional<GameObject> Scene::game_object_from_id(uuid id) {
+std::optional<GameObject> Scene::get_game_object_from_id(uuid id) {
     auto it = m_uuidGameObjectMap.find(id);
     if (it == m_uuidGameObjectMap.end()) {
         return std::nullopt;
@@ -55,7 +55,7 @@ std::optional<GameObject> Scene::game_object_from_id(uuid id) {
     return it->second;
 }
 
-std::optional<GameObject> Scene::game_object_from_handle(entt::entity handle) {
+std::optional<GameObject> Scene::get_game_object_from_handle(entt::entity handle) {
     auto it = m_entityGameObjectMap.find(handle);
     if (it == m_entityGameObjectMap.end()) {
         return std::nullopt;
@@ -72,7 +72,7 @@ void Scene::set_active_scene(Scene& scene) {
 }
 
 template <typename T>
-std::optional<GameObject> Scene::game_object_from_component(T& component) {
+std::optional<GameObject> Scene::get_game_object_from_component(T& component) {
     auto scene_opt = get_active_scene();
     if (!scene_opt) {
         return std::nullopt;
@@ -80,7 +80,7 @@ std::optional<GameObject> Scene::game_object_from_component(T& component) {
 
     Scene& scene = scene_opt.value();
     entt::entity handle = entt::to_entity(scene.m_registry, component);
-    return scene.game_object_from_handle(handle);
+    return scene.get_game_object_from_handle(handle);
 }
 
 }  // namespace knot
