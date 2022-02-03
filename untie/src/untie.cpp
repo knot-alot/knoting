@@ -1,6 +1,8 @@
 #include "untie.h"
 
+#include <knoting/game_object.h>
 #include <knoting/log.h>
+#include <knoting/scene.h>
 
 #include <iostream>
 

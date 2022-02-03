@@ -96,21 +96,16 @@ void Window::close() {
     glfwSetWindowShouldClose(m_window, true);
 }
 
-void Window::on_awake() {
-
-}
+void Window::on_awake() {}
 
 void Window::on_update(double m_delta_time) {
     glfwPollEvents();
-    bgfx::touch(m_viewId);}
-
-void Window::on_late_update() {
-
+    bgfx::touch(m_viewId);
 }
 
-void Window::on_destroy() {
+void Window::on_late_update() {}
 
-}
+void Window::on_destroy() {}
 
 void Window::calculate_delta_time() {
     double currentFrame = glfwGetTime();

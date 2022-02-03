@@ -7,9 +7,14 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+#include <uuid.h>
+#include <nlohmann/json.hpp>
+
 namespace knot {
 
 using namespace glm;
+using namespace uuids;
+using namespace nlohmann;
 
 using vec2i = vec<2, i32>;
 using vec2u = vec<2, u32>;
