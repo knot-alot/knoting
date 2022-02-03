@@ -6,6 +6,7 @@ file(GLOB_RECURSE KNOTING_SOURCES
 )
 
 set(PUBLIC_LIBS
+    assimp
     glm
     spdlog
     imgui
@@ -21,6 +22,7 @@ set(PUBLIC_LIBS
 
 set(PRIVATE_LIBS
     glfw
+    stb
 )
 
 add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS})
