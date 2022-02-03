@@ -30,6 +30,6 @@ add_subdirectory(third)
 include(third/bgfx/cmake/util/ConfigureDebugging.cmake)
 
 add_subdirectory(core)
-add_subdirectory(res)
 add_subdirectory(editor)
 add_subdirectory(untie)
+add_subdirectory(res)
