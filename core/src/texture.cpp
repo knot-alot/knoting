@@ -2,13 +2,11 @@
 #include <knoting/log.h>
 #include <knoting/texture.h>
 #include <fstream>
-#include <glm/gtx/euler_angles.hpp>
 
 namespace knot {
-
-Texture::Texture() {}
-
-Texture::~Texture() {}
+Texture::~Texture() {
+    bgfx::destroy(m_textureHandle);
+}
 
 void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool usingAnisotropicFiltering) {
     std::string fullPath = PATH_TEXTURE + path;

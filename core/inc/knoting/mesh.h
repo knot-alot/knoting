@@ -2,10 +2,9 @@
 
 #include <bgfx/bgfx.h>
 #include <bx/pixelformat.h>
-#include <string>
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/euler_angles.hpp>
+#include <knoting/types.h>
+#include <string>
 #include <vector>
 
 // TODO Add const variables headers
@@ -29,8 +28,8 @@ class Mesh {
     void load_mesh(const std::string& localTexturePath);
     void create_cube();
 
-    bgfx::VertexBufferHandle get_vertex_buffer() { return m_vbh; }
-    bgfx::IndexBufferHandle get_index_buffer() { return m_ibh; }
+    const bgfx::VertexBufferHandle get_vertex_buffer()  { return m_vbh; }
+    const bgfx::IndexBufferHandle get_index_buffer() { return m_ibh; }
 
    private:
     std::vector<VertexLayout> m_vertexLayout;
@@ -43,16 +42,15 @@ class Mesh {
 
 class IndexBuffer {
    public:
-    IndexBuffer(){};
-    void set_index_buffer(std::vector<uint16_t>& in_indices) { indices = in_indices; }
-    size_t get_memory_size() { return sizeof(indices[0]) * indices.size(); }
-    uint16_t* get_index_start() { return &indices[0]; }
+    void set_index_buffer(const std::vector<uint16_t>& in_indices) { m_indices = in_indices; }
+    size_t get_memory_size() { return sizeof(m_indices[0]) * m_indices.size(); }
+    uint16_t& get_index_start() { return m_indices[0]; }
 
    private:
-    std::vector<uint16_t> indices;
+    std::vector<uint16_t> m_indices;
 };
 
-inline uint32_t encodeNormalRgba8(float _x, float _y = 0.0f, float _z = 0.0f, float _w = 0.0f) {
+inline uint32_t encode_normal_rgba8(float _x, float _y = 0.0f, float _z = 0.0f, float _w = 0.0f) {
     const float src[] = {
         _x * 0.5f + 0.5f,
         _y * 0.5f + 0.5f,
@@ -76,7 +74,7 @@ class VertexLayout {
     int16_t m_v;
 
     static void init() {
-        meshVertexLayout.begin()
+        s_meshVertexLayout.begin()
             .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::Normal, 4, bgfx::AttribType::Uint8, true, true)
             .add(bgfx::Attrib::Tangent, 4, bgfx::AttribType::Uint8, true, true)
@@ -90,7 +88,7 @@ class VertexLayout {
         // end TODO
     }
 
-    static bgfx::VertexLayout meshVertexLayout;
+    inline static bgfx::VertexLayout s_meshVertexLayout;
 };
 
 }  // namespace knot

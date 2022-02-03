@@ -2,16 +2,13 @@
 
 #include <knoting/log.h>
 #include <knoting/subsystem.h>
-#include <glm/matrix.hpp>
-#include <glm/vec3.hpp>
+#include <knoting/types.h>
 
 #include <bgfx/bgfx.h>
 #include <knoting/mesh.h>
 #include <knoting/shader_program.h>
 #include <knoting/texture.h>
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/euler_angles.hpp>
 
 namespace knot {
 
@@ -48,7 +45,7 @@ class ForwardRenderer : public Subsystem {
     Engine& m_engine;
 
    private:
-    const uint32_t m_clearColor = 0x303030ff;
+    static constexpr uint32_t m_clearColor = 0x303030ff;
     float m_timePassed = 0.01f;
 
     // TODO move to pipeline class

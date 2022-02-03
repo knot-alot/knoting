@@ -50,8 +50,6 @@ void ForwardRenderer::on_render() {
     const float zNear = 0.1f;
     const float zFar = 100.0f;
 
-    log::debug(m_timePassed);
-
     // Set view and projection matrix for view 0.
     {
         glm::mat4 view;

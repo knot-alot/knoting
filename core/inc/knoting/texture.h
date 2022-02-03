@@ -4,21 +4,18 @@
 #include <bimg/bimg.h>
 #include <bimg/decode.h>
 #include <knoting/stb_image.h>
+#include <knoting/types.h>
 #include <filesystem>
 #include <string>
 
 namespace knot {
 class Texture {
    public:
-    Texture();
     ~Texture();
 
-    void load_texture_2d(const std::string& path,
-                                  bool usingMipMaps = true,
-                                  bool usingAnisotropicFiltering = true);
+    void load_texture_2d(const std::string& path, bool usingMipMaps = true, bool usingAnisotropicFiltering = true);
 
-    bgfx::TextureHandle get_texture_handle(){
-        return m_textureHandle;}
+     bgfx::TextureHandle get_texture_handle() { return m_textureHandle; }
 
    private:
     bgfx::TextureHandle m_textureHandle;
