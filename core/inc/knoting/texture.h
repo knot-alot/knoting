@@ -8,6 +8,8 @@
 #include <string>
 
 namespace knot {
+namespace components {
+
 class Texture {
    public:
     Texture();
@@ -30,4 +32,5 @@ class Texture {
     static constexpr char PATH_TEXTURE[] = "../res/textures/";
 };
 
+}  // namespace components
 }  // namespace knot

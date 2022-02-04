@@ -23,7 +23,27 @@ void Engine::update_modules() {
         module->on_update(m_windowModule->get_delta_time());
     }
 
+    //TODO move into functions when functionality exists
+
+    // CORE SYSTEM ORDER
+
+    // PHYSICS
+    // 1) SYSTEM : Physics / update all dynamic transforms
+
+    // SCRIPTS
+    // 1) SYSTEM : Editor Camera movement
+
+    // PBR RENDERING
+    // 1) SYSTEM : Shadow pass
+    // 2) SYSTEM : Update Active Camera (Runtime / Editor)
+    // 3) SYSTEM : Depth Pass (No Transparent Objects)
+    // 4) SYSTEM : PBR Render Pass
+    // 5) SYSTEM : Skybox Render
+    // 6) SYSTEM : Sorted Transparent Render Pass
+    // 7) SYSTEM : Post Processing Stack
+
     m_forwardRenderModule->on_render();
+    m_forwardRenderModule->render_pbr();
     m_forwardRenderModule->on_post_render();
 
     for (auto& module : m_engineModules) {

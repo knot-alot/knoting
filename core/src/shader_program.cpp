@@ -5,6 +5,7 @@
 #include <fstream>
 
 namespace knot {
+namespace components {
 
 ShaderProgram::ShaderProgram() {}
 ShaderProgram::~ShaderProgram() {}
@@ -98,4 +99,5 @@ std::string ShaderProgram::get_cross_platform_path(const std::string& folderName
     return shaderPath;
 }
 
+}  // namespace components
 }  // namespace knot

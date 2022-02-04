@@ -38,10 +38,10 @@ class ForwardRenderer : public Subsystem {
     int get_window_width();
     int get_window_height();
 
-    ShaderProgram m_shaderProgram;
-    Mesh m_cube;
-    Texture m_colorTexture;
-    Texture m_normalTexture;
+    components::ShaderProgram m_shaderProgram;
+    components::Mesh m_cube;
+    components::Texture m_colorTexture;
+    components::Texture m_normalTexture;
 
     Engine& m_engine;
 

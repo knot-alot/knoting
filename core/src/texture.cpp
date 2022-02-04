@@ -4,6 +4,7 @@
 #include <fstream>
 
 namespace knot {
+namespace components {
 
 Texture::Texture() {}
 Texture::~Texture() {}
@@ -65,5 +66,5 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
     stbi_image_free(data);
     m_textureHandle = textureHandle;
 }
-
+}  // namespace components
 }  // namespace knot

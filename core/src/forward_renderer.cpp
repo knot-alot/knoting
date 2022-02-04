@@ -50,7 +50,7 @@ void ForwardRenderer::render_pbr(){
 
     entt::registry& registry = scene.get_registry();
 
-    auto entities = registry.view<Material,Mesh>();
+    auto entities = registry.view<Material,components::Mesh>();
 
     for(auto& e : entities){
         auto goOpt = scene.get_game_object_from_handle(e);

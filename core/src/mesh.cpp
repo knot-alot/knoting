@@ -4,6 +4,7 @@
 #include <filesystem>
 
 namespace knot {
+namespace components {
 
 Mesh::Mesh() {}
 
@@ -16,8 +17,7 @@ void Mesh::on_destroy() {
     bgfx::destroy(m_ibh);
 }
 
-
-void knot::Mesh::load_mesh(const std::string& localTexturePath) {
+void Mesh::load_mesh(const std::string& localTexturePath) {
     std::string fullPath = PATH_MODELS + localTexturePath;
     std::filesystem::path fs_path = std::filesystem::path(fullPath);
     bgfx::TextureHandle handle = BGFX_INVALID_HANDLE;
@@ -32,20 +32,11 @@ void knot::Mesh::load_mesh(const std::string& localTexturePath) {
 
 void Mesh::create_cube() {
     std::vector<uint16_t> tempIndex = {
-        0,  2,  1,
-        1,  2,  3,
-        4,  5,  6,
-        5,  7,  6,
+        0,  2,  1,  1,  2,  3,  4,  5,  6,  5,  7,  6,
 
-        8, 10,  9,
-        9, 10, 11,
-        12, 13, 14,
-        13, 15, 14,
+        8,  10, 9,  9,  10, 11, 12, 13, 14, 13, 15, 14,
 
-        16, 18, 17,
-        17, 18, 19,
-        20, 21, 22,
-        21, 23, 22,
+        16, 18, 17, 17, 18, 19, 20, 21, 22, 21, 23, 22,
     };
 
     m_indexBuffer = std::make_shared<IndexBuffer>();
@@ -55,34 +46,36 @@ void Mesh::create_cube() {
 
     VertexLayout::init();
     m_vertexLayout = {
-            {-1.0f,  1.0f,  1.0f, encode_normal_rgba8(0.0f, 0.0f, 1.0f), 0,      0,      0 },
-            { 1.0f,  1.0f,  1.0f, encode_normal_rgba8(0.0f, 0.0f, 1.0f), 0, 0x7fff,      0 },
-            {-1.0f, -1.0f,  1.0f, encode_normal_rgba8(0.0f, 0.0f, 1.0f), 0,      0, 0x7fff },
-            { 1.0f, -1.0f,  1.0f, encode_normal_rgba8(0.0f, 0.0f, 1.0f), 0, 0x7fff, 0x7fff },
-            {-1.0f,  1.0f, -1.0f, encode_normal_rgba8(0.0f, 0.0f, -1.0f), 0,      0,      0 },
-            { 1.0f,  1.0f, -1.0f, encode_normal_rgba8(0.0f, 0.0f, -1.0f), 0, 0x7fff,      0 },
-            {-1.0f, -1.0f, -1.0f, encode_normal_rgba8(0.0f, 0.0f, -1.0f), 0,      0, 0x7fff },
-            { 1.0f, -1.0f, -1.0f, encode_normal_rgba8(0.0f, 0.0f, -1.0f), 0, 0x7fff, 0x7fff },
-            {-1.0f,  1.0f,  1.0f, encode_normal_rgba8(0.0f, 1.0f, 0.0f), 0,      0,      0 },
-            { 1.0f,  1.0f,  1.0f, encode_normal_rgba8(0.0f, 1.0f, 0.0f), 0, 0x7fff,      0 },
-            {-1.0f,  1.0f, -1.0f, encode_normal_rgba8(0.0f, 1.0f, 0.0f), 0,      0, 0x7fff },
-            { 1.0f,  1.0f, -1.0f, encode_normal_rgba8(0.0f, 1.0f, 0.0f), 0, 0x7fff, 0x7fff },
-            {-1.0f, -1.0f,  1.0f, encode_normal_rgba8(0.0f, -1.0f, 0.0f), 0,      0,      0 },
-            { 1.0f, -1.0f,  1.0f, encode_normal_rgba8(0.0f, -1.0f, 0.0f), 0, 0x7fff,      0 },
-            {-1.0f, -1.0f, -1.0f, encode_normal_rgba8(0.0f, -1.0f, 0.0f), 0,      0, 0x7fff },
-            { 1.0f, -1.0f, -1.0f, encode_normal_rgba8(0.0f, -1.0f, 0.0f), 0, 0x7fff, 0x7fff },
-            { 1.0f, -1.0f,  1.0f, encode_normal_rgba8(1.0f, 0.0f, 0.0f), 0,      0,      0 },
-            { 1.0f,  1.0f,  1.0f, encode_normal_rgba8(1.0f, 0.0f, 0.0f), 0, 0x7fff,      0 },
-            { 1.0f, -1.0f, -1.0f, encode_normal_rgba8(1.0f, 0.0f, 0.0f), 0,      0, 0x7fff },
-            { 1.0f,  1.0f, -1.0f, encode_normal_rgba8(1.0f, 0.0f, 0.0f), 0, 0x7fff, 0x7fff },
-            {-1.0f, -1.0f,  1.0f, encode_normal_rgba8(-1.0f, 0.0f, 0.0f), 0,      0,      0 },
-            {-1.0f,  1.0f,  1.0f, encode_normal_rgba8(-1.0f, 0.0f, 0.0f), 0, 0x7fff,      0 },
-            {-1.0f, -1.0f, -1.0f, encode_normal_rgba8(-1.0f, 0.0f, 0.0f), 0,      0, 0x7fff },
-            {-1.0f,  1.0f, -1.0f, encode_normal_rgba8(-1.0f, 0.0f, 0.0f), 0, 0x7fff, 0x7fff },
-        };
+        {-1.0f, 1.0f, 1.0f, encode_normal_rgba8(0.0f, 0.0f, 1.0f), 0, 0, 0},
+        {1.0f, 1.0f, 1.0f, encode_normal_rgba8(0.0f, 0.0f, 1.0f), 0, 0x7fff, 0},
+        {-1.0f, -1.0f, 1.0f, encode_normal_rgba8(0.0f, 0.0f, 1.0f), 0, 0, 0x7fff},
+        {1.0f, -1.0f, 1.0f, encode_normal_rgba8(0.0f, 0.0f, 1.0f), 0, 0x7fff, 0x7fff},
+        {-1.0f, 1.0f, -1.0f, encode_normal_rgba8(0.0f, 0.0f, -1.0f), 0, 0, 0},
+        {1.0f, 1.0f, -1.0f, encode_normal_rgba8(0.0f, 0.0f, -1.0f), 0, 0x7fff, 0},
+        {-1.0f, -1.0f, -1.0f, encode_normal_rgba8(0.0f, 0.0f, -1.0f), 0, 0, 0x7fff},
+        {1.0f, -1.0f, -1.0f, encode_normal_rgba8(0.0f, 0.0f, -1.0f), 0, 0x7fff, 0x7fff},
+        {-1.0f, 1.0f, 1.0f, encode_normal_rgba8(0.0f, 1.0f, 0.0f), 0, 0, 0},
+        {1.0f, 1.0f, 1.0f, encode_normal_rgba8(0.0f, 1.0f, 0.0f), 0, 0x7fff, 0},
+        {-1.0f, 1.0f, -1.0f, encode_normal_rgba8(0.0f, 1.0f, 0.0f), 0, 0, 0x7fff},
+        {1.0f, 1.0f, -1.0f, encode_normal_rgba8(0.0f, 1.0f, 0.0f), 0, 0x7fff, 0x7fff},
+        {-1.0f, -1.0f, 1.0f, encode_normal_rgba8(0.0f, -1.0f, 0.0f), 0, 0, 0},
+        {1.0f, -1.0f, 1.0f, encode_normal_rgba8(0.0f, -1.0f, 0.0f), 0, 0x7fff, 0},
+        {-1.0f, -1.0f, -1.0f, encode_normal_rgba8(0.0f, -1.0f, 0.0f), 0, 0, 0x7fff},
+        {1.0f, -1.0f, -1.0f, encode_normal_rgba8(0.0f, -1.0f, 0.0f), 0, 0x7fff, 0x7fff},
+        {1.0f, -1.0f, 1.0f, encode_normal_rgba8(1.0f, 0.0f, 0.0f), 0, 0, 0},
+        {1.0f, 1.0f, 1.0f, encode_normal_rgba8(1.0f, 0.0f, 0.0f), 0, 0x7fff, 0},
+        {1.0f, -1.0f, -1.0f, encode_normal_rgba8(1.0f, 0.0f, 0.0f), 0, 0, 0x7fff},
+        {1.0f, 1.0f, -1.0f, encode_normal_rgba8(1.0f, 0.0f, 0.0f), 0, 0x7fff, 0x7fff},
+        {-1.0f, -1.0f, 1.0f, encode_normal_rgba8(-1.0f, 0.0f, 0.0f), 0, 0, 0},
+        {-1.0f, 1.0f, 1.0f, encode_normal_rgba8(-1.0f, 0.0f, 0.0f), 0, 0x7fff, 0},
+        {-1.0f, -1.0f, -1.0f, encode_normal_rgba8(-1.0f, 0.0f, 0.0f), 0, 0, 0x7fff},
+        {-1.0f, 1.0f, -1.0f, encode_normal_rgba8(-1.0f, 0.0f, 0.0f), 0, 0x7fff, 0x7fff},
+    };
 
-    m_vbh = bgfx::createVertexBuffer(bgfx::makeRef(&m_vertexLayout[0], sizeof(m_vertexLayout[0]) * m_vertexLayout.size()), VertexLayout::s_meshVertexLayout);
+    m_vbh =
+        bgfx::createVertexBuffer(bgfx::makeRef(&m_vertexLayout[0], sizeof(m_vertexLayout[0]) * m_vertexLayout.size()),
+                                 VertexLayout::s_meshVertexLayout);
 }
 
-
+}  // namespace components
 }  // namespace knot

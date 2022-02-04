@@ -17,11 +17,10 @@ Untie::Untie() {
 
     m_engine = std::make_unique<knot::Engine>();
     auto cubeObj = scene.create_game_object("cube");
-    auto& mesh = cubeObj.add_component<Mesh>();
+    auto& mesh = cubeObj.add_component<components::Mesh>();
     mesh.create_cube();
-    auto& tex = cubeObj.add_component<Texture>();
+    auto& tex = cubeObj.add_component<components::Texture>();
 //    tex.load_texture_2d()
-    log::debug("CREATED OBJ");
 }
 
 void Untie::run() {
