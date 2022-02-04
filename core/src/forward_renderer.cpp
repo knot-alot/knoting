@@ -43,7 +43,7 @@ void ForwardRenderer::on_render() {
     const glm::vec3 up = {0.0f, 1.0f, 0.0f};
 
     const float fovY = glm::radians(60.0f);
-    const float aspectRatio = float((float)get_window_width() / (float)get_window_height());
+    const float aspectRatio = (float)get_window_width() / (float)get_window_height();
     const float zNear = 0.1f;
     const float zFar = 100.0f;
 

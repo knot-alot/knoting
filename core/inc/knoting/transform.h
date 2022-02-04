@@ -1,5 +1,6 @@
 #pragma once
 
+#include <knoting/log.h>
 #include <knoting/types.h>
 
 namespace knot {
