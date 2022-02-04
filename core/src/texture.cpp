@@ -4,7 +4,13 @@
 #include <fstream>
 
 namespace knot {
-Texture::~Texture() {
+
+Texture::Texture() {}
+Texture::~Texture() {}
+
+void Texture::on_awake() {}
+
+void Texture::on_destroy() {
     bgfx::destroy(m_textureHandle);
 }
 
@@ -59,4 +65,5 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
     stbi_image_free(data);
     m_textureHandle = textureHandle;
 }
+
 }  // namespace knot

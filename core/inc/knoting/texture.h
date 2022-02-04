@@ -10,7 +10,13 @@
 namespace knot {
 class Texture {
    public:
+    Texture();
     ~Texture();
+
+    //=For ECS========
+    void on_awake();
+    void on_destroy();
+    //================
 
     void load_texture_2d(const std::string& path, bool usingMipMaps = true, bool usingAnisotropicFiltering = true);
 

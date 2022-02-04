@@ -25,6 +25,11 @@ class Mesh {
     Mesh();
     ~Mesh();
 
+    //=For ECS========
+    void on_awake();
+    void on_destroy();
+    //================
+
     void load_mesh(const std::string& localTexturePath);
     void create_cube();
 

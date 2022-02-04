@@ -9,6 +9,11 @@ class ShaderProgram {
     ShaderProgram();
     ~ShaderProgram();
 
+    //=For ECS========
+    void on_awake();
+    void on_destroy();
+    //================
+
     bool load_shader(const std::string& folderName,const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
     bgfx::ProgramHandle get_program(){return m_program;}
 

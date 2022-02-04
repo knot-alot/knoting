@@ -24,7 +24,7 @@ class Scene {
     static std::optional<std::reference_wrapper<Scene>> get_active_scene();
     static void set_active_scene(Scene& scene);
 
-    entt::registry& get_registry() const;
+    entt::registry& get_registry();
 
    protected:
     friend class GameObject;

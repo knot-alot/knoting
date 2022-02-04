@@ -7,7 +7,11 @@
 namespace knot {
 
 ShaderProgram::ShaderProgram() {}
-ShaderProgram::~ShaderProgram() {
+ShaderProgram::~ShaderProgram() {}
+
+void ShaderProgram::on_destroy() {}
+
+void ShaderProgram::on_awake() {
     bgfx::destroy(m_program);
 }
 
@@ -32,8 +36,8 @@ void ShaderProgram::create_program(std::string& fullVertexPath, std::string& ful
 
     m_program = bgfx::createProgram(vs, fs);
 
-    destroy(vs);
-    destroy(fs);
+    bgfx::destroy(vs);
+    bgfx::destroy(fs);
 }
 
 const bgfx::Memory* ShaderProgram::bgfx_load_memory(const char* filename) {

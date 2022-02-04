@@ -7,11 +7,15 @@ namespace knot {
 
 Mesh::Mesh() {}
 
-Mesh::~Mesh() {
-    log::debug("MESH DES");
+Mesh::~Mesh() {}
+
+void Mesh::on_awake() {}
+
+void Mesh::on_destroy() {
     bgfx::destroy(m_vbh);
     bgfx::destroy(m_ibh);
 }
+
 
 void knot::Mesh::load_mesh(const std::string& localTexturePath) {
     std::string fullPath = PATH_MODELS + localTexturePath;
@@ -79,5 +83,6 @@ void Mesh::create_cube() {
 
     m_vbh = bgfx::createVertexBuffer(bgfx::makeRef(&m_vertexLayout[0], sizeof(m_vertexLayout[0]) * m_vertexLayout.size()), VertexLayout::s_meshVertexLayout);
 }
+
 
 }  // namespace knot

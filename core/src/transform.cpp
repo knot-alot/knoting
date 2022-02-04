@@ -7,6 +7,9 @@ namespace components {
 Transform::Transform(const vec3& position, const vec3& scale, const quat& rotation)
     : m_position(position), m_scale(scale), m_rotation(rotation) {}
 
+void Transform::on_awake() {}
+void Transform::on_destroy() {}
+
 vec3 Transform::get_position() const {
     return m_position;
 }

@@ -9,6 +9,11 @@ class Transform {
    public:
     Transform(const vec3& position = vec3(0.0f), const vec3& scale = vec3(1.0f), const quat& rotation = quat());
 
+    //=For ECS========
+    void on_awake();
+    void on_destroy();
+    //================
+
     vec3 get_position() const;
     vec3 get_scale() const;
     quat get_rotation() const;
