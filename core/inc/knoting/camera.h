@@ -2,8 +2,8 @@
 
 #include <knoting/types.h>
 
-namespace knot{
-namespace components{
+namespace knot {
+namespace components {
 class EditorCamera {
    public:
     EditorCamera();
@@ -15,7 +15,6 @@ class EditorCamera {
     //================
 
    private:
-
     glm::vec3 m_lookTarget;
 
     float m_fov = 60.0f;
@@ -27,5 +26,5 @@ class EditorCamera {
     float m_moveSpeedMultiplier = 4;
 };
 
-}
-}
+}  // namespace components
+}  // namespace knot
