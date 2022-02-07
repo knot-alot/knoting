@@ -11,7 +11,7 @@
 constexpr char PATH_SHADER[] = "../res/shaders/";
 constexpr char PATH_TEXTURE[] = "../res/textures/";
 constexpr char PATH_MODELS[] = "../res/models/";
-//end TODO
+// end TODO
 
 namespace knot {
 class IndexBuffer;
@@ -28,7 +28,7 @@ class Mesh {
     void load_mesh(const std::string& localTexturePath);
     void create_cube();
 
-    const bgfx::VertexBufferHandle get_vertex_buffer()  { return m_vbh; }
+    const bgfx::VertexBufferHandle get_vertex_buffer() { return m_vbh; }
     const bgfx::IndexBufferHandle get_index_buffer() { return m_ibh; }
 
    private:

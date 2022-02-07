@@ -31,8 +31,8 @@ class Window : public Subsystem {
     bool is_open();
     void close();
 
-    int get_window_width(){return m_width;};
-    int get_window_height(){return m_height;};
+    int get_window_width() { return m_width; };
+    int get_window_height() { return m_height; };
 
    protected:
     void setup_callbacks();
