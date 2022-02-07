@@ -1,3 +1,4 @@
+#pragma once
 
 #include <bgfx/bgfx.h>
 #include <knoting/shader_program.h>
@@ -6,6 +7,7 @@
 
 namespace knot {
 namespace components {
+// clang-format off
 
 enum class UniformHandle {
     AlbedoColor,
@@ -32,6 +34,17 @@ enum class TextureHandle {
     LAST
 };
 
+enum class UniformSamplerHandle {
+    Albedo,
+    Normal,
+    Metallic,
+    Roughness,
+    Occlusion,
+    LAST
+};
+
+// clang-format on
+
 class Material {
    public:
     Material();
@@ -42,10 +55,12 @@ class Material {
     void on_destroy();
     //================
 
-   private:
+    void set_uniforms();
 
-    std::array<bgfx::UniformHandle,(size_t)UniformHandle::LAST> m_textureHandles;
-    std::array<bgfx::TextureHandle,(size_t)TextureHandle::LAST> m_uniformHandles;
+   private:
+    std::array<bgfx::UniformHandle, (size_t)UniformHandle::LAST> m_uniformHandles;
+    std::array<bgfx::UniformHandle, (size_t)UniformSamplerHandle::LAST> m_uniformSamplerHandle;
+    std::array<bgfx::TextureHandle, (size_t)TextureHandle::LAST> m_textureHandles;
 
    private:
     Texture m_albedo;
@@ -57,6 +72,10 @@ class Material {
     ShaderProgram m_shader;
 
    private:
+    // TODO consider mapping uniforms to string
+    glm::vec4 m_albedoColor = glm::vec4(255.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f);
+    glm::vec2 m_textureTiling = glm::vec2(1);
+
     float m_albedoScalar = 1.0f;
     float m_normalScalar = 1.0f;
     float m_metallicScalar = 1.0f;
@@ -64,14 +83,12 @@ class Material {
     float m_occlusionScalar = 1.0f;
     float m_skyboxScalar = 0.2f;
 
-    glm::vec4 m_valueAlbedoColor = glm::vec4(255.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f);
-    glm::vec2 m_textureTiling = glm::vec2(1);
-
     bool m_castShadows = true;
     bool m_receivesShadows = true;
 
     bool m_alphaCutoffEnabled = false;
     float m_alphaCutoffAmount = 0.0f;
+    // end TODO
 };
 
 }  // namespace components
