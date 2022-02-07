@@ -14,8 +14,20 @@ class EditorCamera {
     void on_destroy();
     //================
 
+    vec3 get_look_target() { return m_lookTarget; };
+    float get_fov() { return radians(m_fov); };
+    float get_z_near() { return m_zNear; };
+    float get_z_far() { return m_zFar; };
+
+    vec3 get_up();
+
+    void set_look_target(vec3 target) { m_lookTarget = target; };
+    void set_fov(float fov) { m_fov = fov; };
+    void set_z_near(float zNear) { m_zNear = zNear; };
+    void set_z_far(float zFar) { m_zFar = zFar; };
+
    private:
-    glm::vec3 m_lookTarget;
+    glm::vec3 m_lookTarget = vec3(0,-10,-1);
 
     float m_fov = 60.0f;
 

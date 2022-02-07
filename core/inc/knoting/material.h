@@ -56,6 +56,7 @@ class Material {
     //================
 
     void set_uniforms();
+    bgfx::ProgramHandle get_program() { return m_shader.get_program(); };
 
    private:
     std::array<bgfx::UniformHandle, (size_t)UniformHandle::LAST> m_uniformHandles;

@@ -43,11 +43,11 @@ void Transform::set_rotation_euler(const vec3& euler) {
 }
 
 mat4 Transform::get_model_matrix() const {
-    glm::mat4 modelMatrix = glm::mat4(1.0f);
+    mat4 modelMatrix{1.0f};
     modelMatrix =
-        glm::translate(glm::mat4(1.0f), m_position) *
-        glm::toMat4(m_rotation) *
-        glm::scale(glm::mat4(1.0f), m_scale);
+        translate(mat4(1.0f), m_position) *
+        toMat4(m_rotation) *
+        scale(mat4(1.0f), m_scale);
     return modelMatrix;
 }
 

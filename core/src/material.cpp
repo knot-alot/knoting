@@ -4,6 +4,11 @@ namespace knot {
 namespace components {
 
 void Material::on_awake() {
+
+    // TODO pass in shader
+    m_shader.load_shader("bump", "vs_bump.bin", "fs_bump.bin");
+    // end TODO
+
     // TODO When working update data to tightly packed variables -> 4 floats into 1 vec4
     // clang-format off
     m_uniformHandles[(size_t)UniformHandle::AlbedoColor]        = bgfx::createUniform("m_albedoColor",        bgfx::UniformType::Vec4);
