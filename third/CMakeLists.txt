@@ -1,6 +1,7 @@
 # ASSIMP
-
+if(DEFINED ENV{GITHUB_OS})
 find_package(assimp)
+endif()
 
 if(NOT assimp_FOUND)
     message(STATUS "Assimp not found. Compiling our own version.")
@@ -22,8 +23,9 @@ endif()
 add_subdirectory(entt)
 
 # GLFW
-
-find_package(GLFW)
+if(DEFINED ENV{GITHUB_OS})
+    find_package(GLFW)
+endif()
 
 if(NOT GLFW_FOUND)
     message(STATUS "GLFW not found. Compiling our own version.")
@@ -33,6 +35,8 @@ if(NOT GLFW_FOUND)
     set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
     set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
     add_subdirectory(glfw)
+    else()
+        message(STATUS "GLFW found. using found version.")
 endif()
 
 # GLM
@@ -59,8 +63,8 @@ file(GLOB IMGUI_SOURCES
   imgui/imgui_widgets.cpp
   imgui/imgui_demo.cpp
 
-  imgui/backends/imgui_impl_glfw.cpp
-  imgui/backends/imgui_impl_opengl3.cpp
+#  imgui/backends/imgui_impl_glfw.cpp
+#  imgui/backends/imgui_impl_opengl3.cpp
 )
 add_library(imgui ${IMGUI_SOURCES})
 target_link_libraries(imgui PRIVATE glfw)
