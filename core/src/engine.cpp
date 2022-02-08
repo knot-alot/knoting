@@ -21,7 +21,7 @@ void Engine::update_modules() {
         module->on_update(m_windowModule->get_delta_time());
     }
 
-    //TODO move into functions when functionality exists
+    // TODO move into functions when functionality exists
 
     // CORE SYSTEM ORDER
 
@@ -40,7 +40,7 @@ void Engine::update_modules() {
     // 6) SYSTEM : Sorted Transparent Render Pass
     // 7) SYSTEM : Post Processing Stack
 
-//    m_forwardRenderModule->on_render();
+    //    m_forwardRenderModule->on_render();
     m_forwardRenderModule->render_pbr();
     m_forwardRenderModule->on_post_render();
 

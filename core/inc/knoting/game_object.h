@@ -66,7 +66,7 @@ class GameObject {
     inline bool operator!=(const GameObject& other) const { return m_id != other.m_id; }
 
     const uuid get_id() const;
-    const entt::entity get_handle()const;
+    const entt::entity get_handle() const;
     bool has_no_components() const;
 
     template <typename... Components>
