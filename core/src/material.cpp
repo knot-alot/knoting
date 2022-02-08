@@ -4,7 +4,6 @@ namespace knot {
 namespace components {
 
 void Material::on_awake() {
-
     // TODO pass in shader
     m_shader.load_shader("bump", "vs_bump.bin", "fs_bump.bin");
     // end TODO
