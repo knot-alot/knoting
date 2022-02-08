@@ -64,8 +64,11 @@ endforeach()
 target_include_directories(knoting PUBLIC ${CMAKE_SOURCE_DIR}/core/inc)
 target_include_directories(knoting PUBLIC ${PHYSX_INCLUDE_DIRS})
 
+if(GLFW_FOUND)
+    target_include_directories(knoting PUBLIC ${GLFW_INCLUDE_DIR})
+endif()
+
 # BGFX
-# TODO: Move these to a function which can be called from whichever runtime
 
 foreach(SHADER_FILE ${KNOTING_SHADERS})
     get_filename_component(SHADER_NAME ${SHADER_FILE} NAME)

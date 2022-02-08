@@ -1,7 +1,7 @@
 #include <knoting/assert.h>
+#include <knoting/engine.h>
 #include <knoting/log.h>
 #include <knoting/window.h>
-#include <knoting/engine.h>
 
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>

@@ -1,0 +1,21 @@
+name: clang-format check
+
+on: [push, pull_request]
+
+jobs:
+  formatting-check:
+    name: Check formatting
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        path:
+          - 'core'
+          - 'editor'
+          - 'untie'
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run clang-format style check for C/C++ programs.
+      uses: jidicula/clang-format-action@v4.5.0
+      with:
+        check-path: ${{ matrix.path }}
+        fallback-style: 'Chromium'

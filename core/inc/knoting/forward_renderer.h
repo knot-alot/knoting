@@ -9,7 +9,6 @@
 #include <knoting/shader_program.h>
 #include <knoting/texture.h>
 
-
 namespace knot {
 
 class Engine;
@@ -58,7 +57,6 @@ class ForwardRenderer : public Subsystem {
     bgfx::TextureHandle m_textureNormal;
     uint16_t m_numLights;
     // end TODO
-
 };
 
 }  // namespace knot

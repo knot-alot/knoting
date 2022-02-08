@@ -14,9 +14,7 @@ namespace knot {
 
 ForwardRenderer::~ForwardRenderer() {}
 
-ForwardRenderer::ForwardRenderer(Engine& engine) : m_engine(engine) {
-
-}
+ForwardRenderer::ForwardRenderer(Engine& engine) : m_engine(engine) {}
 
 void ForwardRenderer::render_pbr() {
     using namespace components;
@@ -61,7 +59,6 @@ void ForwardRenderer::render_pbr() {
 
             bgfx::setViewTransform(0, &view[0][0], &proj[0][0]);
         }
-
     }
 
     //=PBR PIPELINE===========================
@@ -88,9 +85,7 @@ void ForwardRenderer::render_pbr() {
         // Bind Uniforms & textures.
         material.set_uniforms();
 
-
-
-        //TODO enable MSAA in bgfx
+        // TODO enable MSAA in bgfx
         bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
 
         bgfx::submit(0, material.get_program());

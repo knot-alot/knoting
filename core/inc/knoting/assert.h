@@ -13,9 +13,8 @@
 
 #if __has_include("spdlog/spdlog.h")
 #define KNOTING_LOG_ERROR(...) spdlog::error(__VA_ARGS__);
-#define KNOTING_LOG_CURRENT_POSITION()                                 \
-    KNOTING_LOG_ERROR("Assertion triggered at:\n\t{}:{}:{}", __FILE__, \
-                      __FUNCTION__, __LINE__);
+#define KNOTING_LOG_CURRENT_POSITION() \
+    KNOTING_LOG_ERROR("Assertion triggered at:\n\t{}:{}:{}", __FILE__, __FUNCTION__, __LINE__);
 #else
 #include <iostream>
 inline void KNOTING_LOG_ERROR() {}
@@ -25,9 +24,8 @@ inline void KNOTING_LOG_ERROR(First&& first, Rest&&... rest) {
     KNOTING_LOG_ERROR(std::forward<Rest>(rest)...);
 }
 
-#define KNOTING_LOG_CURRENT_POSITION()                              \
-    KNOTING_LOG_ERROR("Assertion triggered at:\n\t", __FILE__, ":", \
-                      __FUNCTION__, ":", __LINE__, "\n");
+#define KNOTING_LOG_CURRENT_POSITION() \
+    KNOTING_LOG_ERROR("Assertion triggered at:\n\t", __FILE__, ":", __FUNCTION__, ":", __LINE__, "\n");
 #endif  // __has_include("spdlog/spdlog.h")
 
 #define KNOTING_ASSERT_MESSAGE(condition, ...) \

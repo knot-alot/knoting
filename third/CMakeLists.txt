@@ -1,13 +1,21 @@
 # ASSIMP
 
-if(CMAKE_BUILD_TYPE MATCHES Debug)
-  set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
-else()
-  set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+find_package(assimp)
+
+if(NOT assimp_FOUND)
+    message(STATUS "Assimp not found. Compiling our own version.")
+    # We could download assimp at this point, instead of using a submodule.
+
+    if(CMAKE_BUILD_TYPE MATCHES Debug)
+      set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
+    else()
+      set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+    endif()
+    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+    set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
+    add_subdirectory(assimp)
 endif()
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-add_subdirectory(assimp)
 
 # EnTT
 
@@ -15,10 +23,17 @@ add_subdirectory(entt)
 
 # GLFW
 
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-add_subdirectory(glfw)
+find_package(GLFW)
+
+if(NOT GLFW_FOUND)
+    message(STATUS "GLFW not found. Compiling our own version.")
+    # We could download glfw at this point, instead of using a submodule.
+
+    set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    add_subdirectory(glfw)
+endif()
 
 # GLM
 

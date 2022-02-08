@@ -1,4 +1,3 @@
-
 #include <knoting/log.h>
 #include <knoting/mesh.h>
 #include <filesystem>
