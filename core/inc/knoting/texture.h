@@ -3,6 +3,7 @@
 #include <bgfx/bgfx.h>
 #include <bimg/bimg.h>
 #include <bimg/decode.h>
+#include <knoting/asset.h>
 #include <knoting/types.h>
 #include <filesystem>
 #include <string>
@@ -10,9 +11,10 @@
 namespace knot {
 namespace components {
 
-class Texture {
+class Texture : public Asset {
    public:
     Texture();
+    Texture(const std::string& path);
     ~Texture();
 
     //=For ECS========
@@ -29,7 +31,6 @@ class Texture {
 
     uint16_t width = 0;
     uint16_t height = 0;
-    static constexpr char PATH_TEXTURE[] = "../res/textures/";
 };
 
 }  // namespace components

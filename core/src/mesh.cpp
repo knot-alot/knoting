@@ -5,7 +5,8 @@
 namespace knot {
 namespace components {
 
-Mesh::Mesh() {}
+Mesh::Mesh() : Asset{AssetType::MESH, ""} {}
+Mesh::Mesh(const std::string& path) : Asset{AssetType::MESH, path} {}
 
 Mesh::~Mesh() {}
 
@@ -17,6 +18,7 @@ void Mesh::on_destroy() {
 }
 
 void Mesh::load_mesh(const std::string& localTexturePath) {
+
     std::string fullPath = PATH_MODELS + localTexturePath;
     std::filesystem::path fs_path = std::filesystem::path(fullPath);
     bgfx::TextureHandle handle = BGFX_INVALID_HANDLE;

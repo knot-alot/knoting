@@ -8,6 +8,7 @@
 #include <knoting/forward_renderer.h>
 #include <knoting/subsystem.h>
 #include <knoting/window.h>
+#include <knoting/asset_manager.h>
 
 namespace knot {
 class Engine {
@@ -30,6 +31,7 @@ class Engine {
     std::vector<std::shared_ptr<Subsystem>> m_engineModules;
     std::shared_ptr<Window> m_windowModule;
     std::shared_ptr<ForwardRenderer> m_forwardRenderModule;
+    std::shared_ptr<AssetManager> m_assetManager;
 };
 
 }  // namespace knot

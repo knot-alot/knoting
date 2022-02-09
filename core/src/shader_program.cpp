@@ -7,7 +7,8 @@
 namespace knot {
 namespace components {
 
-ShaderProgram::ShaderProgram() {}
+ShaderProgram::ShaderProgram() : Asset{AssetType::SHADER, ""} {}
+ShaderProgram::ShaderProgram(const std::string& path) : Asset{AssetType::SHADER, path} {}
 ShaderProgram::~ShaderProgram() {}
 
 void ShaderProgram::on_destroy() {}

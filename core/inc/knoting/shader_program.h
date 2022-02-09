@@ -2,12 +2,15 @@
 
 #include <bgfx/bgfx.h>
 #include <string>
+#include <knoting/asset.h>
 
 namespace knot {
 namespace components {
-class ShaderProgram {
+class ShaderProgram : public Asset{
    public:
     ShaderProgram();
+    ShaderProgram(const std::string& path);
+
     ~ShaderProgram();
 
     //=For ECS========

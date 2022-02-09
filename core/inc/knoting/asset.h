@@ -1,0 +1,27 @@
+#pragma once
+
+#include <string>
+#include <knoting/types.h>
+
+static constexpr char PATH_SHADER[] = "../res/shaders/";
+static constexpr char PATH_TEXTURE[] = "../res/textures/";
+static constexpr char PATH_MODELS[] = "../res/models/";
+
+namespace knot {
+using namespace asset;
+
+enum class AssetState { IDLE, LOADING, FINISHED, FAILED};
+
+class Asset {
+   public:
+    Asset(AssetType assetType, const std::string& path);
+
+   private:
+    AssetType m_assetType = AssetType::UNKNOWN;
+
+    std::string m_fullPath;
+    std::string m_assetName;
+    std::string m_assetDirectory;
+};
+
+}  // namespace knot

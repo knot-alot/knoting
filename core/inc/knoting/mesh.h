@@ -2,15 +2,13 @@
 
 #include <bgfx/bgfx.h>
 #include <bx/pixelformat.h>
-
+#include <knoting/asset.h>
 #include <knoting/types.h>
 #include <string>
 #include <vector>
 
 // TODO Add const variables headers
-constexpr char PATH_SHADER[] = "../res/shaders/";
-constexpr char PATH_TEXTURE[] = "../res/textures/";
-constexpr char PATH_MODELS[] = "../res/models/";
+
 // end TODO
 
 namespace knot {
@@ -23,9 +21,10 @@ class VertexLayout;
 namespace knot {
 namespace components {
 
-class Mesh {
+class Mesh : public Asset{
    public:
     Mesh();
+    Mesh(const std::string& path);
     ~Mesh();
 
     //=For ECS========

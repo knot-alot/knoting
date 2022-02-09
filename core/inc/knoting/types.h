@@ -12,6 +12,11 @@
 #include <nlohmann/json.hpp>
 
 namespace knot {
+namespace asset {
+
+enum class AssetType { UNKNOWN, TEXTURE, MESH, SHADER, CUBEMAP };
+
+}
 
 using namespace glm;
 using namespace uuids;

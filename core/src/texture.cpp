@@ -6,7 +6,8 @@
 namespace knot {
 namespace components {
 
-Texture::Texture() {}
+Texture::Texture() : Asset{AssetType::TEXTURE, ""} {}
+Texture::Texture(const std::string& path) : Asset{AssetType::TEXTURE, path} {}
 Texture::~Texture() {}
 
 void Texture::on_awake() {}
