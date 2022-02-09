@@ -38,9 +38,9 @@ void ForwardRenderer::render_pbr() {
         }
 
         GameObject go = goOpt.value();
-        Transform& transform = registry.get<Transform>(go.get_handle());
-        EditorCamera& editorCamera = registry.get<EditorCamera>(go.get_handle());
-        Name& name = registry.get<Name>(go.get_handle());
+        Transform& transform = go.get_component<Transform>();
+        EditorCamera& editorCamera = go.get_component<EditorCamera>();
+        Name& name = go.get_component<Name>();
 
         const glm::vec3 pos = transform.get_position();
         const glm::vec3 lookTarget = editorCamera.get_look_target();
@@ -71,10 +71,10 @@ void ForwardRenderer::render_pbr() {
         }
 
         GameObject go = goOpt.value();
-        Transform& transform = registry.get<Transform>(go.get_handle());
-        Mesh& mesh = registry.get<Mesh>(go.get_handle());
-        Material& material = registry.get<Material>(go.get_handle());
-        Name& name = registry.get<Name>(go.get_handle());
+        Transform& transform = go.get_component<Transform>();
+        Mesh& mesh = go.get_component<Mesh>();
+        Material& material = go.get_component<Material>();
+        Name& name = go.get_component<Name>();
 
         bgfx::setTransform(value_ptr(transform.get_model_matrix()));
 
