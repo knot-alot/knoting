@@ -15,14 +15,22 @@ using namespace asset;
 
 class AssetManager : public Subsystem {
    public:
-
     void on_awake() override;
     void on_destroy() override;
 
     void load_assets_manual();
     void load_assets_serialize();
 
-    template <typename T, typename... TArgs>
+    static std::optional<std::reference_wrapper<AssetManager>> get_asset_manager() { return s_assetManager; };
+
+   private:
+    // TODO consider tuple / UUID for when assets are loaded via serialization
+    std::map<std::string, std::shared_ptr<Asset>> m_assets;
+
+    inline static std::optional<std::reference_wrapper<AssetManager>> s_assetManager = std::nullopt;
+
+   public:
+    template <typename T>
     inline std::weak_ptr<T> load_asset(const std::string& path) {
         if (!std::is_base_of<Asset, T>::value) {
             log::error("ASSET : " + path + " IS NOT OF BASE CLASS ASSET");
@@ -34,9 +42,5 @@ class AssetManager : public Subsystem {
         }
         return std::static_pointer_cast<T>(m_assets[path]);
     }
-
-   private:
-    //TODO consider tuple / UUID for when assets are loaded via serialization
-    std::map<std::string, std::shared_ptr<Asset>> m_assets;
 };
 }  // namespace knot

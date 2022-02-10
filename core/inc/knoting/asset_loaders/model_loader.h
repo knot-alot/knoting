@@ -7,8 +7,6 @@ using namespace asset;
 
 class ModelLoader {
    public:
-
    private:
-
 };
 }  // namespace knot
