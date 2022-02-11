@@ -5,10 +5,10 @@
 #include <string>
 #include <vector>
 
+#include <knoting/asset_manager.h>
 #include <knoting/forward_renderer.h>
 #include <knoting/subsystem.h>
 #include <knoting/window.h>
-#include <knoting/asset_manager.h>
 
 namespace knot {
 class Engine {

@@ -1,12 +1,12 @@
 #pragma once
 
 #include <bgfx/bgfx.h>
-#include <string>
 #include <knoting/asset.h>
+#include <string>
 
 namespace knot {
 namespace components {
-class ShaderProgram : public Asset{
+class ShaderProgram : public Asset {
    public:
     ShaderProgram();
     ShaderProgram(const std::string& path);

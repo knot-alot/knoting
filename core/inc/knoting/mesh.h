@@ -21,7 +21,7 @@ class VertexLayout;
 namespace knot {
 namespace components {
 
-class Mesh : public Asset{
+class Mesh : public Asset {
    public:
     Mesh();
     Mesh(const std::string& path);

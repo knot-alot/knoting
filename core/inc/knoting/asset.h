@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
 #include <knoting/types.h>
+#include <string>
 
 static constexpr char PATH_SHADER[] = "../res/shaders/";
 static constexpr char PATH_TEXTURE[] = "../res/textures/";
@@ -10,7 +10,7 @@ static constexpr char PATH_MODELS[] = "../res/models/";
 namespace knot {
 using namespace asset;
 
-enum class AssetState { IDLE, LOADING, FINISHED, FAILED};
+enum class AssetState { IDLE, LOADING, FINISHED, FAILED };
 
 class Asset {
    public:
