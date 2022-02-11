@@ -29,11 +29,18 @@ void Material::on_awake() {
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Roughness] = bgfx::createUniform("m_roughness", bgfx::UniformType::Sampler);
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Occlusion] = bgfx::createUniform("m_occlusion", bgfx::UniformType::Sampler);
 
-    m_albedo = AssetManager::load_asset<components::Texture>("UV_Grid_test.png").lock();
-    m_normal = AssetManager::load_asset<components::Texture>("normal_tiles_1k.png").lock();
-    m_metallic = AssetManager::load_asset<components::Texture>("UV_Grid_test.png").lock();
-    m_roughness = AssetManager::load_asset<components::Texture>("UV_Grid_test.png").lock();
-    m_occlusion = AssetManager::load_asset<components::Texture>("UV_Grid_test.png").lock();
+    m_albedo = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Albedo]).lock();
+    m_normal = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Normal]).lock();
+    m_metallic = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Metallic]).lock();
+    m_roughness = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Roughness]).lock();
+    m_occlusion = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Occlusion]).lock();
+    log::debug("LOADED TEXTURE PATH");
+    log::debug(m_textureSlotPath[(int)TextureHandle::Albedo]);
+    log::debug(m_textureSlotPath[(int)TextureHandle::Normal]);
+    log::debug(m_textureSlotPath[(int)TextureHandle::Metallic]);
+    log::debug(m_textureSlotPath[(int)TextureHandle::Roughness]);
+    log::debug(m_textureSlotPath[(int)TextureHandle::Occlusion]);
+
 
     m_textureHandles[(size_t)TextureHandle::Albedo]    = m_albedo->get_texture_handle();
     m_textureHandles[(size_t)TextureHandle::Normal]    = m_normal->get_texture_handle();
@@ -110,6 +117,25 @@ void Material::set_uniforms() {
     bgfx::setTexture(4, m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Occlusion],m_textureHandles[(size_t)TextureHandle::Occlusion]);
 
     // clang-format off
+}
+void Material::set_texture_slot_path(TextureType slot, const std::string& path){
+switch (slot) {
+        case TextureType::Albedo:
+            break;
+        case TextureType::Normal:
+            break;
+        case TextureType::Metallic:
+            break;
+        case TextureType::Roughness:
+            break;
+        case TextureType::Occlusion:
+            break;
+        default:
+            return;
+    }
+    //TODO THIS IS BROKEN IT IS NOT SETTING THE PATH CORRECTLY
+    m_textureSlotPath[(int)slot] = path;
+    log::debug(std::to_string((int)slot) + path);
 }
 
 }  // namespace components

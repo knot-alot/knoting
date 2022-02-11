@@ -16,7 +16,9 @@ namespace asset {
 
 enum class AssetType { UNKNOWN, TEXTURE, MESH, SHADER, CUBEMAP };
 
-}
+enum class TextureType { Albedo, Normal, Metallic, Roughness, Occlusion, LAST };
+
+}  // namespace asset
 
 using namespace glm;
 using namespace uuids;

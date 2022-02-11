@@ -26,6 +26,8 @@ enum class UniformHandle {
     LAST
 };
 
+
+
 enum class TextureHandle {
     Albedo,
     Normal,
@@ -56,7 +58,7 @@ class Material {
     void on_destroy();
     //================
 
-    void set_texture_slot_path(TextureHandle slot, const std::string& path);
+    void set_texture_slot_path(TextureType slot, const std::string& path);
 
     void set_uniforms();
     bgfx::ProgramHandle get_program() { return m_shader.get_program(); };

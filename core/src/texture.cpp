@@ -19,6 +19,7 @@ void Texture::on_destroy() {
     log::info("removed texture : {}", m_fullPath);
 }
 
+//TODO Return fail state for the template so that it can set the idX to the default fallback texture
 void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool usingAnisotropicFiltering) {
     std::string fullPath = PATH_TEXTURE + path;
     std::filesystem::path fs_path = fullPath;
@@ -55,9 +56,58 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
         textureFlags += BGFX_CAPS_FORMAT_TEXTURE_MIP_AUTOGEN;
     }
 
-    bgfx::TextureHandle textureHandle =
-        bgfx::createTexture2D(img_size.x, img_size.y, usingMipMaps, numberOfLayers, bgfx::TextureFormat::RGBA8,
-                              textureFlags, bgfx::copy(data, img_size.x * img_size.y * channels));
+    // clang-format off
+    bgfx::TextureHandle textureHandle;
+
+    if (data) {
+        textureHandle =
+            bgfx::createTexture2D(
+            img_size.x,
+            img_size.y,
+            usingMipMaps,
+            numberOfLayers,
+            bgfx::TextureFormat::RGBA8,
+            textureFlags,
+            bgfx::copy(data, img_size.x * img_size.y * channels));
+    } else {
+        const int x{2};
+        const int y{2};
+        const int rgba{4};
+        const int layers{1};
+        const bool mips{false};
+
+        const uint32_t flags =
+            BGFX_SAMPLER_U_CLAMP |
+            BGFX_SAMPLER_V_CLAMP |
+            BGFX_SAMPLER_MIN_POINT |
+            BGFX_SAMPLER_MAG_POINT;
+
+        unsigned char texData[x * y * rgba] = {
+            255, 0, 255, 255,
+            255, 0, 255, 255,
+            255, 0, 255, 255,
+            255, 0, 255, 255
+        };
+
+        unsigned char* imageData = (unsigned char*)texData;
+
+        textureHandle =
+            bgfx::createTexture2D(
+            x,
+            y,
+            mips,
+            layers,
+            bgfx::TextureFormat::RGBA8,
+            flags,
+            bgfx::copy(imageData, x * y * rgba)
+        );
+
+        // TODO Consider generating the fallback texture before loading any textures and then setting the handle to it by default in the load_asset template class
+        log::info("generated fallback texture");
+
+    }
+
+    // clang-format on
 
     if (!bgfx::isValid(textureHandle)) {
         log::error("Error loading texture " + path);
