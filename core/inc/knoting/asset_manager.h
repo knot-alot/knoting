@@ -15,8 +15,12 @@ using namespace asset;
 
 class AssetManager : public Subsystem {
    public:
+    AssetManager() = default;
+    AssetManager(const AssetManager& other) = delete;
     void on_awake() override;
     void on_destroy() override;
+
+    virtual void on_update(double m_delta_time);
 
     void load_assets_manual();
     void load_assets_serialize();
@@ -29,18 +33,34 @@ class AssetManager : public Subsystem {
 
     inline static std::optional<std::reference_wrapper<AssetManager>> s_assetManager = std::nullopt;
 
-   public:
+   private:
     template <typename T>
-    inline std::weak_ptr<T> load_asset(const std::string& path) {
+    inline std::weak_ptr<T> internal_load_asset(const std::string& path) {
         if (!std::is_base_of<Asset, T>::value) {
             log::error("ASSET : " + path + " IS NOT OF BASE CLASS ASSET");
         }
         auto iterator = m_assets.find(path);
         if (iterator == m_assets.end()) {
             log::debug("Asset : " + path + " is being created");
-            m_assets[path] = std::make_shared<T>(path);
+            m_assets.insert({path, std::make_shared<T>(path)});
+            auto result = std::static_pointer_cast<T>(m_assets[path]);
+            result.get()->on_awake();
+            //TODO return fallback asset
+            return result;
+        }
+        else{
+            log::info("FOUND Asset : " + path + " FOUND");
         }
         return std::static_pointer_cast<T>(m_assets[path]);
+    }
+
+   public:
+    template <typename T>
+    inline static std::weak_ptr<T> load_asset(const std::string& path) {
+        auto managerOpt = get_asset_manager();
+        KNOTING_ASSERT_MESSAGE(managerOpt.has_value(), "ASSET MANAGER IS EMPTY")
+        auto& assetManager = managerOpt->get();
+        return assetManager.internal_load_asset<T>(path);
     }
 };
 }  // namespace knot

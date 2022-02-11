@@ -4,6 +4,7 @@
 #include <knoting/shader_program.h>
 #include <knoting/texture.h>
 #include <knoting/types.h>
+#include <knoting/asset_manager.h>
 
 namespace knot {
 namespace components {
@@ -55,6 +56,8 @@ class Material {
     void on_destroy();
     //================
 
+    void set_texture_slot_path(TextureHandle slot, const std::string & path);
+
     void set_uniforms();
     bgfx::ProgramHandle get_program() { return m_shader.get_program(); };
 
@@ -64,11 +67,13 @@ class Material {
     std::array<bgfx::TextureHandle, (size_t)TextureHandle::LAST> m_textureHandles;
 
    private:
-    Texture m_albedo;
-    Texture m_normal;
-    Texture m_metallic;
-    Texture m_roughness;
-    Texture m_occlusion;
+    std::shared_ptr<Texture> m_albedo;
+    std::shared_ptr<Texture> m_normal;
+    std::shared_ptr<Texture> m_metallic;
+    std::shared_ptr<Texture> m_roughness;
+    std::shared_ptr<Texture> m_occlusion;
+
+    std::string m_textureSlotPath[5] = {"", "", "", "", ""};
 
     ShaderProgram m_shader;
 

@@ -15,8 +15,8 @@ enum class AssetState { IDLE, LOADING, FINISHED, FAILED };
 class Asset {
    public:
     Asset(AssetType assetType, const std::string& path);
-
-   private:
+    virtual void on_awake() = 0;
+   protected:
     AssetType m_assetType = AssetType::UNKNOWN;
 
     std::string m_fullPath;

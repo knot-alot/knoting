@@ -10,7 +10,9 @@ Texture::Texture() : Asset{AssetType::TEXTURE, ""} {}
 Texture::Texture(const std::string& path) : Asset{AssetType::TEXTURE, path} {}
 Texture::~Texture() {}
 
-void Texture::on_awake() {}
+void Texture::on_awake() {
+    load_texture_2d(m_fullPath);
+}
 
 void Texture::on_destroy() {
     bgfx::destroy(m_textureHandle);
