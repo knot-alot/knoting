@@ -16,15 +16,14 @@ void Texture::on_awake() {
 
 void Texture::on_destroy() {
     bgfx::destroy(m_textureHandle);
+    log::info("removed texture : {}", m_fullPath);
 }
 
 void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool usingAnisotropicFiltering) {
     std::string fullPath = PATH_TEXTURE + path;
     std::filesystem::path fs_path = fullPath;
 
-    if (exists(fs_path)) {
-        log::debug(fullPath + " - Exists");
-    } else {
+    if (!exists(fs_path)) {
         log::error(fullPath + " - does not Exist");
         m_textureHandle = BGFX_INVALID_HANDLE;
     }

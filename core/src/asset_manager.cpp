@@ -12,25 +12,17 @@ void AssetManager::on_awake() {
     load_assets_serialize();
 }
 void AssetManager::on_destroy() {
-    log::warn("ASSET MANAGER HAS BEEN DESTROYED");
+    for (auto it = m_assets.begin(); it != m_assets.end(); ++it) {
+        it->second->on_destroy();
+    }
+
+    log::info("ASSET MANAGER HAS BEEN DESTROYED");
 }
 
 void AssetManager::load_assets_manual() {
+    AssetManager::load_asset<components::Texture>("UV_Grid_test.png");
+    AssetManager::load_asset<components::Texture>("normal_tiles_1k.png");
 }
 
-void AssetManager::load_assets_serialize() {
-}
-void AssetManager::on_update(double m_delta_time) {
-
-    auto alb = AssetManager::load_asset<components::Texture>("UV_Grid_test.png").lock();
-    auto nrm = AssetManager::load_asset<components::Texture>("normal_tiles_1k.png").lock();
-
-    auto alb_2 = AssetManager::load_asset<components::Texture>("UV_Grid_test.png").lock();
-    auto nrm_2 = AssetManager::load_asset<components::Texture>("normal_tiles_1k.png").lock();
-
-    log::debug("ASSET CACHE SIZE");
-    log::debug(m_assets.size());
-    log::debug("-----------------------");
-}
-
+void AssetManager::load_assets_serialize() {}
 }  // namespace knot

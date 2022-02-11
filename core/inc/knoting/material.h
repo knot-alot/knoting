@@ -1,10 +1,10 @@
 #pragma once
 
 #include <bgfx/bgfx.h>
+#include <knoting/asset_manager.h>
 #include <knoting/shader_program.h>
 #include <knoting/texture.h>
 #include <knoting/types.h>
-#include <knoting/asset_manager.h>
 
 namespace knot {
 namespace components {
@@ -56,7 +56,7 @@ class Material {
     void on_destroy();
     //================
 
-    void set_texture_slot_path(TextureHandle slot, const std::string & path);
+    void set_texture_slot_path(TextureHandle slot, const std::string& path);
 
     void set_uniforms();
     bgfx::ProgramHandle get_program() { return m_shader.get_program(); };

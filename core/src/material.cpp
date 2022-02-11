@@ -29,17 +29,11 @@ void Material::on_awake() {
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Roughness] = bgfx::createUniform("m_roughness", bgfx::UniformType::Sampler);
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Occlusion] = bgfx::createUniform("m_occlusion", bgfx::UniformType::Sampler);
 
-    // TODO Get Textures from resource manager
-
     m_albedo = AssetManager::load_asset<components::Texture>("UV_Grid_test.png").lock();
     m_normal = AssetManager::load_asset<components::Texture>("normal_tiles_1k.png").lock();
     m_metallic = AssetManager::load_asset<components::Texture>("UV_Grid_test.png").lock();
     m_roughness = AssetManager::load_asset<components::Texture>("UV_Grid_test.png").lock();
     m_occlusion = AssetManager::load_asset<components::Texture>("UV_Grid_test.png").lock();
-
-    // end TODO
-    {
-    }
 
     m_textureHandles[(size_t)TextureHandle::Albedo]    = m_albedo->get_texture_handle();
     m_textureHandles[(size_t)TextureHandle::Normal]    = m_normal->get_texture_handle();
@@ -109,15 +103,7 @@ void Material::set_uniforms() {
     bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::AlphaCutoffEnabled], &m_alphaCutoffEnabled);
     bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::AlphaCutoffAmount],  &m_alphaCutoffAmount);
 
-    int i = 0;
-    for(auto t : m_textureHandles){
-        log::debug("id {}, is valid {}, idx {}",i,isValid(t), t.idx);
-        i++;
-    }
-
-log::debug("BEFORE");
     bgfx::setTexture(0, m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Albedo],   m_textureHandles[(size_t)TextureHandle::Albedo]);
-log::debug("BEFORE");
     bgfx::setTexture(1, m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Normal],   m_textureHandles[(size_t)TextureHandle::Normal]);
     bgfx::setTexture(2, m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Metallic], m_textureHandles[(size_t)TextureHandle::Metallic]);
     bgfx::setTexture(3, m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Roughness],m_textureHandles[(size_t)TextureHandle::Roughness]);

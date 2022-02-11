@@ -16,6 +16,7 @@ class Asset {
    public:
     Asset(AssetType assetType, const std::string& path);
     virtual void on_awake() = 0;
+    virtual void on_destroy() = 0;
    protected:
     AssetType m_assetType = AssetType::UNKNOWN;
 

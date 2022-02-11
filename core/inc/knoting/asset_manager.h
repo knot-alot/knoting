@@ -20,8 +20,6 @@ class AssetManager : public Subsystem {
     void on_awake() override;
     void on_destroy() override;
 
-    virtual void on_update(double m_delta_time);
-
     void load_assets_manual();
     void load_assets_serialize();
 
@@ -41,15 +39,12 @@ class AssetManager : public Subsystem {
         }
         auto iterator = m_assets.find(path);
         if (iterator == m_assets.end()) {
-            log::debug("Asset : " + path + " is being created");
+            log::debug("Asset : " + path + " is being loaded");
             m_assets.insert({path, std::make_shared<T>(path)});
             auto result = std::static_pointer_cast<T>(m_assets[path]);
             result.get()->on_awake();
             //TODO return fallback asset
             return result;
-        }
-        else{
-            log::info("FOUND Asset : " + path + " FOUND");
         }
         return std::static_pointer_cast<T>(m_assets[path]);
     }
