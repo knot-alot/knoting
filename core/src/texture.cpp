@@ -11,7 +11,10 @@ Texture::Texture(const std::string& path) : Asset{AssetType::TEXTURE, path} {}
 Texture::~Texture() {}
 
 void Texture::on_awake() {
-    load_texture_2d(m_fullPath);
+    if (m_assetState == AssetState::IDLE) {
+        m_assetState = AssetState::LOADING;
+        load_texture_2d(m_fullPath);
+    }
 }
 
 void Texture::on_destroy() {
@@ -19,7 +22,7 @@ void Texture::on_destroy() {
     log::info("removed texture : {}", m_fullPath);
 }
 
-//TODO Return fail state for the template so that it can set the idX to the default fallback texture
+// TODO Return fail state for the template so that it can set the idX to the default fallback texture
 void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool usingAnisotropicFiltering) {
     std::string fullPath = PATH_TEXTURE + path;
     std::filesystem::path fs_path = fullPath;
@@ -69,41 +72,14 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
             bgfx::TextureFormat::RGBA8,
             textureFlags,
             bgfx::copy(data, img_size.x * img_size.y * channels));
+
+    m_assetState = AssetState::FINISHED;
     } else {
-        const int x{2};
-        const int y{2};
-        const int rgba{4};
-        const int layers{1};
-        const bool mips{false};
-
-        const uint32_t flags =
-            BGFX_SAMPLER_U_CLAMP |
-            BGFX_SAMPLER_V_CLAMP |
-            BGFX_SAMPLER_MIN_POINT |
-            BGFX_SAMPLER_MAG_POINT;
-
-        unsigned char texData[x * y * rgba] = {
-            255, 0, 255, 255,
-            255, 0, 255, 255,
-            255, 0, 255, 255,
-            255, 0, 255, 255
-        };
-
-        unsigned char* imageData = (unsigned char*)texData;
-
-        textureHandle =
-            bgfx::createTexture2D(
-            x,
-            y,
-            mips,
-            layers,
-            bgfx::TextureFormat::RGBA8,
-            flags,
-            bgfx::copy(imageData, x * y * rgba)
-        );
+        textureHandle = generate_solid_texture(vec4(1,1,1,1), "fallback");
 
         // TODO Consider generating the fallback texture before loading any textures and then setting the handle to it by default in the load_asset template class
         log::info("generated fallback texture");
+        m_assetState = AssetState::FAILED;
 
     }
 
@@ -117,6 +93,51 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
     stbi_set_flip_vertically_on_load(false);
     stbi_image_free(data);
     m_textureHandle = textureHandle;
+}
+
+bgfx::TextureHandle Texture::generate_solid_texture(const vec4& color, const std::string& name) {
+
+    m_fullPath = name;
+
+    const int x{2};
+    const int y{2};
+    const int rgba{4};
+    const int layers{1};
+    const bool mips{false};
+
+    const uint32_t flags =
+        BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT;
+
+    uint8_t r = (uint8_t)(255);
+    uint8_t g = (uint8_t)(255);
+    uint8_t b = (uint8_t)(255);
+    uint8_t a = (uint8_t)(255);
+
+    unsigned char texData[x * y * rgba] = {255, 255, 255, 255, 255, 255, 255, 255,
+                                           255, 255, 255, 255, 255, 255, 255, 255};
+
+    unsigned char* imageData = (unsigned char*)texData;
+
+    return bgfx::createTexture2D(x, y, mips, layers, bgfx::TextureFormat::RGBA8, flags,
+                                 bgfx::copy(imageData, x * y * rgba));
+
+    // TODO Consider generating the fallback texture before loading any textures and then setting the handle to it by
+    // default in the load_asset template class
+    log::info("generated solid texture");
+}
+void Texture::generate_default_asset() {
+    m_assetState = AssetState::LOADING;
+    bgfx::TextureHandle textureHandle = generate_solid_texture(vec4(1, 0, 1, 1), "fallbackTexture");
+
+    if (!bgfx::isValid(textureHandle)) {
+        log::error("fallbackTexture failed to be created");
+        m_textureHandle = BGFX_INVALID_HANDLE;
+        m_assetState = AssetState::FAILED;
+        return;
+    }
+
+    m_textureHandle = textureHandle;
+    m_assetState = AssetState::FINISHED;
 }
 
 // TODO impl in knot -> file from Proc_GL by @beardyKing

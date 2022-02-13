@@ -14,6 +14,7 @@
 namespace knot {
 namespace asset {
 
+enum class AssetState { IDLE, LOADING, FINISHED, FAILED };
 enum class AssetType { UNKNOWN, TEXTURE, MESH, SHADER, CUBEMAP };
 
 enum class TextureType { Albedo, Normal, Metallic, Roughness, Occlusion, LAST };

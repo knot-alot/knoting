@@ -43,6 +43,7 @@ class AssetManager : public Subsystem {
             m_assets.insert({path, std::make_shared<T>(path)});
             auto result = std::static_pointer_cast<T>(m_assets[path]);
             result.get()->on_awake();
+            if (result.get())
             //TODO return fallback asset
             return result;
         }
