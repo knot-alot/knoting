@@ -19,9 +19,14 @@ class Asset {
 
     AssetState get_asset_state(){return m_assetState;};
 
+    std::string fallback_name(){
+
+    }
+
    protected:
     AssetType m_assetType = AssetType::UNKNOWN;
     AssetState m_assetState = AssetState::IDLE;
+
 
     std::string m_fullPath;
     std::string m_assetName;
