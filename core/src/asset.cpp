@@ -8,7 +8,8 @@
 
 namespace knot {
 
-Asset::Asset(AssetType assetType, const std::string& path) : m_assetType(assetType) {
+Asset::Asset(AssetType assetType, const std::string& path, const std::string& fallbackName) : m_assetType(assetType) {
+    m_fallbackName = fallbackName;
     m_fullPath = path;
     m_assetName = std::filesystem::path(m_fullPath).filename().string();
     m_assetDirectory = std::filesystem::path(m_fullPath).parent_path().string();

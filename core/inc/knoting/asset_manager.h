@@ -37,25 +37,23 @@ class AssetManager : public Subsystem {
         if (!std::is_base_of<Asset, T>::value) {
             log::error("ASSET : " + path + " IS NOT OF BASE CLASS ASSET");
         }
-        std::string mapPath = path;
-        auto iterator = m_assets.find(mapPath);
+        auto iterator = m_assets.find(path);
         if (iterator == m_assets.end()) {
-            log::debug("Asset : " + mapPath + " is being loaded");
-            T tempAsset = T(mapPath);
+            log::debug("Asset : " + path + " is being loaded");
+            T tempAsset = T(path);
             tempAsset.on_awake();
-            if (tempAsset.get_asset_state() == AssetState::FAILED){
-                log::error("ASSET MANAGER FAILED TO LOAD");
-                std::shared_ptr<T> result = std::static_pointer_cast<T>(m_assets["fallbackTexture"]);
+            if (tempAsset.get_asset_state() == AssetState::FAILED) {
+                log::warn("ASSET MANAGER FAILED TO LOAD");
+                std::shared_ptr<T> result = std::static_pointer_cast<T>(m_assets[tempAsset.get_fallback_name()]);
                 return result;
-            }
-            else{
-                m_assets.insert({mapPath, std::make_shared<T>(tempAsset)});
-                std::shared_ptr<T> result = std::static_pointer_cast<T>(m_assets[mapPath]);
+            } else {
+                m_assets.insert({path, std::make_shared<T>(tempAsset)});
+                std::shared_ptr<T> result = std::static_pointer_cast<T>(m_assets[path]);
                 result.get()->on_awake();
                 return result;
             }
         }
-        return std::static_pointer_cast<T>(m_assets[mapPath]);
+        return std::static_pointer_cast<T>(m_assets[path]);
     }
 
    public:

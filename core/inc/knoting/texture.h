@@ -21,12 +21,14 @@ class Texture : public Asset {
     void on_awake();
     void on_destroy();
     //================
-    void generate_default_asset();
+    void generate_default_asset() override;
+    void generate_solid_color_texture(const vec4& color, const std::string& name);
 
     void load_texture_2d(const std::string& path, bool usingMipMaps = true, bool usingAnisotropicFiltering = true);
-    bgfx::TextureHandle generate_solid_texture(const vec4& color, const std::string& name);
-
     bgfx::TextureHandle get_texture_handle() { return m_textureHandle; }
+
+   private:
+    bgfx::TextureHandle internal_generate_solid_texture(const vec4& color, const std::string& name);
 
    private:
     bgfx::TextureHandle m_textureHandle;

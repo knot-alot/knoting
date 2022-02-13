@@ -5,8 +5,8 @@
 namespace knot {
 namespace components {
 
-Mesh::Mesh() : Asset{AssetType::MESH, ""} {}
-Mesh::Mesh(const std::string& path) : Asset{AssetType::MESH, path} {}
+Mesh::Mesh() : Asset{AssetType::MESH, "", "fallbackMesh"} {}
+Mesh::Mesh(const std::string& path) : Asset{AssetType::MESH, path, "fallbackMesh"} {}
 
 Mesh::~Mesh() {}
 
@@ -76,6 +76,8 @@ void Mesh::create_cube() {
         bgfx::createVertexBuffer(bgfx::makeRef(&m_vertexLayout[0], sizeof(m_vertexLayout[0]) * m_vertexLayout.size()),
                                  VertexLayout::s_meshVertexLayout);
 }
+
+void Mesh::generate_default_asset() {}
 
 }  // namespace components
 }  // namespace knot

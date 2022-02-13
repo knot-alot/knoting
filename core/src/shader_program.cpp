@@ -7,8 +7,8 @@
 namespace knot {
 namespace components {
 
-ShaderProgram::ShaderProgram() : Asset{AssetType::SHADER, ""} {}
-ShaderProgram::ShaderProgram(const std::string& path) : Asset{AssetType::SHADER, path} {}
+ShaderProgram::ShaderProgram() : Asset{AssetType::SHADER, "", "fallbackShader"} {}
+ShaderProgram::ShaderProgram(const std::string& path) : Asset{AssetType::SHADER, path, "fallbackShader"} {}
 ShaderProgram::~ShaderProgram() {}
 
 void ShaderProgram::on_destroy() {}
@@ -99,6 +99,7 @@ std::string ShaderProgram::get_cross_platform_path(const std::string& folderName
     shaderPath.append(fileName);
     return shaderPath;
 }
+void ShaderProgram::generate_default_asset() {}
 
 }  // namespace components
 }  // namespace knot

@@ -20,10 +20,12 @@ void AssetManager::on_destroy() {
 }
 
 void AssetManager::load_assets_manual() {
-    //FALLBACK
+    // FALLBACK TEXTURE
     m_assets.insert({"fallbackTexture", std::make_shared<components::Texture>()});
     std::static_pointer_cast<components::Texture>(m_assets["fallbackTexture"])->generate_default_asset();
-    //FROM FILE
+    // FALLBACK MESH
+    // FALLBACK SHADER
+    // FROM FILE
     AssetManager::load_asset<components::Texture>("UV_Grid_test.png");
     AssetManager::load_asset<components::Texture>("normal_tiles_1k.png");
 }
