@@ -5,7 +5,7 @@
 
 static constexpr char PATH_SHADER[] = "../res/shaders/";
 static constexpr char PATH_TEXTURE[] = "../res/textures/";
-static constexpr char PATH_MODELS[] = "../res/models/";
+static constexpr char PATH_MODELS[] = "../res/misc/";
 
 namespace knot {
 using namespace asset;

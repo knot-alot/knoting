@@ -21,6 +21,18 @@ class VertexLayout;
 namespace knot {
 namespace components {
 
+struct Vertex {
+    glm::vec3 position;
+    glm::vec3 normal;
+    glm::vec2 texCoords;
+    glm::vec4 tangents;
+};
+
+struct VertexData {
+    std::vector<Vertex> vData;
+    std::vector<uint32_t> indices;
+};
+
 class Mesh : public Asset {
    public:
     Mesh();
@@ -41,6 +53,11 @@ class Mesh : public Asset {
     const bgfx::IndexBufferHandle get_index_buffer() { return m_ibh; }
 
    private:
+    bool internal_load_obj(const std::string& path);
+    bool internal_tiny_obj(const std::string& path);
+   private:
+    std::vector<Vertex> mVertices;
+
     std::vector<VertexLayout> m_vertexLayout;
     std::shared_ptr<IndexBuffer> m_indexBuffer;
 
@@ -51,12 +68,12 @@ class Mesh : public Asset {
 
 class IndexBuffer {
    public:
-    void set_index_buffer(const std::vector<uint16_t>& in_indices) { m_indices = in_indices; }
+    void set_index_buffer(const std::vector<int16_t>& in_indices) { m_indices = in_indices; }
     size_t get_memory_size() { return sizeof(m_indices[0]) * m_indices.size(); }
-    uint16_t& get_index_start() { return m_indices[0]; }
+    int16_t& get_index_start() { return m_indices[0]; }
 
    private:
-    std::vector<uint16_t> m_indices;
+    std::vector<int16_t> m_indices;
 };
 
 inline uint32_t encode_normal_rgba8(float _x, float _y = 0.0f, float _z = 0.0f, float _w = 0.0f) {
