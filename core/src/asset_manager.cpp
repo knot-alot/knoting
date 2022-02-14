@@ -21,8 +21,14 @@ void AssetManager::on_destroy() {
 
 void AssetManager::load_assets_manual() {
     // FALLBACK TEXTURE
-    m_assets.insert({"fallbackTexture", std::make_shared<components::Texture>()});
-    std::static_pointer_cast<components::Texture>(m_assets["fallbackTexture"])->generate_default_asset();
+    const std::string fb_tex = "fallbackTexture";
+    m_assets.insert({fb_tex, std::make_shared<components::Texture>()});
+    std::static_pointer_cast<components::Texture>(m_assets[fb_tex])->generate_default_asset();
+    // SOLID COLOR TEXTURES
+    const std::string white_tex = "whiteTexture";
+    m_assets.insert({white_tex, std::make_shared<components::Texture>()});
+    std::static_pointer_cast<components::Texture>(m_assets[white_tex])
+        ->generate_solid_color_texture(vec4(1), white_tex);
     // FALLBACK MESH
     // FALLBACK SHADER
     // FROM FILE

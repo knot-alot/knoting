@@ -6,13 +6,13 @@
 namespace knot {
 namespace components {
 
-Texture::Texture() : Asset{AssetType::TEXTURE, "", "fallbackTexture"} {}
-Texture::Texture(const std::string& path) : Asset{AssetType::TEXTURE, path, "fallbackTexture"} {}
+Texture::Texture() : Asset{AssetType::Texture, "", "fallbackTexture"} {}
+Texture::Texture(const std::string& path) : Asset{AssetType::Texture, path, "fallbackTexture"} {}
 Texture::~Texture() {}
 
 void Texture::on_awake() {
-    if (m_assetState != AssetState::FINISHED) {
-        m_assetState = AssetState::LOADING;
+    if (m_assetState != AssetState::Finished) {
+        m_assetState = AssetState::Loading;
         load_texture_2d(m_fullPath);
     }
 }
@@ -41,7 +41,7 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
 
     if (!data) {
         log::error("Failed to load image: " + fullPath);
-        m_assetState = AssetState::FAILED;
+        m_assetState = AssetState::Failed;
         return;
     }
 
@@ -74,7 +74,7 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
         textureFlags,
         bgfx::copy(data, img_size.x * img_size.y * channels));
 
-    m_assetState = AssetState::FINISHED;
+    m_assetState = AssetState::Finished;
 
     // clang-format on
 
@@ -131,34 +131,34 @@ bgfx::TextureHandle Texture::internal_generate_solid_texture(const vec4& color, 
     // clang-format on
 }
 void Texture::generate_default_asset() {
-    m_assetState = AssetState::LOADING;
+    m_assetState = AssetState::Loading;
     bgfx::TextureHandle textureHandle = internal_generate_solid_texture(vec4(1, 0, 1, 1), "fallbackTexture");
 
     if (!bgfx::isValid(m_textureHandle)) {
         log::error("fallbackTexture failed to be created");
         m_textureHandle = BGFX_INVALID_HANDLE;
-        m_assetState = AssetState::FAILED;
+        m_assetState = AssetState::Failed;
         return;
     }
 
     m_textureHandle = textureHandle;
-    m_assetState = AssetState::FINISHED;
+    m_assetState = AssetState::Finished;
 }
 
 void Texture::generate_solid_color_texture(const vec4& color, const std::string& name) {
-    m_assetState = AssetState::LOADING;
+    m_assetState = AssetState::Loading;
     bgfx::TextureHandle textureHandle = internal_generate_solid_texture(color, name);
 
     if (!bgfx::isValid(m_textureHandle)) {
         log::error("solid texture Name : {} - of color : [{},{},{},{}] failed to be created", name, color.r, color.g,
                    color.b, color.a);
         m_textureHandle = BGFX_INVALID_HANDLE;
-        m_assetState = AssetState::FAILED;
+        m_assetState = AssetState::Failed;
         return;
     }
 
     m_textureHandle = textureHandle;
-    m_assetState = AssetState::FINISHED;
+    m_assetState = AssetState::Finished;
 }
 }  // namespace components
 }  // namespace knot

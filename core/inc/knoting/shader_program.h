@@ -16,8 +16,9 @@ class ShaderProgram : public Asset {
     //=For ECS========
     void on_awake();
     void on_destroy();
-    //================
+    //=For Asset=======
     void generate_default_asset() override;
+    //=================
 
     bool load_shader(const std::string& folderName,
                      const std::string& vertexShaderPath,

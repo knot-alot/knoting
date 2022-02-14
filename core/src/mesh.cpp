@@ -5,8 +5,8 @@
 namespace knot {
 namespace components {
 
-Mesh::Mesh() : Asset{AssetType::MESH, "", "fallbackMesh"} {}
-Mesh::Mesh(const std::string& path) : Asset{AssetType::MESH, path, "fallbackMesh"} {}
+Mesh::Mesh() : Asset{AssetType::Mesh, "", "fallbackMesh"} {}
+Mesh::Mesh(const std::string& path) : Asset{AssetType::Mesh, path, "fallbackMesh"} {}
 
 Mesh::~Mesh() {}
 

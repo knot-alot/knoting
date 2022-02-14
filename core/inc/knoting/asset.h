@@ -21,8 +21,8 @@ class Asset {
     std::string get_fallback_name() { return m_fallbackName; };
 
    protected:
-    AssetType m_assetType = AssetType::UNKNOWN;
-    AssetState m_assetState = AssetState::IDLE;
+    AssetType m_assetType = AssetType::Unknown;
+    AssetState m_assetState = AssetState::Idle;
 
     std::string m_fallbackName = "SET_IN_DERIVED_IMPLEMENTATION";
 

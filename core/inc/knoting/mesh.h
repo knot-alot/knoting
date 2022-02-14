@@ -30,8 +30,9 @@ class Mesh : public Asset {
     //=For ECS========
     void on_awake();
     void on_destroy();
-    //================
+    //=For Asset=======
     void generate_default_asset() override;
+    //=================
 
     void load_mesh(const std::string& localTexturePath);
     void create_cube();

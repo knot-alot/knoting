@@ -42,7 +42,7 @@ class AssetManager : public Subsystem {
             log::debug("Asset : " + path + " is being loaded");
             T tempAsset = T(path);
             tempAsset.on_awake();
-            if (tempAsset.get_asset_state() == AssetState::FAILED) {
+            if (tempAsset.get_asset_state() == AssetState::Failed) {
                 log::warn("ASSET MANAGER FAILED TO LOAD");
                 std::shared_ptr<T> result = std::static_pointer_cast<T>(m_assets[tempAsset.get_fallback_name()]);
                 return result;

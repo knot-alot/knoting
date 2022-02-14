@@ -33,11 +33,11 @@ Untie::Untie() {
         mesh.create_cube();
 
         auto material = components::Material();
-        material.set_texture_slot_path(TextureType::Albedo, "");
+        material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
         material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Metallic, "b");
-        material.set_texture_slot_path(TextureType::Roughness, "b2");
-        material.set_texture_slot_path(TextureType::Occlusion, "b3");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
 
         cubeObj.add_component<components::Material>(material);
     }
@@ -51,9 +51,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
         material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Metallic, "b");
-        material.set_texture_slot_path(TextureType::Roughness, "b2");
-        material.set_texture_slot_path(TextureType::Occlusion, "b3");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
 
         cubeObj.add_component<components::Material>(material);
     }
@@ -67,9 +67,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
         material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Metallic, "b");
-        material.set_texture_slot_path(TextureType::Roughness, "b2");
-        material.set_texture_slot_path(TextureType::Occlusion, "b3");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
 
         cubeObj.add_component<components::Material>(material);
     }
