@@ -50,9 +50,9 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
 
     if (usingAnisotropicFiltering) {
         textureFlags =
-            BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
+            BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
     } else {
-        textureFlags = BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT;
+        textureFlags = BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT;
     }
 
     // TODO stbi does not support mips find a way to get mips working
@@ -100,8 +100,8 @@ bgfx::TextureHandle Texture::internal_generate_solid_texture(const vec4& color, 
     const bool mips{false};
 
     const uint32_t flags =
-        BGFX_SAMPLER_U_CLAMP |
-        BGFX_SAMPLER_V_CLAMP |
+        BGFX_SAMPLER_W_CLAMP |
+        BGFX_SAMPLER_W_CLAMP |
         BGFX_SAMPLER_MIN_POINT |
         BGFX_SAMPLER_MAG_POINT;
 

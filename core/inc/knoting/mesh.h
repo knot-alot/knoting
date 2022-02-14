@@ -15,23 +15,19 @@ namespace knot {
 namespace components {
 class IndexBuffer;
 class VertexLayout;
-}  // namespace components
-}  // namespace knot
-
-namespace knot {
-namespace components {
-
-struct Vertex {
+class Vertex {
+   public:
     glm::vec3 position;
     glm::vec3 normal;
     glm::vec2 texCoords;
     glm::vec4 tangents;
 };
 
-struct VertexData {
-    std::vector<Vertex> vData;
-    std::vector<uint32_t> indices;
-};
+}  // namespace components
+}  // namespace knot
+
+namespace knot {
+namespace components {
 
 class Mesh : public Asset {
    public:
@@ -55,6 +51,7 @@ class Mesh : public Asset {
    private:
     bool internal_load_obj(const std::string& path);
     bool internal_tiny_obj(const std::string& path);
+
    private:
     std::vector<Vertex> mVertices;
 
@@ -96,15 +93,15 @@ class VertexLayout {
     float m_z;
     uint32_t m_normal;
     uint32_t m_tangent;
-    int16_t m_u;
-    int16_t m_v;
+    float m_u;
+    float m_v;
 
     static void init() {
         s_meshVertexLayout.begin()
             .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::Normal, 4, bgfx::AttribType::Uint8, true, true)
             .add(bgfx::Attrib::Tangent, 4, bgfx::AttribType::Uint8, true, true)
-            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Int16, true, true)
+            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float, true, true)
             .end();
 
         // TODO when animations are impl

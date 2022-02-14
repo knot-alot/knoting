@@ -25,42 +25,42 @@ Untie::Untie() {
     }
 
     {
-//        auto cubeObj = scene.create_game_object("cube_0");
-//        cubeObj.get_component<components::Transform>().set_position(glm::vec3(0, -10, 0));
-//        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(15.0f, 1.0f, 15.0f));
-//
-//        auto& mesh = cubeObj.add_component<components::Mesh>();
-//        mesh.create_cube();
-//
-//        auto material = components::Material();
-//        material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
-//        material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
-//        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-//        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-//        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
-//
-//        cubeObj.add_component<components::Material>(material);
-    }
-    {
-        auto cubeObj = scene.create_game_object("sphere_1");
-        cubeObj.get_component<components::Transform>().set_position(glm::vec3(0.0f, 4.0f, 0.0f));
+        //        auto cubeObj = scene.create_game_object("cube_0");
+        //        cubeObj.get_component<components::Transform>().set_position(glm::vec3(0, -10, 0));
+        //        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(15.0f, 1.0f, 15.0f));
+        //
+        //        auto& mesh = cubeObj.add_component<components::Mesh>();
+        //        mesh.create_cube();
+        //
+        //        auto material = components::Material();
+        //        material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
+        //        material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
+        //        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        //        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        //        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        //
+        //        cubeObj.add_component<components::Material>(material);
+    } {
+        auto cubeObj = scene.create_game_object("loaded_cube");
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(0.0f, -5.0f, 0.0f));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(10.0f));
+        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 45, 0));
 
         auto& mesh = cubeObj.add_component<components::Mesh>();
-        mesh.load_mesh("cube.obj");
+        mesh.load_mesh("uv_cube.obj");
 
         auto material = components::Material();
-        material.set_texture_slot_path(TextureType::Albedo, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
         material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
         material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
 
         cubeObj.add_component<components::Material>(material);
-
     }
     {
         auto cubeObj = scene.create_game_object("cube_1");
-        cubeObj.get_component<components::Transform>().set_position(glm::vec3(0.0f, 1.0f, 0.0f));
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-4.0f, 6.0f, -4.0f));
 
         auto& mesh = cubeObj.add_component<components::Mesh>();
         mesh.create_cube();
@@ -74,22 +74,22 @@ Untie::Untie() {
 
         cubeObj.add_component<components::Material>(material);
     }
-//    {
-//        auto cubeObj = scene.create_game_object("ground");
-//        cubeObj.get_component<components::Transform>().set_position(glm::vec3(1.0f, 7.0f, 1.0f));
-//
-//        auto& mesh = cubeObj.add_component<components::Mesh>();
-//        mesh.create_cube();
-//
-//        auto material = components::Material();
-//        material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
-//        material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
-//        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-//        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-//        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
-//
-//        cubeObj.add_component<components::Material>(material);
-//    }
+    //    {
+    //        auto cubeObj = scene.create_game_object("ground");
+    //        cubeObj.get_component<components::Transform>().set_position(glm::vec3(1.0f, 7.0f, 1.0f));
+    //
+    //        auto& mesh = cubeObj.add_component<components::Mesh>();
+    //        mesh.create_cube();
+    //
+    //        auto material = components::Material();
+    //        material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
+    //        material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
+    //        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+    //        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+    //        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+    //
+    //        cubeObj.add_component<components::Material>(material);
+    //    }
 }
 
 void Untie::run() {
