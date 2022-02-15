@@ -1,6 +1,7 @@
 #include "untie.h"
 
 #include <knoting/game_object.h>
+#include <knoting/instance_mesh.h>
 #include <knoting/log.h>
 #include <knoting/mesh.h>
 #include <knoting/scene.h>
@@ -45,9 +46,10 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5.0f, 0.0f, -10.0f));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(15, 1, 15));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 45, 0));
+        cubeObj.add_component<components::Mesh>("uv_cube.obj");
+         cubeObj.add_component<InstanceMesh>("uv_cube.obj");
 
-        auto& mesh = cubeObj.add_component<components::Mesh>();
-        mesh.load_mesh("uv_cube.obj");
+        //        mesh.load_mesh("uv_cube.obj");
 
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
@@ -58,24 +60,24 @@ Untie::Untie() {
 
         cubeObj.add_component<components::Material>(material);
     }
-    {
-        auto cubeObj = scene.create_game_object("stanford");
-        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(5));
-        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5, 2.0f, -10.0f));
-        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 210, 0));
 
-        auto& mesh = cubeObj.add_component<components::Mesh>();
-        mesh.load_mesh("dragon.obj");
-
-        auto material = components::Material();
-        material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
-        material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
-
-        cubeObj.add_component<components::Material>(material);
-    }
+    //        {
+    //            auto cubeObj = scene.create_game_object("stanford");
+    //            cubeObj.get_component<components::Transform>().set_scale(glm::vec3(5));
+    //            cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5, 2.0f, -10.0f));
+    //            cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 210, 0));
+    //
+    //            auto& mesh = cubeObj.add_component<components::Mesh>("dragon.obj");
+    //
+    //            auto material = components::Material();
+    //            material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
+    //            material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
+    //            material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+    //            material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+    //            material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+    //
+    //            cubeObj.add_component<components::Material>(material);
+    //        }
     //    {
     //        auto cubeObj = scene.create_game_object("ground");
     //        cubeObj.get_component<components::Transform>().set_position(glm::vec3(1.0f, 7.0f, 1.0f));

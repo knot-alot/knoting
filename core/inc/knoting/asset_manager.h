@@ -47,6 +47,7 @@ class AssetManager : public Subsystem {
                 std::shared_ptr<T> result = std::static_pointer_cast<T>(m_assets[tempAsset.get_fallback_name()]);
                 return result;
             } else {
+                log::info("Found asset: {}",path);
                 m_assets.insert({path, std::make_shared<T>(tempAsset)});
                 std::shared_ptr<T> result = std::static_pointer_cast<T>(m_assets[path]);
                 result.get()->on_awake();

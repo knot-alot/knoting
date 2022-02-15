@@ -12,13 +12,21 @@ Mesh::Mesh(const std::string& path) : Asset{AssetType::Mesh, path, "fallbackMesh
 Mesh::~Mesh() {}
 
 void Mesh::on_awake() {
-    //    create_cube();
-    // internal_load_obj("TheStanfordDragon_83k.obj");
+    if (m_assetState != AssetState::Finished) {
+        m_assetState = AssetState::Loading;
+        internal_load_obj(m_fullPath);
+        // generate_default_asset();
+    }
 }
 
 void Mesh::on_destroy() {
-    bgfx::destroy(m_vbh);
-    bgfx::destroy(m_ibh);
+    if (isValid(m_vbh)) {
+        bgfx::destroy(m_vbh);
+    }
+    if (isValid(m_ibh)) {
+        bgfx::destroy(m_ibh);
+    }
+    log::info("removed mesh : {}", m_fullPath);
 }
 
 void Mesh::load_mesh(const std::string& localTexturePath) {
@@ -82,7 +90,27 @@ void Mesh::create_cube() {
                                  VertexLayout::s_meshVertexLayout);
 }
 
-void Mesh::generate_default_asset() {}
+void Mesh::generate_default_asset() {
+    m_assetState = AssetState::Loading;
+    m_fullPath = "fallbackMesh";
+    create_cube();
+    if (!bgfx::isValid(m_vbh)) {
+        log::error("VBH : fallbackMesh failed to be created");
+        m_vbh = BGFX_INVALID_HANDLE;
+        m_assetState = AssetState::Failed;
+        return;
+    }
+
+    if (!bgfx::isValid(m_ibh)) {
+        log::error("IBH : fallbackMesh failed to be created");
+        m_ibh = BGFX_INVALID_HANDLE;
+        m_assetState = AssetState::Failed;
+        return;
+    }
+
+    m_assetState = AssetState::Finished;
+    log::info("Fallback created");
+}
 
 std::vector<std::string> split(std::string s, std::string t) {
     std::vector<std::string> res;
@@ -98,7 +126,16 @@ std::vector<std::string> split(std::string s, std::string t) {
     return res;
 }
 
-bool Mesh::internal_load_obj(const std::string& fileName) {
+bool Mesh::internal_load_obj(const std::string& path) {
+    std::string fileName = PATH_MODELS + path;
+    std::filesystem::path fs_path = fileName;
+
+    if (!exists(fs_path)) {
+        log::error(fileName + " - does not Exist");
+        m_assetState = AssetState::Failed;
+        return false;
+    }
+
     std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
     std::vector<glm::vec3> tempVertices;
     std::vector<glm::vec2> tempUVs;
@@ -108,6 +145,9 @@ bool Mesh::internal_load_obj(const std::string& fileName) {
         std::ifstream fin(fileName, std::ios::in);
         if (!fin) {
             log::error("cant open file {}", fileName);
+            m_vbh = BGFX_INVALID_HANDLE;
+            m_ibh = BGFX_INVALID_HANDLE;
+            m_assetState = AssetState::Failed;
             return false;
         }
 
@@ -212,7 +252,7 @@ bool Mesh::internal_load_obj(const std::string& fileName) {
         bgfx::createVertexBuffer(bgfx::makeRef(&m_vertexLayout[0], sizeof(m_vertexLayout[0]) * m_vertexLayout.size()),
                                  VertexLayout::s_meshVertexLayout);
     log::debug("init buffers {}", fileName);
-
+    m_assetState = AssetState::Finished;
     return true;
 }
 
