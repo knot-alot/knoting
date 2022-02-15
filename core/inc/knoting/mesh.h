@@ -36,8 +36,8 @@ class Mesh : public Asset {
     ~Mesh();
 
     //=For ECS========
-    void on_awake();
-    void on_destroy();
+    void on_awake() override;
+    void on_destroy() override;
     //=For Asset=======
     void generate_default_asset() override;
     //=================
@@ -65,12 +65,12 @@ class Mesh : public Asset {
 
 class IndexBuffer {
    public:
-    void set_index_buffer(const std::vector<int16_t>& in_indices) { m_indices = in_indices; }
+    void set_index_buffer(const std::vector<unsigned int>& in_indices) { m_indices = in_indices; }
     size_t get_memory_size() { return sizeof(m_indices[0]) * m_indices.size(); }
-    int16_t& get_index_start() { return m_indices[0]; }
+    unsigned int& get_index_start() { return m_indices[0]; }
 
    private:
-    std::vector<int16_t> m_indices;
+    std::vector<unsigned int> m_indices;
 };
 
 inline uint32_t encode_normal_rgba8(float _x, float _y = 0.0f, float _z = 0.0f, float _w = 0.0f) {

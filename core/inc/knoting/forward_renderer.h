@@ -39,6 +39,10 @@ class ForwardRenderer : public Subsystem {
 
     Engine& m_engine;
 
+    bgfx::UniformHandle u_lightPosRadius;
+    bgfx::UniformHandle u_lightRgbInnerR;
+    uint16_t m_numLights;
+
    private:
     static constexpr uint32_t m_clearColor = 0x303030ff;
     float m_timePassed = 0.01f;

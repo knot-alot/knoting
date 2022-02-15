@@ -18,8 +18,8 @@ class Texture : public Asset {
     ~Texture();
 
     //=For ECS========
-    void on_awake();
-    void on_destroy();
+    void on_awake() override;
+    void on_destroy() override;
     //=For Asset=======
     void generate_default_asset() override;
     //=================

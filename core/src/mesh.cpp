@@ -36,7 +36,7 @@ void Mesh::load_mesh(const std::string& localTexturePath) {
 }
 
 void Mesh::create_cube() {
-    std::vector<int16_t> tempIndex = {
+    std::vector<unsigned int> tempIndex = {
         0,  2,  1,  1,  2,  3,  4,  5,  6,  5,  7,  6,
 
         8,  10, 9,  9,  10, 11, 12, 13, 14, 13, 15, 14,
@@ -179,6 +179,7 @@ bool Mesh::internal_load_obj(const std::string& fileName) {
 
         log::info("finished Reading : {}", fileName);
 
+        mVertices.resize(vertexIndices.size());
         for (unsigned int i = 0; i < vertexIndices.size(); i++) {
             Vertex meshVertex;
             if (tempVertices.size() > 0) {
@@ -201,22 +202,12 @@ bool Mesh::internal_load_obj(const std::string& fileName) {
     }
 
     VertexLayout::init();
-    std::vector<int16_t> tempIndex;
-    int ind = 0;
     for (auto v : mVertices) {
-        log::info("U : {} , V : {}", (int16_t)v.texCoords.x, (int16_t)v.texCoords.y);
-        tempIndex.emplace_back(ind);
         m_vertexLayout.emplace_back(VertexLayout{v.position.x, v.position.y, v.position.z,
                                                  encode_normal_rgba8(v.normal.x, v.normal.y, v.normal.z), 0,
                                                  v.texCoords.x, v.texCoords.y});
-        ind++;
     }
-
-    m_indexBuffer = std::make_shared<IndexBuffer>();
-    m_indexBuffer->set_index_buffer(tempIndex);
-
-    m_ibh = bgfx::createIndexBuffer(bgfx::makeRef(&m_indexBuffer->get_index_start(), m_indexBuffer->get_memory_size()));
-
+    m_ibh = BGFX_INVALID_HANDLE;
     m_vbh =
         bgfx::createVertexBuffer(bgfx::makeRef(&m_vertexLayout[0], sizeof(m_vertexLayout[0]) * m_vertexLayout.size()),
                                  VertexLayout::s_meshVertexLayout);
