@@ -6,10 +6,12 @@ namespace knot {
 Engine::Engine() {
     m_windowModule = std::make_shared<knot::Window>(m_windowWidth, m_windowHeight, m_windowTitle, *this);
     m_forwardRenderModule = std::make_shared<knot::ForwardRenderer>(*this);
+    m_physicsModule = std::make_shared<knot::Physics>(*this);
 
     // order dependent
     m_engineModules.emplace_back(m_windowModule);
     m_engineModules.emplace_back(m_forwardRenderModule);
+    m_engineModules.emplace_back(m_physicsModule);
 
     for (auto& module : m_engineModules) {
         module->on_awake();
@@ -39,6 +41,8 @@ void Engine::update_modules() {
     // 5) SYSTEM : Skybox Render
     // 6) SYSTEM : Sorted Transparent Render Pass
     // 7) SYSTEM : Post Processing Stack
+
+    m_physicsModule->update_to_transform();
 
     //    m_forwardRenderModule->on_render();
     m_forwardRenderModule->render_pbr();

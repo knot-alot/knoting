@@ -25,7 +25,7 @@ Untie::Untie() {
     }
 
     {
-        auto cubeObj = scene.create_game_object("cube_0");
+        auto cubeObj = scene.create_game_object("ground");
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(0, -10, 0));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(15.0f, 1.0f, 15.0f));
         auto& mesh = cubeObj.add_component<components::Mesh>();
@@ -40,11 +40,17 @@ Untie::Untie() {
         auto material = cubeObj.add_component<components::Material>();
     }
     {
-        auto cubeObj = scene.create_game_object("ground");
+        auto cubeObj = scene.create_game_object("cube_0");
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(1.0f, 7.0f, 1.0f));
         auto& mesh = cubeObj.add_component<components::Mesh>();
         mesh.create_cube();
         auto material = cubeObj.add_component<components::Material>();
+        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+        rigidbody.set_physics_and_scene(m_engine->get_physics_moddule()->get_active_Scene(),
+                                        m_engine->get_physics_moddule()->get_physics());
+        rigidbody.set_transform(cubeObj.get_component<components::Transform>().get_position(),
+                                cubeObj.get_component<components::Transform>().get_rotation());
+        rigidbody.create_cube_rigid_dynamic(vec3(2.0f, 2.0f, 2.0f), 10.0f);
     }
 }
 
@@ -52,6 +58,7 @@ void Untie::run() {
     log::debug("RUN");
     while (m_engine->is_open()) {
         m_engine->update_modules();
+
     }
 }
 

@@ -6,3 +6,4 @@
 #include <knoting/mesh.h>
 #include <knoting/texture.h>
 #include <knoting/transform.h>
+#include <knoting/rigidbody.h>
