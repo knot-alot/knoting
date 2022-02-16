@@ -26,8 +26,6 @@ enum class UniformHandle {
     LAST
 };
 
-
-
 enum class TextureHandle {
     Albedo,
     Normal,
@@ -45,8 +43,6 @@ enum class UniformSamplerHandle {
     Occlusion,
     LAST
 };
-
-// clang-format on
 
 class Material {
    public:
@@ -80,7 +76,6 @@ class Material {
     ShaderProgram m_shader;
 
    private:
-    // TODO consider mapping uniforms to string
     glm::vec4 m_albedoColor = glm::vec4(255.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f);
     glm::vec2 m_textureTiling = glm::vec2(1);
 
@@ -96,7 +91,6 @@ class Material {
 
     bool m_alphaCutoffEnabled = false;
     float m_alphaCutoffAmount = 0.0f;
-    // end TODO
 };
 
 }  // namespace components

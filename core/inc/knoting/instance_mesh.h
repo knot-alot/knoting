@@ -13,13 +13,14 @@ class InstanceMesh {
     InstanceMesh();
     InstanceMesh(const std::string& path);
 
-    bgfx::VertexBufferHandle get_vertex_buffer() { return m_mesh->get_vertex_buffer(); }
-    bgfx::IndexBufferHandle get_index_buffer() { return m_mesh->get_index_buffer(); }
-
     //=For ECS========
     void on_awake();
     void on_destroy();
     //================
+
+    bgfx::VertexBufferHandle get_vertex_buffer() { return m_mesh->get_vertex_buffer(); }
+    bgfx::IndexBufferHandle get_index_buffer() { return m_mesh->get_index_buffer(); }
+
    private:
     std::shared_ptr<components::Mesh> m_mesh;
     std::string m_path;

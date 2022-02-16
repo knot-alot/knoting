@@ -21,7 +21,7 @@ ForwardRenderer::ForwardRenderer(Engine& engine) : m_engine(engine) {
     u_lightRgbInnerR = bgfx::createUniform("u_lightRgbInnerR", bgfx::UniformType::Vec4, m_numLights);
 }
 
-void ForwardRenderer::render_pbr() {
+void ForwardRenderer::on_render() {
     using namespace components;
     clear_framebuffer();
     bgfx::touch(0);
@@ -125,8 +125,6 @@ void ForwardRenderer::render_pbr() {
     bgfx::frame();
 }
 
-void ForwardRenderer::on_render() {}
-
 void ForwardRenderer::on_post_render() {}
 
 void ForwardRenderer::on_awake() {}
@@ -137,7 +135,10 @@ void ForwardRenderer::on_update(double m_delta_time) {
 
 void ForwardRenderer::on_late_update() {}
 
-void ForwardRenderer::on_destroy() {}
+void ForwardRenderer::on_destroy() {
+    bgfx::destroy(u_lightPosRadius);
+    bgfx::destroy(u_lightRgbInnerR);
+}
 
 void ForwardRenderer::recreate_framebuffer(uint16_t width, uint16_t height, uint16_t id) {
     bgfx::reset((uint32_t)width, (uint32_t)height, BGFX_RESET_VSYNC);
