@@ -15,14 +15,6 @@ namespace knot {
 namespace components {
 class IndexBuffer;
 class VertexLayout;
-class Vertex {
-   public:
-    glm::vec3 position;
-    glm::vec3 normal;
-    glm::vec2 texCoords;
-    glm::vec4 tangents;
-};
-
 }  // namespace components
 }  // namespace knot
 
@@ -51,8 +43,6 @@ class Mesh : public Asset {
     bool internal_load_obj(const std::string& path);
 
    private:
-    std::vector<Vertex> mVertices;
-
     std::vector<VertexLayout> m_vertexLayout;
     std::shared_ptr<IndexBuffer> m_indexBuffer;
 

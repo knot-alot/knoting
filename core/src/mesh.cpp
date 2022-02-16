@@ -3,6 +3,8 @@
 #include <filesystem>
 #include <fstream>
 
+using namespace std::chrono;
+
 namespace knot {
 namespace components {
 
@@ -97,18 +99,19 @@ void Mesh::generate_default_asset() {
     log::info("Fallback created");
 }
 
+std::vector<std::string> m_splitResult;
 std::vector<std::string> split(std::string s, std::string t) {
-    std::vector<std::string> res;
+    m_splitResult.clear();
     while (1) {
         int pos = s.find(t);
         if (pos == -1) {
-            res.push_back(s);
+            m_splitResult.push_back(s);
             break;
         }
-        res.push_back(s.substr(0, pos));
+        m_splitResult.push_back(s.substr(0, pos));
         s = s.substr(pos + 1, s.size() - pos - 1);
     }
-    return res;
+    return m_splitResult;
 }
 
 bool Mesh::internal_load_obj(const std::string& path) {
@@ -120,11 +123,7 @@ bool Mesh::internal_load_obj(const std::string& path) {
         m_assetState = AssetState::Failed;
         return false;
     }
-
-    std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
-    std::vector<glm::vec3> tempVertices;
-    std::vector<glm::vec2> tempUVs;
-    std::vector<glm::vec3> tempNormals;
+    auto start = high_resolution_clock::now();
 
     if (fileName.find(".obj") != std::string::npos) {
         std::ifstream fin(fileName, std::ios::in);
@@ -136,108 +135,105 @@ bool Mesh::internal_load_obj(const std::string& path) {
             return false;
         }
 
+        std::vector<uint32_t> vertexIndices, uvIndices, normalIndices;
+        glm::vec3 tempVertex;
+        glm::vec2 tempUV;
+        glm::vec3 tempNormal;
+        std::vector<glm::vec3> tempVertices;
+        std::vector<glm::vec2> tempUVs;
+        std::vector<glm::vec3> tempNormals;
+        int vertexIndex, uvIndex, normalIndex;  // v/vt/vn
+        int splitIndex;
+
         log::info("loading file {}", fileName);
+        std::string faceData;
+
+        std::vector<std::string> split_data;
 
         std::string lineBuffer;
+        std::string cmd;
+
         while (std::getline(fin, lineBuffer)) {
             std::stringstream ss(lineBuffer);
-            std::string cmd;
             ss >> cmd;
-
+            splitIndex = 0;
             if (cmd == "v") {
-                glm::vec3 vertex;
-                int dim = 0;
-                while (dim < 3 && ss >> vertex[dim]) {
-                    dim++;
+                while (splitIndex < 3 && ss >> tempVertex[splitIndex]) {
+                    splitIndex++;
                 }
-                tempVertices.push_back(vertex);
+                tempVertices.emplace_back(tempVertex);
 
             } else if (cmd == "vt") {
-                glm::vec2 uv;
-                int dim = 0;
-                while (dim < 2 && ss >> uv[dim]) {
-                    dim++;
+                while (splitIndex < 2 && ss >> tempUV[splitIndex]) {
+                    splitIndex++;
                 }
-                tempUVs.push_back(uv);
+                tempUVs.emplace_back(tempUV);
 
             } else if (cmd == "vn") {
-                glm::vec3 normal;
-                int dim = 0;
-                while (dim < 3 && ss >> normal[dim]) {
-                    dim++;
+                while (splitIndex < 3 && ss >> tempNormal[splitIndex]) {
+                    splitIndex++;
                 }
 
-                normal = glm::normalize(normal);
-                tempNormals.push_back(normal);
+                tempNormal = glm::normalize(tempNormal);
+                tempNormals.emplace_back(tempNormal);
 
             } else if (cmd == "f") {
-                std::string faceData;
-                int vertexIndex, uvIndex, normalIndex;  // v/vt/vn
-
                 while (ss >> faceData) {
-                    std::vector<std::string> data = split(faceData, "/");
-                    // vertex index
-                    if (data[0].size() > 0) {
-                        sscanf(data[0].c_str(), "%d", &vertexIndex);
-                        vertexIndices.push_back(vertexIndex);
-                    }
-                    // if the face vertex has a texture coord index
-                    if (data.size() >= 1) {
-                        if (data[1].size() > 0) {
-                            sscanf(data[1].c_str(), "%d", &uvIndex);
-                            uvIndices.push_back(uvIndex);
-                        }
-                    }
-                    // does the face vertex have a normal index
-                    if (data.size() >= 2) {
-                        if (data[2].size() > 0) {
-                            sscanf(data[2].c_str(), "%d", &normalIndex);
-                            normalIndices.push_back(normalIndex);
-                        }
-                    }
+                    split_data = split(faceData, "/");
+                    sscanf(split_data[0].c_str(), "%d", &vertexIndex);
+                    vertexIndices.emplace_back(vertexIndex);
+
+                    sscanf(split_data[1].c_str(), "%d", &uvIndex);
+                    uvIndices.emplace_back(uvIndex);
+
+                    sscanf(split_data[2].c_str(), "%d", &normalIndex);
+                    normalIndices.emplace_back(normalIndex);
                 }
             }
         }
 
-        // close file
         fin.close();
 
-        log::info("finished Reading : {}", fileName);
+        // clang-format off
+        VertexLayout::init();
 
-        mVertices.resize(vertexIndices.size());
         for (unsigned int i = 0; i < vertexIndices.size(); i++) {
-            Vertex meshVertex;
-            if (tempVertices.size() > 0) {
-                glm::vec3 vertex = tempVertices[vertexIndices[i] - 1];
-                meshVertex.position = vertex;
-            }
 
-            if (tempNormals.size() > 0) {
-                glm::vec3 normal = tempNormals[normalIndices[i] - 1];
-                meshVertex.normal = normal;
-            }
+            tempVertex = tempVertices[vertexIndices[i] - 1];
+            tempNormal = tempNormals[normalIndices[i] - 1];
+            tempUV = tempUVs[uvIndices[i] - 1];
 
-            if (tempUVs.size() > 0) {
-                glm::vec2 uv = tempUVs[uvIndices[i] - 1];
-                meshVertex.texCoords = uv;
-            }
-
-            mVertices.push_back(meshVertex);
+            m_vertexLayout.emplace_back(
+                VertexLayout{
+                tempVertex.x,
+                tempVertex.y,
+                tempVertex.z,
+                encode_normal_rgba8(tempNormal.x, tempNormal.y, tempNormal.z),
+                0,
+                tempUV.x,
+                tempUV.y
+                }
+            );
         }
     }
 
-    VertexLayout::init();
-    for (auto v : mVertices) {
-        m_vertexLayout.emplace_back(VertexLayout{v.position.x, v.position.y, v.position.z,
-                                                 encode_normal_rgba8(v.normal.x, v.normal.y, v.normal.z), 0,
-                                                 v.texCoords.x, v.texCoords.y});
-    }
     m_ibh = BGFX_INVALID_HANDLE;
-    m_vbh =
-        bgfx::createVertexBuffer(bgfx::makeRef(&m_vertexLayout[0], sizeof(m_vertexLayout[0]) * m_vertexLayout.size()),
-                                 VertexLayout::s_meshVertexLayout);
+    m_vbh = bgfx::createVertexBuffer(
+    bgfx::makeRef(
+        &m_vertexLayout[0],
+        sizeof(m_vertexLayout[0]) * m_vertexLayout.size()),
+        VertexLayout::s_meshVertexLayout
+        );
+
     log::debug("init buffers {}", fileName);
+
+    // clang-format on
+
     m_assetState = AssetState::Finished;
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(stop - start);
+    log::debug("Time taken to load : {} - {} ms ", path, duration.count());
+
     return true;
 }
 
