@@ -6,6 +6,7 @@
 #include <knoting/mesh.h>
 #include <knoting/scene.h>
 #include <knoting/texture.h>
+#include <knoting/spot_light.h>
 
 #include <knoting/components.h>
 #include <knoting/scene.h>
@@ -23,6 +24,38 @@ Untie::Untie() {
         auto editorCamera = scene.create_game_object("camera");
         auto& cam = editorCamera.add_component<components::EditorCamera>();
         editorCamera.get_component<components::Transform>().set_position(glm::vec3(-10.0f, 15.0f, -30.0f));
+    }
+    {
+        auto light = scene.create_game_object("light_0");
+        auto& spotLight = light.add_component<components::SpotLight>();
+        spotLight.set_color(vec3(1.0f, 0.7f, 0.2f));
+        spotLight.set_outer_radius(17.0f);
+        spotLight.set_inner_radius(0.5f);
+        light.get_component<components::Transform>().set_position(glm::vec3(2.3897731, 14.570069, -10));
+    }
+    {
+        auto light = scene.create_game_object("light_1");
+        auto& spotLight = light.add_component<components::SpotLight>();
+        spotLight.set_color(vec3(0.7f, 0.2f, 1.0f));
+        spotLight.set_outer_radius(17.0f);
+        spotLight.set_inner_radius(0.5f);
+        light.get_component<components::Transform>().set_position(glm::vec3(10.351221, -13.538474, -10));
+    }
+    {
+        auto light = scene.create_game_object("light_2");
+        auto& spotLight = light.add_component<components::SpotLight>();
+        spotLight.set_color(vec3(0.2f, 1.0f, 0.7f));
+        spotLight.set_outer_radius(17.0f);
+        spotLight.set_inner_radius(0.5f);
+        light.get_component<components::Transform>().set_position(glm::vec3(-14.905335, 6.3970194, -10));
+    }
+    {
+        auto light = scene.create_game_object("light_3");
+        auto& spotLight = light.add_component<components::SpotLight>();
+        spotLight.set_color(vec3(1.0f, 0.4f, 0.2f));
+        spotLight.set_outer_radius(17.0f);
+        spotLight.set_inner_radius(0.5f);
+        light.get_component<components::Transform>().set_position(glm::vec3(7.6706734, 3.631392, -10));
     }
     {
         auto cubeObj = scene.create_game_object("loaded_cube");

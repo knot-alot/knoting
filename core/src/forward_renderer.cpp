@@ -74,6 +74,10 @@ void ForwardRenderer::on_render() {
         lightPosRadius[ii][2] = -10.0f;
         lightPosRadius[ii][3] = 17.0f;
     }
+    log::info("light [{}], {}, {}, {}",0,lightPosRadius[0][0],lightPosRadius[0][1],lightPosRadius[0][2]);
+    log::info("light [{}], {}, {}, {}",1,lightPosRadius[1][0],lightPosRadius[1][1],lightPosRadius[1][2]);
+    log::info("light [{}], {}, {}, {}",3,lightPosRadius[3][0],lightPosRadius[3][1],lightPosRadius[3][2]);
+    log::info("light [{}], {}, {}, {}",2,lightPosRadius[2][0],lightPosRadius[2][1],lightPosRadius[2][2]);
 
     float lightRgbInnerR[4][4] = {
         {1.0f, 0.7f, 0.2f, 0.5f},
