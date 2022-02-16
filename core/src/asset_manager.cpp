@@ -35,11 +35,12 @@ void AssetManager::load_assets_manual() {
     m_assets.insert({fb_msh, std::make_shared<components::Mesh>()});
     std::static_pointer_cast<components::Texture>(m_assets[fb_msh])->generate_default_asset();
 
-    // FALLBACK SHADER
     // FROM FILE
     AssetManager::load_asset<components::Texture>("UV_Grid_test.png");
     AssetManager::load_asset<components::Texture>("normal_tiles_1k.png");
+
     AssetManager::load_asset<components::Mesh>("uv_cube.obj");
+    AssetManager::load_asset<components::Mesh>("dragon.obj");
 
     for (auto as : m_assets) {
         log::debug("asset loaded manual : {}", as.first);

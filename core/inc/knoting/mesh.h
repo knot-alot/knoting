@@ -42,28 +42,13 @@ class Mesh : public Asset {
     void generate_default_asset() override;
     //=================
 
-    void load_mesh(const std::string& localTexturePath);
     void create_cube();
 
-    bgfx::VertexBufferHandle* get_vertex_buffer() {
-        p_vbh = &m_vbh;
-        return p_vbh;
-    }
-    bgfx::IndexBufferHandle* get_index_buffer() {
-        p_ibh = &m_ibh;
-        return p_ibh;
-    }
-
-    void set_vertex_buffer(bgfx::VertexBufferHandle vbh) {
-        m_vbh = vbh;
-    };
-    void set_index_buffer(bgfx::IndexBufferHandle ibh) {
-        m_ibh = ibh;
-    };
+    bgfx::VertexBufferHandle get_vertex_buffer() { return m_vbh; }
+    bgfx::IndexBufferHandle get_index_buffer() { return m_ibh; }
 
    private:
     bool internal_load_obj(const std::string& path);
-    bool internal_tiny_obj(const std::string& path);
 
    private:
     std::vector<Vertex> mVertices;
@@ -74,9 +59,6 @@ class Mesh : public Asset {
    private:
     bgfx::VertexBufferHandle m_vbh;
     bgfx::IndexBufferHandle m_ibh;
-
-    bgfx::VertexBufferHandle* p_vbh;
-    bgfx::IndexBufferHandle* p_ibh;
 };
 
 class IndexBuffer {

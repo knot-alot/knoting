@@ -40,21 +40,52 @@ class AssetManager : public Subsystem {
         auto iterator = m_assets.find(path);
         if (iterator == m_assets.end()) {
             log::debug("Asset : " + path + " is being loaded");
-            T tempAsset = T(path);
-            tempAsset.on_awake();
-            if (tempAsset.get_asset_state() == AssetState::Failed) {
-                log::warn("ASSET MANAGER FAILED TO LOAD");
-                std::shared_ptr<T> result = std::static_pointer_cast<T>(m_assets[tempAsset.get_fallback_name()]);
+            std::shared_ptr<T> tempAsset = std::make_shared<T>(path);
+            tempAsset.get()->on_awake();
+            if (tempAsset.get()->get_asset_state() == AssetState::Failed) {
+                log::warn("Asset manager failed to load {} loading fallback");
+                std::shared_ptr<T> result = std::static_pointer_cast<T>(m_assets[tempAsset.get()->get_fallback_name()]);
                 return result;
             } else {
-                log::info("Found asset: {}",path);
-                m_assets.insert({path, std::make_shared<T>(tempAsset)});
+                log::info("adding asset: {}", path);
+                m_assets.insert({path, tempAsset});
                 std::shared_ptr<T> result = std::static_pointer_cast<T>(m_assets[path]);
                 result.get()->on_awake();
                 return result;
             }
         }
-        return std::static_pointer_cast<T>(m_assets[path]);
+
+        auto r = std::static_pointer_cast<T>(m_assets[path]);
+        r->on_awake();
+        return r;
+    }
+
+    inline std::weak_ptr<components::Mesh> internal_load_asset(const std::string& path) {
+        if (!std::is_base_of<Asset, components::Mesh>::value) {
+            log::error("ASSET : " + path + " IS NOT OF BASE CLASS ASSET");
+        }
+        auto iterator = m_assets.find(path);
+        if (iterator == m_assets.end()) {
+            log::debug("Asset : " + path + " is being loaded");
+            components::Mesh tempAsset = components::Mesh(path);
+            tempAsset.on_awake();
+            if (tempAsset.get_asset_state() == AssetState::Failed) {
+                log::warn("ASSET MANAGER FAILED TO LOAD");
+                std::shared_ptr<components::Mesh> result =
+                    std::static_pointer_cast<components::Mesh>(m_assets[tempAsset.get_fallback_name()]);
+                return result;
+            } else {
+                log::info("adding asset: {}", path);
+                m_assets.insert({path, std::make_shared<components::Mesh>(tempAsset)});
+                std::shared_ptr<components::Mesh> result = std::static_pointer_cast<components::Mesh>(m_assets[path]);
+                result.get()->on_awake();
+                return result;
+            }
+        }
+        log::info("asset [ {} ] was found", path);
+        auto r = std::static_pointer_cast<components::Mesh>(m_assets[path]);
+        r->on_awake();
+        return r;
     }
 
    public:

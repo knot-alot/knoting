@@ -15,7 +15,6 @@ void Mesh::on_awake() {
     if (m_assetState != AssetState::Finished) {
         m_assetState = AssetState::Loading;
         internal_load_obj(m_fullPath);
-        // generate_default_asset();
     }
 }
 
@@ -27,20 +26,6 @@ void Mesh::on_destroy() {
         bgfx::destroy(m_ibh);
     }
     log::info("removed mesh : {}", m_fullPath);
-}
-
-void Mesh::load_mesh(const std::string& localTexturePath) {
-    std::string fullPath = PATH_MODELS + localTexturePath;
-    std::filesystem::path fs_path = std::filesystem::path(fullPath);
-    bgfx::TextureHandle handle = BGFX_INVALID_HANDLE;
-
-    if (std::filesystem::exists(fs_path)) {
-        log::debug("file loaded at : " + fullPath);
-        internal_load_obj(fullPath);
-
-    } else {
-        log::error("file : " + fullPath + " does not exist");
-    }
 }
 
 void Mesh::create_cube() {
@@ -193,20 +178,20 @@ bool Mesh::internal_load_obj(const std::string& path) {
                     std::vector<std::string> data = split(faceData, "/");
                     // vertex index
                     if (data[0].size() > 0) {
-                        sscanf_s(data[0].c_str(), "%d", &vertexIndex);
+                        sscanf(data[0].c_str(), "%d", &vertexIndex);
                         vertexIndices.push_back(vertexIndex);
                     }
                     // if the face vertex has a texture coord index
                     if (data.size() >= 1) {
                         if (data[1].size() > 0) {
-                            sscanf_s(data[1].c_str(), "%d", &uvIndex);
+                            sscanf(data[1].c_str(), "%d", &uvIndex);
                             uvIndices.push_back(uvIndex);
                         }
                     }
                     // does the face vertex have a normal index
                     if (data.size() >= 2) {
                         if (data[2].size() > 0) {
-                            sscanf_s(data[2].c_str(), "%d", &normalIndex);
+                            sscanf(data[2].c_str(), "%d", &normalIndex);
                             normalIndices.push_back(normalIndex);
                         }
                     }

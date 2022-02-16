@@ -39,12 +39,16 @@ using vec4d = vec<4, f64>;
         x = f.x;                  \
         y = f.y;                  \
     }                             \
-    operator knot::vec2() const { return knot::vec2(x, y); }
-#define IM_VEC4_CLASS_EXTRA       \
-    ImVec4(const knot::vec4& f) { \
-        x = f.x;                  \
-        y = f.y;                  \
-        z = f.z;                  \
-        w = f.w;                  \
-    }                             \
-    operator knot::vec4() const { return knot::vec4(x, y, z, w); }
+    operator knot::vec2() const { \
+        return knot::vec2(x, y);  \
+    }
+#define IM_VEC4_CLASS_EXTRA            \
+    ImVec4(const knot::vec4& f) {      \
+        x = f.x;                       \
+        y = f.y;                       \
+        z = f.z;                       \
+        w = f.w;                       \
+    }                                  \
+    operator knot::vec4() const {      \
+        return knot::vec4(x, y, z, w); \
+    }

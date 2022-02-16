@@ -85,19 +85,7 @@ void ForwardRenderer::render_pbr() {
 
     //=PBR PIPELINE===========================
 
-    //        auto entities = registry.view<Transform, InstanceMesh, Material, Name>();
-    //        for (auto& e : entities) {
-    //            auto goOpt = scene.get_game_object_from_handle(e);
-    //            if (!goOpt) {
-    //                continue;
-    //            }
-    //
-    //            GameObject go = goOpt.value();
-    //            Transform& transform = go.get_component<Transform>();
-    //            InstanceMesh& mesh = go.get_component<InstanceMesh>();
-    //            Material& material = go.get_component<Material>();
-    //            Name& name = go.get_component<Name>();
-    auto entities = registry.view<Transform, Mesh, Material, Name>();
+    auto entities = registry.view<Transform, InstanceMesh, Material, Name>();
     for (auto& e : entities) {
         auto goOpt = scene.get_game_object_from_handle(e);
         if (!goOpt) {
@@ -106,7 +94,7 @@ void ForwardRenderer::render_pbr() {
 
         GameObject go = goOpt.value();
         Transform& transform = go.get_component<Transform>();
-        Mesh& mesh = go.get_component<Mesh>();
+        InstanceMesh& mesh = go.get_component<InstanceMesh>();
         Material& material = go.get_component<Material>();
         Name& name = go.get_component<Name>();
 
@@ -118,21 +106,18 @@ void ForwardRenderer::render_pbr() {
         bgfx::setTransform(value_ptr(transform.get_model_matrix()));
 
         // Set vertex and index buffer.
+        bgfx::setVertexBuffer(0, mesh.get_vertex_buffer());
 
-
-        bgfx::setVertexBuffer(0, *mesh.get_vertex_buffer());
-
-        //        log::info("CHECK VALID {} {}", isValid(*mesh.get_vertex_buffer()),isValid(*mesh.get_index_buffer()));
-
-        if (isValid(*mesh.get_index_buffer())) {
-            bgfx::setIndexBuffer(*mesh.get_index_buffer());
+        if (isValid(mesh.get_index_buffer())) {
+            bgfx::setIndexBuffer(mesh.get_index_buffer());
         }
 
         // Bind Uniforms & textures.
         material.set_uniforms();
 
         // TODO enable MSAA in bgfx
-        bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
+        bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+                       BGFX_STATE_DEPTH_TEST_LESS);
 
         bgfx::submit(0, material.get_program());
     }
