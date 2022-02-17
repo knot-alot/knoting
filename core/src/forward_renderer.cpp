@@ -2,6 +2,7 @@
 #include <knoting/forward_renderer.h>
 #include <knoting/instance_mesh.h>
 #include <knoting/mesh.h>
+#include <knoting/spot_light.h>
 #include <knoting/texture.h>
 
 #include <knoting/components.h>
@@ -10,16 +11,13 @@
 #include <stb_image.h>
 #include <fstream>
 #include <string_view>
+#include <vector>
 
 namespace knot {
 
 ForwardRenderer::~ForwardRenderer() {}
 
-ForwardRenderer::ForwardRenderer(Engine& engine) : m_engine(engine) {
-    m_numLights = 4;
-    u_lightPosRadius = bgfx::createUniform("u_lightPosRadius", bgfx::UniformType::Vec4, m_numLights);
-    u_lightRgbInnerR = bgfx::createUniform("u_lightRgbInnerR", bgfx::UniformType::Vec4, m_numLights);
-}
+ForwardRenderer::ForwardRenderer(Engine& engine) : m_engine(engine) {}
 
 void ForwardRenderer::on_render() {
     using namespace components;
@@ -66,26 +64,25 @@ void ForwardRenderer::on_render() {
         }
     }
 
-    // TODO Replace With lights system
-    float lightPosRadius[4][4];
-    for (uint32_t ii = 0; ii < m_numLights; ++ii) {
-        lightPosRadius[ii][0] = glm::sin((0.4 * (0.4f + ii * 0.17f) + ii * glm::half_pi<float>() * 1.37f)) * 15.0f;
-        lightPosRadius[ii][1] = glm::cos((0.4f * (0.6f + ii * 0.29f) + ii * glm::half_pi<float>() * 1.49f)) * 15.0f;
-        lightPosRadius[ii][2] = -10.0f;
-        lightPosRadius[ii][3] = 17.0f;
-    }
-    log::info("light [{}], {}, {}, {}",0,lightPosRadius[0][0],lightPosRadius[0][1],lightPosRadius[0][2]);
-    log::info("light [{}], {}, {}, {}",1,lightPosRadius[1][0],lightPosRadius[1][1],lightPosRadius[1][2]);
-    log::info("light [{}], {}, {}, {}",3,lightPosRadius[3][0],lightPosRadius[3][1],lightPosRadius[3][2]);
-    log::info("light [{}], {}, {}, {}",2,lightPosRadius[2][0],lightPosRadius[2][1],lightPosRadius[2][2]);
+    //=SPOT LIGHTS======================
+    // TODO consider writing a system to skip this system if light data has not changed between frames
+    // TODO consider writing 2 systems 1 for static lights where this data is set 'on_awake'
+    auto lights = registry.view<Transform, SpotLight>();
+    m_lightData.set_spotlight_count(lights.size_hint());
+    m_lightData.clear_spotlight();
+    for (auto& e : lights) {
+        auto goOpt = scene.get_game_object_from_handle(e);
+        if (!goOpt) {
+            continue;
+        }
+        GameObject go = goOpt.value();
+        Transform& transform = go.get_component<Transform>();
+        SpotLight& spotLight = go.get_component<SpotLight>();
 
-    float lightRgbInnerR[4][4] = {
-        {1.0f, 0.7f, 0.2f, 0.5f},
-        {0.7f, 0.2f, 1.0f, 0.5f},
-        {0.2f, 1.0f, 0.7f, 0.5f},
-        {1.0f, 0.4f, 0.2f, 0.5f},
-    };
-    // TODO end
+        // Packed uniform data
+        m_lightData.push_spotlight_pos_outer_rad(vec4(transform.get_position(), spotLight.get_outer_radius()));
+        m_lightData.push_spotlight_color_inner_rad(vec4(spotLight.get_color(), spotLight.get_inner_radius()));
+    }
 
     //=PBR PIPELINE===========================
 
@@ -102,11 +99,6 @@ void ForwardRenderer::on_render() {
         Material& material = go.get_component<Material>();
         Name& name = go.get_component<Name>();
 
-        // TODO get from lights Class
-        bgfx::setUniform(u_lightPosRadius, lightPosRadius, m_numLights);
-        bgfx::setUniform(u_lightRgbInnerR, lightRgbInnerR, m_numLights);
-        // TODO end
-
         bgfx::setTransform(value_ptr(transform.get_model_matrix()));
 
         // Set vertex and index buffer.
@@ -116,6 +108,8 @@ void ForwardRenderer::on_render() {
             bgfx::setIndexBuffer(mesh.get_index_buffer());
         }
 
+        // Bind spotlight uniforms
+        m_lightData.set_spotlight_uniforms();
         // Bind Uniforms & textures.
         material.set_uniforms();
 
@@ -139,10 +133,7 @@ void ForwardRenderer::on_update(double m_delta_time) {
 
 void ForwardRenderer::on_late_update() {}
 
-void ForwardRenderer::on_destroy() {
-    bgfx::destroy(u_lightPosRadius);
-    bgfx::destroy(u_lightRgbInnerR);
-}
+void ForwardRenderer::on_destroy() {}
 
 void ForwardRenderer::recreate_framebuffer(uint16_t width, uint16_t height, uint16_t id) {
     bgfx::reset((uint32_t)width, (uint32_t)height, BGFX_RESET_VSYNC);

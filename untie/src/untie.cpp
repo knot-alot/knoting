@@ -1,15 +1,10 @@
 #include "untie.h"
-
+#include <knoting/components.h>
 #include <knoting/game_object.h>
 #include <knoting/instance_mesh.h>
 #include <knoting/log.h>
-#include <knoting/mesh.h>
 #include <knoting/scene.h>
-#include <knoting/texture.h>
 #include <knoting/spot_light.h>
-
-#include <knoting/components.h>
-#include <knoting/scene.h>
 
 #include <iostream>
 

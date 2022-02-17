@@ -1,13 +1,13 @@
 #pragma once
 
-#include <knoting/log.h>
-#include <knoting/subsystem.h>
-#include <knoting/types.h>
-
 #include <bgfx/bgfx.h>
+#include <knoting/light_data.h>
+#include <knoting/log.h>
 #include <knoting/mesh.h>
 #include <knoting/shader_program.h>
+#include <knoting/subsystem.h>
 #include <knoting/texture.h>
+#include <knoting/types.h>
 
 namespace knot {
 
@@ -37,10 +37,7 @@ class ForwardRenderer : public Subsystem {
     int get_window_height();
 
     Engine& m_engine;
-
-    bgfx::UniformHandle u_lightPosRadius;
-    bgfx::UniformHandle u_lightRgbInnerR;
-    uint16_t m_numLights;
+    LightData m_lightData;
 
    private:
     static constexpr uint32_t m_clearColor = 0x303030ff;
