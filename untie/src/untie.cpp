@@ -31,6 +31,12 @@ Untie::Untie() {
         auto& mesh = cubeObj.add_component<components::Mesh>();
         mesh.create_cube();
         auto material = cubeObj.add_component<components::Material>();
+        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+        rigidbody.set_physics_and_scene(m_engine->get_physics_moddule()->get_active_Scene(),
+                                        m_engine->get_physics_moddule()->get_physics());
+        rigidbody.set_transform(cubeObj.get_component<components::Transform>().get_position(),
+                                cubeObj.get_component<components::Transform>().get_rotation());
+        rigidbody.create_cube_rigid_static(vec3(15.0, 2.0f, 15.0));
     }
     {
         auto cubeObj = scene.create_game_object("cube_1");
@@ -38,6 +44,12 @@ Untie::Untie() {
         auto& mesh = cubeObj.add_component<components::Mesh>();
         mesh.create_cube();
         auto material = cubeObj.add_component<components::Material>();
+        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+        rigidbody.set_physics_and_scene(m_engine->get_physics_moddule()->get_active_Scene(),
+                                        m_engine->get_physics_moddule()->get_physics());
+        rigidbody.set_transform(cubeObj.get_component<components::Transform>().get_position(),
+                                cubeObj.get_component<components::Transform>().get_rotation());
+        rigidbody.create_cube_rigid_dynamic(vec3(1.0f, 1.0f, 1.0f), 5.0f);
     }
     {
         auto cubeObj = scene.create_game_object("cube_0");
@@ -50,7 +62,7 @@ Untie::Untie() {
                                         m_engine->get_physics_moddule()->get_physics());
         rigidbody.set_transform(cubeObj.get_component<components::Transform>().get_position(),
                                 cubeObj.get_component<components::Transform>().get_rotation());
-        rigidbody.create_cube_rigid_dynamic(vec3(2.0f, 2.0f, 2.0f), 10.0f);
+        rigidbody.create_cube_rigid_dynamic(vec3(1.0f, 1.0f, 1.0f), 5.0f);
     }
 }
 

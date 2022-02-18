@@ -2,32 +2,42 @@
 
 namespace knot {
 namespace components {
-RigidBody::RigidBody() : m_physics(NULL), m_dynamic(NULL), m_static(NULL), m_scene(NULL), m_material(NULL) {
-    m_transform = physx::PxTransform(0, 0, 0);
+RigidBody::RigidBody() : m_physics(NULL), m_dynamic(NULL), m_static(NULL), m_scene(NULL), m_material(NULL){
+    m_transform = physx::PxTransform(PxVec3(0, 0, 0));
+
 }
 
 RigidBody::~RigidBody() {
-    m_material->release();
-    m_material = NULL;
-    m_dynamic->release();
-    m_dynamic = NULL;
-    m_static->release();
-    m_static = NULL;
-    m_physics->release();
-    m_physics = NULL;
-    m_scene->release();
     m_scene = NULL;
+    m_physics = NULL;
+
 }
 
 void RigidBody::on_awake() {}
 void RigidBody::on_destroy() {}
 
 vec3 RigidBody::get_position() const {
-    return vec3(m_transform.p.x, m_transform.p.y, m_transform.p.z);
+    vec3 v;
+    if (m_dynamic) {
+        v = vec3(m_dynamic->getGlobalPose().p.x, m_dynamic->getGlobalPose().p.y, m_dynamic->getGlobalPose().p.z);
+
+    } else {
+        v = vec3(m_static->getGlobalPose().p.x, m_static->getGlobalPose().p.y, m_static->getGlobalPose().p.z);
+    }
+    return v;
 }
 
 quat RigidBody::get_rotation() const {
-    return quat(m_transform.q.w, m_transform.q.x, m_transform.q.y, m_transform.q.z);
+    quat q;
+    if (m_dynamic) {
+        q = quat(m_dynamic->getGlobalPose().q.w, m_dynamic->getGlobalPose().q.x, m_dynamic->getGlobalPose().q.y,
+             m_dynamic->getGlobalPose().q.z);
+    }else{
+        q = quat(m_static->getGlobalPose().q.w, m_static->getGlobalPose().q.x, m_static->getGlobalPose().q.y,
+                 m_static->getGlobalPose().q.z);
+
+    }
+    return q;
 }
 
 physx::PxMaterial* RigidBody::get_pxmaterial() {
@@ -55,14 +65,14 @@ void RigidBody::set_physics_and_scene(physx::PxScene* scene, physx::PxPhysics* p
 }
 
 void RigidBody::create_cube_rigid_dynamic(const vec3& size, const float& mass) {
+    physx::PxShape* shape = NULL;
     if (m_material) {
-        physx::PxShape* shape = m_physics->createShape(physx::PxBoxGeometry(size.x, size.y, size.z), *m_material);
+        shape = m_physics->createShape(physx::PxBoxGeometry(size.x, size.y, size.z), *m_material);
     } else {
-        m_material = m_physics->createMaterial(0.5f, 0.5f, 0.6f);
-        physx::PxShape* shape = m_physics->createShape(physx::PxBoxGeometry(size.x, size.y, size.z), *m_material);
+        m_material = m_physics->createMaterial(0.3f, 0.3f, 0.6f);
+        shape = m_physics->createShape(physx::PxBoxGeometry(size.x, size.y, size.z), *m_material);
     }
-    physx::PxShape* shape = m_physics->createShape(physx::PxBoxGeometry(size.x, size.y, size.z), *m_material);
-    m_dynamic = m_physics->createRigidDynamic(m_transform);
+    m_dynamic = m_physics->createRigidDynamic(PxTransform(m_transform.p));
     m_dynamic->attachShape(*shape);
     PxRigidBodyExt::updateMassAndInertia(*m_dynamic, mass);
     m_scene->addActor(*m_dynamic);
@@ -70,14 +80,14 @@ void RigidBody::create_cube_rigid_dynamic(const vec3& size, const float& mass) {
 }
 
 void RigidBody::create_cube_rigid_static(const vec3& size) {
+    physx::PxShape* shape = NULL;
     if (m_material) {
-        physx::PxShape* shape = m_physics->createShape(physx::PxBoxGeometry(size.x, size.y, size.z), *m_material);
+        shape = m_physics->createShape(physx::PxBoxGeometry(size.x, size.y, size.z), *m_material);
     } else {
-        m_material = m_physics->createMaterial(0.5f, 0.5f, 0.6f);
-        physx::PxShape* shape = m_physics->createShape(physx::PxBoxGeometry(size.x, size.y, size.z), *m_material);
+        m_material = m_physics->createMaterial(0.3f, 0.3f, 0.6f);
+        shape = m_physics->createShape(physx::PxBoxGeometry(size.x, size.y, size.z), *m_material);
     }
-    physx::PxShape* shape = m_physics->createShape(physx::PxBoxGeometry(size.x, size.y, size.z), *m_material);
-    m_static = m_physics->createRigidStatic(m_transform);
+    m_static = m_physics->createRigidStatic(PxTransform(m_transform.p));
     m_static->attachShape(*shape);
     m_scene->addActor(*m_static);
     shape->release();

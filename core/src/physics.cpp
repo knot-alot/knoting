@@ -15,9 +15,9 @@ Physics::Physics(Engine& engine) : m_engine(engine) {
 }
 
 Physics::~Physics() {
-    PX_RELEASE(mPhysics);
     PX_RELEASE(mScene);
     PX_RELEASE(mDispatcher);
+    PX_RELEASE(mPhysics);
     PX_RELEASE(mFoundation);
 }
 
@@ -61,10 +61,11 @@ void Physics::update_to_transform() {
         }
 
         GameObject p = p0pt.value();
-        components::Transform transform = registry.get<components::Transform>(p.get_handle());
-        components::RigidBody rigidbody = registry.get<components::RigidBody>(p.get_handle());
+        components::Transform& transform = registry.get<components::Transform>(p.get_handle());
+        components::RigidBody& rigidbody = registry.get<components::RigidBody>(p.get_handle());
 
         transform.set_position(rigidbody.get_position());
+
         transform.set_rotation(rigidbody.get_rotation());
     }
 }
