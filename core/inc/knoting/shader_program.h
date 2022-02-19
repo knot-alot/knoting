@@ -1,19 +1,24 @@
 #pragma once
 
 #include <bgfx/bgfx.h>
+#include <knoting/asset.h>
 #include <string>
 
 namespace knot {
 namespace components {
-class ShaderProgram {
+class ShaderProgram : public Asset {
    public:
     ShaderProgram();
+    ShaderProgram(const std::string& path);
+
     ~ShaderProgram();
 
     //=For ECS========
-    void on_awake();
-    void on_destroy();
-    //================
+    void on_awake() override;
+    void on_destroy() override;
+    //=For Asset=======
+    void generate_default_asset() override;
+    //=================
 
     bool load_shader(const std::string& folderName,
                      const std::string& vertexShaderPath,

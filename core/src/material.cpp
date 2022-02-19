@@ -29,21 +29,17 @@ void Material::on_awake() {
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Roughness] = bgfx::createUniform("m_roughness", bgfx::UniformType::Sampler);
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Occlusion] = bgfx::createUniform("m_occlusion", bgfx::UniformType::Sampler);
 
-    // TODO Get Textures from resource manager
+    m_albedo    = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Albedo]).lock();
+    m_normal    = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Normal]).lock();
+    m_metallic  = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Metallic]).lock();
+    m_roughness = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Roughness]).lock();
+    m_occlusion = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Occlusion]).lock();
 
-    m_albedo.load_texture_2d("UV_Grid_test.png");
-    m_normal.load_texture_2d("normal_tiles_1k.png");
-    m_metallic.load_texture_2d("UV_Grid_test.png");
-    m_roughness.load_texture_2d("UV_Grid_test.png");
-    m_occlusion.load_texture_2d("UV_Grid_test.png");
-
-    // end TODO
-
-    m_textureHandles[(size_t)TextureHandle::Albedo]    = m_albedo.get_texture_handle();
-    m_textureHandles[(size_t)TextureHandle::Normal]    = m_normal.get_texture_handle();
-    m_textureHandles[(size_t)TextureHandle::Metallic]  = m_metallic.get_texture_handle();
-    m_textureHandles[(size_t)TextureHandle::Roughness] = m_roughness.get_texture_handle();
-    m_textureHandles[(size_t)TextureHandle::Occlusion] = m_occlusion.get_texture_handle();
+    m_textureHandles[(size_t)TextureHandle::Albedo]    = m_albedo->get_texture_handle();
+    m_textureHandles[(size_t)TextureHandle::Normal]    = m_normal->get_texture_handle();
+    m_textureHandles[(size_t)TextureHandle::Metallic]  = m_metallic->get_texture_handle();
+    m_textureHandles[(size_t)TextureHandle::Roughness] = m_roughness->get_texture_handle();
+    m_textureHandles[(size_t)TextureHandle::Occlusion] = m_occlusion->get_texture_handle();
 
     // clang-format on
 }
@@ -114,6 +110,23 @@ void Material::set_uniforms() {
     bgfx::setTexture(4, m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Occlusion],m_textureHandles[(size_t)TextureHandle::Occlusion]);
 
     // clang-format off
+}
+void Material::set_texture_slot_path(TextureType slot, const std::string& path){
+switch (slot) {
+        case TextureType::Albedo:
+            break;
+        case TextureType::Normal:
+            break;
+        case TextureType::Metallic:
+            break;
+        case TextureType::Roughness:
+            break;
+        case TextureType::Occlusion:
+            break;
+        default:
+            return;
+    }
+    m_textureSlotPath[(int)slot] = path;
 }
 
 }  // namespace components
