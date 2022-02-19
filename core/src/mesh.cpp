@@ -8,8 +8,8 @@ using namespace std::chrono;
 namespace knot {
 namespace components {
 
-Mesh::Mesh() : Asset{AssetType::Mesh, "", "fallbackMesh"} {}
-Mesh::Mesh(const std::string& path) : Asset{AssetType::Mesh, path, "fallbackMesh"} {}
+Mesh::Mesh() : Asset{AssetType::Mesh, ""} {}
+Mesh::Mesh(const std::string& path) : Asset{AssetType::Mesh, path} {}
 
 Mesh::~Mesh() {}
 
