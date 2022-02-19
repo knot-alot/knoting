@@ -28,14 +28,14 @@ void LightData::set_spotlight_count(uint16_t count) {
     m_spotlightData.m_amountOfSpotlights = count;
 }
 
-LightData::SpotlightData::SpotlightData() {
+SpotlightData::SpotlightData() {
     // TODO replace "u_spotlightRgbInnerR" with "u_spotlightPosRadius" when pbr shader is impl
     // TODO replace "u_lightRgbInnerR" with "u_spotlightRgbInnerR" when pbr shader is impl
     u_spotlightPosRadius = bgfx::createUniform("u_lightPosRadius", bgfx::UniformType::Vec4);
     u_spotlightRgbInnerR = bgfx::createUniform("u_lightRgbInnerR", bgfx::UniformType::Vec4);
 }
 
-LightData::SpotlightData::~SpotlightData() {
+SpotlightData::~SpotlightData() {
     bgfx::destroy(u_spotlightPosRadius);
     bgfx::destroy(u_spotlightRgbInnerR);
 }
