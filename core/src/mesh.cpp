@@ -99,10 +99,9 @@ void Mesh::generate_default_asset() {
     log::info("Fallback created");
 }
 
-std::vector<std::string> m_splitResult;
-std::vector<std::string> split(std::string s, std::string t) {
+std::vector<std::string> Mesh::split(std::string s, std::string t) {
     m_splitResult.clear();
-    while (1) {
+    while (!s.empty()) {
         int pos = s.find(t);
         if (pos == -1) {
             m_splitResult.push_back(s);

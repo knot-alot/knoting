@@ -19,7 +19,6 @@ class SpotlightData {
 };
 
 class LightData {
-
    public:
     LightData();
 
@@ -31,7 +30,5 @@ class LightData {
 
     SpotlightData m_spotlightData;
 };
-
-
 
 }  // namespace knot

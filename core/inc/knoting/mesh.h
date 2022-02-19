@@ -41,10 +41,12 @@ class Mesh : public Asset {
 
    private:
     bool internal_load_obj(const std::string& path);
+    std::vector<std::string> split(std::string s, std::string t);
 
    private:
     std::vector<VertexLayout> m_vertexLayout;
     std::shared_ptr<IndexBuffer> m_indexBuffer;
+    std::vector<std::string> m_splitResult;
 
    private:
     bgfx::VertexBufferHandle m_vbh;
