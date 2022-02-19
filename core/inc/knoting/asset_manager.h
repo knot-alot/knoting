@@ -41,10 +41,8 @@ class AssetManager : public Subsystem {
    private:
     template <typename T>
     inline std::weak_ptr<T> internal_load_asset(const std::string& path) {
-        if (!std::is_base_of<Asset, T>::value) {
-            log::error("ASSET : " + path + " IS NOT OF BASE CLASS ASSET");
-        }
-
+        static_assert(!std::is_base_of<T, Asset>::value, "ASSET IS NOT OF BASE CLASS ASSET");
+        
         auto iterator = m_assets.find(path);
 
         if (iterator == m_assets.end()) {
