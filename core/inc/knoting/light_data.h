@@ -22,8 +22,8 @@ class LightData {
    public:
     LightData();
 
-    void push_spotlight_pos_outer_rad(vec4 posOutRad);
-    void push_spotlight_color_inner_rad(vec4 colInRad);
+    void push_spotlight_pos_outer_rad(vec4 positionAndOuterRadius);
+    void push_spotlight_color_inner_rad(vec4 colorAndInnerRadius);
     void set_spotlight_count(uint16_t count);
     void set_spotlight_uniforms();
     void clear_spotlight();

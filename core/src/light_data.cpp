@@ -16,12 +16,12 @@ void LightData::clear_spotlight() {
     m_spotlightData.m_spotlightsColorInnerRadius.clear();
 }
 
-void LightData::push_spotlight_pos_outer_rad(vec4 posOutRad) {
-    m_spotlightData.m_spotlightsPositionOuterRadius.emplace_back(posOutRad);
+void LightData::push_spotlight_pos_outer_rad(vec4 positionAndOuterRadius) {
+    m_spotlightData.m_spotlightsPositionOuterRadius.emplace_back(positionAndOuterRadius);
 }
 
-void LightData::push_spotlight_color_inner_rad(vec4 colInRad) {
-    m_spotlightData.m_spotlightsColorInnerRadius.emplace_back(colInRad);
+void LightData::push_spotlight_color_inner_rad(vec4 colorAndInnerRadius) {
+    m_spotlightData.m_spotlightsColorInnerRadius.emplace_back(colorAndInnerRadius);
 }
 
 void LightData::set_spotlight_count(uint16_t count) {
