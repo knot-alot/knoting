@@ -3,21 +3,22 @@
 #include <knoting/types.h>
 
 namespace knot {
+
+class SpotlightData {
+   public:
+    SpotlightData();
+    ~SpotlightData();
+
+   public:
+    bgfx::UniformHandle u_spotlightPosRadius;
+    bgfx::UniformHandle u_spotlightRgbInnerR;
+
+    uint16_t m_amountOfSpotlights = 0;
+    std::vector<vec4> m_spotlightsPositionOuterRadius;
+    std::vector<vec4> m_spotlightsColorInnerRadius;
+};
+
 class LightData {
-   private:
-    class SpotlightData {
-       public:
-        SpotlightData();
-        ~SpotlightData();
-
-       public:
-        bgfx::UniformHandle u_spotlightPosRadius;
-        bgfx::UniformHandle u_spotlightRgbInnerR;
-
-        uint16_t m_amountOfSpotlights = 0;
-        std::vector<vec4> m_spotlightsPositionOuterRadius;
-        std::vector<vec4> m_spotlightsColorInnerRadius;
-    };
 
    public:
     LightData();
@@ -30,5 +31,7 @@ class LightData {
 
     SpotlightData m_spotlightData;
 };
+
+
 
 }  // namespace knot
