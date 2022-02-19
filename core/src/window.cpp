@@ -39,7 +39,6 @@ Window::Window(int width, int height, std::string title, Engine& engine)
     // To avoid creating a render thread we need to call renderFrame() manually
     bgfx::renderFrame();
     bgfx::Init init;
-    
 #if BX_PLATFORM_WINDOWS
     init.platformData.nwh = glfwGetWin32Window(m_window);
 #elif BX_PLATFORM_LINUX || BX_PLATFORM_BSD
