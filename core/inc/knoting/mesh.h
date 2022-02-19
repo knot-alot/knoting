@@ -41,7 +41,7 @@ class Mesh : public Asset {
 
    private:
     bool internal_load_obj(const std::string& path);
-    std::vector<std::string> split(std::string s, std::string t);
+    std::vector<std::string> split(std::string s, const std::string& t);
 
    private:
     std::vector<VertexLayout> m_vertexLayout;
