@@ -93,13 +93,13 @@ bgfx::TextureHandle Texture::internal_generate_solid_texture(const vec4& color, 
 
     m_fullPath = name;
 
-    const int x{2};
-    const int y{2};
-    const int rgba{4};
-    const int layers{1};
-    const bool mips{false};
+    constexpr int x = 2;
+    constexpr int y = 2;
+    constexpr int rgba = 4;
+    constexpr int layers = 1;
+    constexpr bool mips = false;
 
-    const uint32_t flags =
+    constexpr uint32_t flags =
         BGFX_SAMPLER_W_CLAMP |
         BGFX_SAMPLER_W_CLAMP |
         BGFX_SAMPLER_MIN_POINT |
