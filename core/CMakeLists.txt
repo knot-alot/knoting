@@ -7,17 +7,18 @@ file(GLOB_RECURSE KNOTING_SOURCES
 
 set(PUBLIC_LIBS
     assimp
+    cereal
     glm
     spdlog
     imgui
     imguizmo
     EnTT::EnTT
-    nlohmann_json::nlohmann_json
     stduuid
     ${PHYSX_LIBRARIES}
     bgfx
     bx
     bimg
+    rapidjson
 )
 
 set(PRIVATE_LIBS
