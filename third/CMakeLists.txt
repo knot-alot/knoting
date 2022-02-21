@@ -1,23 +1,3 @@
-# ASSIMP
-
-if(DEFINED ENV{GITHUB_OS})
-find_package(assimp)
-endif()
-
-if(NOT assimp_FOUND)
-    message(STATUS "Assimp not found. Compiling our own version.")
-    # We could download assimp at this point, instead of using a submodule.
-
-    if(CMAKE_BUILD_TYPE MATCHES Debug)
-      set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
-    else()
-      set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-    endif()
-    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-    set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-    set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
-    add_subdirectory(assimp)
-endif()
 
 # Cereal
 
