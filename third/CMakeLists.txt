@@ -1,8 +1,19 @@
+
+# Cereal
+
+set(SKIP_PERFORMANCE_COMPARISON ON CACHE BOOL "" FORCE)
+set(JUST_INSTALL_CEREAL ON CACHE BOOL "" FORCE)
+set(WITH_WERROR OFF CACHE BOOL "" FORCE)
+set(BUILD_TESTS OFF CACHE BOOL "" FORCE)
+
+add_subdirectory(cereal)
+
 # EnTT
 
 add_subdirectory(entt)
 
 # GLFW
+
 if(DEFINED ENV{GITHUB_OS})
     find_package(GLFW)
 endif()
@@ -72,10 +83,6 @@ add_library(imterm INTERFACE)
 
 target_include_directories(imterm INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/ImTerm/include)
 
-# JSON
-
-add_subdirectory(json)
-
 # PhysX
 
 if(DEFINED ENV{PHYSX_PATH})
@@ -125,6 +132,13 @@ add_subdirectory($ENV{PHYSX_PATH}/compiler/public third/physx)
 # portable-file-dialogs
 
 add_subdirectory(portable-file-dialogs)
+
+# RapidJSON
+
+project(rapidjson)
+add_library(rapidjson INTERFACE)
+
+target_include_directories(rapidjson INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/rapidjson/include)
 
 # SPDLog
 
