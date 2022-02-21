@@ -6,7 +6,6 @@ file(GLOB_RECURSE KNOTING_SOURCES
 )
 
 set(PUBLIC_LIBS
-    assimp
     glm
     spdlog
     imgui

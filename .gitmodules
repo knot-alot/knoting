@@ -34,9 +34,6 @@
 [submodule "third/imterm"]
 	path = third/imterm
 	url = https://github.com/knot-alot/ImTerm.git
-[submodule "third/assimp"]
-	path = third/assimp
-	url = https://github.com/assimp/assimp.git
 [submodule "third/stb"]
 	path = third/stb
 	url = https://github.com/nothings/stb.git
