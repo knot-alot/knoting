@@ -70,11 +70,4 @@ void Physics::update_to_transform() {
     }
 }
 
-/*
-void Physics::on_init() {
-
-
-}
-*/
-
 }  // namespace knot

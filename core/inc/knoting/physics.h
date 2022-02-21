@@ -27,9 +27,7 @@ class Physics : public Subsystem {
     void on_late_update() override;
     void on_destroy() override;
 
-    // void on_init();
     void update_to_transform();
-    // void creat_PxScene();
 
     PxScene* get_active_Scene() { return mScene; }
     PxPhysics* get_physics() { return mPhysics; }
