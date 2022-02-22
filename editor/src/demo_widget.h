@@ -2,7 +2,7 @@
 #include "widget.h"
 namespace knot {
 
-class DemoWidget : public Widget{
+class DemoWidget : public Widget {
     DemoWidget();
 };
 
