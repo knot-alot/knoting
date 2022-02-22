@@ -16,6 +16,7 @@ Engine::Engine() {
     for (auto& module : m_engineModules) {
         module->on_awake();
     }
+    log::debug("init engine");
 }
 
 void Engine::update_modules() {
@@ -48,6 +49,9 @@ void Engine::update_modules() {
     for (auto& module : m_engineModules) {
         module->on_late_update();
     }
+    log::info("post last update");
+    bgfx::frame();
+    log::info("next frame");
 }
 
 Engine::~Engine() {

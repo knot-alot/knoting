@@ -18,10 +18,10 @@ set(PUBLIC_LIBS
     bx
     bimg
     rapidjson
+    glfw
 )
 
 set(PRIVATE_LIBS
-    glfw
     stb
 )
 

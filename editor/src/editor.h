@@ -15,7 +15,7 @@ class Editor {
     void run();
 
    private:
-    std::unique_ptr<knot::Engine> m_engine;
+    std::shared_ptr<knot::Engine> m_engine;
 };
 
 }  // namespace knot

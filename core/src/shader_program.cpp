@@ -29,6 +29,9 @@ bool ShaderProgram::load_shader(const std::string& folderName,
 
     create_program(fullVertexPath, fullFragmentPath);
 
+    log::debug("PATH VS {}",fullVertexPath);
+    log::debug("PATH FS {}",fullFragmentPath);
+
     return has_valid_paths;
 }
 

@@ -5,7 +5,8 @@
 #include <knoting/log.h>
 #include <knoting/scene.h>
 #include <knoting/spot_light.h>
-#include "../../editor/src/widget_subsystem.h"
+#include <knoting/subsystem.h>
+#include "widget_subsystem.h"
 
 #include <iostream>
 
@@ -146,12 +147,14 @@ Editor::Editor() {
 }
 
 void Editor::run() {
-    auto widgetSubsystem = std::make_shared<WidgetSubsystem>(*m_engine);
-    m_engine->add_subsystem(widgetSubsystem);
+        auto widgetSubsystem = std::make_shared<WidgetSubsystem>(m_engine);
+        m_engine->add_subsystem(widgetSubsystem);
+        widgetSubsystem->on_awake();
 
     while (m_engine->is_open()) {
         m_engine->update_modules();
     }
+    widgetSubsystem->on_destroy();
 }
 
 }  // namespace knot
