@@ -27,6 +27,11 @@ class Transform {
 
     mat4 get_model_matrix() const;
 
+    template <class Archive>
+    void serialize(Archive &archive){
+        archive(CEREAL_NVP(m_position),CEREAL_NVP(m_scale),CEREAL_NVP(m_rotation));
+    }
+
    protected:
     vec3 m_position;
     vec3 m_scale;

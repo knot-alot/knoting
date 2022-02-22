@@ -25,6 +25,12 @@ class ShaderProgram : public Asset {
                      const std::string& fragmentShaderPath);
     bgfx::ProgramHandle get_program() { return m_program; }
 
+
+    template<class Archive>
+    void serialize(Archive &archive) {
+        //TODO: archive the shader path?
+    }
+
    private:
     void create_program(std::string& vertexShaderPath, std::string& fragmentShaderPath);
 

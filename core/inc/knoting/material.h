@@ -59,6 +59,15 @@ class Material {
     void set_uniforms();
     bgfx::ProgramHandle get_program() { return m_shader.get_program(); };
 
+    template <class Archive>
+    void serialize(Archive &archive){
+        //TODO: add shader program when serialize is implemented for it (CEREAL_NVP(m_shader))
+        archive(CEREAL_NVP(m_albedo),CEREAL_NVP(m_normal),CEREAL_NVP(m_metallic),CEREAL_NVP(m_roughness),CEREAL_NVP(m_occlusion),
+        CEREAL_NVP(m_textureSlotPath), CEREAL_NVP(m_albedoColor),CEREAL_NVP(m_textureTiling),
+        CEREAL_NVP(m_albedoScalar),CEREAL_NVP(m_normalScalar),CEREAL_NVP(m_metallicScalar),CEREAL_NVP(m_roughnessScalar),CEREAL_NVP(m_occlusionScalar)
+        ,CEREAL_NVP(m_skyboxScalar),CEREAL_NVP(m_castShadows),CEREAL_NVP(m_receivesShadows),CEREAL_NVP(m_alphaCutoffEnabled),CEREAL_NVP(m_alphaCutoffAmount));
+    }
+
    private:
     std::array<bgfx::UniformHandle, (size_t)UniformHandle::LAST> m_uniformHandles;
     std::array<bgfx::UniformHandle, (size_t)UniformSamplerHandle::LAST> m_uniformSamplerHandle;

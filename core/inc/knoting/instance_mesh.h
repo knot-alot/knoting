@@ -3,6 +3,8 @@
 #include <knoting/asset_manager.h>
 #include <knoting/mesh.h>
 #include <knoting/types.h>
+#include <cereal/cereal.hpp>
+#include <cereal/types/memory.hpp>
 #include <string>
 #include <vector>
 
@@ -20,6 +22,11 @@ class InstanceMesh {
 
     bgfx::VertexBufferHandle get_vertex_buffer() { return m_mesh->get_vertex_buffer(); }
     bgfx::IndexBufferHandle get_index_buffer() { return m_mesh->get_index_buffer(); }
+
+    template <class Archive>
+    void serialize(Archive &archive){
+        archive(CEREAL_NVP(m_mesh),CEREAL_NVP(m_path));
+    }
 
    private:
     std::shared_ptr<components::Mesh> m_mesh;
