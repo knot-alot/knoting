@@ -2,9 +2,7 @@
 
 namespace knot {
 namespace components {
-RigidBody::RigidBody() : m_physics(NULL), m_dynamic(NULL), m_static(NULL), m_scene(NULL), m_material(NULL){
-
-}
+RigidBody::RigidBody() : m_physics(NULL), m_dynamic(NULL), m_static(NULL), m_scene(NULL), m_material(NULL) {}
 
 RigidBody::~RigidBody() {
     if (m_dynamic) {
@@ -18,14 +16,13 @@ RigidBody::~RigidBody() {
     m_material = NULL;
     m_scene = NULL;
     m_physics = NULL;
-
 }
 
 void RigidBody::on_awake() {}
 void RigidBody::on_destroy() {
     if (m_dynamic) {
         m_scene->removeActor(*m_dynamic);
-    } else if(m_static){
+    } else if (m_static) {
         m_scene->removeActor(*m_static);
     }
 }
@@ -45,11 +42,10 @@ quat RigidBody::get_rotation() const {
     quat q;
     if (m_dynamic) {
         q = quat(m_dynamic->getGlobalPose().q.w, m_dynamic->getGlobalPose().q.x, m_dynamic->getGlobalPose().q.y,
-             m_dynamic->getGlobalPose().q.z);
-    }else{
+                 m_dynamic->getGlobalPose().q.z);
+    } else {
         q = quat(m_static->getGlobalPose().q.w, m_static->getGlobalPose().q.x, m_static->getGlobalPose().q.y,
                  m_static->getGlobalPose().q.z);
-
     }
     return q;
 }
@@ -77,7 +73,6 @@ void RigidBody::set_transform(const vec3& position, const quat& rotation) {
     } else {
         m_static->setGlobalPose(PxTransform(p));
         m_static->setGlobalPose(PxTransform(q));
-
     }
 }
 
@@ -91,7 +86,6 @@ void RigidBody::set_position(const vec3& position) {
     } else {
         m_static->setGlobalPose(PxTransform(p));
     }
-
 }
 void RigidBody::set_rotation(const quat& rotation) {
     float r_w = rotation.w;
@@ -104,9 +98,7 @@ void RigidBody::set_rotation(const quat& rotation) {
     } else {
         m_static->setGlobalPose(PxTransform(q));
     }
-
 }
-
 
 void RigidBody::set_material(physx::PxMaterial* material) {
     m_material = material;
@@ -148,9 +140,7 @@ void RigidBody::create_cube_rigid_dynamic(const vec3& halfSize,
     shape->release();
 }
 
-void RigidBody::create_cube_rigid_static(const vec3& halfSize,
-                                         const vec3& position,
-                                         const quat& rotation) {
+void RigidBody::create_cube_rigid_static(const vec3& halfSize, const vec3& position, const quat& rotation) {
     if (m_dynamic) {
         return;
     }
@@ -196,7 +186,7 @@ void RigidBody::create_capsule_rigid_dynamic(const float& radius,
     physx::PxVec3 p = physx::PxVec3(p_x, p_y, p_z);
     physx::PxQuat q = physx::PxQuat(r_w, r_x, r_y, r_z);
     if (m_material) {
-        shape = m_physics->createShape(physx::PxCapsuleGeometry(radius,halfheight), *m_material);
+        shape = m_physics->createShape(physx::PxCapsuleGeometry(radius, halfheight), *m_material);
     } else {
         m_material = m_physics->createMaterial(0.3f, 0.3f, 0.6f);
         shape = m_physics->createShape(physx::PxCapsuleGeometry(radius, halfheight), *m_material);
@@ -239,9 +229,9 @@ void RigidBody::create_capsule_rigid_static(const float& radius,
 }
 
 void RigidBody::create_sphere_rigid_dynamic(const float& radius,
-                                             const float& mass,
-                                             const vec3& position,
-                                             const quat& rotation) {
+                                            const float& mass,
+                                            const vec3& position,
+                                            const quat& rotation) {
     if (m_static) {
         return;
     }
@@ -268,9 +258,7 @@ void RigidBody::create_sphere_rigid_dynamic(const float& radius,
     shape->release();
 }
 
-void RigidBody::create_sphere_rigid_static(const float& radius,
-                                            const vec3& position,
-                                            const quat& rotation) {
+void RigidBody::create_sphere_rigid_static(const float& radius, const vec3& position, const quat& rotation) {
     if (m_dynamic) {
         return;
     }

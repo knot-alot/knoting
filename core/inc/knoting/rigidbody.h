@@ -25,11 +25,10 @@ class RigidBody {
     quat get_rotation() const;
     physx::PxMaterial* get_pxmaterial();
 
-    //could use after creat rigid
+    // could use after creat rigid
     void set_transform(const vec3& position, const quat& rotation = quat());
     void set_position(const vec3& position);
     void set_rotation(const quat& rotation);
-
 
     void set_material(physx::PxMaterial* material);
     void set_physics_and_scene(physx::PxScene* scene, physx::PxPhysics* physics);
@@ -38,9 +37,7 @@ class RigidBody {
                                    const float& mass,
                                    const vec3& position,
                                    const quat& rotation = quat());
-    void create_cube_rigid_static( const vec3& size,
-                                   const vec3& position,
-                                   const quat& rotation = quat());
+    void create_cube_rigid_static(const vec3& size, const vec3& position, const quat& rotation = quat());
     void create_capsule_rigid_dynamic(const float& radius,
                                       const float& halfheight,
                                       const float& mass,
@@ -54,9 +51,7 @@ class RigidBody {
                                      const float& mass,
                                      const vec3& position,
                                      const quat& rotation = quat());
-    void create_sphere_rigid_static(const float& radius,
-                                    const vec3& position,
-                                    const quat& rotation = quat());
+    void create_sphere_rigid_static(const float& radius, const vec3& position, const quat& rotation = quat());
 
    protected:
     physx::PxPhysics* m_physics;

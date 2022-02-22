@@ -6,9 +6,9 @@
 #include <vector>
 
 #include <knoting/forward_renderer.h>
+#include <knoting/physics.h>
 #include <knoting/subsystem.h>
 #include <knoting/window.h>
-#include<knoting/physics.h>
 
 namespace knot {
 class Engine {
