@@ -5,6 +5,7 @@
 #include <knoting/log.h>
 #include <knoting/scene.h>
 #include <knoting/spot_light.h>
+#include "widget_subsystem.h"
 
 #include <iostream>
 
@@ -145,7 +146,9 @@ Untie::Untie() {
 }
 
 void Untie::run() {
-    log::debug("RUN");
+    auto widgetSubsystem = std::make_shared<WidgetSubsystem>(*m_engine);
+    m_engine->add_subsystem(widgetSubsystem);
+
     while (m_engine->is_open()) {
         m_engine->update_modules();
     }

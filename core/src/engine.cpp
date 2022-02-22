@@ -59,5 +59,8 @@ Engine::~Engine() {
 bool Engine::is_open() {
     return m_windowModule->is_open();
 }
+void Engine::add_subsystem(std::shared_ptr<Subsystem> subsystem) {
+    m_engineModules.emplace_back(subsystem);
+}
 
 }  // namespace knot
