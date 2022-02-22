@@ -5,6 +5,7 @@
 #include <knoting/shader_program.h>
 #include <knoting/texture.h>
 #include <knoting/types.h>
+#include <cereal/cereal.hpp>
 
 namespace knot {
 namespace components {

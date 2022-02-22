@@ -2,6 +2,7 @@
 
 #include <bgfx/bgfx.h>
 #include <knoting/asset.h>
+#include <cereal/cereal.hpp>
 #include <string>
 
 namespace knot {

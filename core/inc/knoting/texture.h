@@ -5,6 +5,7 @@
 #include <bimg/decode.h>
 #include <knoting/asset.h>
 #include <knoting/types.h>
+#include <cereal/cereal.hpp>
 #include <filesystem>
 #include <string>
 

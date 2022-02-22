@@ -1,5 +1,6 @@
 #pragma once
 #include <knoting/types.h>
+#include <cereal/cereal.hpp>
 
 namespace knot {
 namespace components {
