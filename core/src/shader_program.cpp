@@ -101,7 +101,7 @@ std::string ShaderProgram::get_cross_platform_path(const std::string& folderName
     }
 
     shaderPath.append(fileName);
-    return shaderPath;
+    return shaderPath.string();
 }
 void ShaderProgram::generate_default_asset() {}
 
