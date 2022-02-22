@@ -1,9 +1,9 @@
 #pragma once
 
-#include <knoting/log.h>
-#include <knoting/subsystem.h>
 #include <memory>
 #include <vector>
+#include "knoting/log.h"
+#include "knoting/subsystem.h"
 #include "widget.h"
 
 namespace knot {

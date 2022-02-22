@@ -1,16 +1,17 @@
-#include "untie.h"
+#include "editor.h"
 #include <knoting/components.h>
 #include <knoting/game_object.h>
 #include <knoting/instance_mesh.h>
 #include <knoting/log.h>
 #include <knoting/scene.h>
 #include <knoting/spot_light.h>
+#include "../../editor/src/widget_subsystem.h"
 
 #include <iostream>
 
 namespace knot {
 Scene scene;
-Untie::Untie() {
+Editor::Editor() {
     Scene::set_active_scene(scene);
     log::Logger::setup();
 
@@ -144,7 +145,10 @@ Untie::Untie() {
     }
 }
 
-void Untie::run() {
+void Editor::run() {
+    auto widgetSubsystem = std::make_shared<WidgetSubsystem>(*m_engine);
+    m_engine->add_subsystem(widgetSubsystem);
+
     while (m_engine->is_open()) {
         m_engine->update_modules();
     }
