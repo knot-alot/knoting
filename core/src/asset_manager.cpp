@@ -50,7 +50,7 @@ void AssetManager::load_assets_serialize() {}
 
 std::filesystem::path AssetManager::get_resources_path() {
     std::filesystem::path path = get_executable_path();
-    return path.parent_path().parent_path().append("res");
+    return path.parent_path().parent_path().append("res/");
 }
 
 std::filesystem::path AssetManager::get_executable_path() {

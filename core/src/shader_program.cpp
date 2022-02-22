@@ -69,33 +69,34 @@ bool ShaderProgram::does_file_path_exist(const std::string& path) {
 }
 
 std::string ShaderProgram::get_cross_platform_path(const std::string& folderName, const std::string& fileName) {
-    std::filesystem::path shaderPath = "SHADER_BINARY_NOT_SET";
+    std::filesystem::path shaderPath = AssetManager::get_resources_path();
     switch (bgfx::getRendererType()) {
         case bgfx::RendererType::Noop:
         case bgfx::RendererType::Direct3D9:
-            shaderPath = AssetManager::get_resources_path().append(PATH_SHADER).append(folderName).append("dx9/");
+            shaderPath = shaderPath.append(PATH_SHADER).append(folderName).append("dx9/");
             break;
         case bgfx::RendererType::Direct3D11:
         case bgfx::RendererType::Direct3D12:
-            shaderPath = AssetManager::get_resources_path().append(PATH_SHADER).append(folderName).append("dx11/");
+            shaderPath = shaderPath.append(PATH_SHADER).append(folderName).append("dx11/");
             break;
         case bgfx::RendererType::Gnm:
             // TODO
             // break;
         case bgfx::RendererType::Metal:
-            shaderPath = AssetManager::get_resources_path().append(PATH_SHADER).append(folderName).append("metal/");
+            shaderPath = shaderPath.append(PATH_SHADER).append(folderName).append("metal/");
             break;
         case bgfx::RendererType::OpenGL:
-            shaderPath = AssetManager::get_resources_path().append(PATH_SHADER).append(folderName).append("glsl/");
+            shaderPath = shaderPath.append(PATH_SHADER).append(folderName).append("glsl/");
             break;
         case bgfx::RendererType::OpenGLES:
-            shaderPath = AssetManager::get_resources_path().append(PATH_SHADER).append(folderName).append("essl/");
+            shaderPath = shaderPath.append(PATH_SHADER).append(folderName).append("essl/");
             break;
         case bgfx::RendererType::Vulkan:
-            shaderPath = AssetManager::get_resources_path().append(PATH_SHADER).append(folderName).append("spirv/");
+            shaderPath = shaderPath.append(PATH_SHADER).append(folderName).append("spirv/");
             break;
         default:
-            shaderPath = "SHADER_BINARY_NOT_SET";
+            log::error("Render type not supported to retrieve shader path");
+            shaderPath = shaderPath.append(PATH_SHADER).append(folderName).append("unkown/");
             break;
     }
 
