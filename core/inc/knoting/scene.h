@@ -27,9 +27,9 @@ class Scene {
     static std::optional<std::reference_wrapper<Scene>> get_active_scene();
     static void set_active_scene(std::optional<std::reference_wrapper<Scene>> scene);
 
-    template<class Archive>
-    void serialize(Archive &archive) {
-        //TODO: archive the m_uuidGameObjectMap? or the registry?
+    template <class Archive>
+    void serialize(Archive& archive) {
+        // TODO: archive the m_uuidGameObjectMap? or the registry?
     }
 
    protected:

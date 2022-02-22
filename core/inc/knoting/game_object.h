@@ -4,10 +4,10 @@
 #include <knoting/scene.h>
 #include <knoting/transform.h>
 #include <knoting/types.h>
-#include <entt/entt.hpp>
-#include <random>
 #include <cereal/cereal.hpp>
 #include <cereal/types/vector.hpp>
+#include <entt/entt.hpp>
+#include <random>
 
 namespace knot {
 
@@ -187,11 +187,11 @@ class Name {
     inline bool operator!=(const Name& other) const { return name != other.name; }
 
     template <class Archive>
-    void serialize(Archive &archive){
+    void serialize(Archive& archive) {
         archive(CEREAL_NVP(name));
     }
 
-    private:
+   private:
     friend class knot::Scene;
 
     static constexpr const char* DEFAULT_NAME = "GameObject";
@@ -212,7 +212,7 @@ class Tag {
     static std::vector<std::string> get_registered_tags();
 
     template <class Archive>
-    void serialize(Archive &archive){
+    void serialize(Archive& archive) {
         archive(this->get_registered_tags());
     }
 

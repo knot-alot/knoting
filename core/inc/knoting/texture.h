@@ -28,8 +28,9 @@ class Texture : public Asset {
     void load_texture_2d(const std::string& path, bool usingMipMaps = true, bool usingAnisotropicFiltering = true);
 
     template <class Archive>
-    void serialize(Archive &archive){
-        archive(CEREAL_NVP(m_assetType),CEREAL_NVP(m_fallbackName),CEREAL_NVP(m_fullPath),CEREAL_NVP(m_assetName),CEREAL_NVP(m_width),CEREAL_NVP(m_height));
+    void serialize(Archive& archive) {
+        archive(CEREAL_NVP(m_assetType), CEREAL_NVP(m_fallbackName), CEREAL_NVP(m_fullPath), CEREAL_NVP(m_assetName),
+                CEREAL_NVP(m_width), CEREAL_NVP(m_height));
     }
 
     bgfx::TextureHandle get_texture_handle() { return m_textureHandle; }

@@ -41,8 +41,9 @@ class Mesh : public Asset {
     bgfx::IndexBufferHandle get_index_buffer() { return m_ibh; }
 
     template <class Archive>
-    void serialize(Archive &archive){
-        archive(CEREAL_NVP(m_assetType),CEREAL_NVP(m_fallbackName),CEREAL_NVP(m_fullPath),CEREAL_NVP(m_assetName),CEREAL_NVP(m_vertexLayout),CEREAL_NVP(m_indexBuffer), CEREAL_NVP(m_splitResult));
+    void serialize(Archive& archive) {
+        archive(CEREAL_NVP(m_assetType), CEREAL_NVP(m_fallbackName), CEREAL_NVP(m_fullPath), CEREAL_NVP(m_assetName),
+                CEREAL_NVP(m_vertexLayout), CEREAL_NVP(m_indexBuffer), CEREAL_NVP(m_splitResult));
     }
 
    private:
@@ -66,7 +67,7 @@ class IndexBuffer {
     unsigned int& get_index_start() { return m_indices[0]; }
 
     template <class Archive>
-    void serialize(Archive &archive){
+    void serialize(Archive& archive) {
         archive(cereal::make_nvp("indices", m_indices));
     }
 
@@ -113,10 +114,10 @@ class VertexLayout {
     }
 
     template <class Archive>
-    void serialize(Archive &archive){
-        archive(cereal::make_nvp("x", m_x),cereal::make_nvp("y", m_y), cereal::make_nvp("z", m_z),
-                cereal::make_nvp("normal",m_normal),cereal::make_nvp("tangent",m_tangent),
-                cereal::make_nvp("u",m_u),cereal::make_nvp("v",m_u));
+    void serialize(Archive& archive) {
+        archive(cereal::make_nvp("x", m_x), cereal::make_nvp("y", m_y), cereal::make_nvp("z", m_z),
+                cereal::make_nvp("normal", m_normal), cereal::make_nvp("tangent", m_tangent),
+                cereal::make_nvp("u", m_u), cereal::make_nvp("v", m_u));
     }
 
     inline static bgfx::VertexLayout s_meshVertexLayout;

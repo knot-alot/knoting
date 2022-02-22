@@ -22,8 +22,8 @@ class SpotLight {
     void set_color(vec3 color) { m_color = color; };
 
     template <class Archive>
-    void serialize(Archive &archive){
-        archive(CEREAL_NVP(m_lightOuterRadius),CEREAL_NVP(m_lightInnerRadius),CEREAL_NVP(m_color));
+    void serialize(Archive& archive) {
+        archive(CEREAL_NVP(m_lightOuterRadius), CEREAL_NVP(m_lightInnerRadius), CEREAL_NVP(m_color));
     }
 
    private:

@@ -24,8 +24,8 @@ class InstanceMesh {
     bgfx::IndexBufferHandle get_index_buffer() { return m_mesh->get_index_buffer(); }
 
     template <class Archive>
-    void serialize(Archive &archive){
-        archive(CEREAL_NVP(m_mesh),CEREAL_NVP(m_path));
+    void serialize(Archive& archive) {
+        archive(CEREAL_NVP(m_mesh), CEREAL_NVP(m_path));
     }
 
    private:
