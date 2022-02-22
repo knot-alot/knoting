@@ -147,9 +147,9 @@ Editor::Editor() {
 }
 
 void Editor::run() {
-        auto widgetSubsystem = std::make_shared<WidgetSubsystem>(m_engine);
-        m_engine->add_subsystem(widgetSubsystem);
-        widgetSubsystem->on_awake();
+    auto widgetSubsystem = std::make_shared<WidgetSubsystem>(m_engine);
+    m_engine->add_subsystem(widgetSubsystem);
+    widgetSubsystem->on_awake();
 
     while (m_engine->is_open()) {
         m_engine->update_modules();

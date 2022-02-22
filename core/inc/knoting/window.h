@@ -35,10 +35,10 @@ class Window : public Subsystem {
     int get_window_height() { return m_height; };
 
     GLFWwindow* get_glfw_window() { return m_window; };
-    bool get_debug_resize_flag(){ return debug_editor_resize_flag ;};
-    void set_debug_resize_flag(bool newState){ debug_editor_resize_flag = newState;};
-   protected:
+    bool get_debug_resize_flag() { return debug_editor_resize_flag; };
+    void set_debug_resize_flag(bool newState) { debug_editor_resize_flag = newState; };
 
+   protected:
     bool debug_editor_resize_flag;
     void setup_callbacks();
     static void window_size_callback(GLFWwindow* window, int width, int height);

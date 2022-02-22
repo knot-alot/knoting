@@ -119,7 +119,6 @@ void ForwardRenderer::on_render() {
 
         bgfx::submit(0, material.get_program());
     }
-
 }
 
 void ForwardRenderer::on_post_render() {}
