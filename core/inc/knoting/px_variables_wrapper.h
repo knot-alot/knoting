@@ -11,15 +11,10 @@ class PxScene_ptr_wrapper {
         if (m_px_scene) {
             m_px_scene->release();
             m_px_scene = nullptr;
-
         }
-
     }
 
-    void set(PxScene* scene) {
-        m_px_scene = scene;
-
-    }
+    void set(PxScene* scene) { m_px_scene = scene; }
 
     PxScene* get() { return m_px_scene; }
 
@@ -35,7 +30,6 @@ class PxPhysics_ptr_wrapper {
             m_px_physics->release();
             m_px_physics = nullptr;
         }
-
     }
 
     void set(PxPhysics* physics) {
@@ -48,7 +42,6 @@ class PxPhysics_ptr_wrapper {
 
     PxPhysics* get() { return m_px_physics; }
 
-
    private:
     PxPhysics* m_px_physics;
 };
@@ -59,9 +52,7 @@ class PxFoundation_ptr_wrapper {
         if (m_Foundation) {
             m_Foundation->release();
             m_Foundation = nullptr;
-
         }
-
     }
     void set(PxFoundation* foundation) {
         if (m_Foundation) {
@@ -83,9 +74,7 @@ class PxDispatcher_ptr_wrapper {
         if (m_Dispatcher) {
             m_Dispatcher->release();
             m_Dispatcher = nullptr;
-
         }
-
     }
     void set(PxDefaultCpuDispatcher* dispatcher) {
         if (m_Dispatcher) {
