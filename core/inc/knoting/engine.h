@@ -21,7 +21,7 @@ class Engine {
 
     std::weak_ptr<Window> get_window_module() { return m_windowModule; }
     std::weak_ptr<ForwardRenderer> get_forward_render_module() { return m_forwardRenderModule; }
-    std::shared_ptr<Physics> get_physics_moddule() { return m_physicsModule; }
+    std::weak_ptr<Physics> get_physics_module() { return m_physicsModule; }
 
    private:
     int m_windowWidth = 1024;

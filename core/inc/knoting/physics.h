@@ -2,12 +2,7 @@
 
 #include <knoting/rigidbody.h>
 #include <knoting/subsystem.h>
-
-#define PX_RELEASE(x) \
-    if (x) {          \
-        x->release(); \
-        x = NULL;     \
-    }
+#include <knoting/px_variables_wrapper.h>
 
 namespace knot {
 
@@ -23,20 +18,25 @@ class Physics : public Subsystem {
     ~Physics();
 
     void on_awake() override;
-    void on_update(double m_delta_time) override;
+    void on_update(double m_deltatime) override;
     void on_late_update() override;
     void on_destroy() override;
 
-    void update_to_transform();
+    void update_info_to_transform();
 
-    PxScene* get_active_Scene() { return mScene; }
-    PxPhysics* get_physics() { return mPhysics; }
+    std::weak_ptr<PxScene_ptr_wrapper> get_active_Scene() { return m_Scene; }
+    std::weak_ptr<PxPhysics_ptr_wrapper> get_physics() { return m_Physics; }
+    PxVec3 get_gravity() { return m_gravity; }
+
+    void set_gravity(PxVec3 gravity);
 
    private:
     Engine& m_engine;
-    PxFoundation* mFoundation;
-    PxPhysics* mPhysics;
-    PxDefaultCpuDispatcher* mDispatcher;
-    PxScene* mScene;
+    std::shared_ptr<PxFoundation_ptr_wrapper> m_Foundation;
+    std::shared_ptr<PxPhysics_ptr_wrapper> m_Physics;
+    std::shared_ptr<PxDispatcher_ptr_wrapper> m_Dispatcher;
+    std::shared_ptr<PxScene_ptr_wrapper> m_Scene;
+    PxVec3 m_gravity;
 };
+
 }  // namespace knot

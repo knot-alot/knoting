@@ -1,6 +1,8 @@
 #pragma once
 
 #include <PxPhysicsAPI.h>
+#include <knoting/components.h>
+#include <knoting/px_variables_wrapper.h>
 #include <knoting/types.h>
 
 using namespace physx;
@@ -21,44 +23,59 @@ class RigidBody {
     void on_awake();
     void on_destroy();
 
-    vec3 get_position() const;
-    quat get_rotation() const;
-    physx::PxMaterial* get_pxmaterial();
+    vec3 get_position();
+    quat get_rotation();
+    std::weak_ptr<PxMaterial_ptr_wrapper> get_px_material();
+    bool get_isKinematic();
 
     // could use after creat rigid
     void set_transform(const vec3& position, const quat& rotation = quat());
     void set_position(const vec3& position);
     void set_rotation(const quat& rotation);
+    void set_kinematic(bool isKinematic);
+    //
+    void set_physics_and_scene(std::shared_ptr<PxScene_ptr_wrapper> scene,
+                               std::shared_ptr<PxPhysics_ptr_wrapper> physics);
 
-    void set_material(physx::PxMaterial* material);
-    void set_physics_and_scene(physx::PxScene* scene, physx::PxPhysics* physics);
+    void create_actor(PxShape* shape,
+                      bool isKinematic,
+                      bool isDynamic,
+                      const float& mass = 0);
 
-    void create_cube_rigid_dynamic(const vec3& halfSize,
-                                   const float& mass,
-                                   const vec3& position,
-                                   const quat& rotation = quat());
-    void create_cube_rigid_static(const vec3& size, const vec3& position, const quat& rotation = quat());
-    void create_capsule_rigid_dynamic(const float& radius,
-                                      const float& halfheight,
-                                      const float& mass,
-                                      const vec3& position,
-                                      const quat& rotation = quat());
-    void create_capsule_rigid_static(const float& radius,
-                                     const float& halfheight,
-                                     const vec3& position,
-                                     const quat& rotation = quat());
-    void create_sphere_rigid_dynamic(const float& radius,
-                                     const float& mass,
-                                     const vec3& position,
-                                     const quat& rotation = quat());
-    void create_sphere_rigid_static(const float& radius, const vec3& position, const quat& rotation = quat());
+    void create_cube_shape(const vec3& halfSize,
+                           bool isKinematic,
+                           bool isDynamic,
+                           PxMaterial* material = nullptr,
+                           const float& mass = 0);
+
+    void create_capsule_shape(const float& radius,
+                              const float& halfheight,
+                              bool isKinematic,
+                              bool isDynamic,
+                              PxMaterial* material = nullptr,
+                              const float& mass = 0);
+
+    void create_sphere_shape(const float& radius,
+                             bool isKinematic,
+                             bool isDynamic,
+                             PxMaterial* material = nullptr,
+                             const float& mass = 0);
+
+    PxVec3 get_position_from_transform();
+    PxQuat get_rotation_from_transform();
+
+    vec3 PxVec3_to_vec3(PxVec3 v);
+    PxVec3 vec3_to_PxVec3(vec3 v);
+    quat PxQuat_to_quat(PxQuat q);
+    PxQuat quat_to_PxQuat(quat q);
 
    protected:
-    physx::PxPhysics* m_physics;
-    physx::PxRigidDynamic* m_dynamic;
-    physx::PxRigidStatic* m_static;
-    physx::PxScene* m_scene;
-    physx::PxMaterial* m_material;
+    std::shared_ptr<PxPhysics_ptr_wrapper> m_physics;
+    std::shared_ptr<PxDynamic_ptr_wrapper> m_dynamic;
+    std::shared_ptr<PxStatic_ptr_wrapper> m_static;
+    std::shared_ptr<PxScene_ptr_wrapper> m_scene;
+    std::shared_ptr<PxMaterial_ptr_wrapper> m_PxMaterial;
+    bool m_isKinematic;
 };
 
 }  // namespace components

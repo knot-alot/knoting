@@ -1,288 +1,249 @@
+
 #include <knoting/rigidbody.h>
+#include <knoting/scene.h>
 
 namespace knot {
 namespace components {
-RigidBody::RigidBody() : m_physics(NULL), m_dynamic(NULL), m_static(NULL), m_scene(NULL), m_material(NULL) {}
+RigidBody::RigidBody()
+    : m_physics(nullptr), m_dynamic(nullptr), m_static(nullptr), m_scene(nullptr), m_PxMaterial(nullptr) {}
 
-RigidBody::~RigidBody() {
-    if (m_dynamic) {
-        m_dynamic->release();
-        m_dynamic = NULL;
-    } else {
-        m_static->release();
-        m_static = NULL;
-    }
-    m_material->release();
-    m_material = NULL;
-    m_scene = NULL;
-    m_physics = NULL;
-}
+RigidBody::~RigidBody() {}
 
 void RigidBody::on_awake() {}
 void RigidBody::on_destroy() {
     if (m_dynamic) {
-        m_scene->removeActor(*m_dynamic);
+        m_scene->get()->removeActor(*m_dynamic->get());
+
     } else if (m_static) {
-        m_scene->removeActor(*m_static);
+        m_scene->get()->removeActor(*m_static->get());
     }
 }
 
-vec3 RigidBody::get_position() const {
-    vec3 v;
+vec3 RigidBody::get_position() {
     if (m_dynamic) {
-        v = vec3(m_dynamic->getGlobalPose().p.x, m_dynamic->getGlobalPose().p.y, m_dynamic->getGlobalPose().p.z);
+        return PxVec3_to_vec3(m_dynamic->get()->getGlobalPose().p);
 
     } else {
-        v = vec3(m_static->getGlobalPose().p.x, m_static->getGlobalPose().p.y, m_static->getGlobalPose().p.z);
+        return PxVec3_to_vec3(m_static->get()->getGlobalPose().p);
     }
-    return v;
+    return vec3(0.0f);
 }
 
-quat RigidBody::get_rotation() const {
-    quat q;
+quat RigidBody::get_rotation() {
     if (m_dynamic) {
-        q = quat(m_dynamic->getGlobalPose().q.w, m_dynamic->getGlobalPose().q.x, m_dynamic->getGlobalPose().q.y,
-                 m_dynamic->getGlobalPose().q.z);
+        return PxQuat_to_quat(m_dynamic->get()->getGlobalPose().q);
     } else {
-        q = quat(m_static->getGlobalPose().q.w, m_static->getGlobalPose().q.x, m_static->getGlobalPose().q.y,
-                 m_static->getGlobalPose().q.z);
+        return PxQuat_to_quat(m_static->get()->getGlobalPose().q);
     }
-    return q;
+    return quat();
 }
 
-physx::PxMaterial* RigidBody::get_pxmaterial() {
-    return m_material;
+std::weak_ptr<PxMaterial_ptr_wrapper> RigidBody::get_px_material() {
+    return m_PxMaterial;
+}
+
+bool RigidBody::get_isKinematic() {
+    return m_isKinematic;
 }
 
 void RigidBody::set_transform(const vec3& position, const quat& rotation) {
-    if (m_dynamic == NULL && m_static == NULL) {
+    if (m_dynamic == nullptr && m_static == nullptr) {
         return;
     }
-    float p_x = position.x;
-    float p_y = position.y;
-    float p_z = position.z;
-    float r_w = rotation.w;
-    float r_x = rotation.x;
-    float r_y = rotation.y;
-    float r_z = rotation.z;
-    physx::PxVec3 p = physx::PxVec3(p_x, p_y, p_z);
-    physx::PxQuat q = physx::PxQuat(r_w, r_x, r_y, r_z);
     if (m_dynamic) {
-        m_dynamic->setGlobalPose(PxTransform(p));
-        m_dynamic->setGlobalPose(PxTransform(q));
+        m_dynamic->get()->setGlobalPose(PxTransform(vec3_to_PxVec3(position)));
+        m_dynamic->get()->setGlobalPose(PxTransform(quat_to_PxQuat(rotation)));
     } else {
-        m_static->setGlobalPose(PxTransform(p));
-        m_static->setGlobalPose(PxTransform(q));
+        m_static->get()->setGlobalPose(PxTransform(vec3_to_PxVec3(position)));
+        m_static->get()->setGlobalPose(PxTransform(quat_to_PxQuat(rotation)));
     }
 }
 
 void RigidBody::set_position(const vec3& position) {
-    float p_x = position.x;
-    float p_y = position.y;
-    float p_z = position.z;
-    physx::PxVec3 p = physx::PxVec3(p_x, p_y, p_z);
     if (m_dynamic) {
-        m_dynamic->setGlobalPose(PxTransform(p));
+        m_dynamic->get()->setGlobalPose(PxTransform(vec3_to_PxVec3(position)));
     } else {
-        m_static->setGlobalPose(PxTransform(p));
+        m_static->get()->setGlobalPose(PxTransform(vec3_to_PxVec3(position)));
     }
 }
 void RigidBody::set_rotation(const quat& rotation) {
-    float r_w = rotation.w;
-    float r_x = rotation.x;
-    float r_y = rotation.y;
-    float r_z = rotation.z;
-    physx::PxQuat q = physx::PxQuat(r_w, r_x, r_y, r_z);
     if (m_dynamic) {
-        m_dynamic->setGlobalPose(PxTransform(q));
+        m_dynamic->get()->setGlobalPose(PxTransform(quat_to_PxQuat(rotation)));
     } else {
-        m_static->setGlobalPose(PxTransform(q));
+        m_static->get()->setGlobalPose(PxTransform(quat_to_PxQuat(rotation)));
     }
 }
 
-void RigidBody::set_material(physx::PxMaterial* material) {
-    m_material = material;
-}
-
-void RigidBody::set_physics_and_scene(physx::PxScene* scene, physx::PxPhysics* physics) {
-    m_scene = scene;
-    m_physics = physics;
-}
-
-void RigidBody::create_cube_rigid_dynamic(const vec3& halfSize,
-                                          const float& mass,
-                                          const vec3& position,
-                                          const quat& rotation) {
-    if (m_static) {
-        return;
+void RigidBody::set_physics_and_scene(std::shared_ptr<PxScene_ptr_wrapper> scene,
+                                      std::shared_ptr<PxPhysics_ptr_wrapper> physics) {
+    if (!m_scene) {
+        m_scene = scene;
     }
-    physx::PxShape* shape = NULL;
-    float p_x = position.x;
-    float p_y = position.y;
-    float p_z = position.z;
-    float r_w = rotation.w;
-    float r_x = rotation.x;
-    float r_y = rotation.y;
-    float r_z = rotation.z;
-    physx::PxVec3 p = physx::PxVec3(p_x, p_y, p_z);
-    physx::PxQuat q = physx::PxQuat(r_w, r_x, r_y, r_z);
-    if (m_material) {
-        shape = m_physics->createShape(physx::PxBoxGeometry(halfSize.x, halfSize.y, halfSize.z), *m_material);
+    if (!m_physics) {
+        m_physics = physics;
+    }
+}
+
+void RigidBody::create_actor(PxShape* shape,
+                             bool isKinematic,
+                             bool isDynamic,
+                             const float& mass) {
+    shape->setLocalPose(PxTransform(get_rotation_from_transform()));
+    m_isKinematic = isKinematic;
+    if (isDynamic) {
+        m_dynamic = std::make_shared<PxDynamic_ptr_wrapper>(
+            m_physics->get()->createRigidDynamic(PxTransform(get_position_from_transform())));
+        m_dynamic->get()->attachShape(*shape);
+        PxRigidBodyExt::updateMassAndInertia(*m_dynamic->get(), mass);
+        m_dynamic->get()->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, isKinematic);
+        m_scene->get()->addActor(*m_dynamic->get());
+
     } else {
-        m_material = m_physics->createMaterial(0.3f, 0.3f, 0.6f);
-        shape = m_physics->createShape(physx::PxBoxGeometry(halfSize.x, halfSize.y, halfSize.z), *m_material);
+        m_static = std::make_shared<PxStatic_ptr_wrapper>(
+            m_physics->get()->createRigidStatic(PxTransform(get_position_from_transform())));
+        m_static->get()->attachShape(*shape);
+        m_scene->get()->addActor(*m_static->get());
     }
-    m_dynamic = m_physics->createRigidDynamic(PxTransform(p));
-    m_dynamic->setGlobalPose(PxTransform(q));
-    m_dynamic->attachShape(*shape);
-    PxRigidBodyExt::updateMassAndInertia(*m_dynamic, mass);
-    m_scene->addActor(*m_dynamic);
+}
+
+void RigidBody::create_cube_shape(const vec3& halfSize,
+                                  bool isKinematic,
+                                  bool isDynamic,
+                                  PxMaterial* material,
+                                  const float& mass) {
+    PxShape* shape = nullptr;
+    if (m_PxMaterial) {
+        if (material) {
+            m_PxMaterial->set(material);
+            shape = m_physics->get()->createShape(PxBoxGeometry(vec3_to_PxVec3(halfSize)), *m_PxMaterial->get());
+        } else {
+            shape = m_physics->get()->createShape(PxBoxGeometry(vec3_to_PxVec3(halfSize)), *m_PxMaterial->get());
+        }
+
+    } else {
+        if (material) {
+            m_PxMaterial = std::make_shared<PxMaterial_ptr_wrapper>(material);
+            shape = m_physics->get()->createShape(PxBoxGeometry(vec3_to_PxVec3(halfSize)), *m_PxMaterial->get());
+        } else {
+            constexpr PxReal staticFriction = 0.3f;
+            constexpr PxReal dynamicFriction = 0.3f;
+            constexpr PxReal restitution = 0.6f;
+            m_PxMaterial = std::make_shared<PxMaterial_ptr_wrapper>(
+                m_physics->get()->createMaterial(staticFriction, dynamicFriction, restitution));
+            shape = m_physics->get()->createShape(PxBoxGeometry(vec3_to_PxVec3(halfSize)), *m_PxMaterial->get());
+        }
+    }
+    create_actor(shape, isKinematic, isDynamic, mass);
+    shape->release();
+}
+/*
+    void RigidBody::create_capsule_shape(const float& radius,
+                                     const float& halfheight,
+                                     bool isKinematic,
+                                     bool isDynamic,
+                                     PxMaterial* material,
+                                     const float& mass) {
+    PxShape* shape = nullptr;
+    if (m_PxMaterial) {
+        if (material) {
+            m_PxMaterial->set(material);
+            shape = m_physics->get()->createShape(PxCapsuleGeometry(radius, halfheight), *m_PxMaterial->get());
+        } else {
+            shape = m_physics->get()->createShape(PxCapsuleGeometry(radius, halfheight), *m_PxMaterial->get());
+        }
+
+    } else {
+        if (material) {
+            m_PxMaterial->set(material);
+            shape = m_physics->get()->createShape(PxCapsuleGeometry(radius, halfheight), *m_PxMaterial->get());
+        } else {
+            constexpr PxReal staticFriction = 0.3f;
+            constexpr PxReal dynamicFriction = 0.3f;
+            constexpr PxReal restitution = 0.3f;
+            m_PxMaterial = std::make_shared<PxMaterial_ptr_wrapper>(
+                m_physics->get()->createMaterial(staticFriction, dynamicFriction, restitution));
+            shape = m_physics->get()->createShape(PxCapsuleGeometry(radius, halfheight), *m_PxMaterial->get());
+        }
+    }
+    create_actor(shape, isKinematic, isDynamic, mass);
     shape->release();
 }
 
-void RigidBody::create_cube_rigid_static(const vec3& halfSize, const vec3& position, const quat& rotation) {
-    if (m_dynamic) {
-        return;
-    }
-    physx::PxShape* shape = NULL;
-    float p_x = position.x;
-    float p_y = position.y;
-    float p_z = position.z;
-    float r_w = rotation.w;
-    float r_x = rotation.x;
-    float r_y = rotation.y;
-    float r_z = rotation.z;
-    physx::PxVec3 p = physx::PxVec3(p_x, p_y, p_z);
-    physx::PxQuat q = physx::PxQuat(r_w, r_x, r_y, r_z);
-    if (m_material) {
-        shape = m_physics->createShape(physx::PxBoxGeometry(halfSize.x, halfSize.y, halfSize.z), *m_material);
+void RigidBody::create_sphere_shape(const float& radius,
+                                    bool isKinematic,
+                                    bool isDynamic,
+                                    PxMaterial* material,
+                                    const float& mass) {
+    PxShape* shape = nullptr;
+    if (m_PxMaterial) {
+        if (material) {
+            m_PxMaterial->set(material);
+            shape = m_physics->get()->createShape(PxSphereGeometry(radius), *m_PxMaterial->get());
+        } else {
+            shape = m_physics->get()->createShape(PxSphereGeometry(radius), *m_PxMaterial->get());
+        }
+
     } else {
-        m_material = m_physics->createMaterial(0.3f, 0.3f, 0.6f);
-        shape = m_physics->createShape(physx::PxBoxGeometry(halfSize.x, halfSize.y, halfSize.z), *m_material);
+        if (material) {
+            m_PxMaterial->set(material);
+            shape = m_physics->get()->createShape(PxSphereGeometry(radius), *m_PxMaterial->get());
+        } else {
+            constexpr PxReal staticFriction = 0.3f;
+            constexpr PxReal dynamicFriction = 0.3f;
+            constexpr PxReal restitution = 0.3f;
+            m_PxMaterial = std::make_shared<PxMaterial_ptr_wrapper>(
+                m_physics->get()->createMaterial(staticFriction, dynamicFriction, restitution));
+            shape = m_physics->get()->createShape(PxSphereGeometry(radius), *m_PxMaterial->get());
+        }
     }
-    m_static = m_physics->createRigidStatic(PxTransform(p));
-    shape->setLocalPose(PxTransform(q));
-    m_static->attachShape(*shape);
-    m_scene->addActor(*m_static);
+    create_actor(shape, isKinematic, isDynamic, mass);
     shape->release();
 }
+*/
 
-void RigidBody::create_capsule_rigid_dynamic(const float& radius,
-                                             const float& halfheight,
-                                             const float& mass,
-                                             const vec3& position,
-                                             const quat& rotation) {
-    if (m_static) {
-        return;
+PxVec3 RigidBody::get_position_from_transform() {
+    auto sceneOpt = Scene::get_active_scene();
+    if (sceneOpt) {
+        Scene& scene = sceneOpt.value();
+        entt::entity handle = entt::to_entity(scene.get_registry(), *this);
+        auto goOpt = scene.get_game_object_from_handle(handle);
+        ;
+        if (goOpt) {
+            PxVec3 position = vec3_to_PxVec3(goOpt->get_component<components::Transform>().get_position());
+
+            return position;
+        }
     }
-    physx::PxShape* shape = NULL;
-    float p_x = position.x;
-    float p_y = position.y;
-    float p_z = position.z;
-    float r_w = rotation.w;
-    float r_x = rotation.x;
-    float r_y = rotation.y;
-    float r_z = rotation.z;
-    physx::PxVec3 p = physx::PxVec3(p_x, p_y, p_z);
-    physx::PxQuat q = physx::PxQuat(r_w, r_x, r_y, r_z);
-    if (m_material) {
-        shape = m_physics->createShape(physx::PxCapsuleGeometry(radius, halfheight), *m_material);
-    } else {
-        m_material = m_physics->createMaterial(0.3f, 0.3f, 0.6f);
-        shape = m_physics->createShape(physx::PxCapsuleGeometry(radius, halfheight), *m_material);
-    }
-    m_static = m_physics->createRigidStatic(PxTransform(p));
-    shape->setLocalPose(PxTransform(q));
-    m_static->attachShape(*shape);
-    m_scene->addActor(*m_static);
-    shape->release();
+    return PxVec3(std::numeric_limits<float>::max());
 }
 
-void RigidBody::create_capsule_rigid_static(const float& radius,
-                                            const float& halfheight,
-                                            const vec3& position,
-                                            const quat& rotation) {
-    if (m_dynamic) {
-        return;
+PxQuat RigidBody::get_rotation_from_transform() {
+    auto sceneOpt = Scene::get_active_scene();
+    if (sceneOpt) {
+        Scene& scene = sceneOpt.value();
+        entt::entity handle = entt::to_entity(scene.get_registry(), *this);
+        auto goOpt = scene.get_game_object_from_handle(handle);
+        if (goOpt) {
+            return quat_to_PxQuat(goOpt->get_component<components::Transform>().get_rotation());
+        }
     }
-    physx::PxShape* shape = NULL;
-    float p_x = position.x;
-    float p_y = position.y;
-    float p_z = position.z;
-    float r_w = rotation.w;
-    float r_x = rotation.x;
-    float r_y = rotation.y;
-    float r_z = rotation.z;
-    physx::PxVec3 p = physx::PxVec3(p_x, p_y, p_z);
-    physx::PxQuat q = physx::PxQuat(r_w, r_x, r_y, r_z);
-    if (m_material) {
-        shape = m_physics->createShape(physx::PxCapsuleGeometry(radius, halfheight), *m_material);
-    } else {
-        m_material = m_physics->createMaterial(0.3f, 0.3f, 0.6f);
-        shape = m_physics->createShape(physx::PxCapsuleGeometry(radius, halfheight), *m_material);
-    }
-    m_static = m_physics->createRigidStatic(PxTransform(p));
-    shape->setLocalPose(PxTransform(q));
-    m_static->attachShape(*shape);
-    m_scene->addActor(*m_static);
-    shape->release();
+    return PxQuat();
 }
 
-void RigidBody::create_sphere_rigid_dynamic(const float& radius,
-                                            const float& mass,
-                                            const vec3& position,
-                                            const quat& rotation) {
-    if (m_static) {
-        return;
-    }
-    physx::PxShape* shape = NULL;
-    float p_x = position.x;
-    float p_y = position.y;
-    float p_z = position.z;
-    float r_w = rotation.w;
-    float r_x = rotation.x;
-    float r_y = rotation.y;
-    float r_z = rotation.z;
-    physx::PxVec3 p = physx::PxVec3(p_x, p_y, p_z);
-    physx::PxQuat q = physx::PxQuat(r_w, r_x, r_y, r_z);
-    if (m_material) {
-        shape = m_physics->createShape(physx::PxSphereGeometry(radius), *m_material);
-    } else {
-        m_material = m_physics->createMaterial(0.3f, 0.3f, 0.6f);
-        shape = m_physics->createShape(physx::PxSphereGeometry(radius), *m_material);
-    }
-    m_static = m_physics->createRigidStatic(PxTransform(p));
-    shape->setLocalPose(PxTransform(q));
-    m_static->attachShape(*shape);
-    m_scene->addActor(*m_static);
-    shape->release();
+vec3 RigidBody::PxVec3_to_vec3(PxVec3 v) {
+    return vec3(v.x, v.y, v.z);
 }
 
-void RigidBody::create_sphere_rigid_static(const float& radius, const vec3& position, const quat& rotation) {
-    if (m_dynamic) {
-        return;
-    }
-    physx::PxShape* shape = NULL;
-    float p_x = position.x;
-    float p_y = position.y;
-    float p_z = position.z;
-    float r_w = rotation.w;
-    float r_x = rotation.x;
-    float r_y = rotation.y;
-    float r_z = rotation.z;
-    physx::PxVec3 p = physx::PxVec3(p_x, p_y, p_z);
-    physx::PxQuat q = physx::PxQuat(r_w, r_x, r_y, r_z);
-    if (m_material) {
-        shape = m_physics->createShape(physx::PxSphereGeometry(radius), *m_material);
-    } else {
-        m_material = m_physics->createMaterial(0.3f, 0.3f, 0.6f);
-        shape = m_physics->createShape(physx::PxSphereGeometry(radius), *m_material);
-    }
-    m_static = m_physics->createRigidStatic(PxTransform(p));
-    shape->setLocalPose(PxTransform(q));
-    m_static->attachShape(*shape);
-    m_scene->addActor(*m_static);
-    shape->release();
+PxVec3 RigidBody::vec3_to_PxVec3(vec3 v) {
+    return PxVec3(v.x, v.y, v.z);
+}
+
+quat RigidBody::PxQuat_to_quat(PxQuat q) {
+    return quat(q.w, q.x, q.y, q.z);
+}
+
+PxQuat RigidBody::quat_to_PxQuat(quat q) {
+    return PxQuat(q.x, q.y, q.z, q.w);
 }
 
 }  // namespace components

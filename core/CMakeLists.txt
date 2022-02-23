@@ -25,7 +25,7 @@ set(PRIVATE_LIBS
     stb
 )
 
-add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS} "inc/knoting/physics.h")
+add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS} "inc/knoting/physics.h" "inc/knoting/px_variables_wrapper.h")
 
 set_target_properties(knoting PROPERTIES
     CXX_STANDARD 17

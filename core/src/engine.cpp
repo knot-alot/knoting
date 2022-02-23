@@ -42,7 +42,7 @@ void Engine::update_modules() {
     // 6) SYSTEM : Sorted Transparent Render Pass
     // 7) SYSTEM : Post Processing Stack
 
-    m_physicsModule->update_to_transform();
+    m_physicsModule->update_info_to_transform();
 
     //    m_forwardRenderModule->on_render();
     m_forwardRenderModule->render_pbr();
