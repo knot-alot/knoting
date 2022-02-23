@@ -55,7 +55,6 @@ class RigidBody {
                              bool isDynamic,
                              PxMaterial* material = nullptr,
                              const float& mass = 0);
-
     PxVec3 get_position_from_transform();
     PxQuat get_rotation_from_transform();
 
