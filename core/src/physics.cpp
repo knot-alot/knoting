@@ -8,8 +8,7 @@ PxDefaultErrorCallback g_ErrorCallback;
 
 namespace knot {
 Physics::Physics(Engine& engine)
-    : m_engine(engine), m_Physics(nullptr), m_Scene(nullptr), m_Foundation(nullptr), m_Dispatcher(nullptr) {
-}
+    : m_engine(engine), m_Physics(nullptr), m_Scene(nullptr), m_Foundation(nullptr), m_Dispatcher(nullptr) {}
 
 Physics::~Physics() {}
 
@@ -61,7 +60,7 @@ void Physics::update_info_to_transform() {
         components::RigidBody& rigidbody = registry.get<components::RigidBody>(go.get_handle());
         vec3 pos = rigidbody.get_position();
         quat r = rigidbody.get_rotation();
-        
+
         transform.set_position(rigidbody.get_position());
 
         transform.set_rotation(rigidbody.get_rotation());

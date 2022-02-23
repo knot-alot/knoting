@@ -1,8 +1,8 @@
 #pragma once
 
+#include <knoting/px_variables_wrapper.h>
 #include <knoting/rigidbody.h>
 #include <knoting/subsystem.h>
-#include <knoting/px_variables_wrapper.h>
 
 namespace knot {
 

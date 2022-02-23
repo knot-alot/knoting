@@ -84,10 +84,7 @@ void RigidBody::set_physics_and_scene(std::shared_ptr<PxScene_ptr_wrapper> scene
     }
 }
 
-void RigidBody::create_actor(PxShape* shape,
-                             bool isKinematic,
-                             bool isDynamic,
-                             const float& mass) {
+void RigidBody::create_actor(PxShape* shape, bool isKinematic, bool isDynamic, const float& mass) {
     shape->setLocalPose(PxTransform(get_rotation_from_transform()));
     m_isKinematic = isKinematic;
     if (isDynamic) {
