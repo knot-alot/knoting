@@ -63,4 +63,12 @@ bool Engine::is_open() {
     return m_windowModule->is_open();
 }
 
+std::optional<std::reference_wrapper<Engine>> Engine::get_active_engine() {
+    return s_activeEngine;
+}
+
+void Engine::set_active_engine(std::optional<std::reference_wrapper<Engine>> engine) {
+    s_activeEngine = std::ref(engine);
+}
+
 }  // namespace knot

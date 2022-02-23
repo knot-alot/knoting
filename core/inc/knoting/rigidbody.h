@@ -34,8 +34,6 @@ class RigidBody {
     void set_rotation(const quat& rotation);
     void set_kinematic(bool isKinematic);
     //
-    void set_physics_and_scene(std::shared_ptr<PxScene_ptr_wrapper> scene,
-                               std::shared_ptr<PxPhysics_ptr_wrapper> physics);
 
     void create_actor(PxShape* shape, bool isKinematic, bool isDynamic, const float& mass = 0);
 

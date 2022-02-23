@@ -1,4 +1,4 @@
-
+#include <knoting/engine.h>
 #include <knoting/rigidbody.h>
 #include <knoting/scene.h>
 
@@ -9,7 +9,14 @@ RigidBody::RigidBody()
 
 RigidBody::~RigidBody() {}
 
-void RigidBody::on_awake() {}
+void RigidBody::on_awake() {
+    auto engineOpt = Engine::get_active_engine();
+    if (engineOpt) {
+        Engine& engine = engineOpt.value();
+        m_physics = engine.get_physics_module().lock()->get_physics().lock();
+        m_scene = engine.get_physics_module().lock()->get_active_Scene().lock();
+    }
+}
 void RigidBody::on_destroy() {
     if (m_dynamic) {
         m_scene->get()->removeActor(*m_dynamic->get());
@@ -74,16 +81,6 @@ void RigidBody::set_rotation(const quat& rotation) {
     }
 }
 
-void RigidBody::set_physics_and_scene(std::shared_ptr<PxScene_ptr_wrapper> scene,
-                                      std::shared_ptr<PxPhysics_ptr_wrapper> physics) {
-    if (!m_scene) {
-        m_scene = scene;
-    }
-    if (!m_physics) {
-        m_physics = physics;
-    }
-}
-
 void RigidBody::create_actor(PxShape* shape, bool isKinematic, bool isDynamic, const float& mass) {
     shape->setLocalPose(PxTransform(get_rotation_from_transform()));
     m_isKinematic = isKinematic;
@@ -133,8 +130,8 @@ void RigidBody::create_cube_shape(const vec3& halfSize,
     create_actor(shape, isKinematic, isDynamic, mass);
     shape->release();
 }
-/*
-    void RigidBody::create_capsule_shape(const float& radius,
+
+void RigidBody::create_capsule_shape(const float& radius,
                                      const float& halfheight,
                                      bool isKinematic,
                                      bool isDynamic,
@@ -196,7 +193,6 @@ void RigidBody::create_sphere_shape(const float& radius,
     create_actor(shape, isKinematic, isDynamic, mass);
     shape->release();
 }
-*/
 
 PxVec3 RigidBody::get_position_from_transform() {
     auto sceneOpt = Scene::get_active_scene();

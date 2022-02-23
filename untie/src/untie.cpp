@@ -19,6 +19,7 @@ Untie::Untie() {
     log::Logger::setup();
 
     m_engine = std::make_unique<knot::Engine>();
+    Engine::set_active_engine(*m_engine);
     std::shared_ptr<PxPhysics_ptr_wrapper> px_physics = m_engine->get_physics_module().lock()->get_physics().lock();
     std::shared_ptr<PxScene_ptr_wrapper> px_scene = m_engine->get_physics_module().lock()->get_active_Scene().lock();
     {
@@ -35,9 +36,7 @@ Untie::Untie() {
         mesh.create_cube();
         auto material = cubeObj.add_component<components::Material>();
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
-        rigidbody.set_physics_and_scene(px_scene, px_physics);
         vec3 halfsize = vec3(15.0, 2.0f, 15.0);
-
         rigidbody.create_cube_shape(vec3(15.0, 2.0f, 15.0), false, false);
 
         {
@@ -47,7 +46,6 @@ Untie::Untie() {
             mesh.create_cube();
             auto material = cubeObj.add_component<components::Material>();
             auto& rigidbody = cubeObj.add_component<components::RigidBody>();
-            rigidbody.set_physics_and_scene(px_scene, px_physics);
             vec3 halfsize = vec3(1.0f, 1.0f, 1.0f);
 
             rigidbody.create_cube_shape(halfsize, false, true, nullptr, 5.0f);
@@ -59,7 +57,6 @@ Untie::Untie() {
             mesh.create_cube();
             auto material = cubeObj.add_component<components::Material>();
             auto& rigidbody = cubeObj.add_component<components::RigidBody>();
-            rigidbody.set_physics_and_scene(px_scene, px_physics);
             vec3 halfsize = vec3(1.0f, 1.0f, 1.0f);
             rigidbody.create_cube_shape(halfsize, false, true, nullptr, 5.0f);
         }
