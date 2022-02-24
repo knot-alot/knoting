@@ -117,8 +117,10 @@ class PxStatic_ptr_wrapper {
    public:
     PxStatic_ptr_wrapper(PxRigidStatic* s = nullptr) : m_static(s) {}
     ~PxStatic_ptr_wrapper() {
-        m_static->release();
-        m_static = nullptr;
+        if (m_static) {
+            m_static->release();
+            m_static = nullptr;
+        }
     }
     void set(PxRigidStatic* s) {
         if (m_static) {
@@ -134,12 +136,37 @@ class PxStatic_ptr_wrapper {
     PxRigidStatic* m_static;
 };
 
+class PxShape_ptr_wrapper {
+   public:
+    PxShape_ptr_wrapper(PxShape* shape = nullptr) : m_shape(shape) {}
+    ~PxShape_ptr_wrapper() {
+        if (m_shape) {
+            m_shape->release();
+            m_shape = nullptr;
+        }
+    }
+    void set(PxShape* shape) {
+        if (m_shape) {
+            m_shape->release();
+            m_shape = nullptr;
+        }
+        m_shape = shape;
+    }
+
+    PxShape* get() { return m_shape; }
+
+   private:
+    PxShape* m_shape;
+};
+
 class PxMaterial_ptr_wrapper {
    public:
     PxMaterial_ptr_wrapper(PxMaterial* material = nullptr) : m_material(material) {}
     ~PxMaterial_ptr_wrapper() {
-        m_material->release();
-        m_material = nullptr;
+        if (m_material) {
+            m_material->release();
+            m_material = nullptr;
+        }
     }
     void set(PxMaterial* material) {
         if (m_material) {

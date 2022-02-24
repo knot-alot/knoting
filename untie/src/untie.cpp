@@ -35,31 +35,43 @@ Untie::Untie() {
         auto& mesh = cubeObj.add_component<components::Mesh>();
         mesh.create_cube();
         auto material = cubeObj.add_component<components::Material>();
-        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+        auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+        auto& shape = cubeObj.add_component<components::Shape>();
         vec3 halfsize = vec3(15.0, 2.0f, 15.0);
-        rigidbody.create_cube_shape(vec3(15.0, 2.0f, 15.0), false, false);
+        shape.set_geometry(shape.create_cube_geometry(halfsize));
 
-        {
-            auto cubeObj = scene.create_game_object("cube_1");
-            cubeObj.get_component<components::Transform>().set_position(glm::vec3(0.0f, 3.0f, 0.0f));
-            auto& mesh = cubeObj.add_component<components::Mesh>();
-            mesh.create_cube();
-            auto material = cubeObj.add_component<components::Material>();
-            auto& rigidbody = cubeObj.add_component<components::RigidBody>();
-            vec3 halfsize = vec3(1.0f, 1.0f, 1.0f);
+        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
-            rigidbody.create_cube_shape(halfsize, false, true, nullptr, 5.0f);
-        }
-        {
-            auto cubeObj = scene.create_game_object("cube_0");
-            cubeObj.get_component<components::Transform>().set_position(glm::vec3(1.0f, 7.0f, 1.0f));
-            auto& mesh = cubeObj.add_component<components::Mesh>();
-            mesh.create_cube();
-            auto material = cubeObj.add_component<components::Material>();
-            auto& rigidbody = cubeObj.add_component<components::RigidBody>();
-            vec3 halfsize = vec3(1.0f, 1.0f, 1.0f);
-            rigidbody.create_cube_shape(halfsize, false, true, nullptr, 5.0f);
-        }
+        rigidbody.create_actor(false, false);
+    }
+    {
+        auto cubeObj = scene.create_game_object("cube_1");
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(0.0f, 3.0f, 0.0f));
+        auto& mesh = cubeObj.add_component<components::Mesh>();
+        mesh.create_cube();
+        auto material = cubeObj.add_component<components::Material>();
+        auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+
+        auto& shape = cubeObj.add_component<components::Shape>();
+        vec3 halfsize = vec3(1.0f, 1.0f, 1.0f);
+        shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+        rigidbody.create_actor(false, true, 5.0f);
+    }
+    {
+        auto cubeObj = scene.create_game_object("cube_0");
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(1.0f, 7.0f, 1.0f));
+        auto& mesh = cubeObj.add_component<components::Mesh>();
+        mesh.create_cube();
+        auto material = cubeObj.add_component<components::Material>();
+        auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+        auto& shape = cubeObj.add_component<components::Shape>();
+        vec3 halfsize = vec3(1.0f, 1.0f, 1.0f);
+        shape.set_geometry(shape.create_cube_geometry(halfsize));
+        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+        rigidbody.create_actor(false, true, 5.0f);
     }
 }
 void Untie::run() {

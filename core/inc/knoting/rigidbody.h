@@ -25,7 +25,8 @@ class RigidBody {
 
     vec3 get_position();
     quat get_rotation();
-    std::weak_ptr<PxMaterial_ptr_wrapper> get_px_material();
+    std::weak_ptr<PxDynamic_ptr_wrapper> get_dynamic();
+    std::weak_ptr<PxStatic_ptr_wrapper> get_static();
     bool get_isKinematic();
 
     // could use after creat rigid
@@ -35,40 +36,23 @@ class RigidBody {
     void set_kinematic(bool isKinematic);
     //
 
-    void create_actor(PxShape* shape, bool isKinematic, bool isDynamic, const float& mass = 0);
+    void create_actor(bool isKinematic, bool isDynamic, const float& mass = 0);
+    void set_shape(std::shared_ptr<PxShape_ptr_wrapper> shape) { m_shape = shape; }
 
-    void create_cube_shape(const vec3& halfSize,
-                           bool isKinematic,
-                           bool isDynamic,
-                           PxMaterial* material = nullptr,
-                           const float& mass = 0);
-
-    void create_capsule_shape(const float& radius,
-                              const float& halfheight,
-                              bool isKinematic,
-                              bool isDynamic,
-                              PxMaterial* material = nullptr,
-                              const float& mass = 0);
-
-    void create_sphere_shape(const float& radius,
-                             bool isKinematic,
-                             bool isDynamic,
-                             PxMaterial* material = nullptr,
-                             const float& mass = 0);
     PxVec3 get_position_from_transform();
     PxQuat get_rotation_from_transform();
-
-    vec3 PxVec3_to_vec3(PxVec3 v);
-    PxVec3 vec3_to_PxVec3(vec3 v);
-    quat PxQuat_to_quat(PxQuat q);
-    PxQuat quat_to_PxQuat(quat q);
+    std::shared_ptr<PxShape_ptr_wrapper> get_shape_from_shape();
+    static vec3 PxVec3_to_vec3(PxVec3 v);
+    static PxVec3 vec3_to_PxVec3(vec3 v);
+    static quat PxQuat_to_quat(PxQuat q);
+    static PxQuat quat_to_PxQuat(quat q);
 
    protected:
     std::shared_ptr<PxPhysics_ptr_wrapper> m_physics;
+    std::shared_ptr<PxScene_ptr_wrapper> m_scene;
     std::shared_ptr<PxDynamic_ptr_wrapper> m_dynamic;
     std::shared_ptr<PxStatic_ptr_wrapper> m_static;
-    std::shared_ptr<PxScene_ptr_wrapper> m_scene;
-    std::shared_ptr<PxMaterial_ptr_wrapper> m_PxMaterial;
+    std::shared_ptr<PxShape_ptr_wrapper> m_shape;
     bool m_isKinematic;
 };
 
