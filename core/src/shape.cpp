@@ -40,15 +40,15 @@ void Shape::set_local_rotation(quat rotation) {
     }
 }
 
-PxBoxGeometry& Shape::create_cube_geometry(const vec3& halfsize) {
+PxBoxGeometry Shape::create_cube_geometry(const vec3& halfsize) {
     return PxBoxGeometry(RigidBody::vec3_to_PxVec3(halfsize));
 }
 
-PxSphereGeometry& Shape::create_sphere_geometry(const float& radius) {
+PxSphereGeometry Shape::create_sphere_geometry(const float& radius) {
     return PxSphereGeometry(radius);
 }
 
-PxCapsuleGeometry& Shape::create_capsule_geometry(const float& radius, const float& halfheight) {
+PxCapsuleGeometry Shape::create_capsule_geometry(const float& radius, const float& halfheight) {
     return PxCapsuleGeometry(radius, halfheight);
 }
 

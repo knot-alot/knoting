@@ -20,9 +20,9 @@ class Shape {
     void set_geometry(PxGeometry& geometry);
     void set_local_rotation(quat rotation);
 
-    PxBoxGeometry& create_cube_geometry(const vec3& halfsize);
-    PxSphereGeometry& create_sphere_geometry(const float& radius);
-    PxCapsuleGeometry& create_capsule_geometry(const float& radius, const float& halfheight);
+    PxBoxGeometry create_cube_geometry(const vec3& halfsize);
+    PxSphereGeometry create_sphere_geometry(const float& radius);
+    PxCapsuleGeometry create_capsule_geometry(const float& radius, const float& halfheight);
 
     std::shared_ptr<PxMaterial_ptr_wrapper> get_PxMaterial_from_pxmaterial();
 
