@@ -144,17 +144,16 @@ Editor::Editor() {
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
+
+    m_engine->add_subsystem(std::make_shared<WidgetSubsystem>(m_engine));
+
 }
 
 void Editor::run() {
-    auto widgetSubsystem = std::make_shared<WidgetSubsystem>(m_engine);
-    m_engine->add_subsystem(widgetSubsystem);
-    widgetSubsystem->on_awake();
 
     while (m_engine->is_open()) {
         m_engine->update_modules();
     }
-    widgetSubsystem->on_destroy();
 }
 
 }  // namespace knot

@@ -74,10 +74,14 @@ void Window::window_size_callback(GLFWwindow* window, int width, int height) {
     Window* self = (Window*)glfwGetWindowUserPointer(window);
     self->m_width = width;
     self->m_height = height;
-    self->m_engine.get_forward_render_module().lock()->recreate_framebuffer(width, height);
+    self->recreate_framebuffer(width, height);
     // TODO REPLACE THIS FUNCTION & ALL GLFW CALLBACKS WHEN IN EDITOR
     self->set_debug_resize_flag(true);
 }
+void Window::recreate_framebuffer(int width, int height) {
+    m_engine.get_forward_render_module().lock()->recreate_framebuffer(width, height);
+}
+
 
 void Window::setup_callbacks() {
     // TODO REPLACE ALL GLFW CALLBACKS WHEN IN EDITOR
@@ -89,6 +93,7 @@ bool Window::is_open() {
 }
 
 void Window::close() {
+    log::warn("closing glfw window");
     glfwSetWindowShouldClose(m_window, true);
 }
 

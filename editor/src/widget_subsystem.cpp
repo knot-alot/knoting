@@ -16,21 +16,21 @@ namespace knot {
 void WidgetSubsystem::on_awake() {
     auto window = m_engine->get_window_module().lock();
     imguiInit(window.get()->get_glfw_window());
+    set_glfw_editor_callbacks(window.get()->get_glfw_window());
 }
 
 void WidgetSubsystem::on_update(double m_delta_time) {
     dt = m_delta_time;
+    imguiEvents(dt);
+
 }
 
 WidgetSubsystem::WidgetSubsystem(std::weak_ptr<knot::Engine> engine) {
     m_engine = engine.lock();
-
-    //    imguiReset(window->get_window_width(), window->get_window_height())
 }
 
 void WidgetSubsystem::on_late_update() {
     //    glfwPollEvents();
-    imguiEvents(dt);
     auto window = m_engine->get_window_module().lock();
     if (window->get_debug_resize_flag()) {
         window->set_debug_resize_flag(false);
@@ -45,12 +45,14 @@ void WidgetSubsystem::on_late_update() {
     imguiRender(ImGui::GetDrawData());
 }
 void WidgetSubsystem::on_destroy() {
+    log::info("on destroy");
     m_widgets.clear();
     imguiShutdown();
 }
 void WidgetSubsystem::add_widget(std::shared_ptr<Widget> widget) {
     m_widgets.emplace_back(widget);
 }
+
 void WidgetSubsystem::imguiInit(GLFWwindow* window) {
     gWindow = window;
 
@@ -73,14 +75,17 @@ void WidgetSubsystem::imguiInit(GLFWwindow* window) {
                                              bgfx::copy(data, width * height * 4));
     imguiFontUniform = bgfx::createUniform("s_tex", bgfx::UniformType::Sampler);
 
-    // TODO FIND OUT WHY LOADED SHADERS DO NOT WORK
-    // shader_test.load_shader("imgui", "fs_ocornut_imgui.bin","vs_ocornut_imgui.bin");
-    // imguiProgram = shader_test.get_program();
-    // END TODO
+////     TODO FIND OUT WHY LOADED SHADERS DO NOT WORK
+//     shader_test.load_shader("imgui", "fs_ocornut_imgui.bin","vs_ocornut_imgui.bin");
+//     imguiProgram = shader_test.get_program();
+////     END TODO
 
     bgfx::ShaderHandle vs = bgfx::createShader(bgfx::makeRef(vs_ocornut_imgui(), vs_ocornut_imgui_len()));
     bgfx::ShaderHandle fs = bgfx::createShader(bgfx::makeRef(fs_ocornut_imgui(), fs_ocornut_imgui_len()));
     imguiProgram = bgfx::createProgram(vs, fs, true);
+
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
     // Setup back-end capabilities flags
     io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
@@ -186,7 +191,6 @@ void WidgetSubsystem::imguiEvents(float dt) {
 }
 
 void WidgetSubsystem::imguiRender(ImDrawData* drawData) {
-    log::info("RENDER ImGui");
     for (int ii = 0, num = drawData->CmdListsCount; ii < num; ++ii) {
         bgfx::TransientVertexBuffer tvb;
         bgfx::TransientIndexBuffer tib;
@@ -249,14 +253,72 @@ void WidgetSubsystem::imguiShutdown() {
     ImGui::DestroyContext();
 }
 
-// const char* WidgetSubsystem::imguiGetClipboardText( void* userData )
-//{
-//     return glfwGetClipboardString( ( GLFWwindow* )userData );
-// }
-//
-// void WidgetSubsystem::imguiSetClipboardText( void* userData, const char* text )
-//{
-//     glfwSetClipboardString( ( GLFWwindow* )userData, text );
-// }
+void WidgetSubsystem::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    ImGuiIO& io = ImGui::GetIO();
+    if (key >= 0 && key < IM_ARRAYSIZE(io.KeysDown)) {
+        if (action == GLFW_PRESS) {
+            io.KeysDown[key] = true;
+        } else if (action == GLFW_RELEASE) {
+            io.KeysDown[key] = false;
+        }
+    }
+
+    io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
+    io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
+    io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
+    io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
+}
+
+void WidgetSubsystem::charCallback(GLFWwindow* window, unsigned int codepoint) {
+    ImGuiIO& io = ImGui::GetIO();
+    io.AddInputCharacter(codepoint);
+}
+
+void WidgetSubsystem::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+    ImGuiIO& io = ImGui::GetIO();
+    if (button >= 0 && button < IM_ARRAYSIZE(io.MouseDown)) {
+        if (action == GLFW_PRESS) {
+            io.MouseDown[button] = true;
+        } else if (action == GLFW_RELEASE) {
+            io.MouseDown[button] = false;
+        }
+    }
+}
+
+void WidgetSubsystem::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+    ImGuiIO& io = ImGui::GetIO();
+    io.MouseWheelH += (float)xoffset;
+    io.MouseWheel += (float)yoffset;
+
+    if (!io.WantCaptureMouse) {
+        Window* widow = (Window*)glfwGetWindowUserPointer(window);
+        widow->add_mouse_change_x((float)xoffset);
+        widow->add_mouse_change_y((float)yoffset);
+    }
+}
+void WidgetSubsystem::charModsCallback(GLFWwindow* window, unsigned int codepoint, int mods) {}
+void WidgetSubsystem::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {}
+void WidgetSubsystem::cursorEnterCallback(GLFWwindow* window, int entered) {}
+void WidgetSubsystem::dropCallback(GLFWwindow* window, int count, const char** paths) {}
+
+void WidgetSubsystem::windowSizeCallback(GLFWwindow* window, int width, int height) {
+    Window* widow = (Window*)glfwGetWindowUserPointer(window);
+    widow->set_window_width(width);
+    widow->set_window_height(height);
+    widow->recreate_framebuffer(width, height);
+    widow->set_debug_resize_flag(true);
+}
+
+void WidgetSubsystem::set_glfw_editor_callbacks(GLFWwindow* window) {
+    glfwSetKeyCallback(window, keyCallback);
+    glfwSetCharCallback(window, charCallback);
+    glfwSetCharModsCallback(window, charModsCallback);
+    glfwSetMouseButtonCallback(window, mouseButtonCallback);
+    glfwSetCursorPosCallback(window, cursorPosCallback);
+    glfwSetCursorEnterCallback(window, cursorEnterCallback);
+    glfwSetScrollCallback(window, scrollCallback);
+    glfwSetDropCallback(window, dropCallback);
+    glfwSetWindowSizeCallback(window, windowSizeCallback);
+}
 
 }  // namespace knot

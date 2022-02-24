@@ -54,7 +54,7 @@ file(GLOB IMGUI_SOURCES
   imgui/imgui_widgets.cpp
   imgui/imgui_demo.cpp
 
-#  imgui/backends/imgui_impl_glfw.cpp
+  imgui/backends/imgui_impl_glfw.cpp
 #  imgui/backends/imgui_impl_opengl3.cpp
 )
 add_library(imgui ${IMGUI_SOURCES})

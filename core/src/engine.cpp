@@ -49,12 +49,11 @@ void Engine::update_modules() {
     for (auto& module : m_engineModules) {
         module->on_late_update();
     }
-    log::info("post last update");
     bgfx::frame();
-    log::info("next frame");
 }
 
 Engine::~Engine() {
+    log::info("engine on destroy");
     for (auto& module : m_engineModules) {
         module->on_destroy();
     }
@@ -65,6 +64,7 @@ bool Engine::is_open() {
 }
 void Engine::add_subsystem(std::shared_ptr<Subsystem> subsystem) {
     m_engineModules.emplace_back(subsystem);
+    subsystem->on_awake();
 }
 
 }  // namespace knot

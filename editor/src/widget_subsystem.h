@@ -4,6 +4,7 @@
 
 #include <bgfx/bgfx.h>
 #include <imgui.h>
+#include <imgui_impl_glfw.h>
 #include <knoting/engine.h>
 #include <memory>
 #include <vector>
@@ -31,6 +32,18 @@ class WidgetSubsystem : public Subsystem {
     void on_late_update() override;
     void on_destroy() override;
 
+    void set_glfw_editor_callbacks(GLFWwindow* window);
+
+    static void keyCallback( GLFWwindow* window, int key, int scancode, int action, int mods );
+    static void charCallback( GLFWwindow* window, unsigned int codepoint );
+    static void charModsCallback( GLFWwindow* window, unsigned int codepoint, int mods );
+    static void mouseButtonCallback( GLFWwindow* window, int button, int action, int mods );
+    static void cursorPosCallback( GLFWwindow* window, double xpos, double ypos );
+    static void cursorEnterCallback( GLFWwindow* window, int entered );
+    static void scrollCallback( GLFWwindow* window, double xoffset, double yoffset );
+    static void dropCallback( GLFWwindow* window, int count, const char** paths );
+    static void windowSizeCallback( GLFWwindow* window, int width, int height );
+
    private:
     void imguiInit(GLFWwindow* window);
 
@@ -43,8 +56,8 @@ class WidgetSubsystem : public Subsystem {
 
     void imguiRender(ImDrawData* drawData);
     void imguiShutdown();
-    void WidgetSubsystem::imguiReset(uint16_t width, uint16_t height);
-    void WidgetSubsystem::imguiEvents(float dt);
+    void imguiReset(uint16_t width, uint16_t height);
+    void imguiEvents(float dt);
     double dt = 0.01;
     //    static GLFWwindow* gWindow;        // = NULL;
     //    static GLFWcursor* gMouseCursors;  //[ ImGuiMouseCursor_COUNT ] = { 0 };

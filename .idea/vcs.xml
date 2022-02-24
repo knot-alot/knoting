@@ -7,6 +7,7 @@
     <mapping directory="$PROJECT_DIR$/third/bgfx/bgfx" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/bgfx/bimg" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/bgfx/bx" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/cereal" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/entt" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/glfw" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/glm" vcs="Git" />
@@ -16,6 +17,8 @@
     <mapping directory="$PROJECT_DIR$/third/json" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/physx" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/portable-file-dialogs" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/rapidjson" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/rapidjson/thirdparty/gtest" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/spdlog" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/stb" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/stduuid" vcs="Git" />
