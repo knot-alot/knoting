@@ -20,6 +20,7 @@ class Raycast {
         if (m_ishit) {
             return m_maxDistance;
         }
+        return std::numeric_limits<float>::max();
     }
     bool get_ishit() { return m_ishit; }
     vec3 get_hitPosition();

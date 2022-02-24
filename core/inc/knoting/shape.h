@@ -17,7 +17,7 @@ class Shape {
     std::weak_ptr<PxShape_ptr_wrapper> get_shape() { return m_shape; }
 
     void set_material(std::shared_ptr<PxMaterial_ptr_wrapper> material) { m_material = material; }
-    void set_geometry(PxGeometry& geometry);
+    void set_geometry(const PxGeometry& geometry);
     void set_local_rotation(quat rotation);
 
     PxBoxGeometry create_cube_geometry(const vec3& halfsize);

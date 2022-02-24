@@ -25,7 +25,7 @@ void Shape::on_awake() {
 
 void Shape::on_destroy() {}
 
-void Shape::set_geometry(PxGeometry& geometry) {
+void Shape::set_geometry(const PxGeometry& geometry) {
     if (!m_shape) {
         m_shape = std::make_shared<PxShape_ptr_wrapper>(m_physics->get()->createShape(geometry, *m_material->get()));
 
