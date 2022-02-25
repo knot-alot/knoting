@@ -1,3 +1,4 @@
+#include <knoting/asset_manager.h>
 #include <knoting/log.h>
 #include <knoting/mesh.h>
 #include <filesystem>
@@ -114,20 +115,19 @@ std::vector<std::string> Mesh::split(std::string s, const std::string& t) {
 }
 
 bool Mesh::internal_load_obj(const std::string& path) {
-    std::string fileName = PATH_MODELS + path;
-    std::filesystem::path fs_path = fileName;
+    std::filesystem::path fsPath = AssetManager::get_resources_path().append(PATH_MODELS).append(path);
 
-    if (!exists(fs_path)) {
-        log::error(fileName + " - does not Exist");
+    if (!exists(fsPath)) {
+        log::error("{} - does not Exist", fsPath.string());
         m_assetState = AssetState::Failed;
         return false;
     }
     auto start = high_resolution_clock::now();
 
-    if (fileName.find(".obj") != std::string::npos) {
-        std::ifstream fin(fileName, std::ios::in);
+    if (fsPath.extension().string() == ".obj") {
+        std::ifstream fin(fsPath, std::ios::in);
         if (!fin) {
-            log::error("cant open file {}", fileName);
+            log::error("cant open file {}", fsPath.string());
             m_vbh = BGFX_INVALID_HANDLE;
             m_ibh = BGFX_INVALID_HANDLE;
             m_assetState = AssetState::Failed;
@@ -144,10 +144,10 @@ bool Mesh::internal_load_obj(const std::string& path) {
         int vertexIndex, uvIndex, normalIndex;  // v/vt/vn
         int splitIndex;
 
-        log::info("loading file {}", fileName);
+        log::info("loading file {}", fsPath.string());
         std::string faceData;
 
-        std::vector<std::string> split_data;
+        std::vector<std::string> splitData;
 
         std::string lineBuffer;
         std::string cmd;
@@ -178,14 +178,14 @@ bool Mesh::internal_load_obj(const std::string& path) {
 
             } else if (cmd == "f") {
                 while (ss >> faceData) {
-                    split_data = split(faceData, "/");
-                    sscanf(split_data[0].c_str(), "%d", &vertexIndex);
+                    splitData = split(faceData, "/");
+                    sscanf(splitData[0].c_str(), "%d", &vertexIndex);
                     vertexIndices.emplace_back(vertexIndex);
 
-                    sscanf(split_data[1].c_str(), "%d", &uvIndex);
+                    sscanf(splitData[1].c_str(), "%d", &uvIndex);
                     uvIndices.emplace_back(uvIndex);
 
-                    sscanf(split_data[2].c_str(), "%d", &normalIndex);
+                    sscanf(splitData[2].c_str(), "%d", &normalIndex);
                     normalIndices.emplace_back(normalIndex);
                 }
             }
@@ -224,7 +224,7 @@ bool Mesh::internal_load_obj(const std::string& path) {
         VertexLayout::s_meshVertexLayout
         );
 
-    log::debug("init buffers {}", fileName);
+    log::debug("init buffers {}", fsPath.string());
 
     // clang-format on
 

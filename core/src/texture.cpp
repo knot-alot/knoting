@@ -1,3 +1,4 @@
+#include <knoting/asset_manager.h>
 #include <knoting/log.h>
 #include <knoting/texture.h>
 #include <stb_image.h>
@@ -24,11 +25,10 @@ void Texture::on_destroy() {
 
 // TODO Return fail state for the template so that it can set the idX to the default fallback texture
 void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool usingAnisotropicFiltering) {
-    std::string fullPath = PATH_TEXTURE + path;
-    std::filesystem::path fs_path = fullPath;
+    std::filesystem::path fsPath = AssetManager::get_resources_path().append(PATH_TEXTURE).append(path);
 
-    if (!exists(fs_path)) {
-        log::error(fullPath + " - does not Exist");
+    if (!exists(fsPath)) {
+        log::error("{} - does not Exist", fsPath.string());
         m_textureHandle = BGFX_INVALID_HANDLE;
     }
 
@@ -36,11 +36,11 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
     glm::ivec2 img_size;
     int channels;
     stbi_set_flip_vertically_on_load(true);
-    stbi_uc* data = stbi_load(fullPath.c_str(), &img_size.x, &img_size.y, &channels, 0);
+    stbi_uc* data = stbi_load(fsPath.string().c_str(), &img_size.x, &img_size.y, &channels, 0);
     int numberOfLayers = 1;
 
     if (!data) {
-        log::error("Failed to load image: " + fullPath);
+        log::error("Failed to load image: {}", fsPath.string());
         m_assetState = AssetState::Failed;
         return;
     }

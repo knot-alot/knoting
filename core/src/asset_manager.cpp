@@ -1,5 +1,12 @@
 #include <knoting/asset_manager.h>
 
+#if defined(WIN32) || defined(_WIN32)
+#include <windows.h>
+#elif defined(__linux__)
+#include <sys/types.h>
+#include <unistd.h>
+#endif
+
 namespace knot {
 
 void AssetManager::on_awake() {
@@ -40,4 +47,26 @@ void AssetManager::load_assets_manual() {
 }
 
 void AssetManager::load_assets_serialize() {}
+
+std::filesystem::path AssetManager::get_resources_path() {
+    std::filesystem::path path = get_executable_path();
+    return path.parent_path().parent_path().append("res/");
+}
+
+std::filesystem::path AssetManager::get_executable_path() {
+    std::array<char, 512> buffer;
+    std::fill(buffer.begin(), buffer.end(), '\0');
+
+#if defined(WIN32) || defined(_WIN32)
+    GetModuleFileName(nullptr, buffer.data(), MAX_PATH);
+#elif defined(__linux__)
+    ssize_t count = readlink("/proc/self/exe", buffer.data(), buffer.size());
+#endif
+
+    std::string result = std::string(buffer.begin(), buffer.end());
+    std::replace(result.begin(), result.end(), '\\', '/');
+
+    return result;
+}
+
 }  // namespace knot
