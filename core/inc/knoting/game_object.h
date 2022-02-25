@@ -5,6 +5,7 @@
 #include <knoting/transform.h>
 #include <knoting/types.h>
 #include <cereal/cereal.hpp>
+#include <cereal/types/optional.hpp>
 #include <cereal/types/vector.hpp>
 #include <entt/entt.hpp>
 #include <random>
@@ -64,8 +65,8 @@ class GameObject {
    public:
     GameObject(entt::entity handle, Scene& scene);
 
-    inline bool operator==(const GameObject& other) const { return m_id == other.m_id; }
-    inline bool operator!=(const GameObject& other) const { return m_id != other.m_id; }
+    inline bool operator==(const GameObject& other) const { return this->get_id() == other.get_id(); }
+    inline bool operator!=(const GameObject& other) const { return this->get_id() != other.get_id(); }
 
     const uuid get_id() const;
     const entt::entity get_handle() const;
@@ -121,6 +122,11 @@ class GameObject {
         m_scene.get().m_registry.remove<T>(m_handle);
     }
 
+    template <class Archive>
+    void serialize(Archive& archive) {
+        archive(CEREAL_NVP(m_handle));
+    }
+
    protected:
     friend class Scene;
 
@@ -148,8 +154,8 @@ class GameObject {
     template <typename T>
     typename enable_if<!HasOnDestroy<T>::value>::type call_on_destroy(T&) {}
 
-    uuid m_id;
     entt::entity m_handle;
+
     std::reference_wrapper<Scene> m_scene;
 
     inline static UUIDGenerator s_uuidGenerator;
@@ -170,6 +176,11 @@ class Hierarchy {
     std::vector<GameObject> get_children() const;
     void add_child(GameObject child);
     void remove_child(GameObject child);
+
+    template <class Archive>
+    void serialize(Archive& archive) {
+        archive(CEREAL_NVP(m_parent), CEREAL_NVP(m_children));
+    }
 
    protected:
     std::optional<GameObject> m_parent;

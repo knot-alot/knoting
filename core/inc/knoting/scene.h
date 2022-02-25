@@ -28,10 +28,13 @@ class Scene {
     static std::optional<std::reference_wrapper<Scene>> get_active_scene();
     static void set_active_scene(std::optional<std::reference_wrapper<Scene>> scene);
 
-    template <class Archive>
-    void serialize(Archive& archive) {
-        // TODO: archive the m_uuidGameObjectMap? or the registry?
-    }
+    std::string get_serialized_scene() { return m_serializedScene.str(); }
+
+
+    void save_scene_to_stream();
+    void load_scene_from_stream(std::stringstream serialized);
+
+    std::stringstream m_serializedScene;
 
    protected:
     friend class GameObject;
@@ -40,6 +43,8 @@ class Scene {
     std::map<uuid, GameObject> m_uuidGameObjectMap;
     std::map<entt::entity, GameObject> m_entityGameObjectMap;
 
+
+    GameObject add_game_object(entt::entity handle);
     inline static std::optional<std::reference_wrapper<Scene>> s_activeScene = std::nullopt;
 };
 

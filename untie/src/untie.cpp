@@ -6,10 +6,13 @@
 #include <knoting/scene.h>
 #include <knoting/spot_light.h>
 
+#include <cereal/archives/json.hpp>
+
 #include <iostream>
 
 namespace knot {
 Scene scene;
+Scene sceneReloaded;
 Untie::Untie() {
     Scene::set_active_scene(scene);
     log::Logger::setup();
@@ -57,7 +60,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5.0f, 0.0f, -10.0f));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(15, 1, 15));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 45, 0));
-        cubeObj.add_component<InstanceMesh>("uv_cube.obj");
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
@@ -72,7 +75,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5.0f, 1.0f, -10.0f));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(5, 5, 5));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 180, 0));
-        cubeObj.add_component<InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
 
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
@@ -87,7 +90,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5.0f + 5, 1.0f, -10.0f - 5));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 240, 0));
-        cubeObj.add_component<InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
 
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
@@ -102,7 +105,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5.0f - 5, 1.0f, -10.0f - 5));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 160, 0));
-        cubeObj.add_component<InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
 
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
@@ -117,7 +120,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5.0f, 1.0f, -10.0f - 7));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 45, 0));
-        cubeObj.add_component<InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
 
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
@@ -132,7 +135,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5.0f - 8, 1.0f, -10.0f + 2));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 90, 0));
-        cubeObj.add_component<InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
 
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
@@ -142,6 +145,9 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
+
+    scene.save_scene_to_stream();
+    log::debug(scene.get_serialized_scene());
 }
 
 void Untie::run() {

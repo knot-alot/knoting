@@ -28,7 +28,7 @@ class ShaderProgram : public Asset {
 
     template <class Archive>
     void serialize(Archive& archive) {
-        // TODO: archive the shader path?
+        archive(CEREAL_NVP(m_assetType), CEREAL_NVP(m_fallbackName), CEREAL_NVP(m_fullPath), CEREAL_NVP(m_assetName));
     }
 
    private:

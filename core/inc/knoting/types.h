@@ -30,6 +30,35 @@ using vec3d = vec<3, f64>;
 using vec4i = vec<4, i32>;
 using vec4d = vec<4, f64>;
 
+template <class Archive>
+void serialize(Archive& archive, knot::vec2i& v) {
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y));
+}
+template <class Archive>
+void serialize(Archive& archive, knot::vec2u& v) {
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y));
+}
+template <class Archive>
+void serialize(Archive& archive, knot::vec2d& v) {
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y));
+}
+template <class Archive>
+void serialize(Archive& archive, knot::vec3i& v) {
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y), CEREAL_NVP(v.z));
+}
+template <class Archive>
+void serialize(Archive& archive, knot::vec3d& v) {
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y), CEREAL_NVP(v.z));
+}
+template <class Archive>
+void serialize(Archive& archive, knot::vec4i& v) {
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y), CEREAL_NVP(v.z), CEREAL_NVP(v.w));
+}
+template <class Archive>
+void serialize(Archive& archive, knot::vec4d& v) {
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y), CEREAL_NVP(v.z), CEREAL_NVP(v.w));
+}
+
 }  // namespace knot
 
 #define IM_VEC2_CLASS_EXTRA       \
@@ -51,82 +80,82 @@ namespace glm {
 
 template <class Archive>
 void serialize(Archive& archive, glm::vec2& v) {
-    archive(v.x, v.y);
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y));
 }
 template <class Archive>
 void serialize(Archive& archive, glm::vec3& v) {
-    archive(v.x, v.y, v.z);
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y), CEREAL_NVP(v.z));
 }
 template <class Archive>
 void serialize(Archive& archive, glm::vec4& v) {
-    archive(v.x, v.y, v.z, v.w);
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y), CEREAL_NVP(v.z), CEREAL_NVP(v.w));
 }
 template <class Archive>
 void serialize(Archive& archive, glm::ivec2& v) {
-    archive(v.x, v.y);
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y));
 }
 template <class Archive>
 void serialize(Archive& archive, glm::ivec3& v) {
-    archive(v.x, v.y, v.z);
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y), CEREAL_NVP(v.z));
 }
 template <class Archive>
 void serialize(Archive& archive, glm::ivec4& v) {
-    archive(v.x, v.y, v.z, v.w);
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y), CEREAL_NVP(v.z), CEREAL_NVP(v.w));
 }
 template <class Archive>
 void serialize(Archive& archive, glm::uvec2& v) {
-    archive(v.x, v.y);
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y));
 }
 template <class Archive>
 void serialize(Archive& archive, glm::uvec3& v) {
-    archive(v.x, v.y, v.z);
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y), CEREAL_NVP(v.z));
 }
 template <class Archive>
 void serialize(Archive& archive, glm::uvec4& v) {
-    archive(v.x, v.y, v.z, v.w);
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y), CEREAL_NVP(v.z), CEREAL_NVP(v.w));
 }
 template <class Archive>
 void serialize(Archive& archive, glm::dvec2& v) {
-    archive(v.x, v.y);
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y));
 }
 template <class Archive>
 void serialize(Archive& archive, glm::dvec3& v) {
-    archive(v.x, v.y, v.z);
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y), CEREAL_NVP(v.z));
 }
 template <class Archive>
 void serialize(Archive& archive, glm::dvec4& v) {
-    archive(v.x, v.y, v.z, v.w);
+    archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y), CEREAL_NVP(v.z), CEREAL_NVP(v.w));
 }
 
 // glm matrices serialization
 template <class Archive>
 void serialize(Archive& archive, glm::mat2& m) {
-    archive(m[0], m[1]);
+    archive(CEREAL_NVP(m[0]), CEREAL_NVP(m[1]));
 }
 template <class Archive>
 void serialize(Archive& archive, glm::dmat2& m) {
-    archive(m[0], m[1]);
+    archive(CEREAL_NVP(m[0]), CEREAL_NVP(m[1]));
 }
 template <class Archive>
 void serialize(Archive& archive, glm::mat3& m) {
-    archive(m[0], m[1], m[2]);
+    archive(CEREAL_NVP(m[0]), CEREAL_NVP(m[1]), CEREAL_NVP(m[2]));
 }
 template <class Archive>
 void serialize(Archive& archive, glm::mat4& m) {
-    archive(m[0], m[1], m[2], m[3]);
+    archive(CEREAL_NVP(m[0]), CEREAL_NVP(m[1]), CEREAL_NVP(m[2]), CEREAL_NVP(m[3]));
 }
 template <class Archive>
 void serialize(Archive& archive, glm::dmat4& m) {
-    archive(m[0], m[1], m[2], m[3]);
+    archive(CEREAL_NVP(m[0]), CEREAL_NVP(m[1]), CEREAL_NVP(m[2]), CEREAL_NVP(m[3]));
 }
 
 template <class Archive>
 void serialize(Archive& archive, glm::quat& q) {
-    archive(q.x, q.y, q.z, q.w);
+    archive(CEREAL_NVP(q.x), CEREAL_NVP(q.y), CEREAL_NVP(q.z), CEREAL_NVP(q.w));
 }
 template <class Archive>
 void serialize(Archive& archive, glm::dquat& q) {
-    archive(q.x, q.y, q.z, q.w);
+    archive(CEREAL_NVP(q.x), CEREAL_NVP(q.y), CEREAL_NVP(q.z), CEREAL_NVP(q.w));
 }
 
 }  // namespace glm

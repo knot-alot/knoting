@@ -111,11 +111,12 @@ uuid UUIDGenerator::generate() {
     return (*m_uuidGenerator)();
 }
 
-GameObject::GameObject(entt::entity handle, Scene& scene)
-    : m_handle(handle), m_scene(scene), m_id(s_uuidGenerator.generate()) {}
+GameObject::GameObject(entt::entity handle, Scene& scene) : m_handle(handle), m_scene(scene) {
+    this->try_add_component<uuid>(s_uuidGenerator.generate());
+}
 
 const uuid GameObject::get_id() const {
-    return m_id;
+    return this->get_component<uuid>();
 }
 
 bool GameObject::has_no_components() const {

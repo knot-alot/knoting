@@ -9,7 +9,7 @@
 #include <vector>
 
 namespace knot {
-
+namespace components {
 class InstanceMesh {
    public:
     InstanceMesh();
@@ -32,4 +32,6 @@ class InstanceMesh {
     std::shared_ptr<components::Mesh> m_mesh;
     std::string m_path;
 };
+}  // namespace components
+
 }  // namespace knot
