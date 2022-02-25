@@ -7,6 +7,7 @@
 #include <knoting/spot_light.h>
 #include <knoting/subsystem.h>
 #include "widget_subsystem.h"
+#include "demo_widget.h"
 
 #include <iostream>
 
@@ -145,7 +146,11 @@ Editor::Editor() {
         cubeObj.add_component<components::Material>(material);
     }
 
-    m_engine->add_subsystem(std::make_shared<WidgetSubsystem>(m_engine));
+    auto widget_manager = std::make_shared<WidgetSubsystem>(m_engine);
+    auto demo = std::make_shared<DemoWidget>("demo");
+
+    widget_manager->add_widget(demo);
+    m_engine->add_subsystem(widget_manager);
 
 }
 

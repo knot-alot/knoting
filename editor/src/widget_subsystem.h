@@ -45,7 +45,7 @@ class WidgetSubsystem : public Subsystem {
     static void windowSizeCallback( GLFWwindow* window, int width, int height );
 
    private:
-    void imguiInit(GLFWwindow* window);
+    void imgui_init(GLFWwindow* window);
 
    private:
     std::vector<std::shared_ptr<Widget>> m_widgets;

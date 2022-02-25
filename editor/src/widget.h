@@ -4,7 +4,7 @@ namespace knot {
 
 class Widget {
    public:
-    Widget(std::string name) {}
+    Widget(const std::string& name) {}
 
     virtual void on_awake() {}
     virtual void on_widget_render() {}

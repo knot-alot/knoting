@@ -15,7 +15,7 @@ static GLFWcursor* gMouseCursors[ImGuiMouseCursor_COUNT] = {0};
 namespace knot {
 void WidgetSubsystem::on_awake() {
     auto window = m_engine->get_window_module().lock();
-    imguiInit(window.get()->get_glfw_window());
+    imgui_init(window.get()->get_glfw_window());
     set_glfw_editor_callbacks(window.get()->get_glfw_window());
 }
 
@@ -30,7 +30,6 @@ WidgetSubsystem::WidgetSubsystem(std::weak_ptr<knot::Engine> engine) {
 }
 
 void WidgetSubsystem::on_late_update() {
-    //    glfwPollEvents();
     auto window = m_engine->get_window_module().lock();
     if (window->get_debug_resize_flag()) {
         window->set_debug_resize_flag(false);
@@ -39,11 +38,15 @@ void WidgetSubsystem::on_late_update() {
 
     ImGui::NewFrame();
 
-    ImGui::ShowDemoWindow();
+    for(auto& widget : m_widgets){
+        widget->on_widget_render();
+    }
+
 
     ImGui::Render();
     imguiRender(ImGui::GetDrawData());
 }
+
 void WidgetSubsystem::on_destroy() {
     log::info("on destroy");
     m_widgets.clear();
@@ -53,7 +56,7 @@ void WidgetSubsystem::add_widget(std::shared_ptr<Widget> widget) {
     m_widgets.emplace_back(widget);
 }
 
-void WidgetSubsystem::imguiInit(GLFWwindow* window) {
+void WidgetSubsystem::imgui_init(GLFWwindow* window) {
     gWindow = window;
 
     unsigned char* data;
@@ -74,11 +77,6 @@ void WidgetSubsystem::imguiInit(GLFWwindow* window) {
     imguiFontTexture = bgfx::createTexture2D((uint16_t)width, (uint16_t)height, false, 1, bgfx::TextureFormat::BGRA8, 0,
                                              bgfx::copy(data, width * height * 4));
     imguiFontUniform = bgfx::createUniform("s_tex", bgfx::UniformType::Sampler);
-
-////     TODO FIND OUT WHY LOADED SHADERS DO NOT WORK
-//     shader_test.load_shader("imgui", "fs_ocornut_imgui.bin","vs_ocornut_imgui.bin");
-//     imguiProgram = shader_test.get_program();
-////     END TODO
 
     bgfx::ShaderHandle vs = bgfx::createShader(bgfx::makeRef(vs_ocornut_imgui(), vs_ocornut_imgui_len()));
     bgfx::ShaderHandle fs = bgfx::createShader(bgfx::makeRef(fs_ocornut_imgui(), fs_ocornut_imgui_len()));
