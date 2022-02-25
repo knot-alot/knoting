@@ -111,6 +111,5 @@ void RigidController::wakeUp() {
     m_dynamic->get()->wakeUp();
 }
 
-}
 }  // namespace components
 }  // namespace knot
