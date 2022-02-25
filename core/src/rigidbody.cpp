@@ -56,10 +56,6 @@ std::weak_ptr<PxStatic_ptr_wrapper> RigidBody::get_static() {
     return m_static;
 }
 
-bool RigidBody::get_isKinematic() {
-    return m_isKinematic;
-}
-
 void RigidBody::set_transform(const vec3& position, const quat& rotation) {
     if (m_dynamic == nullptr && m_static == nullptr) {
         return;
@@ -88,14 +84,12 @@ void RigidBody::set_rotation(const quat& rotation) {
     }
 }
 
-void RigidBody::create_actor(bool isKinematic, bool isDynamic, const float& mass) {
-    m_isKinematic = isKinematic;
+void RigidBody::create_actor(bool isDynamic, const float& mass) {
     if (isDynamic) {
         m_dynamic = std::make_shared<PxDynamic_ptr_wrapper>(
             m_physics->get()->createRigidDynamic(PxTransform(get_position_from_transform())));
         m_dynamic->get()->attachShape(*m_shape->get());
         PxRigidBodyExt::updateMassAndInertia(*m_dynamic->get(), mass);
-        m_dynamic->get()->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, isKinematic);
         m_scene->get()->addActor(*m_dynamic->get());
 
     } else {

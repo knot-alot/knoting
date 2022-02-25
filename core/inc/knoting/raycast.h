@@ -28,9 +28,12 @@ class Raycast {
     float get_hitDistance();
     std::weak_ptr<PxShape_ptr_wrapper> get_hitShape();
 
-    void set_origin(vec3 origin);
-    void set_unitDir(vec3 unitDir);
-    void set_maxDistance(float maxDistance);
+    void set_origin(const vec3& origin);
+    void set_unitDir(const vec3& unitDir);
+    void set_maxDistance(const float& maxDistance);
+    void set_raycast(const vec3& origin, const vec3& unitDir, const float& maxDistance);
+
+    PxVec3 get_position_from_transform();
 
    protected:
     std::shared_ptr<PxScene_ptr_wrapper> m_scene;

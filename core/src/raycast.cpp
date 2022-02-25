@@ -15,7 +15,7 @@ void Raycast::on_awake() {
         m_scene = engine.get_physics_module().lock()->get_active_Scene().lock();
     }
     m_ishit = false;
-    // get pos
+    m_origin = get_position_from_transform();
 }
 
 void Raycast::on_destroy() {}
@@ -58,6 +58,39 @@ std::weak_ptr<PxShape_ptr_wrapper> Raycast::get_hitShape() {
         return std::make_shared<PxShape_ptr_wrapper>(m_hit.block.shape);
     }
     return std::make_shared<PxShape_ptr_wrapper>();
+}
+
+void Raycast::set_origin(const vec3& origin) {
+    m_origin = RigidBody::vec3_to_PxVec3(origin);
+}
+void Raycast::set_unitDir(const vec3& unitDir) {
+    m_unitDir = RigidBody::vec3_to_PxVec3(unitDir);
+}
+
+void Raycast::set_maxDistance(const float& maxDistance) {
+    m_maxDistance = maxDistance;
+}
+
+void Raycast::set_raycast(const vec3& origin, const vec3& unitDir, const float& maxDistance) {
+    m_origin = RigidBody::vec3_to_PxVec3(origin);
+    m_unitDir = RigidBody::vec3_to_PxVec3(unitDir);
+    m_maxDistance = maxDistance;
+}
+
+PxVec3 Raycast::get_position_from_transform() {
+    auto sceneOpt = Scene::get_active_scene();
+    if (sceneOpt) {
+        Scene& scene = sceneOpt.value();
+        entt::entity handle = entt::to_entity(scene.get_registry(), *this);
+        auto goOpt = scene.get_game_object_from_handle(handle);
+        ;
+        if (goOpt) {
+            PxVec3 position = RigidBody::vec3_to_PxVec3(goOpt->get_component<components::Transform>().get_position());
+
+            return position;
+        }
+    }
+    return PxVec3(std::numeric_limits<float>::max());
 }
 
 }  // namespace components

@@ -27,16 +27,14 @@ class RigidBody {
     quat get_rotation();
     std::weak_ptr<PxDynamic_ptr_wrapper> get_dynamic();
     std::weak_ptr<PxStatic_ptr_wrapper> get_static();
-    bool get_isKinematic();
 
     // could use after creat rigid
     void set_transform(const vec3& position, const quat& rotation = quat());
     void set_position(const vec3& position);
     void set_rotation(const quat& rotation);
-    void set_kinematic(bool isKinematic);
     //
 
-    void create_actor(bool isKinematic, bool isDynamic, const float& mass = 0);
+    void create_actor(bool isDynamic, const float& mass = 0);
     void set_shape(std::shared_ptr<PxShape_ptr_wrapper> shape) { m_shape = shape; }
 
     PxVec3 get_position_from_transform();
@@ -53,7 +51,6 @@ class RigidBody {
     std::shared_ptr<PxDynamic_ptr_wrapper> m_dynamic;
     std::shared_ptr<PxStatic_ptr_wrapper> m_static;
     std::shared_ptr<PxShape_ptr_wrapper> m_shape;
-    bool m_isKinematic;
 };
 
 }  // namespace components

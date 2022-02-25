@@ -42,7 +42,7 @@ Untie::Untie() {
 
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
-        rigidbody.create_actor(false, false);
+        rigidbody.create_actor(false);
     }
     {
         auto cubeObj = scene.create_game_object("cube_1");
@@ -58,7 +58,7 @@ Untie::Untie() {
 
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
-        rigidbody.create_actor(false, true, 5.0f);
+        rigidbody.create_actor(true, 5.0f);
     }
     {
         auto cubeObj = scene.create_game_object("cube_0");
@@ -71,7 +71,7 @@ Untie::Untie() {
         vec3 halfsize = vec3(1.0f, 1.0f, 1.0f);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
-        rigidbody.create_actor(false, true, 5.0f);
+        rigidbody.create_actor(true, 5.0f);
     }
 }
 void Untie::run() {
