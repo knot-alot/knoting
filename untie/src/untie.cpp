@@ -65,9 +65,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
         material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Roughness, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "normal_tiles_1k.png");
         cubeObj.add_component<components::Material>(material);
     }
     {
@@ -80,9 +80,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Roughness, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "normal_tiles_1k.png");
         cubeObj.add_component<components::Material>(material);
     }
     {
@@ -95,9 +95,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Roughness, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "normal_tiles_1k.png");
         cubeObj.add_component<components::Material>(material);
     }
     {
@@ -110,9 +110,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Roughness, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "normal_tiles_1k.png");
         cubeObj.add_component<components::Material>(material);
     }
     {
@@ -125,9 +125,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Roughness, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "normal_tiles_1k.png");
         cubeObj.add_component<components::Material>(material);
     }
     {
@@ -140,14 +140,38 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Roughness, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "normal_tiles_1k.png");
         cubeObj.add_component<components::Material>(material);
     }
 
-    scene.save_scene_to_stream();
-    log::debug(scene.get_serialized_scene());
+    std::stringstream serializedScene;
+    std::stringstream serializedSceneReloaded;
+
+    auto start = std::chrono::steady_clock::now();
+    scene.save_scene_to_stream(serializedScene);
+    auto end = std::chrono::steady_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end - start;
+    log::debug("FINISHED SERIAL!");
+    log::debug(elapsed_seconds.count());
+
+    start = std::chrono::steady_clock::now();
+    Scene::set_active_scene(sceneReloaded);
+    sceneReloaded.load_scene_from_stream(serializedScene);
+    end = std::chrono::steady_clock::now();
+    elapsed_seconds = end - start;
+    log::debug("FINISHED DE-SERIAL!");
+    log::debug(elapsed_seconds.count());
+
+    start = std::chrono::steady_clock::now();
+    sceneReloaded.save_scene_to_stream(serializedSceneReloaded);
+    end = std::chrono::steady_clock::now();
+    elapsed_seconds = end - start;
+    log::debug("FINISHED DE-SERIAL SERIAL!");
+    log::debug(elapsed_seconds.count());
+
+    log::debug(serializedScene.str() == serializedSceneReloaded.str());
 }
 
 void Untie::run() {

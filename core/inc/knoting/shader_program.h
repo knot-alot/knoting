@@ -27,7 +27,12 @@ class ShaderProgram : public Asset {
     bgfx::ProgramHandle get_program() { return m_program; }
 
     template <class Archive>
-    void serialize(Archive& archive) {
+    void save(Archive& archive) const {
+        archive(CEREAL_NVP(m_assetType), CEREAL_NVP(m_fallbackName), CEREAL_NVP(m_fullPath), CEREAL_NVP(m_assetName));
+    }
+
+    template <class Archive>
+    void load(Archive& archive) {
         archive(CEREAL_NVP(m_assetType), CEREAL_NVP(m_fallbackName), CEREAL_NVP(m_fullPath), CEREAL_NVP(m_assetName));
     }
 

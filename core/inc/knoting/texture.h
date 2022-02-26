@@ -4,6 +4,7 @@
 #include <bimg/bimg.h>
 #include <bimg/decode.h>
 #include <knoting/asset.h>
+#include <knoting/asset_manager.h>
 #include <knoting/types.h>
 #include <cereal/cereal.hpp>
 #include <filesystem>
@@ -29,9 +30,16 @@ class Texture : public Asset {
     void load_texture_2d(const std::string& path, bool usingMipMaps = true, bool usingAnisotropicFiltering = true);
 
     template <class Archive>
-    void serialize(Archive& archive) {
+    void save(Archive& archive) const {
         archive(CEREAL_NVP(m_assetType), CEREAL_NVP(m_fallbackName), CEREAL_NVP(m_fullPath), CEREAL_NVP(m_assetName),
                 CEREAL_NVP(m_width), CEREAL_NVP(m_height));
+    }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(CEREAL_NVP(m_assetType), CEREAL_NVP(m_fallbackName), CEREAL_NVP(m_fullPath), CEREAL_NVP(m_assetName),
+                CEREAL_NVP(m_width), CEREAL_NVP(m_height));
+        load_texture_2d(m_fullPath);
     }
 
     bgfx::TextureHandle get_texture_handle() { return m_textureHandle; }

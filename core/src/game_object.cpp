@@ -7,12 +7,17 @@ namespace knot {
 namespace components {
 
 Hierarchy::Hierarchy() : m_parent(std::nullopt), m_children({}) {}
-Hierarchy::Hierarchy(GameObject parent) : m_parent(parent), m_children({}) {}
-Hierarchy::Hierarchy(GameObject parent, const std::vector<GameObject>& children)
-    : m_parent(parent), m_children(children) {}
-Hierarchy::Hierarchy(const std::vector<GameObject>& children) : m_parent(std::nullopt), m_children(children) {}
+Hierarchy::Hierarchy(GameObject parent) : m_parent(parent.get_id()), m_children({}) {}
+Hierarchy::Hierarchy(GameObject parent, const std::vector<GameObject>& children) : m_parent(parent.get_id()) {
+    for (GameObject gObj : children)
+        m_children.push_back(gObj.get_id());
+}
+Hierarchy::Hierarchy(const std::vector<GameObject>& children) : m_parent(std::nullopt) {
+    for (GameObject gObj : children)
+        m_children.push_back(gObj.get_id());
+}
 
-std::optional<GameObject> Hierarchy::get_parent() const {
+std::optional<uuid> Hierarchy::get_parent() const {
     return m_parent;
 }
 
@@ -20,16 +25,16 @@ bool Hierarchy::has_children() const {
     return !m_children.empty();
 }
 
-std::vector<GameObject> Hierarchy::get_children() const {
+std::vector<uuid> Hierarchy::get_children() const {
     return m_children;
 }
 
 void Hierarchy::add_child(GameObject child) {
-    m_children.push_back(child);
+    m_children.push_back(child.get_id());
 }
 
 void Hierarchy::remove_child(GameObject child) {
-    m_children.erase(std::remove(m_children.begin(), m_children.end(), child), m_children.end());
+    m_children.erase(std::remove(m_children.begin(), m_children.end(), child.get_id()), m_children.end());
 }
 
 Tag::Tag(const std::string& tag) : m_id(0) {

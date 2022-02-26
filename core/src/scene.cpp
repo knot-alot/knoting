@@ -44,15 +44,18 @@ void Scene::remove_game_object(GameObject game_object) {
     if (game_object.has_component<components::Hierarchy>()) {
         auto& hierarchy = game_object.get_component<components::Hierarchy>();
         if (hierarchy.has_children()) {
-            for (auto& child : hierarchy.get_children()) {
-                remove_game_object(child);
+            for (auto& childId : hierarchy.get_children()) {
+                auto childOpt = get_game_object_from_id(childId);
+                if (childOpt)
+                    remove_game_object(childOpt.value());
             }
         }
 
-        auto parentOpt = hierarchy.get_parent();
-        if (parentOpt) {
-            GameObject parent = parentOpt.value();
-            parent.get_component<components::Hierarchy>().remove_child(game_object);
+        auto parentIdOpt = hierarchy.get_parent();
+        if (parentIdOpt) {
+            auto parentOpt = get_game_object_from_id(parentIdOpt.value());
+            if (parentOpt)
+                parentOpt.value().get_component<components::Hierarchy>().remove_child(game_object);
         }
     }
 
@@ -120,28 +123,28 @@ std::optional<GameObject> Scene::get_game_object_from_component(T& component) {
     entt::entity handle = entt::to_entity(scene.m_registry, component);
     return scene.get_game_object_from_handle(handle);
 }
-void Scene::save_scene_to_stream() {
-    cereal::JSONOutputArchive archive(m_serializedScene);
+void Scene::save_scene_to_stream(std::ostream& serialized) {
+    cereal::JSONOutputArchive archive(serialized);
     entt::snapshot{m_registry}
         .entities(archive)
-        .component<uuid, components::Name, components::Tag, components::Transform, components::Material,
-                   components::InstanceMesh, components::SpotLight, components::EditorCamera>(archive);
+        .component<uuid, components::Name, components::Tag, components::Transform, components::Hierarchy,
+                   components::Material, components::InstanceMesh, components::SpotLight, components::EditorCamera>(
+            archive);
 }
-void Scene::load_scene_from_stream(std::stringstream serialized) {
-    m_registry.clear();
+void Scene::load_scene_from_stream(std::istream& serialized) {
     m_uuidGameObjectMap.clear();
     m_entityGameObjectMap.clear();
 
     cereal::JSONInputArchive archive(serialized);
     entt::snapshot_loader{m_registry}
         .entities(archive)
-        .component<uuid, components::Name, components::Tag, components::Transform, components::Material,
-                   components::InstanceMesh, components::SpotLight, components::EditorCamera>(archive);
+        .component<uuid, components::Name, components::Tag, components::Transform, components::Hierarchy,
+                   components::Material, components::InstanceMesh, components::SpotLight, components::EditorCamera>(
+            archive);
     auto view = m_registry.view<uuid>();
     for (auto ent : view) {
         add_game_object(ent);
     }
-    m_serializedScene.clear();
 }
 
 GameObject Scene::add_game_object(entt::entity handle) {

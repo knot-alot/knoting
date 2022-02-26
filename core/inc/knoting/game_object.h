@@ -124,7 +124,7 @@ class GameObject {
 
     template <class Archive>
     void serialize(Archive& archive) {
-        archive(CEREAL_NVP(m_handle));
+        archive(CEREAL_NVP(this->get_id()));
     }
 
    protected:
@@ -170,10 +170,10 @@ class Hierarchy {
     Hierarchy(GameObject parent, const std::vector<GameObject>& children);
     Hierarchy(const std::vector<GameObject>& children);
 
-    std::optional<GameObject> get_parent() const;
+    std::optional<uuid> get_parent() const;
 
     bool has_children() const;
-    std::vector<GameObject> get_children() const;
+    std::vector<uuid> get_children() const;
     void add_child(GameObject child);
     void remove_child(GameObject child);
 
@@ -183,8 +183,8 @@ class Hierarchy {
     }
 
    protected:
-    std::optional<GameObject> m_parent;
-    std::vector<GameObject> m_children;
+    std::optional<uuid> m_parent;
+    std::vector<uuid> m_children;
 };
 
 class Name {
