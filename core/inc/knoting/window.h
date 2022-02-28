@@ -33,15 +33,15 @@ class Window : public Subsystem {
 
     int get_window_width() { return m_width; };
     int get_window_height() { return m_height; };
-    void set_window_height(int height){m_height = height;};
-    void set_window_width(int width){m_width = width;};
+    void set_window_height(int height) { m_height = height; };
+    void set_window_width(int width) { m_width = width; };
 
     float get_mouse_change_x() { return m_mouseWheelH; };
     float get_mouse_change_y() { return m_mouseWheel; };
-    void set_mouse_change_x(float xOffset){m_mouseWheelH = xOffset;};
-    void set_mouse_change_y(float yOffset){m_mouseWheel = yOffset;};
-    void add_mouse_change_x(float xOffset){m_mouseWheelH += xOffset;};
-    void add_mouse_change_y(float yOffset){m_mouseWheel += yOffset;};
+    void set_mouse_change_x(float xOffset) { m_mouseWheelH = xOffset; };
+    void set_mouse_change_y(float yOffset) { m_mouseWheel = yOffset; };
+    void add_mouse_change_x(float xOffset) { m_mouseWheelH += xOffset; };
+    void add_mouse_change_y(float yOffset) { m_mouseWheel += yOffset; };
 
     void recreate_framebuffer(int width, int height);
 

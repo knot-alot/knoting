@@ -82,7 +82,6 @@ void Window::recreate_framebuffer(int width, int height) {
     m_engine.get_forward_render_module().lock()->recreate_framebuffer(width, height);
 }
 
-
 void Window::setup_callbacks() {
     // TODO REPLACE ALL GLFW CALLBACKS WHEN IN EDITOR
     glfwSetWindowSizeCallback(m_window, Window::window_size_callback);
