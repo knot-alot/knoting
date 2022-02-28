@@ -125,6 +125,7 @@ std::optional<GameObject> Scene::get_game_object_from_component(T& component) {
 }
 void Scene::save_scene_to_stream(std::ostream& serialized) {
     cereal::JSONOutputArchive archive(serialized);
+    // TODO: When you make a new component add it here to the snapshot if it needs to be
     entt::snapshot{m_registry}
         .entities(archive)
         .component<uuid, components::Name, components::Tag, components::Transform, components::Hierarchy,
@@ -136,6 +137,7 @@ void Scene::load_scene_from_stream(std::istream& serialized) {
     m_entityGameObjectMap.clear();
 
     cereal::JSONInputArchive archive(serialized);
+    // TODO: When you make a new component add it here to the snapshot if it needs to be
     entt::snapshot_loader{m_registry}
         .entities(archive)
         .component<uuid, components::Name, components::Tag, components::Transform, components::Hierarchy,
