@@ -27,8 +27,11 @@ void Physics::on_awake() {
     m_Scene = std::make_shared<PxScene_ptr_wrapper>(m_Physics->get()->createScene(sceneDesc));
 }
 
-void Physics::on_update(double m_deltatime) {
-    m_Scene->get()->simulate(m_deltatime);
+void Physics::on_update(double m_deltatime) {}
+
+void Physics::on_fixedupdate() {
+    constexpr float timestep = 1.0 / 60.0f;
+    m_Scene->get()->simulate(timestep);
     m_Scene->get()->fetchResults(true);
 }
 

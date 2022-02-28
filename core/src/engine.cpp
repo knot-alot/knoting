@@ -22,6 +22,9 @@ void Engine::update_modules() {
     for (auto& module : m_engineModules) {
         module->on_update(m_windowModule->get_delta_time());
     }
+    for (auto& module : m_engineModules) {
+        module->on_fixedupdate();
+    }
 
     // TODO move into functions when functionality exists
 
