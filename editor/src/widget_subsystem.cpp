@@ -14,43 +14,41 @@ static GLFWcursor* gMouseCursors[ImGuiMouseCursor_COUNT] = {0};
 
 namespace knot {
 void WidgetSubsystem::on_awake() {
-    auto window = m_engine->get_window_module().lock();
+    auto window = m_engine.lock()->get_window_module().lock();
     imgui_init(window.get()->get_glfw_window());
     set_glfw_editor_callbacks(window.get()->get_glfw_window());
 }
 
-void WidgetSubsystem::on_update(double m_delta_time) {
-    dt = m_delta_time;
-    imguiEvents(dt);
-
+void WidgetSubsystem::on_update(double deltaTime) {
+    m_deltaTime = deltaTime;
+    imgui_poll_events(deltaTime);
 }
 
 WidgetSubsystem::WidgetSubsystem(std::weak_ptr<knot::Engine> engine) {
-    m_engine = engine.lock();
+    m_engine = engine;
 }
 
 void WidgetSubsystem::on_late_update() {
-    auto window = m_engine->get_window_module().lock();
+    auto window = m_engine.lock()->get_window_module().lock();
     if (window->get_debug_resize_flag()) {
         window->set_debug_resize_flag(false);
-        imguiReset(window->get_window_width(), window->get_window_height());
+        imgui_reset(window->get_window_width(), window->get_window_height());
     }
 
     ImGui::NewFrame();
 
-    for(auto& widget : m_widgets){
+    for (auto& widget : m_widgets) {
         widget->on_widget_render();
     }
 
-
     ImGui::Render();
-    imguiRender(ImGui::GetDrawData());
+    imgui_render(ImGui::GetDrawData());
 }
 
 void WidgetSubsystem::on_destroy() {
-    log::info("on destroy");
+    log::info("WidgetSubsystem destroyed");
     m_widgets.clear();
-    imguiShutdown();
+    imgui_shutdown();
 }
 void WidgetSubsystem::add_widget(std::shared_ptr<Widget> widget) {
     m_widgets.emplace_back(widget);
@@ -130,17 +128,14 @@ void WidgetSubsystem::imgui_init(GLFWwindow* window) {
     gMouseCursors[ImGuiMouseCursor_ResizeNWSE] =
         glfwCreateStandardCursor(GLFW_ARROW_CURSOR);  // FIXME: GLFW doesn't have this.
     gMouseCursors[ImGuiMouseCursor_Hand] = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
-
-    log::info("IDX  , fonttex {} , fontUni {} , program {}", imguiFontTexture.idx, imguiFontUniform.idx,
-              imguiProgram.idx);
 }
 
-void WidgetSubsystem::imguiReset(uint16_t width, uint16_t height) {
+void WidgetSubsystem::imgui_reset(uint16_t width, uint16_t height) {
     bgfx::setViewRect(200, 0, 0, width, height);
     bgfx::setViewClear(0, BGFX_CLEAR_COLOR, 0x00000000);
 }
 
-void WidgetSubsystem::imguiEvents(float dt) {
+void WidgetSubsystem::imgui_poll_events(float dt) {
     ImGuiIO& io = ImGui::GetIO();
 
     // Setup display size
@@ -188,7 +183,7 @@ void WidgetSubsystem::imguiEvents(float dt) {
     }
 }
 
-void WidgetSubsystem::imguiRender(ImDrawData* drawData) {
+void WidgetSubsystem::imgui_render(ImDrawData* drawData) {
     for (int ii = 0, num = drawData->CmdListsCount; ii < num; ++ii) {
         bgfx::TransientVertexBuffer tvb;
         bgfx::TransientIndexBuffer tib;
@@ -239,7 +234,7 @@ void WidgetSubsystem::imguiRender(ImDrawData* drawData) {
     }
 }
 
-void WidgetSubsystem::imguiShutdown() {
+void WidgetSubsystem::imgui_shutdown() {
     for (ImGuiMouseCursor cursor_n = 0; cursor_n < ImGuiMouseCursor_COUNT; cursor_n++) {
         glfwDestroyCursor(gMouseCursors[cursor_n]);
         gMouseCursors[cursor_n] = NULL;

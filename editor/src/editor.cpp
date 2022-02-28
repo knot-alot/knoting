@@ -5,11 +5,9 @@
 #include <knoting/log.h>
 #include <knoting/scene.h>
 #include <knoting/spot_light.h>
-#include <knoting/subsystem.h>
-#include "widget_subsystem.h"
-#include "demo_widget.h"
 
-#include <iostream>
+#include "demo_widget.h"
+#include "widget_subsystem.h"
 
 namespace knot {
 Scene scene;
@@ -150,12 +148,11 @@ Editor::Editor() {
     auto demo = std::make_shared<DemoWidget>("demo");
 
     widget_manager->add_widget(demo);
-    m_engine->add_subsystem(widget_manager);
 
+    m_engine->add_subsystem(std::make_shared<WidgetSubsystem>(m_engine));
 }
 
 void Editor::run() {
-
     while (m_engine->is_open()) {
         m_engine->update_modules();
     }
