@@ -13,11 +13,11 @@ void PhysicsMaterial::on_awake() {
         Engine& engine = engineOpt.value();
         m_physics = engine.get_physics_module().lock()->get_physics().lock();
     }
-    constexpr PxReal defalut_staticFriction = 0.3f;
-    constexpr PxReal defalut_dynamicFriction = 0.3f;
-    constexpr PxReal defalut_restitution = 0.6f;
+    constexpr PxReal default_staticFriction = 0.3f;
+    constexpr PxReal default_dynamicFriction = 0.3f;
+    constexpr PxReal default_restitution = 0.6f;
     m_material = std::make_shared<PxMaterial_ptr_wrapper>(
-        m_physics->get()->createMaterial(defalut_staticFriction, defalut_dynamicFriction, defalut_restitution));
+        m_physics->get()->createMaterial(default_staticFriction, default_dynamicFriction, default_restitution));
 }
 
 void PhysicsMaterial::on_destroy() {}

@@ -34,11 +34,11 @@ float RigidController::get_mass() {
     return m_dynamic->get()->getMass();
 }
 
-bool RigidController::get_isKinematic() {
+bool RigidController::get_is_kinematic() {
     return m_isKinematic;
 }
 
-bool RigidController::get_isAwake() {
+bool RigidController::get_is_awake() {
     return m_isAwake;
 }
 
@@ -103,7 +103,7 @@ void RigidController::clear_torque() {
     m_dynamic->get()->clearTorque();
 }
 
-void RigidController::putToSleep() {
+void RigidController::put_to_sleep() {
     m_dynamic->get()->putToSleep();
 }
 

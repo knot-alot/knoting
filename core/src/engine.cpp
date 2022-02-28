@@ -21,9 +21,7 @@ Engine::Engine() {
 void Engine::update_modules() {
     for (auto& module : m_engineModules) {
         module->on_update(m_windowModule->get_delta_time());
-    }
-    for (auto& module : m_engineModules) {
-        module->on_fixedupdate();
+        module->on_fixed_update();
     }
 
     // TODO move into functions when functionality exists
@@ -44,8 +42,6 @@ void Engine::update_modules() {
     // 5) SYSTEM : Skybox Render
     // 6) SYSTEM : Sorted Transparent Render Pass
     // 7) SYSTEM : Post Processing Stack
-
-    m_physicsModule->update_info_to_transform();
 
     //    m_forwardRenderModule->on_render();
     m_forwardRenderModule->render_pbr();

@@ -19,7 +19,7 @@ class Physics : public Subsystem {
 
     void on_awake() override;
     void on_update(double m_deltatime) override;
-    void on_fixedupdate() override;
+    void on_fixed_update() override;
     void on_late_update() override;
     void on_destroy() override;
 

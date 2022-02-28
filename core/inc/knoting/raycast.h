@@ -17,20 +17,20 @@ class Raycast {
     vec3 get_origin();
     vec3 get_unitDir();
     float get_maxDistance() {
-        if (m_ishit) {
+        if (m_isHit) {
             return m_maxDistance;
         }
         return std::numeric_limits<float>::max();
     }
-    bool get_ishit() { return m_ishit; }
-    vec3 get_hitPosition();
-    vec3 get_hitNomal();
-    float get_hitDistance();
-    std::weak_ptr<PxShape_ptr_wrapper> get_hitShape();
+    bool get_is_hit() { return m_isHit; }
+    vec3 get_hit_position();
+    vec3 get_hit_nomal();
+    float get_hit_distance();
+    std::weak_ptr<PxShape_ptr_wrapper> get_hit_shape();
 
     void set_origin(const vec3& origin);
-    void set_unitDir(const vec3& unitDir);
-    void set_maxDistance(const float& maxDistance);
+    void set_unit_dir(const vec3& unitDir);
+    void set_max_distance(const float& maxDistance);
     void set_raycast(const vec3& origin, const vec3& unitDir, const float& maxDistance);
 
     PxVec3 get_position_from_transform();
@@ -40,7 +40,7 @@ class Raycast {
     PxVec3 m_origin;
     PxVec3 m_unitDir;
     PxReal m_maxDistance;
-    bool m_ishit;
+    bool m_isHit;
     PxRaycastBuffer m_hit;
 };
 

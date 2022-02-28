@@ -29,10 +29,11 @@ void Physics::on_awake() {
 
 void Physics::on_update(double m_deltatime) {}
 
-void Physics::on_fixedupdate() {
-    constexpr float timestep = 1.0 / 60.0f;
+void Physics::on_fixed_update() {
+    constexpr float timestep = 1.0 / 120.0f;
     m_Scene->get()->simulate(timestep);
     m_Scene->get()->fetchResults(true);
+    update_info_to_transform();
 }
 
 void Physics::on_late_update() {}

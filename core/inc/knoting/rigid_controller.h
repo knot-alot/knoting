@@ -13,8 +13,8 @@ class RigidController {
     void on_destroy();
 
     std::weak_ptr<PxDynamic_ptr_wrapper> get_dynamic();
-    bool get_isKinematic();
-    bool get_isAwake();
+    bool get_is_kinematic();
+    bool get_is_awake();
     float get_mass();
     float get_angular_damping();
     float get_linear_damping();
@@ -33,7 +33,7 @@ class RigidController {
     void clear_force();
     void clear_torque();
 
-    void putToSleep();
+    void put_to_sleep();
     void wakeUp();
 
    protected:

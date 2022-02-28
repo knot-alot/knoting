@@ -6,108 +6,104 @@ using namespace physx;
 namespace knot {
 class PxScene_ptr_wrapper {
    public:
-    PxScene_ptr_wrapper(PxScene* scene = nullptr) : m_px_scene(scene) {}
+    PxScene_ptr_wrapper(PxScene* scene = nullptr) : m_pxScene(scene) {}
     ~PxScene_ptr_wrapper() {
-        if (m_px_scene) {
-            m_px_scene->release();
-            m_px_scene = nullptr;
+        if (m_pxScene) {
+            m_pxScene->release();
+            m_pxScene = nullptr;
         }
     }
 
-    void set(PxScene* scene) { m_px_scene = scene; }
+    void set(PxScene* scene) { m_pxScene = scene; }
 
-    PxScene* get() { return m_px_scene; }
+    PxScene* get() { return m_pxScene; }
 
    private:
-    PxScene* m_px_scene;
+    PxScene* m_pxScene;
 };
 
 class PxPhysics_ptr_wrapper {
    public:
-    PxPhysics_ptr_wrapper(PxPhysics* physics = nullptr) : m_px_physics(physics) {}
-    ~PxPhysics_ptr_wrapper() {
-        if (m_px_physics) {
-            m_px_physics->release();
-            m_px_physics = nullptr;
-        }
-    }
+    PxPhysics_ptr_wrapper(PxPhysics* physics = nullptr) : m_pxPhysics(physics) {}
+    ~PxPhysics_ptr_wrapper() { clean(); }
 
     void set(PxPhysics* physics) {
-        if (m_px_physics) {
-            m_px_physics->release();
-            m_px_physics = nullptr;
-        }
-        m_px_physics = physics;
+        clean();
+        m_pxPhysics = physics;
     }
 
-    PxPhysics* get() { return m_px_physics; }
+    PxPhysics* get() { return m_pxPhysics; }
+
+    void clean() {
+        if (m_pxPhysics) {
+            m_pxPhysics->release();
+            m_pxPhysics = nullptr;
+        }
+    }
 
    private:
-    PxPhysics* m_px_physics;
+    PxPhysics* m_pxPhysics;
 };
 class PxFoundation_ptr_wrapper {
    public:
-    PxFoundation_ptr_wrapper(PxFoundation* foundation = nullptr) : m_Foundation(foundation) {}
-    ~PxFoundation_ptr_wrapper() {
-        if (m_Foundation) {
-            m_Foundation->release();
-            m_Foundation = nullptr;
-        }
-    }
+    PxFoundation_ptr_wrapper(PxFoundation* foundation = nullptr) : m_foundation(foundation) {}
+    ~PxFoundation_ptr_wrapper() { clean(); }
     void set(PxFoundation* foundation) {
-        if (m_Foundation) {
-            m_Foundation->release();
-            m_Foundation = nullptr;
-        }
-        m_Foundation = foundation;
+        clean();
+        m_foundation = foundation;
     }
 
-    PxFoundation* get() { return m_Foundation; }
+    PxFoundation* get() { return m_foundation; }
+
+    void clean() {
+        if (m_foundation) {
+            m_foundation->release();
+            m_foundation = nullptr;
+        }
+    }
 
    private:
-    PxFoundation* m_Foundation;
+    PxFoundation* m_foundation;
 };
 class PxDispatcher_ptr_wrapper {
    public:
-    PxDispatcher_ptr_wrapper(PxDefaultCpuDispatcher* dispatcher = nullptr) : m_Dispatcher(dispatcher) {}
-    ~PxDispatcher_ptr_wrapper() {
-        if (m_Dispatcher) {
-            m_Dispatcher->release();
-            m_Dispatcher = nullptr;
-        }
-    }
+    PxDispatcher_ptr_wrapper(PxDefaultCpuDispatcher* dispatcher = nullptr) : m_dispatcher(dispatcher) {}
+    ~PxDispatcher_ptr_wrapper() { clean(); }
     void set(PxDefaultCpuDispatcher* dispatcher) {
-        if (m_Dispatcher) {
-            m_Dispatcher->release();
-            m_Dispatcher = nullptr;
-        }
-        m_Dispatcher = dispatcher;
+        clean();
+        m_dispatcher = dispatcher;
     }
 
-    PxDefaultCpuDispatcher* get() { return m_Dispatcher; }
+    PxDefaultCpuDispatcher* get() { return m_dispatcher; }
+
+    void clean() {
+        if (m_dispatcher) {
+            m_dispatcher->release();
+            m_dispatcher = nullptr;
+        }
+    }
 
    private:
-    PxDefaultCpuDispatcher* m_Dispatcher;
+    PxDefaultCpuDispatcher* m_dispatcher;
 };
 
 class PxDynamic_ptr_wrapper {
    public:
     PxDynamic_ptr_wrapper(PxRigidDynamic* dynamic = nullptr) : m_dynamic(dynamic) {}
-    ~PxDynamic_ptr_wrapper() {
-        if (m_dynamic) {
-            m_dynamic->release();
-            m_dynamic = nullptr;
-        }
-    }
+    ~PxDynamic_ptr_wrapper() { clean(); }
     void set(PxRigidDynamic* dynamic) {
-        if (m_dynamic) {
-            m_dynamic->release();
-            m_dynamic = nullptr;
-        }
+        clean();
         m_dynamic = dynamic;
     }
 
     PxRigidDynamic* get() { return m_dynamic; }
+
+    void clean() {
+        if (m_dynamic) {
+            m_dynamic->release();
+            m_dynamic = nullptr;
+        }
+    }
 
    private:
     PxRigidDynamic* m_dynamic;
@@ -116,21 +112,20 @@ class PxDynamic_ptr_wrapper {
 class PxStatic_ptr_wrapper {
    public:
     PxStatic_ptr_wrapper(PxRigidStatic* s = nullptr) : m_static(s) {}
-    ~PxStatic_ptr_wrapper() {
-        if (m_static) {
-            m_static->release();
-            m_static = nullptr;
-        }
-    }
+    ~PxStatic_ptr_wrapper() { clean(); }
     void set(PxRigidStatic* s) {
-        if (m_static) {
-            m_static->release();
-            m_static = nullptr;
-        }
+        clean();
         m_static = s;
     }
 
     PxRigidStatic* get() { return m_static; }
+
+    void clean() {
+        if (m_static) {
+            m_static->release();
+            m_static = nullptr;
+        }
+    }
 
    private:
     PxRigidStatic* m_static;
@@ -139,21 +134,20 @@ class PxStatic_ptr_wrapper {
 class PxShape_ptr_wrapper {
    public:
     PxShape_ptr_wrapper(PxShape* shape = nullptr) : m_shape(shape) {}
-    ~PxShape_ptr_wrapper() {
-        if (m_shape) {
-            m_shape->release();
-            m_shape = nullptr;
-        }
-    }
+    ~PxShape_ptr_wrapper() { clean(); }
     void set(PxShape* shape) {
-        if (m_shape) {
-            m_shape->release();
-            m_shape = nullptr;
-        }
+        clean();
         m_shape = shape;
     }
 
     PxShape* get() { return m_shape; }
+
+    void clean() {
+        if (m_shape) {
+            m_shape->release();
+            m_shape = nullptr;
+        }
+    }
 
    private:
     PxShape* m_shape;
@@ -162,21 +156,20 @@ class PxShape_ptr_wrapper {
 class PxMaterial_ptr_wrapper {
    public:
     PxMaterial_ptr_wrapper(PxMaterial* material = nullptr) : m_material(material) {}
-    ~PxMaterial_ptr_wrapper() {
-        if (m_material) {
-            m_material->release();
-            m_material = nullptr;
-        }
-    }
+    ~PxMaterial_ptr_wrapper() { clean(); }
     void set(PxMaterial* material) {
-        if (m_material) {
-            m_material->release();
-            m_material = nullptr;
-        }
+        clean();
         m_material = material;
     }
 
     PxMaterial* get() { return m_material; }
+
+    void clean() {
+        if (m_material) {
+            m_material->release();
+            m_material = nullptr;
+        }
+    }
 
    private:
     PxMaterial* m_material;

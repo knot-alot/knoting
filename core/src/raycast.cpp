@@ -14,7 +14,7 @@ void Raycast::on_awake() {
         Engine& engine = engineOpt.value();
         m_scene = engine.get_physics_module().lock()->get_active_Scene().lock();
     }
-    m_ishit = false;
+    m_isHit = false;
     m_origin = get_position_from_transform();
 }
 
@@ -32,29 +32,29 @@ vec3 Raycast::get_unitDir() {
     return RigidBody::PxVec3_to_vec3(m_unitDir);
 }
 
-vec3 Raycast::get_hitPosition() {
-    if (m_ishit) {
+vec3 Raycast::get_hit_position() {
+    if (m_isHit) {
         return RigidBody::PxVec3_to_vec3(m_hit.block.position);
     }
     return vec3(std::numeric_limits<float>::max());
 }
 
-vec3 Raycast::get_hitNomal() {
-    if (m_ishit) {
+vec3 Raycast::get_hit_nomal() {
+    if (m_isHit) {
         return RigidBody::PxVec3_to_vec3(m_hit.block.normal);
     }
     return vec3(std::numeric_limits<float>::max());
 }
 
-float Raycast::get_hitDistance() {
-    if (m_ishit) {
+float Raycast::get_hit_distance() {
+    if (m_isHit) {
         return m_hit.block.distance;
     }
     return std::numeric_limits<float>::max();
 }
 
-std::weak_ptr<PxShape_ptr_wrapper> Raycast::get_hitShape() {
-    if (m_ishit) {
+std::weak_ptr<PxShape_ptr_wrapper> Raycast::get_hit_shape() {
+    if (m_isHit) {
         return std::make_shared<PxShape_ptr_wrapper>(m_hit.block.shape);
     }
     return std::make_shared<PxShape_ptr_wrapper>();
@@ -63,11 +63,11 @@ std::weak_ptr<PxShape_ptr_wrapper> Raycast::get_hitShape() {
 void Raycast::set_origin(const vec3& origin) {
     m_origin = RigidBody::vec3_to_PxVec3(origin);
 }
-void Raycast::set_unitDir(const vec3& unitDir) {
+void Raycast::set_unit_dir(const vec3& unitDir) {
     m_unitDir = RigidBody::vec3_to_PxVec3(unitDir);
 }
 
-void Raycast::set_maxDistance(const float& maxDistance) {
+void Raycast::set_max_distance(const float& maxDistance) {
     m_maxDistance = maxDistance;
 }
 

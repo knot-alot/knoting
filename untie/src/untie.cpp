@@ -20,8 +20,6 @@ Untie::Untie() {
 
     m_engine = std::make_unique<knot::Engine>();
     Engine::set_active_engine(*m_engine);
-    std::shared_ptr<PxPhysics_ptr_wrapper> px_physics = m_engine->get_physics_module().lock()->get_physics().lock();
-    std::shared_ptr<PxScene_ptr_wrapper> px_scene = m_engine->get_physics_module().lock()->get_active_Scene().lock();
     {
         auto editorCamera = scene.create_game_object("camera");
         auto& cam = editorCamera.add_component<components::EditorCamera>();
