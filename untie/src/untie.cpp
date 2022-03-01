@@ -5,6 +5,8 @@
 #include <knoting/log.h>
 #include <knoting/scene.h>
 #include <knoting/spot_light.h>
+#include <fstream>
+#include <iostream>
 
 #include <cereal/archives/json.hpp>
 
@@ -65,9 +67,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
         material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Metallic, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Roughness, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Occlusion, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
     {
@@ -80,9 +82,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Roughness, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Occlusion, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
     {
@@ -95,9 +97,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Roughness, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Occlusion, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
     {
@@ -110,9 +112,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Roughness, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Occlusion, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
     {
@@ -125,9 +127,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Roughness, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Occlusion, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
     {
@@ -140,17 +142,20 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Roughness, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Occlusion, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
     {
-        std::stringstream serializedScene;
-        std::stringstream serializedSceneReloaded;
+        std::string filename("serialScene.json");
+        std::fstream serializedScene(filename);
+        std::fstream serializedSceneReloaded(filename);
 
         auto start = std::chrono::steady_clock::now();
+        serializedScene.open(filename, std::ios_base::out);
         scene.save_scene_to_stream(serializedScene);
+        serializedScene.close();
         auto end = std::chrono::steady_clock::now();
         std::chrono::duration<double> elapsed_seconds = end - start;
         log::debug("FINISHED SERIAL!");
@@ -158,20 +163,22 @@ Untie::Untie() {
 
         start = std::chrono::steady_clock::now();
         Scene::set_active_scene(sceneReloaded);
+        serializedScene.open(filename, std::ios_base::in);
         sceneReloaded.load_scene_from_stream(serializedScene);
+        serializedScene.close();
         end = std::chrono::steady_clock::now();
         elapsed_seconds = end - start;
         log::debug("FINISHED DE-SERIAL!");
         log::debug(elapsed_seconds.count());
 
-        start = std::chrono::steady_clock::now();
-        sceneReloaded.save_scene_to_stream(serializedSceneReloaded);
-        end = std::chrono::steady_clock::now();
-        elapsed_seconds = end - start;
-        log::debug("FINISHED DE-SERIAL SERIAL!");
-        log::debug(elapsed_seconds.count());
+        //        start = std::chrono::steady_clock::now();
+        //        sceneReloaded.save_scene_to_stream(serializedSceneReloaded);
+        //        end = std::chrono::steady_clock::now();
+        //        elapsed_seconds = end - start;
+        //        log::debug("FINISHED DE-SERIAL SERIAL!");
+        //        log::debug(elapsed_seconds.count());
 
-        log::debug(serializedScene.str() == serializedSceneReloaded.str());
+        // log::debug(serializedScene.str() == serializedSceneReloaded.str());
     }
 }
 
