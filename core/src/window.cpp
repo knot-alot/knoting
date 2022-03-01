@@ -116,5 +116,10 @@ void Window::calculate_delta_time() {
 double Window::get_delta_time() {
     return m_deltaTime;
 }
+void Window::set_window_size(vec2i size) {
+    m_width = size.x;
+    m_height = size.y;
+    recreate_framebuffer(m_width, m_height);
+}
 
 }  // namespace knot

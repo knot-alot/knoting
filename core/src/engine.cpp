@@ -49,7 +49,7 @@ void Engine::update_modules() {
     for (auto& module : m_engineModules) {
         module->on_late_update();
     }
-    bgfx::frame();
+    swap_frame();
 }
 
 Engine::~Engine() {
@@ -65,6 +65,9 @@ bool Engine::is_open() {
 void Engine::add_subsystem(std::shared_ptr<Subsystem> subsystem) {
     m_engineModules.emplace_back(subsystem);
     subsystem->on_awake();
+}
+void Engine::swap_frame() {
+    bgfx::frame();
 }
 
 }  // namespace knot

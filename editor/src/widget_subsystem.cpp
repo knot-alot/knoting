@@ -295,11 +295,9 @@ void WidgetSubsystem::cursorEnterCallback(GLFWwindow* window, int entered) {}
 void WidgetSubsystem::dropCallback(GLFWwindow* window, int count, const char** paths) {}
 
 void WidgetSubsystem::windowSizeCallback(GLFWwindow* window, int width, int height) {
-    Window* widow = (Window*)glfwGetWindowUserPointer(window);
-    widow->set_window_width(width);
-    widow->set_window_height(height);
-    widow->recreate_framebuffer(width, height);
-    widow->set_debug_resize_flag(true);
+    Window* win = (Window*)glfwGetWindowUserPointer(window);
+    win->set_window_size(vec2i(width, height));
+    win->set_debug_resize_flag(true);
 }
 
 void WidgetSubsystem::set_glfw_editor_callbacks(GLFWwindow* window) {
