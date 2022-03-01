@@ -46,8 +46,10 @@ void Scene::remove_game_object(GameObject game_object) {
         if (hierarchy.has_children()) {
             for (auto& childId : hierarchy.get_children()) {
                 auto childOpt = get_game_object_from_id(childId);
-                if (childOpt)
-                    remove_game_object(childOpt.value());
+                if (!childOpt) {
+                    continue;
+                }
+                remove_game_object(childOpt.value());
             }
         }
 
