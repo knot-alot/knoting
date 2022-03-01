@@ -39,7 +39,8 @@ class Texture : public Asset {
     void load(Archive& archive) {
         archive(CEREAL_NVP(m_assetType), CEREAL_NVP(m_fallbackName), CEREAL_NVP(m_fullPath), CEREAL_NVP(m_assetName),
                 CEREAL_NVP(m_width), CEREAL_NVP(m_height));
-        load_texture_2d(m_fullPath);
+        m_assetState = AssetState::Idle;
+        on_awake();
     }
 
     bgfx::TextureHandle get_texture_handle() { return m_textureHandle; }

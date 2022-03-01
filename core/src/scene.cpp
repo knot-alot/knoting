@@ -148,6 +148,7 @@ void Scene::load_scene_from_stream(std::istream& serialized) {
     for (auto ent : view) {
         add_game_object(ent);
     }
+    log::debug("Scene: Load Finished");
 }
 
 GameObject Scene::add_game_object(entt::entity handle) {

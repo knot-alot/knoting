@@ -31,7 +31,7 @@ class InstanceMesh {
     template <class Archive>
     void load(Archive& archive) {
         archive(CEREAL_NVP(m_path));
-        m_mesh = AssetManager::load_asset<components::Mesh>(m_path).lock();
+        on_awake();
     }
 
    private:

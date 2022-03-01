@@ -29,7 +29,7 @@ class Scene {
     static void set_active_scene(std::optional<std::reference_wrapper<Scene>> scene);
 
     void save_scene_to_stream(std::ostream& serialized);
-    void load_scene_from_stream(std::istream& serialized);
+    void load_scene_from_stream(std::istream& serializedSc);
 
    protected:
     friend class GameObject;
