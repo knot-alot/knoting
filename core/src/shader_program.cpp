@@ -1,5 +1,6 @@
 #include <knoting/shader_program.h>
 
+#include <knoting/asset_manager.h>
 #include <knoting/log.h>
 #include <filesystem>
 #include <fstream>
@@ -68,36 +69,39 @@ bool ShaderProgram::does_file_path_exist(const std::string& path) {
 }
 
 std::string ShaderProgram::get_cross_platform_path(const std::string& folderName, const std::string& fileName) {
-    std::string shaderPath = "SHADER_BINARY_NOT_SET";
+    std::filesystem::path shaderPath = AssetManager::get_resources_path();
     switch (bgfx::getRendererType()) {
         case bgfx::RendererType::Noop:
         case bgfx::RendererType::Direct3D9:
-            shaderPath = "../res/shaders/" + folderName + "/dx9/";
+            shaderPath = shaderPath.append(PATH_SHADER).append(folderName).append("dx9/");
             break;
         case bgfx::RendererType::Direct3D11:
         case bgfx::RendererType::Direct3D12:
-            shaderPath = "../res/shaders/" + folderName + "/dx11/";
+            shaderPath = shaderPath.append(PATH_SHADER).append(folderName).append("dx11/");
             break;
         case bgfx::RendererType::Gnm:
-            break;
+            // TODO
+            // break;
         case bgfx::RendererType::Metal:
-            shaderPath = "../res/shaders/" + folderName + "/metal/";
+            shaderPath = shaderPath.append(PATH_SHADER).append(folderName).append("metal/");
             break;
         case bgfx::RendererType::OpenGL:
-            shaderPath = "../res/shaders/" + folderName + "/glsl/";
+            shaderPath = shaderPath.append(PATH_SHADER).append(folderName).append("glsl/");
             break;
         case bgfx::RendererType::OpenGLES:
-            shaderPath = "../res/shaders/" + folderName + "/essl/";
+            shaderPath = shaderPath.append(PATH_SHADER).append(folderName).append("essl/");
             break;
         case bgfx::RendererType::Vulkan:
-            shaderPath = "../res/shaders/" + folderName + "/spirv/";
+            shaderPath = shaderPath.append(PATH_SHADER).append(folderName).append("spirv/");
             break;
-        case bgfx::RendererType::Count:
+        default:
+            log::error("Render type not supported to retrieve shader path");
+            shaderPath = shaderPath.append(PATH_SHADER).append(folderName).append("unkown/");
             break;
     }
 
     shaderPath.append(fileName);
-    return shaderPath;
+    return shaderPath.string();
 }
 void ShaderProgram::generate_default_asset() {}
 

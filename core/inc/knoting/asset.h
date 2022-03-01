@@ -3,14 +3,14 @@
 #include <knoting/types.h>
 #include <string>
 
-static constexpr char PATH_TEXTURE[] = "../res/textures/";
-static constexpr char PATH_MODELS[] = "../res/misc/";
-static constexpr char PATH_SHADER[] = "../res/shaders/";
+static constexpr std::string_view PATH_TEXTURE = "textures/";
+static constexpr std::string_view PATH_MODELS = "misc/";
+static constexpr std::string_view PATH_SHADER = "shaders/";
 
-static constexpr char fallbackTextureName[] = "fallbackTexture";
-static constexpr char fallbackMeshName[] = "fallbackMesh";
-static constexpr char fallbackShaderName[] = "fallbackShader";
-static constexpr char fallbackCubeMapName[] = "fallbackCubeMap";
+static constexpr std::string_view fallbackTextureName = "fallbackTexture";
+static constexpr std::string_view fallbackMeshName = "fallbackMesh";
+static constexpr std::string_view fallbackShaderName = "fallbackShader";
+static constexpr std::string_view fallbackCubeMapName = "fallbackCubeMap";
 
 namespace knot {
 using namespace asset;
