@@ -38,6 +38,7 @@ set_target_properties(knoting PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY
 set_target_properties(knoting PROPERTIES OUTPUT_NAME knoting)
 
 target_compile_definitions(knoting PUBLIC ENTT_ID_TYPE=uint64_t)
+target_compile_definitions(knoting PUBLIC PX_PHYSX_STATIC_LIB=TRUE)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     target_compile_definitions(knoting PUBLIC KNOTING_DEBUG=1)
