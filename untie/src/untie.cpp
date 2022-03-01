@@ -145,7 +145,7 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Occlusion, "normal_tiles_1k.png");
         cubeObj.add_component<components::Material>(material);
     }
-
+    
     std::stringstream serializedScene;
     std::stringstream serializedSceneReloaded;
 
