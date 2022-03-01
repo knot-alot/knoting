@@ -27,7 +27,6 @@ void Texture::on_destroy() {
 void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool usingAnisotropicFiltering) {
     std::filesystem::path fsPath = AssetManager::get_resources_path().append(PATH_TEXTURE).append(path);
 
-
     if (!exists(fsPath)) {
         log::error("{} - does not Exist", fsPath.string());
         m_textureHandle = BGFX_INVALID_HANDLE;
@@ -38,7 +37,7 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
     int channels;
     stbi_set_flip_vertically_on_load(true);
 
-    stbi_uc* data = stbi_load(fsPath.string().c_str(), &img_size.x, &img_size.y, &channels, 0);
+    stbi_uc* data = stbi_load(fsPath.string().c_str(), &imageSize.x, &imageSize.y, &channels, 0);
     int numberOfLayers = 1;
 
     if (!data) {
