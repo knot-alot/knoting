@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include <knoting/asset_manager.h>
 #include <knoting/forward_renderer.h>
 #include <knoting/physics.h>
 #include <knoting/subsystem.h>
@@ -38,6 +39,7 @@ class Engine {
     std::shared_ptr<Physics> m_physicsModule;
 
     inline static std::optional<std::reference_wrapper<Engine>> s_activeEngine = std::nullopt;
+    std::shared_ptr<AssetManager> m_assetManager;
 };
 
 }  // namespace knot

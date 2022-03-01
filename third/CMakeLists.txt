@@ -1,28 +1,19 @@
-# ASSIMP
-if(DEFINED ENV{GITHUB_OS})
-find_package(assimp)
-endif()
 
-if(NOT assimp_FOUND)
-    message(STATUS "Assimp not found. Compiling our own version.")
-    # We could download assimp at this point, instead of using a submodule.
+# Cereal
 
-    if(CMAKE_BUILD_TYPE MATCHES Debug)
-      set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
-    else()
-      set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-    endif()
-    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-    set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-    set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
-    add_subdirectory(assimp)
-endif()
+set(SKIP_PERFORMANCE_COMPARISON ON CACHE BOOL "" FORCE)
+set(JUST_INSTALL_CEREAL ON CACHE BOOL "" FORCE)
+set(WITH_WERROR OFF CACHE BOOL "" FORCE)
+set(BUILD_TESTS OFF CACHE BOOL "" FORCE)
+
+add_subdirectory(cereal)
 
 # EnTT
 
 add_subdirectory(entt)
 
 # GLFW
+
 if(DEFINED ENV{GITHUB_OS})
     find_package(GLFW)
 endif()
@@ -92,10 +83,6 @@ add_library(imterm INTERFACE)
 
 target_include_directories(imterm INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/ImTerm/include)
 
-# JSON
-
-add_subdirectory(json)
-
 # PhysX
 
 if(DEFINED ENV{PHYSX_PATH})
@@ -145,6 +132,13 @@ add_subdirectory($ENV{PHYSX_PATH}/compiler/public)
 # portable-file-dialogs
 
 add_subdirectory(portable-file-dialogs)
+
+# RapidJSON
+
+project(rapidjson)
+add_library(rapidjson INTERFACE)
+
+target_include_directories(rapidjson INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/rapidjson/include)
 
 # SPDLog
 

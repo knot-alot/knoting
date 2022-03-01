@@ -1,6 +1,7 @@
 #pragma once
 
 #include <bgfx/bgfx.h>
+#include <knoting/asset_manager.h>
 #include <knoting/shader_program.h>
 #include <knoting/texture.h>
 #include <knoting/types.h>
@@ -43,8 +44,6 @@ enum class UniformSamplerHandle {
     LAST
 };
 
-// clang-format on
-
 class Material {
    public:
     Material();
@@ -55,6 +54,8 @@ class Material {
     void on_destroy();
     //================
 
+    void set_texture_slot_path(TextureType slot, const std::string& path);
+
     void set_uniforms();
     bgfx::ProgramHandle get_program() { return m_shader.get_program(); };
 
@@ -64,16 +65,17 @@ class Material {
     std::array<bgfx::TextureHandle, (size_t)TextureHandle::LAST> m_textureHandles;
 
    private:
-    Texture m_albedo;
-    Texture m_normal;
-    Texture m_metallic;
-    Texture m_roughness;
-    Texture m_occlusion;
+    std::shared_ptr<Texture> m_albedo;
+    std::shared_ptr<Texture> m_normal;
+    std::shared_ptr<Texture> m_metallic;
+    std::shared_ptr<Texture> m_roughness;
+    std::shared_ptr<Texture> m_occlusion;
+
+    std::string m_textureSlotPath[5] = {"", "", "", "", ""};
 
     ShaderProgram m_shader;
 
    private:
-    // TODO consider mapping uniforms to string
     glm::vec4 m_albedoColor = glm::vec4(255.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f);
     glm::vec2 m_textureTiling = glm::vec2(1);
 
@@ -89,7 +91,6 @@ class Material {
 
     bool m_alphaCutoffEnabled = false;
     float m_alphaCutoffAmount = 0.0f;
-    // end TODO
 };
 
 }  // namespace components

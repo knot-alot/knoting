@@ -3,56 +3,45 @@ name: C/C++ CI
 on: [push, pull_request]
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: true
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    steps:
-      - name: Checkout repository and submodules
-        uses: actions/checkout@v2.4.0
-        with:
-          submodules: recursive
-          lfs: true
+    build:
+        runs-on: ${{ matrix.os }}
+        strategy:
+            fail-fast: true
+            matrix:
+                os: [ubuntu-latest, windows-latest]
+        steps:
+            - name: Checkout repository and submodules
+              uses: actions/checkout@v2.4.0
+              with:
+                  submodules: recursive
+                  lfs: true
 
-      - name: Install dependencies
-        shell: bash
-        env:
-          GITHUB_OS: ${{ matrix.os }}
-        run: |
-          if [ "$GITHUB_OS" == "ubuntu-latest" ];
-          then
-            sudo apt-get -y update
-            sudo apt-get -y install build-essential libglu1-mesa libglu1-mesa-dev libgl1-mesa-glx libgl1-mesa-dev \
-                                                    xorg-dev libx11-dev cmake ninja-build libassimp-dev libglfw3-dev \
-                                                    libglfw3 clang
-          fi
+            - name: Install dependencies
+              shell: bash
+              if: startsWith(matrix.os,'ubuntu-latest')
+              run: |
+                  sudo apt-get -y update
+                  sudo apt-get -y install build-essential libglu1-mesa libglu1-mesa-dev libgl1-mesa-glx libgl1-mesa-dev \
+                                                          xorg-dev libx11-dev cmake ninja-build libassimp-dev libglfw3-dev \
+                                                          libglfw3 clang
 
-      - name: Add MSBuild to PATH
-        if: startsWith(matrix.os,'windows')
-        uses: microsoft/setup-msbuild@v1.1
+            - name: Enable Developer Command Prompt
+              uses: ilammy/msvc-dev-cmd@v1.10.0
+              if: startsWith(matrix.os,'windows')
 
-      - name: Enable Developer Command Prompt
-        uses: ilammy/msvc-dev-cmd@v1.10.0
-        if: startsWith(matrix.os,'windows')
+            - name: Build CMake project
+              shell: bash
+              env:
+                  GITHUB_OS: ${{ matrix.os }}
+              run: |
+                  mkdir build
+                  cd build
 
-      - name: Build CMake project
-        shell: bash
-        env:
-          GITHUB_OS: ${{ matrix.os }}
-        run: |
-          mkdir build
-          cd build
-          if [ "$GITHUB_OS" == "ubuntu-latest" ];
-          then
-            export CC=clang
-            export CXX=clang++
-            cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ..
-          elif [ "$GITHUB_OS" == "windows-latest" ];
-          then
-            rm /usr/bin/link
-            cmake -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release ..
-          fi
+                  if [ "$GITHUB_OS" == "ubuntu-latest" ];
+                  then
+                    export CC=clang
+                    export CXX=clang++
+                  fi
 
-          cmake --build . --config Release --parallel
+                  cmake -GNinja -DCMAKE_BUILD_TYPE=Release ..
+                  cmake --build . --config Release --parallel

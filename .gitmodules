@@ -22,9 +22,6 @@
 [submodule "third/stduuid"]
 	path = third/stduuid
 	url = https://github.com/mariusbancila/stduuid.git
-[submodule "third/json"]
-	path = third/json
-	url = https://github.com/nlohmann/json.git
 [submodule "third/portable-file-dialogs"]
 	path = third/portable-file-dialogs
 	url = https://github.com/samhocevar/portable-file-dialogs.git
@@ -34,9 +31,12 @@
 [submodule "third/imterm"]
 	path = third/imterm
 	url = https://github.com/knot-alot/ImTerm.git
-[submodule "third/assimp"]
-	path = third/assimp
-	url = https://github.com/assimp/assimp.git
 [submodule "third/stb"]
 	path = third/stb
 	url = https://github.com/nothings/stb.git
+[submodule "third/rapidjson"]
+	path = third/rapidjson
+	url = https://github.com/Tencent/rapidjson.git
+[submodule "third/cereal"]
+	path = third/cereal
+	url = https://github.com/USCiLab/cereal.git

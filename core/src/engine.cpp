@@ -7,9 +7,11 @@ Engine::Engine() {
     m_windowModule = std::make_shared<knot::Window>(m_windowWidth, m_windowHeight, m_windowTitle, *this);
     m_forwardRenderModule = std::make_shared<knot::ForwardRenderer>(*this);
     m_physicsModule = std::make_shared<knot::Physics>(*this);
+    m_assetManager = std::make_shared<knot::AssetManager>();
 
     // order dependent
     m_engineModules.emplace_back(m_windowModule);
+    m_engineModules.emplace_back(m_assetManager);
     m_engineModules.emplace_back(m_forwardRenderModule);
     m_engineModules.emplace_back(m_physicsModule);
 
@@ -43,8 +45,7 @@ void Engine::update_modules() {
     // 6) SYSTEM : Sorted Transparent Render Pass
     // 7) SYSTEM : Post Processing Stack
 
-    //    m_forwardRenderModule->on_render();
-    m_forwardRenderModule->render_pbr();
+    m_forwardRenderModule->on_render();
     m_forwardRenderModule->on_post_render();
 
     for (auto& module : m_engineModules) {

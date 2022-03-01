@@ -2,15 +2,13 @@
 
 #include <bgfx/bgfx.h>
 #include <bx/pixelformat.h>
-
+#include <knoting/asset.h>
 #include <knoting/types.h>
 #include <string>
 #include <vector>
 
 // TODO Add const variables headers
-constexpr char PATH_SHADER[] = "../res/shaders/";
-constexpr char PATH_TEXTURE[] = "../res/textures/";
-constexpr char PATH_MODELS[] = "../res/models/";
+
 // end TODO
 
 namespace knot {
@@ -23,25 +21,32 @@ class VertexLayout;
 namespace knot {
 namespace components {
 
-class Mesh {
+class Mesh : public Asset {
    public:
     Mesh();
+    Mesh(const std::string& path);
     ~Mesh();
 
     //=For ECS========
-    void on_awake();
-    void on_destroy();
-    //================
+    void on_awake() override;
+    void on_destroy() override;
+    //=For Asset=======
+    void generate_default_asset() override;
+    //=================
 
-    void load_mesh(const std::string& localTexturePath);
     void create_cube();
 
-    const bgfx::VertexBufferHandle get_vertex_buffer() { return m_vbh; }
-    const bgfx::IndexBufferHandle get_index_buffer() { return m_ibh; }
+    bgfx::VertexBufferHandle get_vertex_buffer() { return m_vbh; }
+    bgfx::IndexBufferHandle get_index_buffer() { return m_ibh; }
+
+   private:
+    bool internal_load_obj(const std::string& path);
+    std::vector<std::string> split(std::string s, const std::string& t);
 
    private:
     std::vector<VertexLayout> m_vertexLayout;
     std::shared_ptr<IndexBuffer> m_indexBuffer;
+    std::vector<std::string> m_splitResult;
 
    private:
     bgfx::VertexBufferHandle m_vbh;
@@ -50,12 +55,12 @@ class Mesh {
 
 class IndexBuffer {
    public:
-    void set_index_buffer(const std::vector<uint16_t>& in_indices) { m_indices = in_indices; }
+    void set_index_buffer(const std::vector<unsigned int>& in_indices) { m_indices = in_indices; }
     size_t get_memory_size() { return sizeof(m_indices[0]) * m_indices.size(); }
-    uint16_t& get_index_start() { return m_indices[0]; }
+    unsigned int& get_index_start() { return m_indices[0]; }
 
    private:
-    std::vector<uint16_t> m_indices;
+    std::vector<unsigned int> m_indices;
 };
 
 inline uint32_t encode_normal_rgba8(float _x, float _y = 0.0f, float _z = 0.0f, float _w = 0.0f) {
@@ -78,15 +83,15 @@ class VertexLayout {
     float m_z;
     uint32_t m_normal;
     uint32_t m_tangent;
-    int16_t m_u;
-    int16_t m_v;
+    float m_u;
+    float m_v;
 
     static void init() {
         s_meshVertexLayout.begin()
             .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::Normal, 4, bgfx::AttribType::Uint8, true, true)
             .add(bgfx::Attrib::Tangent, 4, bgfx::AttribType::Uint8, true, true)
-            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Int16, true, true)
+            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float, true, true)
             .end();
 
         // TODO when animations are impl

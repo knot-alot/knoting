@@ -9,21 +9,26 @@
 #include <glm/gtx/string_cast.hpp>
 
 #include <uuid.h>
-#include <nlohmann/json.hpp>
 
 namespace knot {
+namespace asset {
+
+enum class AssetState { Idle, Loading, Finished, Failed, LAST };
+enum class AssetType { Unknown, Texture, Mesh, Shader, Cubemap, LAST };
+enum class TextureType { Albedo, Normal, Metallic, Roughness, Occlusion, LAST };
+
+}  // namespace asset
 
 using namespace glm;
 using namespace uuids;
-using namespace nlohmann;
 
-using vec2i = vec<2, i32>;
-using vec2u = vec<2, u32>;
-using vec2d = vec<2, f64>;
-using vec3i = vec<3, i32>;
-using vec3d = vec<3, f64>;
-using vec4i = vec<4, i32>;
-using vec4d = vec<4, f64>;
+using vec2i = vec<2, int>;
+using vec2u = vec<2, uint>;
+using vec2d = vec<2, double>;
+using vec3i = vec<3, int>;
+using vec3d = vec<3, double>;
+using vec4i = vec<4, int>;
+using vec4d = vec<4, double>;
 
 }  // namespace knot
 
