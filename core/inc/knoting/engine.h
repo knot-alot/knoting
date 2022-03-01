@@ -22,6 +22,7 @@ class Engine {
     std::weak_ptr<Window> get_window_module() { return m_windowModule; }
     std::weak_ptr<ForwardRenderer> get_forward_render_module() { return m_forwardRenderModule; }
     void add_subsystem(std::shared_ptr<Subsystem> subsystem);
+
    private:
     void swap_frame();
 
