@@ -25,6 +25,8 @@ class AssetManager : public Subsystem {
     void load_assets_manual();
     void load_assets_serialize();
 
+    static std::filesystem::path get_resources_path();
+
     static std::optional<std::reference_wrapper<AssetManager>> get_asset_manager() { return s_assetManager; };
 
     template <typename T>
@@ -37,9 +39,11 @@ class AssetManager : public Subsystem {
 
    private:
     std::map<std::string, std::shared_ptr<Asset>> m_assets;
+
+    static std::filesystem::path get_executable_path();
+
     inline static std::optional<std::reference_wrapper<AssetManager>> s_assetManager = std::nullopt;
 
-   private:
     template <typename T>
     inline std::weak_ptr<T> internal_load_asset(const std::string& path) {
         static_assert(!std::is_base_of<T, Asset>::value, "ASSET IS NOT OF BASE CLASS ASSET");
