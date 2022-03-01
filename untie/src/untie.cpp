@@ -145,33 +145,34 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Occlusion, "normal_tiles_1k.png");
         cubeObj.add_component<components::Material>(material);
     }
-    
-    std::stringstream serializedScene;
-    std::stringstream serializedSceneReloaded;
+    {
+        std::stringstream serializedScene;
+        std::stringstream serializedSceneReloaded;
 
-    auto start = std::chrono::steady_clock::now();
-    scene.save_scene_to_stream(serializedScene);
-    auto end = std::chrono::steady_clock::now();
-    std::chrono::duration<double> elapsed_seconds = end - start;
-    log::debug("FINISHED SERIAL!");
-    log::debug(elapsed_seconds.count());
+        auto start = std::chrono::steady_clock::now();
+        scene.save_scene_to_stream(serializedScene);
+        auto end = std::chrono::steady_clock::now();
+        std::chrono::duration<double> elapsed_seconds = end - start;
+        log::debug("FINISHED SERIAL!");
+        log::debug(elapsed_seconds.count());
 
-    start = std::chrono::steady_clock::now();
-    Scene::set_active_scene(sceneReloaded);
-    sceneReloaded.load_scene_from_stream(serializedScene);
-    end = std::chrono::steady_clock::now();
-    elapsed_seconds = end - start;
-    log::debug("FINISHED DE-SERIAL!");
-    log::debug(elapsed_seconds.count());
+        start = std::chrono::steady_clock::now();
+        Scene::set_active_scene(sceneReloaded);
+        sceneReloaded.load_scene_from_stream(serializedScene);
+        end = std::chrono::steady_clock::now();
+        elapsed_seconds = end - start;
+        log::debug("FINISHED DE-SERIAL!");
+        log::debug(elapsed_seconds.count());
 
-    start = std::chrono::steady_clock::now();
-    sceneReloaded.save_scene_to_stream(serializedSceneReloaded);
-    end = std::chrono::steady_clock::now();
-    elapsed_seconds = end - start;
-    log::debug("FINISHED DE-SERIAL SERIAL!");
-    log::debug(elapsed_seconds.count());
+        start = std::chrono::steady_clock::now();
+        sceneReloaded.save_scene_to_stream(serializedSceneReloaded);
+        end = std::chrono::steady_clock::now();
+        elapsed_seconds = end - start;
+        log::debug("FINISHED DE-SERIAL SERIAL!");
+        log::debug(elapsed_seconds.count());
 
-    log::debug(serializedScene.str() == serializedSceneReloaded.str());
+        log::debug(serializedScene.str() == serializedSceneReloaded.str());
+    }
 }
 
 void Untie::run() {
