@@ -2,6 +2,7 @@
 #pragma once
 
 #include <knoting/engine.h>
+#include "demo_widget.h"
 
 namespace knot {
 class Window;

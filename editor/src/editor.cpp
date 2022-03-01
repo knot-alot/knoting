@@ -6,7 +6,6 @@
 #include <knoting/scene.h>
 #include <knoting/spot_light.h>
 
-#include "demo_widget.h"
 #include "widget_subsystem.h"
 
 namespace knot {
@@ -144,12 +143,11 @@ Editor::Editor() {
         cubeObj.add_component<components::Material>(material);
     }
 
-    auto widget_manager = std::make_shared<WidgetSubsystem>(m_engine);
-    auto demo = std::make_shared<DemoWidget>("demo");
+    auto widgetManager = std::make_shared<WidgetSubsystem>(m_engine);
+    auto demoWidget = std::make_shared<DemoWidget>("demo");
 
-    widget_manager->add_widget(demo);
-
-    m_engine->add_subsystem(std::make_shared<WidgetSubsystem>(m_engine));
+    widgetManager->add_widget(demoWidget);
+    m_engine->add_subsystem(widgetManager);
 }
 
 void Editor::run() {
