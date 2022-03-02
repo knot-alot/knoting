@@ -18,12 +18,18 @@ set(PUBLIC_LIBS
     bx
     bimg
     rapidjson
+    yojimbo
+    NoesisGUI
+    FMod
 )
 
 set(PRIVATE_LIBS
     glfw
     stb
 )
+
+find_package(NoesisGUI REQUIRED)
+find_package(FMod REQUIRED)
 
 add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS})
 
@@ -64,6 +70,7 @@ endforeach()
 
 target_include_directories(knoting PUBLIC ${CMAKE_SOURCE_DIR}/core/inc)
 target_include_directories(knoting PUBLIC ${PHYSX_INCLUDE_DIRS})
+target_include_directories(knoting PUBLIC ${CMAKE_SOURCE_DIR}/third/yojimbo)
 
 if(GLFW_FOUND)
     target_include_directories(knoting PUBLIC ${GLFW_INCLUDE_DIR})
@@ -98,4 +105,24 @@ foreach(SHADER_FILE ${KNOTING_SHADERS})
         GLSL 430
         INCLUDES "${CMAKE_SOURCE_DIR}/res/shaders/"
     )
+endforeach()
+
+# Copy DLLs into dist/bin
+
+if (WIN32)
+    set(KNOTING_LIB_DIR "${CMAKE_SOURCE_DIR}/lib/x86_64/windows")
+    file(GLOB_RECURSE KNOTING_DLLs
+        ${KNOTING_LIB_DIR}/*.dll
+    )
+else()
+    set(KNOTING_LIB_DIR "${CMAKE_SOURCE_DIR}/lib/x86_64/linux")
+    file(GLOB_RECURSE KNOTING_DLLs
+        ${KNOTING_LIB_DIR}/*.so
+    )
+endif()
+
+foreach(_DLL ${KNOTING_DLLs})
+    get_filename_component(FILE_NAME ${_DLL} NAME)
+    set(FILE_NAME "${CMAKE_BINARY_DIR}/dist/bin/${FILE_NAME}")
+    configure_file(${_DLL} ${FILE_NAME} COPYONLY)
 endforeach()

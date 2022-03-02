@@ -40,3 +40,6 @@
 [submodule "third/cereal"]
 	path = third/cereal
 	url = https://github.com/USCiLab/cereal.git
+[submodule "third/yojimbo"]
+	path = third/yojimbo
+	url = https://github.com/networkprotocol/yojimbo.git
