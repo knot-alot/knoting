@@ -11,6 +11,7 @@
 #include <knoting/components.h>
 #include <knoting/scene.h>
 #include <knoting/spot_light.h>
+#include <knoting/skybox.h>
 
 #include <iostream>
 
@@ -143,19 +144,19 @@ Untie::Untie() {
         cubeObj.add_component<components::Material>(material);
     }
     {
-        auto cubeObj = scene.create_game_object("loaded_dragon");
+        auto cubeObj = scene.create_game_object("skybox");
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-9.0f + 5, 1.0f, -15.0f - 5));
-        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(10, 10, 10));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 240, 0));
-        cubeObj.add_component<InstanceMesh>("dragon.obj");
+        cubeObj.add_component<InstanceMesh>("uv_cube.obj");
 
-        auto material = components::Material();
-        material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
-        material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
-        cubeObj.add_component<components::Material>(material);
+        auto skybox = components::SkyBox();
+        skybox.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
+        skybox.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
+        skybox.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        skybox.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        skybox.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        cubeObj.add_component<components::SkyBox>(skybox);
     }
 }
 void Untie::run() {
