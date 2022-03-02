@@ -2,6 +2,7 @@
 #include <knoting/forward_renderer.h>
 #include <knoting/instance_mesh.h>
 #include <knoting/mesh.h>
+#include <knoting/skybox.h>
 #include <knoting/spot_light.h>
 #include <knoting/texture.h>
 
@@ -118,6 +119,33 @@ void ForwardRenderer::on_render() {
                        BGFX_STATE_DEPTH_TEST_LESS);
 
         bgfx::submit(0, material.get_program());
+    }
+
+    auto skyboxes = registry.view<Transform, InstanceMesh, SkyBox, Name>();
+    for (auto& e : skyboxes) {
+        auto goOpt = scene.get_game_object_from_handle(e);
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        Transform& transform = go.get_component<Transform>();
+        InstanceMesh& mesh = go.get_component<InstanceMesh>();
+        SkyBox& skyBox = go.get_component<SkyBox>();
+        Name& name = go.get_component<Name>();
+
+        bgfx::setTransform(value_ptr(transform.get_model_matrix()));
+        bgfx::setVertexBuffer(0, mesh.get_vertex_buffer());
+
+        if (isValid(mesh.get_index_buffer())) {
+            bgfx::setIndexBuffer(mesh.get_index_buffer());
+        }
+
+        m_lightData.set_spotlight_uniforms();
+        skyBox.set_uniforms();
+
+        bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
+        bgfx::submit(0, skyBox.get_program());
     }
 
     bgfx::frame();

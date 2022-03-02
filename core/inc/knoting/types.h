@@ -15,26 +15,10 @@ namespace asset {
 
 enum class AssetState { Idle, Loading, Finished, Failed, LAST };
 enum class AssetType { Unknown, Texture, Mesh, Shader, Cubemap, LAST };
+
 enum class TextureType { Albedo, Normal, Metallic, Roughness, Occlusion, LAST };
-enum class UniformHandle {
-    AlbedoColor,
-    TextureTiling,
-    AlbedoScalar,
-    NormalScalar,
-    MetallicScalar,
-    RoughnessScalar,
-    OcclusionScalar,
-    SkyboxScalar,
-    CastShadows,
-    ReceivesShadows,
-    AlphaCutoffEnabled,
-    AlphaCutoffAmount,
-    LAST
-};
+enum class SkyBoxTextureType { Albedo, Irradiance, Radiance, LAST };
 
-enum class TextureHandle { Albedo, Normal, Metallic, Roughness, Occlusion, LAST };
-
-enum class UniformSamplerHandle { Albedo, Normal, Metallic, Roughness, Occlusion, LAST };
 }  // namespace asset
 
 using namespace glm;

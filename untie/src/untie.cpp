@@ -10,8 +10,8 @@
 
 #include <knoting/components.h>
 #include <knoting/scene.h>
-#include <knoting/spot_light.h>
 #include <knoting/skybox.h>
+#include <knoting/spot_light.h>
 
 #include <iostream>
 
@@ -145,17 +145,15 @@ Untie::Untie() {
     }
     {
         auto cubeObj = scene.create_game_object("skybox");
-        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-9.0f + 5, 1.0f, -15.0f - 5));
-        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(10, 10, 10));
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-2, 1.0f, -15.0f - 5));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(5, 5, 5));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 240, 0));
         cubeObj.add_component<InstanceMesh>("uv_cube.obj");
 
         auto skybox = components::SkyBox();
-        skybox.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
-        skybox.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        skybox.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        skybox.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        skybox.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        skybox.set_texture_slot_path(SkyBoxTextureType::Albedo, "skybox/cmft_skybox.hdr");
+        skybox.set_texture_slot_path(SkyBoxTextureType::Irradiance, "skybox/cmtr_irradiance.hdr");
+        skybox.set_texture_slot_path(SkyBoxTextureType::Radiance, "skybox/cmtr_radiance.hdr");
         cubeObj.add_component<components::SkyBox>(skybox);
     }
 }

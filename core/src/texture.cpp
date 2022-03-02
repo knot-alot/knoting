@@ -62,21 +62,7 @@ void Texture::load_texture_hdri(const std::string& path) {
     }
 
     uint32_t textureFlags{0};
-    // TODO check if bgfx has anisotropic is supported flag
-
-    bool usingAnisotropicFiltering = false;
-    if (usingAnisotropicFiltering) {
-        textureFlags =
-            BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
-    } else {
-        textureFlags = BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT;
-    }
-
-    // TODO stbi does not support mips find a way to get mips working
-    bool usingMipMaps = false;
-    if (usingMipMaps) {
-        textureFlags += BGFX_CAPS_FORMAT_TEXTURE_MIP_AUTOGEN;
-    }
+    textureFlags = BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT;
 
     // clang-format off
     bgfx::TextureHandle textureHandle;
@@ -85,7 +71,7 @@ void Texture::load_texture_hdri(const std::string& path) {
         bgfx::createTexture2D(
         img_size.x,
         img_size.y,
-        usingMipMaps,
+        false,
         numberOfLayers,
         bgfx::TextureFormat::RGBA8,
         textureFlags,
