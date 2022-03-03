@@ -66,22 +66,8 @@ mat3 mtx3FromCols(vec3 c0, vec3 c1, vec3 c2)
 
 void main()
 {
-	mat3 tbn = mtx3FromCols(v_tangent, v_bitangent, v_normal);
+	vec4 color = toLinear(texture2D(s_texColor, v_view.xy) );
 
-	vec3 normal;
-	normal.xy = texture2D(s_texNormal, v_texcoord0).xy * 2.0 - 1.0;
-	normal.z = sqrt(1.0 - dot(normal.xy, normal.xy) );
-	vec3 view = normalize(v_view);
-
-	vec3 lightColor;
-	lightColor =  calcLight(0, tbn, v_wpos, normal, view);
-	lightColor += calcLight(1, tbn, v_wpos, normal, view);
-	lightColor += calcLight(2, tbn, v_wpos, normal, view);
-	lightColor += calcLight(3, tbn, v_wpos, normal, view);
-
-	vec4 color = toLinear(texture2D(s_texColor, v_texcoord0) );
-
-	gl_FragColor.xyz = max(vec3_splat(0.05), lightColor.xyz)*color.xyz;
-	gl_FragColor.w = 1.0;
-	gl_FragColor = toGamma(gl_FragColor);
+	
+	gl_FragColor = color;
 }
