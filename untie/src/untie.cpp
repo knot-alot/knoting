@@ -145,10 +145,10 @@ Untie::Untie() {
     }
     {
         auto cubeObj = scene.create_game_object("skybox");
-        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-2, 1.0f, -15.0f - 5));
-        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(5, 5, 5));
-        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 240, 0));
-        cubeObj.add_component<InstanceMesh>("uv_cube.obj");
+//        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-2, 1.0f, -15.0f - 5));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(30, 30, 30));
+//        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 240, 0));
+        cubeObj.add_component<InstanceMesh>("sky_sphere.obj");
 
         auto skybox = components::SkyBox();
         skybox.set_texture_slot_path(SkyBoxTextureType::Albedo, "skybox/cmft_skybox.hdr");

@@ -31,7 +31,8 @@ void ForwardRenderer::on_render() {
     }
     Scene& scene = sceneOpt.value();
     entt::registry& registry = scene.get_registry();
-
+    mat4 invProj;
+    glm::mat4 view;
     //=CAMERA===========================
     auto cameras = registry.view<Transform, EditorCamera, Name>();
 
@@ -57,10 +58,9 @@ void ForwardRenderer::on_render() {
 
         // Set view and projection matrix for view 0.
         {
-            glm::mat4 view;
             view = glm::lookAt(pos, lookTarget, up);
             glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
-
+            invProj = inverse(proj);
             bgfx::setViewTransform(0, &view[0][0], &proj[0][0]);
         }
     }
@@ -83,6 +83,37 @@ void ForwardRenderer::on_render() {
         // Packed uniform data
         m_lightData.push_spotlight_pos_outer_rad(vec4(transform.get_position(), spotLight.get_outer_radius()));
         m_lightData.push_spotlight_color_inner_rad(vec4(spotLight.get_color(), spotLight.get_inner_radius()));
+    }
+
+    auto skyboxes = registry.view<Transform, InstanceMesh, SkyBox, Name>();
+    for (auto& e : skyboxes) {
+        auto goOpt = scene.get_game_object_from_handle(e);
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        Transform& transform = go.get_component<Transform>();
+        InstanceMesh& mesh = go.get_component<InstanceMesh>();
+        SkyBox& skyBox = go.get_component<SkyBox>();
+        Name& name = go.get_component<Name>();
+
+        bgfx::setTransform(value_ptr(transform.get_model_matrix()));
+        bgfx::setVertexBuffer(0, mesh.get_vertex_buffer());
+
+        if (isValid(mesh.get_index_buffer())) {
+            bgfx::setIndexBuffer(mesh.get_index_buffer());
+        }
+
+        // bgfx::setViewTransform(0, &view[0][0], &invProj[0][0]);
+
+        // m_lightData.set_spotlight_uniforms();
+        skyBox.set_inverse_projection(invProj);
+        skyBox.set_uniforms();
+        // skyBox.screenSpaceQuad(get_window_width(), get_window_height(), true);
+
+        bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_DEPTH_TEST_LEQUAL);
+        bgfx::submit(0, skyBox.get_program());
     }
 
     //=PBR PIPELINE===========================
@@ -119,33 +150,6 @@ void ForwardRenderer::on_render() {
                        BGFX_STATE_DEPTH_TEST_LESS);
 
         bgfx::submit(0, material.get_program());
-    }
-
-    auto skyboxes = registry.view<Transform, InstanceMesh, SkyBox, Name>();
-    for (auto& e : skyboxes) {
-        auto goOpt = scene.get_game_object_from_handle(e);
-        if (!goOpt) {
-            continue;
-        }
-
-        GameObject go = goOpt.value();
-        Transform& transform = go.get_component<Transform>();
-        InstanceMesh& mesh = go.get_component<InstanceMesh>();
-        SkyBox& skyBox = go.get_component<SkyBox>();
-        Name& name = go.get_component<Name>();
-
-        bgfx::setTransform(value_ptr(transform.get_model_matrix()));
-        bgfx::setVertexBuffer(0, mesh.get_vertex_buffer());
-
-        if (isValid(mesh.get_index_buffer())) {
-            bgfx::setIndexBuffer(mesh.get_index_buffer());
-        }
-
-        m_lightData.set_spotlight_uniforms();
-        skyBox.set_uniforms();
-
-        bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
-        bgfx::submit(0, skyBox.get_program());
     }
 
     bgfx::frame();

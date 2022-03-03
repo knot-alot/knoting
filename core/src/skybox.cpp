@@ -3,15 +3,39 @@
 namespace knot {
 namespace components {
 
+struct PosColorTexCoord0Vertex {
+    float m_x;
+    float m_y;
+    float m_z;
+    uint32_t m_rgba;
+    float m_u;
+    float m_v;
+
+    static void init() {
+        ms_layout.begin()
+            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+            .end();
+    }
+
+    static bgfx::VertexLayout ms_layout;
+};
+
+bgfx::VertexLayout PosColorTexCoord0Vertex::ms_layout;
+static float s_texelHalf = 0.0f;
+
 void SkyBox::on_awake() {
     // TODO pass in shader
-    m_shader.load_shader("bump", "vs_bump.bin", "fs_bump.bin");
+    m_shader.load_shader("skyboxport", "vs_skybox.bin", "fs_skybox.bin");
     // end TODO
 
     // clang-format off
 
-    m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::SkyBox]          = bgfx::createUniform("m_albedo",    bgfx::UniformType::Sampler);
-    m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::Irradiance]      = bgfx::createUniform("m_normal",    bgfx::UniformType::Sampler);
+//    m_invProj = bgfx::createUniform("u_invProj",bgfx::UniformType::Mat4);
+
+    m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::SkyBox]          = bgfx::createUniform("s_texCube",    bgfx::UniformType::Sampler);
+    m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::Irradiance]      = bgfx::createUniform("s_texCubeIrr",    bgfx::UniformType::Sampler);
     m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::Radiance]        = bgfx::createUniform("m_metallic",  bgfx::UniformType::Sampler);
 
     m_albedo    = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)SkyBoxTextureHandle::SkyBox]).lock();
@@ -22,6 +46,7 @@ void SkyBox::on_awake() {
     m_textureHandles[(size_t)SkyBoxTextureHandle::Irradiance]    = m_normal->get_texture_handle();
     m_textureHandles[(size_t)SkyBoxTextureHandle::Radiance]  = m_metallic->get_texture_handle();
 
+    PosColorTexCoord0Vertex::init();
     // clang-format on
 }
 
@@ -49,10 +74,11 @@ SkyBox::~SkyBox() {}
 
 void SkyBox::set_uniforms() {
     // clang-format off
+    //bgfx::setUniform(m_invProj,&invProj);
 
     bgfx::setTexture(0, m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::SkyBox],   m_textureHandles[(size_t)SkyBoxTextureHandle::SkyBox]);
     bgfx::setTexture(1, m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::Irradiance],   m_textureHandles[(size_t)SkyBoxTextureHandle::Irradiance]);
-    bgfx::setTexture(2, m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::Radiance], m_textureHandles[(size_t)SkyBoxTextureHandle::Radiance]);
+//    bgfx::setTexture(2, m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::Radiance], m_textureHandles[(size_t)SkyBoxTextureHandle::Radiance]);
 
     // clang-format off
 }
@@ -68,6 +94,62 @@ switch (slot) {
             return;
     }
     m_textureSlotPath[(int)slot] = path;
+}
+
+
+
+void SkyBox::screenSpaceQuad(float _textureWidth, float _textureHeight, bool _originBottomLeft, float _width, float _height){
+//if (3 == bgfx::getAvailTransientVertexBuffer(3, PosColorTexCoord0Vertex::ms_layout) )
+//	{
+		bgfx::TransientVertexBuffer vb;
+		bgfx::allocTransientVertexBuffer(&vb, 3, PosColorTexCoord0Vertex::ms_layout);
+		PosColorTexCoord0Vertex* vertex = (PosColorTexCoord0Vertex*)vb.data;
+
+		const float zz = 0.0f;
+
+		const float minx = -_width;
+		const float maxx =  _width;
+		const float miny = 0.0f;
+		const float maxy = _height*2.0f;
+
+		const float texelHalfW = 1/_textureWidth;
+		const float texelHalfH = 1/_textureHeight;
+		const float minu = -1.0f + texelHalfW;
+		const float maxu =  1.0f + texelHalfW;
+
+		float minv = texelHalfH;
+		float maxv = 2.0f + texelHalfH;
+
+		if (_originBottomLeft)
+		{
+			std::swap(minv, maxv);
+			minv -= 1.0f;
+			maxv -= 1.0f;
+		}
+
+		vertex[0].m_x = minx;
+		vertex[0].m_y = miny;
+		vertex[0].m_z = zz;
+		vertex[0].m_rgba = 0xffffffff;
+		vertex[0].m_u = minu;
+		vertex[0].m_v = minv;
+
+		vertex[1].m_x = maxx;
+		vertex[1].m_y = miny;
+		vertex[1].m_z = zz;
+		vertex[1].m_rgba = 0xffffffff;
+		vertex[1].m_u = maxu;
+		vertex[1].m_v = minv;
+
+		vertex[2].m_x = maxx;
+		vertex[2].m_y = maxy;
+		vertex[2].m_z = zz;
+		vertex[2].m_rgba = 0xffffffff;
+		vertex[2].m_u = maxu;
+		vertex[2].m_v = maxv;
+
+		bgfx::setVertexBuffer(0, &vb);
+//	}
 }
 
 }  // namespace components
