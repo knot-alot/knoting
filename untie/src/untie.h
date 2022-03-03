@@ -16,6 +16,7 @@ class Untie {
 
    private:
     std::unique_ptr<knot::Engine> m_engine;
+    std::unique_ptr<knot::Engine> m_loadEngine;
 };
 
 }  // namespace knot

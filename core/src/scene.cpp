@@ -126,29 +126,56 @@ std::optional<GameObject> Scene::get_game_object_from_component(T& component) {
     entt::entity handle = entt::to_entity(scene.m_registry, component);
     return scene.get_game_object_from_handle(handle);
 }
+
 void Scene::save_scene_to_stream(std::ostream& serialized) {
     cereal::JSONOutputArchive archive(serialized);
     // TODO: When you make a new component add it here to the snapshot if it needs to be
     entt::snapshot{m_registry}
         .entities(archive)
         .component<uuid, components::Name, components::Tag, components::Transform, components::Hierarchy,
-                   components::Material, components::InstanceMesh, components::SpotLight, components::EditorCamera>(
-            archive);
+                   components::Material, components::InstanceMesh, components::SpotLight, components::EditorCamera,
+                   components::PhysicsMaterial, components::Shape, components::RigidBody, components::RigidController,
+                   components::Raycast>(archive);
+    log::debug("Scene: Save Finished");
 }
 void Scene::load_scene_from_stream(std::istream& serialized) {
     m_uuidGameObjectMap.clear();
     m_entityGameObjectMap.clear();
+    m_registry.clear();
 
     cereal::JSONInputArchive archive(serialized);
     // TODO: When you make a new component add it here to the snapshot if it needs to be
-    entt::snapshot_loader{m_registry}
-        .entities(archive)
-        .component<uuid, components::Name, components::Tag, components::Transform, components::Hierarchy,
-                   components::Material, components::InstanceMesh, components::SpotLight, components::EditorCamera>(
-            archive);
+    entt::continuous_loader sceneLoader(m_registry);
+    sceneLoader.entities(archive).component<uuid>(archive);
     auto view = m_registry.view<uuid>();
     for (auto ent : view) {
         add_game_object(ent);
+    }
+    sceneLoader.component<components::Name, components::Tag, components::Transform, components::Hierarchy,
+                          components::Material, components::InstanceMesh, components::SpotLight,
+                          components::EditorCamera, components::PhysicsMaterial, components::Shape,
+                          components::RigidBody, components::RigidController, components::Raycast>(archive);
+
+    // I know this is horrible but it's already full jank time. Can go back and be rewritten using the meta system
+    auto ents = m_registry.view<components::Shape, components::RigidBody>();
+    for (auto ent : ents) {
+        auto goOpt = this->get_game_object_from_handle(ent);
+        if (!goOpt) {
+            continue;
+        }
+        auto go = goOpt.value();
+        go.get_component<components::Shape>().on_load();
+        go.get_component<components::RigidBody>().on_load();
+    }
+
+    auto entsRigCont = m_registry.view<components::RigidController>();
+    for (auto ent : entsRigCont) {
+        auto goOpt = this->get_game_object_from_handle(ent);
+        if (!goOpt) {
+            continue;
+        }
+        auto go = goOpt.value();
+        go.get_component<components::RigidController>().on_load();
     }
     log::debug("Scene: Load Finished");
 }
@@ -160,6 +187,10 @@ GameObject Scene::add_game_object(entt::entity handle) {
     m_entityGameObjectMap.insert(std::make_pair(e.m_handle, e));
 
     return e;
+}
+
+void Scene::add_to_postLoadBuffer(std::function<void()> func) {
+    postLoadBuffer.emplace_back(func);
 }
 
 }  // namespace knot

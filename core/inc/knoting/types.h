@@ -1,5 +1,6 @@
 #pragma once
 
+#include <knoting/px_variables_wrapper.h>
 #include <uuid.h>
 #include <cereal/cereal.hpp>
 #include <glm/glm.hpp>

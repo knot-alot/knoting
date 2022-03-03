@@ -15,6 +15,9 @@ void Texture::on_awake() {
     if (m_assetState != AssetState::Finished) {
         m_assetState = AssetState::Loading;
         load_texture_2d(m_fullPath);
+        if (m_assetState == AssetState::Failed) {
+
+        }
     }
 }
 

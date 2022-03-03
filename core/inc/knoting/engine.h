@@ -24,6 +24,8 @@ class Engine {
     std::weak_ptr<ForwardRenderer> get_forward_render_module() { return m_forwardRenderModule; }
     std::weak_ptr<Physics> get_physics_module() { return m_physicsModule; }
 
+    void reset_physics_module();
+
     static std::optional<std::reference_wrapper<Engine>> get_active_engine();
     static void set_active_engine(std::optional<std::reference_wrapper<Engine>> engine);
 

@@ -70,5 +70,10 @@ std::optional<std::reference_wrapper<Engine>> Engine::get_active_engine() {
 void Engine::set_active_engine(std::optional<std::reference_wrapper<Engine>> engine) {
     s_activeEngine = std::ref(engine);
 }
+void Engine::reset_physics_module() {
+    m_physicsModule.reset();
+    m_physicsModule = std::make_shared<knot::Physics>(*this);
+    m_physicsModule->on_awake();
+}
 
 }  // namespace knot
