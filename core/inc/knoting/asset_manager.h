@@ -5,6 +5,7 @@
 #include <knoting/subsystem.h>
 #include <knoting/types.h>
 #include <uuid.h>
+#include <filesystem>
 #include <map>
 
 #include <knoting/mesh.h>

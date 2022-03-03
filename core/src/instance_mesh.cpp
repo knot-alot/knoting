@@ -1,6 +1,7 @@
 #include <knoting/instance_mesh.h>
 
 namespace knot {
+namespace components {
 InstanceMesh::InstanceMesh() {}
 InstanceMesh::InstanceMesh(const std::string& path) : m_path(path) {}
 
@@ -10,4 +11,5 @@ void InstanceMesh::on_awake() {
 
 void InstanceMesh::on_destroy() {}
 
+}  // namespace components
 }  // namespace knot

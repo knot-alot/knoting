@@ -117,17 +117,17 @@ set(PX_BUILDSNIPPETS OFF CACHE BOOL "Generate the snippets")
 set(PX_BUILDPUBLICSAMPLES OFF CACHE BOOL "Generate the samples projects")
 set(PX_GENERATE_STATIC_LIBRARIES ON CACHE BOOL "Generate static libraries")
 set(PX_FLOAT_POINT_PRECISE_MATH OFF CACHE BOOL "Float point precise math")
-set(NV_USE_STATIC_WINCRT ON CACHE BOOL "Use the statically linked windows CRT")
+set(NV_USE_STATIC_WINCRT OFF CACHE BOOL "Use the statically linked windows CRT")
 set(NV_USE_DEBUG_WINCRT ON CACHE BOOL "Use the debug version of the CRT")
 set(PXSHARED_PATH $ENV{PHYSX_PATH}/../pxshared)
 set(PXSHARED_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
 set(CMAKEMODULES_VERSION "1.27")
 set(CMAKEMODULES_PATH $ENV{PHYSX_PATH}/../externals/cmakemodules)
 
-set(PX_OUTPUT_LIB_DIR ${CMAKE_CURRENT_BINARY_DIR}/third/physx)
-set(PX_OUTPUT_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR}/third/physx)
+set(PX_OUTPUT_LIB_DIR ${CMAKE_BINARY_DIR}/third/physx)
+set(PX_OUTPUT_BIN_DIR ${CMAKE_BINARY_DIR}/third/physx)
 
-add_subdirectory($ENV{PHYSX_PATH}/compiler/public third/physx)
+add_subdirectory($ENV{PHYSX_PATH}/compiler/public)
 
 # portable-file-dialogs
 
@@ -156,3 +156,28 @@ target_include_directories(stb INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/stb)
 
 set(UUID_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 add_subdirectory(stduuid)
+
+# Yojimbo
+
+set(sodium_USE_STATIC_LIBS SKIP_PERFORMANCE_COMPARISON ON CACHE BOOL "" FORCE)
+find_package(sodium REQUIRED)
+set(MBEDTLS_USE_STATIC_LIBS SKIP_PERFORMANCE_COMPARISON ON CACHE BOOL "" FORCE)
+find_package(MbedTLS REQUIRED)
+
+project(Yojimbo C CXX)
+add_library(yojimbo STATIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/yojimbo/yojimbo.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/yojimbo/tlsf/tlsf.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/yojimbo/netcode.io/netcode.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/yojimbo/reliable.io/reliable.c
+)
+
+target_include_directories(yojimbo PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/yojimbo
+    ${CMAKE_CURRENT_SOURCE_DIR}/yojimbo/netcode.io
+    ${CMAKE_CURRENT_SOURCE_DIR}/yojimbo/reliable.io
+)
+
+target_link_libraries(yojimbo PRIVATE sodium)
+
+target_include_directories(yojimbo PUBLIC ${MBEDTLS_INCLUDE_DIR})

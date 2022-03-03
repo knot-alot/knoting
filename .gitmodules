@@ -22,7 +22,7 @@
 	url = https://github.com/skypjack/entt.git
 [submodule "third/stduuid"]
 	path = third/stduuid
-	url = https://github.com/mariusbancila/stduuid.git
+	url = https://github.com/knot-alot/stduuid.git
 [submodule "third/portable-file-dialogs"]
 	path = third/portable-file-dialogs
 	url = https://github.com/samhocevar/portable-file-dialogs.git
@@ -41,3 +41,6 @@
 [submodule "third/cereal"]
 	path = third/cereal
 	url = https://github.com/USCiLab/cereal.git
+[submodule "third/yojimbo"]
+	path = third/yojimbo
+	url = https://github.com/networkprotocol/yojimbo.git

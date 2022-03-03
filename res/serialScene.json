@@ -1,0 +1,1098 @@
+{
+    "value0": 12,
+    "value1": 18446744073709551615,
+    "value2": 0,
+    "value3": 1,
+    "value4": 2,
+    "value5": 3,
+    "value6": 4,
+    "value7": 5,
+    "value8": 6,
+    "value9": 7,
+    "value10": 8,
+    "value11": 9,
+    "value12": 10,
+    "value13": 11,
+    "value14": 0,
+    "value15": {
+        "uuid": {
+            "value0": 80,
+            "value1": 70,
+            "value2": 224,
+            "value3": 17,
+            "value4": 212,
+            "value5": 191,
+            "value6": 66,
+            "value7": 75,
+            "value8": 170,
+            "value9": 41,
+            "value10": 98,
+            "value11": 248,
+            "value12": 80,
+            "value13": 37,
+            "value14": 97,
+            "value15": 59
+        }
+    },
+    "value16": 1,
+    "value17": {
+        "uuid": {
+            "value0": 161,
+            "value1": 30,
+            "value2": 161,
+            "value3": 245,
+            "value4": 91,
+            "value5": 148,
+            "value6": 72,
+            "value7": 86,
+            "value8": 158,
+            "value9": 252,
+            "value10": 252,
+            "value11": 145,
+            "value12": 80,
+            "value13": 137,
+            "value14": 2,
+            "value15": 115
+        }
+    },
+    "value18": 2,
+    "value19": {
+        "uuid": {
+            "value0": 45,
+            "value1": 219,
+            "value2": 228,
+            "value3": 89,
+            "value4": 73,
+            "value5": 54,
+            "value6": 68,
+            "value7": 242,
+            "value8": 177,
+            "value9": 48,
+            "value10": 196,
+            "value11": 137,
+            "value12": 20,
+            "value13": 144,
+            "value14": 146,
+            "value15": 212
+        }
+    },
+    "value20": 3,
+    "value21": {
+        "uuid": {
+            "value0": 214,
+            "value1": 14,
+            "value2": 35,
+            "value3": 3,
+            "value4": 38,
+            "value5": 0,
+            "value6": 73,
+            "value7": 249,
+            "value8": 189,
+            "value9": 101,
+            "value10": 78,
+            "value11": 210,
+            "value12": 234,
+            "value13": 108,
+            "value14": 203,
+            "value15": 172
+        }
+    },
+    "value22": 4,
+    "value23": {
+        "uuid": {
+            "value0": 185,
+            "value1": 93,
+            "value2": 108,
+            "value3": 122,
+            "value4": 161,
+            "value5": 235,
+            "value6": 72,
+            "value7": 180,
+            "value8": 159,
+            "value9": 67,
+            "value10": 129,
+            "value11": 194,
+            "value12": 73,
+            "value13": 231,
+            "value14": 130,
+            "value15": 86
+        }
+    },
+    "value24": 5,
+    "value25": {
+        "uuid": {
+            "value0": 17,
+            "value1": 217,
+            "value2": 33,
+            "value3": 185,
+            "value4": 189,
+            "value5": 189,
+            "value6": 64,
+            "value7": 2,
+            "value8": 161,
+            "value9": 253,
+            "value10": 215,
+            "value11": 48,
+            "value12": 84,
+            "value13": 58,
+            "value14": 137,
+            "value15": 167
+        }
+    },
+    "value26": 6,
+    "value27": {
+        "uuid": {
+            "value0": 201,
+            "value1": 150,
+            "value2": 14,
+            "value3": 157,
+            "value4": 200,
+            "value5": 252,
+            "value6": 79,
+            "value7": 123,
+            "value8": 164,
+            "value9": 44,
+            "value10": 169,
+            "value11": 13,
+            "value12": 163,
+            "value13": 229,
+            "value14": 198,
+            "value15": 184
+        }
+    },
+    "value28": 7,
+    "value29": {
+        "uuid": {
+            "value0": 142,
+            "value1": 230,
+            "value2": 123,
+            "value3": 7,
+            "value4": 60,
+            "value5": 126,
+            "value6": 67,
+            "value7": 72,
+            "value8": 186,
+            "value9": 10,
+            "value10": 115,
+            "value11": 158,
+            "value12": 205,
+            "value13": 55,
+            "value14": 181,
+            "value15": 15
+        }
+    },
+    "value30": 8,
+    "value31": {
+        "uuid": {
+            "value0": 61,
+            "value1": 245,
+            "value2": 185,
+            "value3": 3,
+            "value4": 140,
+            "value5": 201,
+            "value6": 69,
+            "value7": 175,
+            "value8": 155,
+            "value9": 103,
+            "value10": 244,
+            "value11": 62,
+            "value12": 158,
+            "value13": 119,
+            "value14": 138,
+            "value15": 10
+        }
+    },
+    "value32": 9,
+    "value33": {
+        "uuid": {
+            "value0": 238,
+            "value1": 188,
+            "value2": 98,
+            "value3": 195,
+            "value4": 114,
+            "value5": 25,
+            "value6": 70,
+            "value7": 123,
+            "value8": 139,
+            "value9": 171,
+            "value10": 142,
+            "value11": 108,
+            "value12": 245,
+            "value13": 227,
+            "value14": 175,
+            "value15": 99
+        }
+    },
+    "value34": 10,
+    "value35": {
+        "uuid": {
+            "value0": 157,
+            "value1": 79,
+            "value2": 221,
+            "value3": 233,
+            "value4": 151,
+            "value5": 210,
+            "value6": 76,
+            "value7": 70,
+            "value8": 138,
+            "value9": 21,
+            "value10": 144,
+            "value11": 60,
+            "value12": 13,
+            "value13": 56,
+            "value14": 107,
+            "value15": 130
+        }
+    },
+    "value36": 11,
+    "value37": 0,
+    "value38": {
+        "name": "camera"
+    },
+    "value39": 1,
+    "value40": {
+        "name": "light_0"
+    },
+    "value41": 2,
+    "value42": {
+        "name": "light_1"
+    },
+    "value43": 3,
+    "value44": {
+        "name": "light_2"
+    },
+    "value45": 4,
+    "value46": {
+        "name": "light_3"
+    },
+    "value47": 5,
+    "value48": {
+        "name": "loaded_cube"
+    },
+    "value49": 6,
+    "value50": {
+        "name": "loaded_dragon"
+    },
+    "value51": 7,
+    "value52": {
+        "name": "loaded_dragon"
+    },
+    "value53": 8,
+    "value54": {
+        "name": "loaded_dragon"
+    },
+    "value55": 9,
+    "value56": {
+        "name": "loaded_dragon"
+    },
+    "value57": 10,
+    "value58": {
+        "name": "loaded_dragon"
+    },
+    "value59": 0,
+    "value60": 11,
+    "value61": 0,
+    "value62": {
+        "m_position": {
+            "v.x": -10.0,
+            "v.y": 15.0,
+            "v.z": -30.0
+        },
+        "m_scale": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.0,
+            "q.z": 0.0,
+            "q.w": 0.0
+        }
+    },
+    "value63": 1,
+    "value64": {
+        "m_position": {
+            "v.x": 2.38977313041687,
+            "v.y": 14.570069313049317,
+            "v.z": -10.0
+        },
+        "m_scale": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.0,
+            "q.z": 0.0,
+            "q.w": 0.0
+        }
+    },
+    "value65": 2,
+    "value66": {
+        "m_position": {
+            "v.x": 10.351221084594727,
+            "v.y": -13.538474082946778,
+            "v.z": -10.0
+        },
+        "m_scale": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.0,
+            "q.z": 0.0,
+            "q.w": 0.0
+        }
+    },
+    "value67": 3,
+    "value68": {
+        "m_position": {
+            "v.x": -14.905335426330567,
+            "v.y": 6.397019386291504,
+            "v.z": -10.0
+        },
+        "m_scale": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.0,
+            "q.z": 0.0,
+            "q.w": 0.0
+        }
+    },
+    "value69": 4,
+    "value70": {
+        "m_position": {
+            "v.x": 7.670673370361328,
+            "v.y": 3.631392002105713,
+            "v.z": -10.0
+        },
+        "m_scale": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.0,
+            "q.z": 0.0,
+            "q.w": 0.0
+        }
+    },
+    "value71": 5,
+    "value72": {
+        "m_position": {
+            "v.x": -5.0,
+            "v.y": 0.0,
+            "v.z": -10.0
+        },
+        "m_scale": {
+            "v.x": 15.0,
+            "v.y": 1.0,
+            "v.z": 15.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.3826834559440613,
+            "q.z": 0.0,
+            "q.w": 0.9238795042037964
+        }
+    },
+    "value73": 6,
+    "value74": {
+        "m_position": {
+            "v.x": -5.0,
+            "v.y": 1.0,
+            "v.z": -10.0
+        },
+        "m_scale": {
+            "v.x": 5.0,
+            "v.y": 5.0,
+            "v.z": 5.0
+        },
+        "m_rotation": {
+            "q.x": -0.0,
+            "q.y": 1.0,
+            "q.z": -0.0,
+            "q.w": -4.371138828673793e-8
+        }
+    },
+    "value75": 7,
+    "value76": {
+        "m_position": {
+            "v.x": 0.0,
+            "v.y": 1.0,
+            "v.z": -15.0
+        },
+        "m_scale": {
+            "v.x": 3.0,
+            "v.y": 3.0,
+            "v.z": 3.0
+        },
+        "m_rotation": {
+            "q.x": -0.0,
+            "q.y": 0.8660253882408142,
+            "q.z": -0.0,
+            "q.w": -0.5000000596046448
+        }
+    },
+    "value77": 8,
+    "value78": {
+        "m_position": {
+            "v.x": -10.0,
+            "v.y": 1.0,
+            "v.z": -15.0
+        },
+        "m_scale": {
+            "v.x": 3.0,
+            "v.y": 3.0,
+            "v.z": 3.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.9848077297210693,
+            "q.z": 0.0,
+            "q.w": 0.17364822328090669
+        }
+    },
+    "value79": 9,
+    "value80": {
+        "m_position": {
+            "v.x": -5.0,
+            "v.y": 1.0,
+            "v.z": -17.0
+        },
+        "m_scale": {
+            "v.x": 3.0,
+            "v.y": 3.0,
+            "v.z": 3.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.3826834559440613,
+            "q.z": 0.0,
+            "q.w": 0.9238795042037964
+        }
+    },
+    "value81": 10,
+    "value82": {
+        "m_position": {
+            "v.x": -13.0,
+            "v.y": 1.0,
+            "v.z": -8.0
+        },
+        "m_scale": {
+            "v.x": 3.0,
+            "v.y": 3.0,
+            "v.z": 3.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.7071067690849304,
+            "q.z": 0.0,
+            "q.w": 0.7071067690849304
+        }
+    },
+    "value83": 11,
+    "value84": 0,
+    "value85": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value86": 1,
+    "value87": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value88": 2,
+    "value89": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value90": 3,
+    "value91": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value92": 4,
+    "value93": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value94": 5,
+    "value95": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value96": 6,
+    "value97": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value98": 7,
+    "value99": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value100": 8,
+    "value101": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value102": 9,
+    "value103": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value104": 10,
+    "value105": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value106": 6,
+    "value107": 5,
+    "value108": {
+        "m_albedo": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 2147483649,
+                "data": {
+                    "m_assetType": 1,
+                    "m_fallbackName": "fallbackTexture",
+                    "m_fullPath": "UV_Grid_test.png",
+                    "m_assetName": "UV_Grid_test.png",
+                    "m_width": 0,
+                    "m_height": 0
+                }
+            }
+        },
+        "m_normal": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 2147483650,
+                "data": {
+                    "m_assetType": 1,
+                    "m_fallbackName": "fallbackTexture",
+                    "m_fullPath": "normal_tiles_1k.png",
+                    "m_assetName": "normal_tiles_1k.png",
+                    "m_width": 0,
+                    "m_height": 0
+                }
+            }
+        },
+        "m_metallic": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 2147483651,
+                "data": {
+                    "m_assetType": 1,
+                    "m_fallbackName": "fallbackTexture",
+                    "m_fullPath": "whiteTexture",
+                    "m_assetName": "",
+                    "m_width": 0,
+                    "m_height": 0
+                }
+            }
+        },
+        "m_roughness": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_occlusion": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_textureSlotPath": {
+            "value0": "UV_Grid_test.png",
+            "value1": "normal_tiles_1k.png",
+            "value2": "whiteTexture",
+            "value3": "whiteTexture",
+            "value4": "whiteTexture"
+        },
+        "m_shader": {
+            "m_assetType": 3,
+            "m_fallbackName": "fallbackShader",
+            "m_fullPath": "",
+            "m_assetName": ""
+        },
+        "m_albedoColor": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0,
+            "v.w": 1.0
+        },
+        "m_textureTiling": {
+            "v.x": 1.0,
+            "v.y": 1.0
+        },
+        "m_albedoScalar": 1.0,
+        "m_normalScalar": 1.0,
+        "m_metallicScalar": 1.0,
+        "m_roughnessScalar": 1.0,
+        "m_occlusionScalar": 1.0,
+        "m_skyboxScalar": 0.20000000298023225,
+        "m_castShadows": true,
+        "m_receivesShadows": true,
+        "m_alphaCutoffEnabled": false,
+        "m_alphaCutoffAmount": 0.0
+    },
+    "value109": 6,
+    "value110": {
+        "m_albedo": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 2147483652,
+                "data": {
+                    "m_assetType": 1,
+                    "m_fallbackName": "fallbackTexture",
+                    "m_fullPath": "oldiron/OldIron01_1K_BaseColor.png",
+                    "m_assetName": "OldIron01_1K_BaseColor.png",
+                    "m_width": 0,
+                    "m_height": 0
+                }
+            }
+        },
+        "m_normal": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 2147483653,
+                "data": {
+                    "m_assetType": 1,
+                    "m_fallbackName": "fallbackTexture",
+                    "m_fullPath": "oldiron/OldIron01_1K_Normal.png",
+                    "m_assetName": "OldIron01_1K_Normal.png",
+                    "m_width": 0,
+                    "m_height": 0
+                }
+            }
+        },
+        "m_metallic": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_roughness": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_occlusion": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_textureSlotPath": {
+            "value0": "oldiron/OldIron01_1K_BaseColor.png",
+            "value1": "oldiron/OldIron01_1K_Normal.png",
+            "value2": "whiteTexture",
+            "value3": "whiteTexture",
+            "value4": "whiteTexture"
+        },
+        "m_shader": {
+            "m_assetType": 3,
+            "m_fallbackName": "fallbackShader",
+            "m_fullPath": "",
+            "m_assetName": ""
+        },
+        "m_albedoColor": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0,
+            "v.w": 1.0
+        },
+        "m_textureTiling": {
+            "v.x": 1.0,
+            "v.y": 1.0
+        },
+        "m_albedoScalar": 1.0,
+        "m_normalScalar": 1.0,
+        "m_metallicScalar": 1.0,
+        "m_roughnessScalar": 1.0,
+        "m_occlusionScalar": 1.0,
+        "m_skyboxScalar": 0.20000000298023225,
+        "m_castShadows": true,
+        "m_receivesShadows": true,
+        "m_alphaCutoffEnabled": false,
+        "m_alphaCutoffAmount": 0.0
+    },
+    "value111": 7,
+    "value112": {
+        "m_albedo": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 4
+            }
+        },
+        "m_normal": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 5
+            }
+        },
+        "m_metallic": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_roughness": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_occlusion": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_textureSlotPath": {
+            "value0": "oldiron/OldIron01_1K_BaseColor.png",
+            "value1": "oldiron/OldIron01_1K_Normal.png",
+            "value2": "whiteTexture",
+            "value3": "whiteTexture",
+            "value4": "whiteTexture"
+        },
+        "m_shader": {
+            "m_assetType": 3,
+            "m_fallbackName": "fallbackShader",
+            "m_fullPath": "",
+            "m_assetName": ""
+        },
+        "m_albedoColor": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0,
+            "v.w": 1.0
+        },
+        "m_textureTiling": {
+            "v.x": 1.0,
+            "v.y": 1.0
+        },
+        "m_albedoScalar": 1.0,
+        "m_normalScalar": 1.0,
+        "m_metallicScalar": 1.0,
+        "m_roughnessScalar": 1.0,
+        "m_occlusionScalar": 1.0,
+        "m_skyboxScalar": 0.20000000298023225,
+        "m_castShadows": true,
+        "m_receivesShadows": true,
+        "m_alphaCutoffEnabled": false,
+        "m_alphaCutoffAmount": 0.0
+    },
+    "value113": 8,
+    "value114": {
+        "m_albedo": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 4
+            }
+        },
+        "m_normal": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 5
+            }
+        },
+        "m_metallic": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_roughness": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_occlusion": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_textureSlotPath": {
+            "value0": "oldiron/OldIron01_1K_BaseColor.png",
+            "value1": "oldiron/OldIron01_1K_Normal.png",
+            "value2": "whiteTexture",
+            "value3": "whiteTexture",
+            "value4": "whiteTexture"
+        },
+        "m_shader": {
+            "m_assetType": 3,
+            "m_fallbackName": "fallbackShader",
+            "m_fullPath": "",
+            "m_assetName": ""
+        },
+        "m_albedoColor": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0,
+            "v.w": 1.0
+        },
+        "m_textureTiling": {
+            "v.x": 1.0,
+            "v.y": 1.0
+        },
+        "m_albedoScalar": 1.0,
+        "m_normalScalar": 1.0,
+        "m_metallicScalar": 1.0,
+        "m_roughnessScalar": 1.0,
+        "m_occlusionScalar": 1.0,
+        "m_skyboxScalar": 0.20000000298023225,
+        "m_castShadows": true,
+        "m_receivesShadows": true,
+        "m_alphaCutoffEnabled": false,
+        "m_alphaCutoffAmount": 0.0
+    },
+    "value115": 9,
+    "value116": {
+        "m_albedo": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 4
+            }
+        },
+        "m_normal": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 5
+            }
+        },
+        "m_metallic": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_roughness": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_occlusion": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_textureSlotPath": {
+            "value0": "oldiron/OldIron01_1K_BaseColor.png",
+            "value1": "oldiron/OldIron01_1K_Normal.png",
+            "value2": "whiteTexture",
+            "value3": "whiteTexture",
+            "value4": "whiteTexture"
+        },
+        "m_shader": {
+            "m_assetType": 3,
+            "m_fallbackName": "fallbackShader",
+            "m_fullPath": "",
+            "m_assetName": ""
+        },
+        "m_albedoColor": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0,
+            "v.w": 1.0
+        },
+        "m_textureTiling": {
+            "v.x": 1.0,
+            "v.y": 1.0
+        },
+        "m_albedoScalar": 1.0,
+        "m_normalScalar": 1.0,
+        "m_metallicScalar": 1.0,
+        "m_roughnessScalar": 1.0,
+        "m_occlusionScalar": 1.0,
+        "m_skyboxScalar": 0.20000000298023225,
+        "m_castShadows": true,
+        "m_receivesShadows": true,
+        "m_alphaCutoffEnabled": false,
+        "m_alphaCutoffAmount": 0.0
+    },
+    "value117": 10,
+    "value118": {
+        "m_albedo": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 4
+            }
+        },
+        "m_normal": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 5
+            }
+        },
+        "m_metallic": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_roughness": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_occlusion": {
+            "polymorphic_id": 1073741824,
+            "ptr_wrapper": {
+                "id": 3
+            }
+        },
+        "m_textureSlotPath": {
+            "value0": "oldiron/OldIron01_1K_BaseColor.png",
+            "value1": "oldiron/OldIron01_1K_Normal.png",
+            "value2": "whiteTexture",
+            "value3": "whiteTexture",
+            "value4": "whiteTexture"
+        },
+        "m_shader": {
+            "m_assetType": 3,
+            "m_fallbackName": "fallbackShader",
+            "m_fullPath": "",
+            "m_assetName": ""
+        },
+        "m_albedoColor": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0,
+            "v.w": 1.0
+        },
+        "m_textureTiling": {
+            "v.x": 1.0,
+            "v.y": 1.0
+        },
+        "m_albedoScalar": 1.0,
+        "m_normalScalar": 1.0,
+        "m_metallicScalar": 1.0,
+        "m_roughnessScalar": 1.0,
+        "m_occlusionScalar": 1.0,
+        "m_skyboxScalar": 0.20000000298023225,
+        "m_castShadows": true,
+        "m_receivesShadows": true,
+        "m_alphaCutoffEnabled": false,
+        "m_alphaCutoffAmount": 0.0
+    },
+    "value119": 6,
+    "value120": 5,
+    "value121": {
+        "m_path": "uv_cube.obj"
+    },
+    "value122": 6,
+    "value123": {
+        "m_path": "dragon.obj"
+    },
+    "value124": 7,
+    "value125": {
+        "m_path": "dragon.obj"
+    },
+    "value126": 8,
+    "value127": {
+        "m_path": "dragon.obj"
+    },
+    "value128": 9,
+    "value129": {
+        "m_path": "dragon.obj"
+    },
+    "value130": 10,
+    "value131": {
+        "m_path": "dragon.obj"
+    },
+    "value132": 4,
+    "value133": 1,
+    "value134": {
+        "m_lightOuterRadius": 17.0,
+        "m_lightInnerRadius": 0.5,
+        "m_color": {
+            "v.x": 1.0,
+            "v.y": 0.699999988079071,
+            "v.z": 0.20000000298023225
+        }
+    },
+    "value135": 2,
+    "value136": {
+        "m_lightOuterRadius": 17.0,
+        "m_lightInnerRadius": 0.5,
+        "m_color": {
+            "v.x": 0.699999988079071,
+            "v.y": 0.20000000298023225,
+            "v.z": 1.0
+        }
+    },
+    "value137": 3,
+    "value138": {
+        "m_lightOuterRadius": 17.0,
+        "m_lightInnerRadius": 0.5,
+        "m_color": {
+            "v.x": 0.20000000298023225,
+            "v.y": 1.0,
+            "v.z": 0.699999988079071
+        }
+    },
+    "value139": 4,
+    "value140": {
+        "m_lightOuterRadius": 17.0,
+        "m_lightInnerRadius": 0.5,
+        "m_color": {
+            "v.x": 1.0,
+            "v.y": 0.4000000059604645,
+            "v.z": 0.20000000298023225
+        }
+    },
+    "value141": 1,
+    "value142": 0,
+    "value143": {
+        "m_lookTarget": {
+            "v.x": 0.0,
+            "v.y": -10.0,
+            "v.z": -1.0
+        },
+        "m_fov": 60.0,
+        "m_zNear": 0.10000000149011612,
+        "m_zFar": 800.0,
+        "m_moveSpeed": 5.0,
+        "m_moveSpeedMultiplier": 4.0
+    }
+}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <knoting/types.h>
+#include <cereal/cereal.hpp>
 
 namespace knot {
 namespace components {
@@ -25,6 +26,12 @@ class EditorCamera {
     void set_fov(float fov) { m_fov = fov; };
     void set_z_near(float zNear) { m_zNear = zNear; };
     void set_z_far(float zFar) { m_zFar = zFar; };
+
+    template <class Archive>
+    void serialize(Archive& archive) {
+        archive(CEREAL_NVP(m_lookTarget), CEREAL_NVP(m_fov), CEREAL_NVP(m_zNear), CEREAL_NVP(m_zFar),
+                CEREAL_NVP(m_moveSpeed), CEREAL_NVP(m_moveSpeedMultiplier));
+    }
 
    private:
     glm::vec3 m_lookTarget = vec3(0, -10, -1);

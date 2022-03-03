@@ -2,6 +2,7 @@
 
 #include <knoting/log.h>
 #include <knoting/types.h>
+#include <cereal/cereal.hpp>
 
 namespace knot {
 namespace components {
@@ -26,6 +27,11 @@ class Transform {
     void set_rotation_euler(const vec3& rotation);
 
     mat4 get_model_matrix() const;
+
+    template <class Archive>
+    void serialize(Archive& archive) {
+        archive(CEREAL_NVP(m_position), CEREAL_NVP(m_scale), CEREAL_NVP(m_rotation));
+    }
 
    protected:
     vec3 m_position;
