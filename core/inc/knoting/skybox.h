@@ -3,6 +3,7 @@
 #include <knoting/shader_program.h>
 #include <knoting/texture.h>
 #include <knoting/types.h>
+#include <cereal/cereal.hpp>
 #include <memory>
 
 namespace knot {
@@ -58,6 +59,20 @@ class SkyBox {
     SkyBoxTextureType m_backgroundType = SkyBoxTextureType::Irradiance;
 
     ShaderProgram m_shader;
+
+   public:
+    template <class Archive>
+    void save(Archive& archive) const {
+        archive(CEREAL_NVP(m_textureSlotPath), CEREAL_NVP(m_shader), CEREAL_NVP(m_exposure),
+                CEREAL_NVP(m_backgroundType));
+    }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(CEREAL_NVP(m_textureSlotPath), CEREAL_NVP(m_shader), CEREAL_NVP(m_exposure),
+                CEREAL_NVP(m_backgroundType));
+        on_awake();
+    }
 };
 }  // namespace components
 }  // namespace knot
