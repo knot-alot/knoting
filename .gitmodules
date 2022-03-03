@@ -13,6 +13,7 @@
 [submodule "third/imgui"]
 	path = third/imgui
 	url = https://github.com/ocornut/imgui.git
+	branch = docking
 [submodule "third/imguizmo"]
 	path = third/imguizmo
 	url = https://github.com/Knot-Alot/ImGuizmo.git

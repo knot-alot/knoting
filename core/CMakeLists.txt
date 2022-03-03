@@ -21,12 +21,12 @@ set(PUBLIC_LIBS
     yojimbo
     NoesisGUI
     FMod
+    glfw
 )
 
 set(PRIVATE_LIBS
-        glfw
         stb
-        )
+)
 
 find_package(NoesisGUI REQUIRED)
 find_package(FMod REQUIRED)

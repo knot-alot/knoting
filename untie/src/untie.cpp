@@ -154,7 +154,6 @@ Untie::Untie() {
     serializedSceneStream.close();
 }
 void Untie::run() {
-    log::debug("RUN");
     while (m_engine->is_open()) {
         m_engine->update_modules();
     }

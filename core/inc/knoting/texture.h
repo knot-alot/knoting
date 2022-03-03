@@ -27,7 +27,7 @@ class Texture : public Asset {
     //=================
 
     void generate_solid_color_texture(const vec4& color, const std::string& name);
-    void load_texture_2d(const std::string& path, bool usingMipMaps = true, bool usingAnisotropicFiltering = true);
+    void load_texture_2d(const std::string& path, bool usingMipMaps = false, bool usingAnisotropicFiltering = true);
 
     template <class Archive>
     void save(Archive& archive) const {

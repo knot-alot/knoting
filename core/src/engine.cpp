@@ -18,6 +18,7 @@ Engine::Engine() {
     for (auto& module : m_engineModules) {
         module->on_awake();
     }
+    log::debug("init engine");
 }
 
 void Engine::update_modules() {
@@ -51,9 +52,11 @@ void Engine::update_modules() {
     for (auto& module : m_engineModules) {
         module->on_late_update();
     }
+    swap_frame();
 }
 
 Engine::~Engine() {
+    log::info("engine on destroy");
     for (auto& module : m_engineModules) {
         module->on_destroy();
     }
@@ -61,6 +64,13 @@ Engine::~Engine() {
 
 bool Engine::is_open() {
     return m_windowModule->is_open();
+}
+void Engine::add_subsystem(std::shared_ptr<Subsystem> subsystem) {
+    m_engineModules.emplace_back(subsystem);
+    subsystem->on_awake();
+}
+void Engine::swap_frame() {
+    bgfx::frame();
 }
 
 std::optional<std::reference_wrapper<Engine>> Engine::get_active_engine() {

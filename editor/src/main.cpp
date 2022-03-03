@@ -1,5 +1,10 @@
-#include <iostream>
+#include "editor.h"
+
+using namespace knot;
 
 int main() {
-    std::cout << "Hi there\n";
+    Editor editor;
+    editor.run();
+
+    return 0;
 }
