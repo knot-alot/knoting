@@ -21,11 +21,7 @@
 namespace knot {
 
 Window::Window(int width, int height, std::string title, Engine& engine)
-    : m_width(width),
-      m_height(height),
-      m_title(title),
-      m_window(nullptr),
-      m_engine(engine), m_windowResizedFlag(true) {
+    : m_width(width), m_height(height), m_title(title), m_window(nullptr), m_engine(engine), m_windowResizedFlag(true) {
     int glfw_init_res = glfwInit();
 
     KNOTING_ASSERT_MESSAGE(glfw_init_res == GLFW_TRUE, "Failed to initialize GLFW");
