@@ -85,7 +85,9 @@ void ForwardRenderer::on_render() {
         m_lightData.push_spotlight_color_inner_rad(vec4(spotLight.get_color(), spotLight.get_inner_radius()));
     }
 
-    auto skyboxes = registry.view<Transform, InstanceMesh, SkyBox, Name>();
+    //=SKYBOX=================================
+
+    auto skyboxes = registry.view<InstanceMesh, SkyBox>();
     for (auto& e : skyboxes) {
         auto goOpt = scene.get_game_object_from_handle(e);
         if (!goOpt) {
@@ -93,24 +95,16 @@ void ForwardRenderer::on_render() {
         }
 
         GameObject go = goOpt.value();
-        Transform& transform = go.get_component<Transform>();
         InstanceMesh& mesh = go.get_component<InstanceMesh>();
         SkyBox& skyBox = go.get_component<SkyBox>();
-        Name& name = go.get_component<Name>();
 
-        bgfx::setTransform(value_ptr(transform.get_model_matrix()));
         bgfx::setVertexBuffer(0, mesh.get_vertex_buffer());
 
         if (isValid(mesh.get_index_buffer())) {
             bgfx::setIndexBuffer(mesh.get_index_buffer());
         }
 
-        // bgfx::setViewTransform(0, &view[0][0], &invProj[0][0]);
-
-        // m_lightData.set_spotlight_uniforms();
-        skyBox.set_inverse_projection(invProj);
         skyBox.set_uniforms();
-        // skyBox.screenSpaceQuad(get_window_width(), get_window_height(), true);
 
         bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_DEPTH_TEST_LEQUAL);
         bgfx::submit(0, skyBox.get_program());

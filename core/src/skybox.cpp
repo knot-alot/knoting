@@ -36,21 +36,23 @@ void SkyBox::on_awake() {
     m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::Irradiance]      = bgfx::createUniform("s_texCubeIrr",    bgfx::UniformType::Sampler);
     m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::Radiance]        = bgfx::createUniform("m_metallic",  bgfx::UniformType::Sampler);
 
-    m_invProj = bgfx::createUniform("m_invProj",    bgfx::UniformType::Mat4);
+    m_uniformSkyboxData = bgfx::createUniform("m_skyboxData",    bgfx::UniformType::Vec4);
 
     m_albedo    = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)SkyBoxTextureHandle::SkyBox]).lock();
     m_normal    = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)SkyBoxTextureHandle::Irradiance]).lock();
     m_metallic  = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)SkyBoxTextureHandle::Radiance]).lock();
 
-    m_textureHandles[(size_t)SkyBoxTextureHandle::SkyBox]    = m_albedo->get_texture_handle();
-    m_textureHandles[(size_t)SkyBoxTextureHandle::Irradiance]    = m_normal->get_texture_handle();
-    m_textureHandles[(size_t)SkyBoxTextureHandle::Radiance]  = m_metallic->get_texture_handle();
+    m_textureHandles[(size_t)SkyBoxTextureHandle::SkyBox]           = m_albedo->get_texture_handle();
+    m_textureHandles[(size_t)SkyBoxTextureHandle::Irradiance]       = m_normal->get_texture_handle();
+    m_textureHandles[(size_t)SkyBoxTextureHandle::Radiance]         = m_metallic->get_texture_handle();
 
     PosColorTexCoord0Vertex::init();
     // clang-format on
 }
 
 void SkyBox::on_destroy() {
+    bgfx::destroy(m_uniformSkyboxData);
+
     bgfx::destroy(m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::SkyBox]);
     bgfx::destroy(m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::Irradiance]);
     bgfx::destroy(m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::Radiance]);
@@ -61,6 +63,8 @@ void SkyBox::on_destroy() {
 }
 
 SkyBox::SkyBox() {
+    m_uniformSkyboxData = BGFX_INVALID_HANDLE;
+
     for (size_t i = 0; i < (size_t)SkyBoxUniformSamplerHandle::LAST; ++i) {
         m_uniformSamplerHandle[i] = BGFX_INVALID_HANDLE;
     }
@@ -71,15 +75,20 @@ SkyBox::SkyBox() {
 }
 
 SkyBox::~SkyBox() {}
-
 void SkyBox::set_uniforms() {
-    // clang-format off
+    m_skyboxData.x = m_exposure;
+    m_skyboxData.y = (int)m_backgroundType;
+    m_skyboxData.z = 0.0f;
+    m_skyboxData.w = 0.0f;
 
-    bgfx::setUniform(m_invProj,&invProj);
+    bgfx::setUniform(m_uniformSkyboxData, &m_skyboxData);
 
-    bgfx::setTexture(0, m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::SkyBox],   m_textureHandles[(size_t)SkyBoxTextureHandle::SkyBox]);
-    bgfx::setTexture(1, m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::Irradiance],   m_textureHandles[(size_t)SkyBoxTextureHandle::Irradiance]);
-    bgfx::setTexture(2, m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::Radiance], m_textureHandles[(size_t)SkyBoxTextureHandle::Radiance]);
+    bgfx::setTexture(0, m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::SkyBox],
+                     m_textureHandles[(size_t)SkyBoxTextureHandle::SkyBox]);
+    bgfx::setTexture(1, m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::Irradiance],
+                     m_textureHandles[(size_t)SkyBoxTextureHandle::Irradiance]);
+    bgfx::setTexture(2, m_uniformSamplerHandle[(size_t)SkyBoxUniformSamplerHandle::Radiance],
+                     m_textureHandles[(size_t)SkyBoxTextureHandle::Radiance]);
 
     // clang-format off
 }

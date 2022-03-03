@@ -34,7 +34,12 @@ class SkyBox {
 
     void set_uniforms();
     bgfx::ProgramHandle get_program() { return m_shader.get_program(); };
-    void set_inverse_projection(mat4 new_invProj) { invProj = new_invProj; };
+
+    void set_uniform_exposure(float exposure) { m_exposure = exposure; };
+    float get_uniform_exposure() { return m_exposure; };
+
+    void set_uniform_background_type(SkyBoxTextureType type) { m_backgroundType = type; };
+    SkyBoxTextureType get_uniform_background_type() { return m_backgroundType; };
 
    private:
     std::array<bgfx::UniformHandle, (size_t)SkyBoxUniformSamplerHandle::LAST> m_uniformSamplerHandle;
@@ -46,9 +51,12 @@ class SkyBox {
     std::shared_ptr<Texture> m_metallic;
 
     std::string m_textureSlotPath[3] = {"", "", ""};
-    bgfx::UniformHandle m_invProj;
+    bgfx::UniformHandle m_uniformSkyboxData;
+    vec4 m_skyboxData;
 
-    mat4 invProj;
+    float m_exposure = 1.0f;
+    SkyBoxTextureType m_backgroundType = SkyBoxTextureType::Irradiance;
+
     ShaderProgram m_shader;
 };
 }  // namespace components

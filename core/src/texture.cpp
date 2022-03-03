@@ -62,7 +62,7 @@ void Texture::load_texture_hdri(const std::string& path) {
     }
 
     uint32_t textureFlags{0};
-    textureFlags = BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT;
+    textureFlags = BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
 
     // clang-format off
     bgfx::TextureHandle textureHandle;
