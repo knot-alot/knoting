@@ -22,16 +22,16 @@ class Engine {
 
     std::weak_ptr<Window> get_window_module() { return m_windowModule; }
     std::weak_ptr<ForwardRenderer> get_forward_render_module() { return m_forwardRenderModule; }
+    std::weak_ptr<Physics> get_physics_module() { return m_physicsModule; }
+
+    static std::optional<std::reference_wrapper<Engine>> get_active_engine();
+    static void set_active_engine(std::optional<std::reference_wrapper<Engine>> engine);
+
     void add_subsystem(std::shared_ptr<Subsystem> subsystem);
 
    private:
     void swap_frame();
-    std::weak_ptr<Physics> get_physics_module() { return m_physicsModule; }
-
     void reset_physics_module();
-
-    static std::optional<std::reference_wrapper<Engine>> get_active_engine();
-    static void set_active_engine(std::optional<std::reference_wrapper<Engine>> engine);
 
    private:
     int m_windowWidth = 1024;
