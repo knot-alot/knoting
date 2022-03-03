@@ -30,8 +30,8 @@ WidgetSubsystem::WidgetSubsystem(std::weak_ptr<knot::Engine> engine) {
 
 void WidgetSubsystem::on_late_update() {
     auto window = m_engine.lock()->get_window_module().lock();
-    if (window->get_debug_resize_flag()) {
-        window->set_debug_resize_flag(false);
+    if (window->get_window_resize_flag()) {
+        window->set_window_resize_flag(false);
         imgui_reset(window->get_window_width(), window->get_window_height());
     }
 
@@ -297,7 +297,7 @@ void WidgetSubsystem::dropCallback(GLFWwindow* window, int count, const char** p
 void WidgetSubsystem::windowSizeCallback(GLFWwindow* window, int width, int height) {
     Window* win = (Window*)glfwGetWindowUserPointer(window);
     win->set_window_size(vec2i(width, height));
-    win->set_debug_resize_flag(true);
+    win->set_window_resize_flag(true);
 }
 
 void WidgetSubsystem::set_glfw_editor_callbacks(GLFWwindow* window) {

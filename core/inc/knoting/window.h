@@ -45,11 +45,11 @@ class Window : public Subsystem {
     void recreate_framebuffer(int width, int height);
 
     GLFWwindow* get_glfw_window() { return m_window; };
-    bool get_debug_resize_flag() { return debug_editor_resize_flag; };
-    void set_debug_resize_flag(bool newState) { debug_editor_resize_flag = newState; };
+    bool get_window_resize_flag() { return m_windowResizedFlag; };
+    void set_window_resize_flag(bool newState) { m_windowResizedFlag = newState; };
 
    protected:
-    bool debug_editor_resize_flag;
+    bool m_windowResizedFlag;
     void setup_callbacks();
     static void window_size_callback(GLFWwindow* window, int width, int height);
 

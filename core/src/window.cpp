@@ -21,8 +21,12 @@
 namespace knot {
 
 Window::Window(int width, int height, std::string title, Engine& engine)
-    : m_width(width), m_height(height), m_title(title), m_window(nullptr), m_engine(engine) {
-    int glfw_init_res = glfwInit(), debug_editor_resize_flag(true);
+    : m_width(width),
+      m_height(height),
+      m_title(title),
+      m_window(nullptr),
+      m_engine(engine), m_windowResizedFlag(true) {
+    int glfw_init_res = glfwInit();
 
     KNOTING_ASSERT_MESSAGE(glfw_init_res == GLFW_TRUE, "Failed to initialize GLFW");
     log::debug("GLFW initialized");
@@ -76,7 +80,7 @@ void Window::window_size_callback(GLFWwindow* window, int width, int height) {
     self->m_height = height;
     self->recreate_framebuffer(width, height);
     // TODO REPLACE THIS FUNCTION & ALL GLFW CALLBACKS WHEN IN EDITOR
-    self->set_debug_resize_flag(true);
+    self->set_window_resize_flag(true);
 }
 void Window::recreate_framebuffer(int width, int height) {
     m_engine.get_forward_render_module().lock()->recreate_framebuffer(width, height);
