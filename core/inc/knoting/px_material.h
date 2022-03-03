@@ -22,6 +22,22 @@ class PhysicsMaterial {
     void set_restitution(float restitution) { m_material->get()->setRestitution(restitution); }
     void set_px_material(float staticFriction, float dynamicFriction, float restitution);
 
+    template <class Archive>
+    void save(Archive& archive) const {
+        float dynamicFriction = m_material->get()->getDynamicFriction();
+        float staticFriction = m_material->get()->getStaticFriction();
+        float restitution = m_material->get()->getRestitution();
+        archive(CEREAL_NVP(dynamicFriction), CEREAL_NVP(staticFriction), CEREAL_NVP(restitution));
+    }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        float dynamicFriction, staticFriction, restitution;
+        archive(CEREAL_NVP(dynamicFriction), CEREAL_NVP(staticFriction), CEREAL_NVP(restitution));
+        on_awake();
+        set_px_material(staticFriction, dynamicFriction, restitution);
+    }
+
    protected:
     std::shared_ptr<PxMaterial_ptr_wrapper> m_material;
     std::shared_ptr<PxPhysics_ptr_wrapper> m_physics;

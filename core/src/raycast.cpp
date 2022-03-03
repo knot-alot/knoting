@@ -1,6 +1,7 @@
 #include <knoting/engine.h>
 #include <knoting/raycast.h>
 #include <knoting/rigidbody.h>
+#include <cereal/archives/json.hpp>
 
 namespace knot {
 namespace components {
@@ -39,7 +40,7 @@ vec3 Raycast::get_hit_position() {
     return vec3(std::numeric_limits<float>::max());
 }
 
-vec3 Raycast::get_hit_nomal() {
+vec3 Raycast::get_hit_normal() {
     if (m_isHit) {
         return RigidBody::PxVec3_to_vec3(m_hit.block.normal);
     }
@@ -92,6 +93,26 @@ PxVec3 Raycast::get_position_from_transform() {
     }
     return PxVec3(std::numeric_limits<float>::max());
 }
+
+template <class Archive>
+void Raycast::save(Archive& archive) const {
+    archive(CEREAL_NVP(RigidBody::PxVec3_to_vec3(m_origin)), CEREAL_NVP(RigidBody::PxVec3_to_vec3(m_unitDir)),
+            CEREAL_NVP((float)m_maxDistance));
+}
+
+template <class Archive>
+void Raycast::load(Archive& archive) {
+    vec3 origin, unitDir;
+    float maxDistance;
+    archive(CEREAL_NVP(origin), CEREAL_NVP(unitDir), CEREAL_NVP(maxDistance));
+    m_origin = RigidBody::vec3_to_PxVec3(origin);
+    m_unitDir = RigidBody::vec3_to_PxVec3(unitDir);
+    m_maxDistance = maxDistance;
+    on_awake();
+}
+
+template void Raycast::save<cereal::JSONOutputArchive>(cereal::JSONOutputArchive&) const;
+template void Raycast::load<cereal::JSONInputArchive>(cereal::JSONInputArchive&);
 
 }  // namespace components
 }  // namespace knot

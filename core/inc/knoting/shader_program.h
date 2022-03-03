@@ -2,6 +2,7 @@
 
 #include <bgfx/bgfx.h>
 #include <knoting/asset.h>
+#include <cereal/cereal.hpp>
 #include <string>
 
 namespace knot {
@@ -24,6 +25,16 @@ class ShaderProgram : public Asset {
                      const std::string& vertexShaderPath,
                      const std::string& fragmentShaderPath);
     bgfx::ProgramHandle get_program() { return m_program; }
+
+    template <class Archive>
+    void save(Archive& archive) const {
+        archive(CEREAL_NVP(m_assetType), CEREAL_NVP(m_fallbackName), CEREAL_NVP(m_fullPath), CEREAL_NVP(m_assetName));
+    }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(CEREAL_NVP(m_assetType), CEREAL_NVP(m_fallbackName), CEREAL_NVP(m_fullPath), CEREAL_NVP(m_assetName));
+    }
 
    private:
     void create_program(std::string& vertexShaderPath, std::string& fragmentShaderPath);

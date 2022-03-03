@@ -13,11 +13,11 @@ void RigidBody::on_awake() {
     auto engineOpt = Engine::get_active_engine();
     if (engineOpt) {
         Engine& engine = engineOpt.value();
-        m_physics = engine.get_physics_module().lock()->get_physics().lock();
-        m_scene = engine.get_physics_module().lock()->get_active_Scene().lock();
+        this->m_physics = engine.get_physics_module().lock()->get_physics().lock();
+        this->m_scene = engine.get_physics_module().lock()->get_active_Scene().lock();
     }
     if (get_shape_from_shape()) {
-        m_shape = get_shape_from_shape();
+        this->m_shape = get_shape_from_shape();
     }
 }
 void RigidBody::on_destroy() {
@@ -91,7 +91,6 @@ void RigidBody::create_actor(bool isDynamic, const float& mass) {
         m_dynamic->get()->attachShape(*m_shape->get());
         PxRigidBodyExt::updateMassAndInertia(*m_dynamic->get(), mass);
         m_scene->get()->addActor(*m_dynamic->get());
-
     } else {
         m_static = std::make_shared<PxStatic_ptr_wrapper>(
             m_physics->get()->createRigidStatic(PxTransform(get_position_from_transform())));
@@ -159,6 +158,10 @@ quat RigidBody::PxQuat_to_quat(PxQuat q) {
 
 PxQuat RigidBody::quat_to_PxQuat(quat q) {
     return PxQuat(q.x, q.y, q.z, q.w);
+}
+void RigidBody::on_load() {
+    this->on_awake();
+    this->create_actor(m_isDynamic, m_mass);
 }
 
 }  // namespace components

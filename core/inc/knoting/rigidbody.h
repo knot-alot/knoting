@@ -21,6 +21,7 @@ class RigidBody {
     ~RigidBody();
 
     void on_awake();
+    void on_load();
     void on_destroy();
 
     vec3 get_position();
@@ -45,12 +46,31 @@ class RigidBody {
     static quat PxQuat_to_quat(PxQuat q);
     static PxQuat quat_to_PxQuat(quat q);
 
+    template <class Archive>
+    void save(Archive& archive) const {
+        bool isDynamic = false;
+        float mass = 0.0f;
+        if (m_dynamic) {
+            isDynamic = true;
+            mass = m_dynamic->get()->getMass();
+        }
+        archive(cereal::make_nvp("isDynamic", isDynamic), cereal::make_nvp("mass", mass));
+    }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(cereal::make_nvp("isDynamic", m_isDynamic), cereal::make_nvp("mass", m_mass));
+    }
+
    protected:
     std::shared_ptr<PxPhysics_ptr_wrapper> m_physics;
     std::shared_ptr<PxScene_ptr_wrapper> m_scene;
     std::shared_ptr<PxDynamic_ptr_wrapper> m_dynamic;
     std::shared_ptr<PxStatic_ptr_wrapper> m_static;
     std::shared_ptr<PxShape_ptr_wrapper> m_shape;
+
+    float m_mass = 0.0f;
+    bool m_isDynamic = false;
 };
 
 }  // namespace components

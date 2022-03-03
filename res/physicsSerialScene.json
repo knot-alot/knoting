@@ -1,0 +1,667 @@
+{
+    "value0": 9,
+    "value1": 18446744073709551615,
+    "value2": 0,
+    "value3": 1,
+    "value4": 2,
+    "value5": 3,
+    "value6": 4,
+    "value7": 5,
+    "value8": 6,
+    "value9": 7,
+    "value10": 8,
+    "value11": 0,
+    "value12": {
+        "uuid": {
+            "value0": 37,
+            "value1": 134,
+            "value2": 75,
+            "value3": 70,
+            "value4": 9,
+            "value5": 70,
+            "value6": 70,
+            "value7": 7,
+            "value8": 130,
+            "value9": 69,
+            "value10": 44,
+            "value11": 143,
+            "value12": 103,
+            "value13": 230,
+            "value14": 212,
+            "value15": 109
+        }
+    },
+    "value13": 1,
+    "value14": {
+        "uuid": {
+            "value0": 93,
+            "value1": 209,
+            "value2": 34,
+            "value3": 46,
+            "value4": 171,
+            "value5": 247,
+            "value6": 78,
+            "value7": 90,
+            "value8": 187,
+            "value9": 199,
+            "value10": 85,
+            "value11": 26,
+            "value12": 201,
+            "value13": 83,
+            "value14": 31,
+            "value15": 105
+        }
+    },
+    "value15": 2,
+    "value16": {
+        "uuid": {
+            "value0": 47,
+            "value1": 177,
+            "value2": 222,
+            "value3": 197,
+            "value4": 70,
+            "value5": 213,
+            "value6": 69,
+            "value7": 116,
+            "value8": 181,
+            "value9": 121,
+            "value10": 12,
+            "value11": 224,
+            "value12": 103,
+            "value13": 98,
+            "value14": 172,
+            "value15": 236
+        }
+    },
+    "value17": 3,
+    "value18": {
+        "uuid": {
+            "value0": 126,
+            "value1": 115,
+            "value2": 146,
+            "value3": 73,
+            "value4": 48,
+            "value5": 48,
+            "value6": 79,
+            "value7": 78,
+            "value8": 184,
+            "value9": 253,
+            "value10": 220,
+            "value11": 78,
+            "value12": 55,
+            "value13": 198,
+            "value14": 202,
+            "value15": 26
+        }
+    },
+    "value19": 4,
+    "value20": {
+        "uuid": {
+            "value0": 134,
+            "value1": 42,
+            "value2": 178,
+            "value3": 222,
+            "value4": 127,
+            "value5": 93,
+            "value6": 68,
+            "value7": 94,
+            "value8": 156,
+            "value9": 86,
+            "value10": 76,
+            "value11": 121,
+            "value12": 231,
+            "value13": 7,
+            "value14": 229,
+            "value15": 159
+        }
+    },
+    "value21": 5,
+    "value22": {
+        "uuid": {
+            "value0": 32,
+            "value1": 217,
+            "value2": 100,
+            "value3": 74,
+            "value4": 92,
+            "value5": 134,
+            "value6": 74,
+            "value7": 190,
+            "value8": 160,
+            "value9": 43,
+            "value10": 229,
+            "value11": 164,
+            "value12": 243,
+            "value13": 215,
+            "value14": 148,
+            "value15": 250
+        }
+    },
+    "value23": 6,
+    "value24": {
+        "uuid": {
+            "value0": 126,
+            "value1": 193,
+            "value2": 53,
+            "value3": 110,
+            "value4": 138,
+            "value5": 20,
+            "value6": 69,
+            "value7": 158,
+            "value8": 145,
+            "value9": 208,
+            "value10": 14,
+            "value11": 18,
+            "value12": 40,
+            "value13": 181,
+            "value14": 85,
+            "value15": 71
+        }
+    },
+    "value25": 7,
+    "value26": {
+        "uuid": {
+            "value0": 13,
+            "value1": 143,
+            "value2": 4,
+            "value3": 206,
+            "value4": 90,
+            "value5": 69,
+            "value6": 67,
+            "value7": 89,
+            "value8": 167,
+            "value9": 90,
+            "value10": 200,
+            "value11": 93,
+            "value12": 128,
+            "value13": 57,
+            "value14": 165,
+            "value15": 104
+        }
+    },
+    "value27": 8,
+    "value28": 0,
+    "value29": {
+        "name": "camera"
+    },
+    "value30": 1,
+    "value31": {
+        "name": "light_0"
+    },
+    "value32": 2,
+    "value33": {
+        "name": "light_1"
+    },
+    "value34": 3,
+    "value35": {
+        "name": "light_2"
+    },
+    "value36": 4,
+    "value37": {
+        "name": "light_3"
+    },
+    "value38": 5,
+    "value39": {
+        "name": "floor"
+    },
+    "value40": 6,
+    "value41": {
+        "name": "cube_1"
+    },
+    "value42": 7,
+    "value43": {
+        "name": "cube_2"
+    },
+    "value44": 0,
+    "value45": 8,
+    "value46": 0,
+    "value47": {
+        "m_position": {
+            "v.x": -10.0,
+            "v.y": 15.0,
+            "v.z": -30.0
+        },
+        "m_scale": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.0,
+            "q.z": 0.0,
+            "q.w": 0.0
+        }
+    },
+    "value48": 1,
+    "value49": {
+        "m_position": {
+            "v.x": 2.38977313041687,
+            "v.y": 14.570069313049317,
+            "v.z": -10.0
+        },
+        "m_scale": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.0,
+            "q.z": 0.0,
+            "q.w": 0.0
+        }
+    },
+    "value50": 2,
+    "value51": {
+        "m_position": {
+            "v.x": 10.351221084594727,
+            "v.y": -13.538474082946778,
+            "v.z": -10.0
+        },
+        "m_scale": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.0,
+            "q.z": 0.0,
+            "q.w": 0.0
+        }
+    },
+    "value52": 3,
+    "value53": {
+        "m_position": {
+            "v.x": -14.905335426330567,
+            "v.y": 6.397019386291504,
+            "v.z": -10.0
+        },
+        "m_scale": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.0,
+            "q.z": 0.0,
+            "q.w": 0.0
+        }
+    },
+    "value54": 4,
+    "value55": {
+        "m_position": {
+            "v.x": 7.670673370361328,
+            "v.y": 3.631392002105713,
+            "v.z": -10.0
+        },
+        "m_scale": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.0,
+            "q.z": 0.0,
+            "q.w": 0.0
+        }
+    },
+    "value56": 5,
+    "value57": {
+        "m_position": {
+            "v.x": -5.0,
+            "v.y": 0.0,
+            "v.z": -10.0
+        },
+        "m_scale": {
+            "v.x": 15.0,
+            "v.y": 1.0,
+            "v.z": 15.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.3826834559440613,
+            "q.z": 0.0,
+            "q.w": 0.9238795042037964
+        }
+    },
+    "value58": 6,
+    "value59": {
+        "m_position": {
+            "v.x": 0.0,
+            "v.y": 3.0,
+            "v.z": 0.0
+        },
+        "m_scale": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.0,
+            "q.z": 0.0,
+            "q.w": 0.0
+        }
+    },
+    "value60": 7,
+    "value61": {
+        "m_position": {
+            "v.x": 1.0,
+            "v.y": 7.0,
+            "v.z": 1.0
+        },
+        "m_scale": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0
+        },
+        "m_rotation": {
+            "q.x": 0.0,
+            "q.y": 0.0,
+            "q.z": 0.0,
+            "q.w": 0.0
+        }
+    },
+    "value62": 8,
+    "value63": 0,
+    "value64": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value65": 1,
+    "value66": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value67": 2,
+    "value68": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value69": 3,
+    "value70": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value71": 4,
+    "value72": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value73": 5,
+    "value74": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value75": 6,
+    "value76": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value77": 7,
+    "value78": {
+        "m_parent": {
+            "nullopt": true
+        },
+        "m_children": []
+    },
+    "value79": 3,
+    "value80": 5,
+    "value81": {
+        "m_textureSlotPath": {
+            "value0": "UV_Grid_test.png",
+            "value1": "normal_tiles_1k.png",
+            "value2": "whiteTexture",
+            "value3": "whiteTexture",
+            "value4": "whiteTexture"
+        },
+        "m_shader": {
+            "m_assetType": 3,
+            "m_fallbackName": "fallbackShader",
+            "m_fullPath": "",
+            "m_assetName": ""
+        },
+        "m_albedoColor": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0,
+            "v.w": 1.0
+        },
+        "m_textureTiling": {
+            "v.x": 1.0,
+            "v.y": 1.0
+        },
+        "m_albedoScalar": 1.0,
+        "m_normalScalar": 1.0,
+        "m_metallicScalar": 1.0,
+        "m_roughnessScalar": 1.0,
+        "m_occlusionScalar": 1.0,
+        "m_skyboxScalar": 0.20000000298023225,
+        "m_castShadows": true,
+        "m_receivesShadows": true,
+        "m_alphaCutoffEnabled": false,
+        "m_alphaCutoffAmount": 0.0
+    },
+    "value82": 6,
+    "value83": {
+        "m_textureSlotPath": {
+            "value0": "UV_Grid_test.png",
+            "value1": "normal_tiles_1k.png",
+            "value2": "whiteTexture",
+            "value3": "whiteTexture",
+            "value4": "whiteTexture"
+        },
+        "m_shader": {
+            "m_assetType": 3,
+            "m_fallbackName": "fallbackShader",
+            "m_fullPath": "",
+            "m_assetName": ""
+        },
+        "m_albedoColor": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0,
+            "v.w": 1.0
+        },
+        "m_textureTiling": {
+            "v.x": 1.0,
+            "v.y": 1.0
+        },
+        "m_albedoScalar": 1.0,
+        "m_normalScalar": 1.0,
+        "m_metallicScalar": 1.0,
+        "m_roughnessScalar": 1.0,
+        "m_occlusionScalar": 1.0,
+        "m_skyboxScalar": 0.20000000298023225,
+        "m_castShadows": true,
+        "m_receivesShadows": true,
+        "m_alphaCutoffEnabled": false,
+        "m_alphaCutoffAmount": 0.0
+    },
+    "value84": 7,
+    "value85": {
+        "m_textureSlotPath": {
+            "value0": "UV_Grid_test.png",
+            "value1": "normal_tiles_1k.png",
+            "value2": "whiteTexture",
+            "value3": "whiteTexture",
+            "value4": "whiteTexture"
+        },
+        "m_shader": {
+            "m_assetType": 3,
+            "m_fallbackName": "fallbackShader",
+            "m_fullPath": "",
+            "m_assetName": ""
+        },
+        "m_albedoColor": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0,
+            "v.w": 1.0
+        },
+        "m_textureTiling": {
+            "v.x": 1.0,
+            "v.y": 1.0
+        },
+        "m_albedoScalar": 1.0,
+        "m_normalScalar": 1.0,
+        "m_metallicScalar": 1.0,
+        "m_roughnessScalar": 1.0,
+        "m_occlusionScalar": 1.0,
+        "m_skyboxScalar": 0.20000000298023225,
+        "m_castShadows": true,
+        "m_receivesShadows": true,
+        "m_alphaCutoffEnabled": false,
+        "m_alphaCutoffAmount": 0.0
+    },
+    "value86": 3,
+    "value87": 5,
+    "value88": {
+        "m_path": "uv_cube.obj"
+    },
+    "value89": 6,
+    "value90": {
+        "m_path": "uv_cube.obj"
+    },
+    "value91": 7,
+    "value92": {
+        "m_path": "uv_cube.obj"
+    },
+    "value93": 4,
+    "value94": 1,
+    "value95": {
+        "m_lightOuterRadius": 17.0,
+        "m_lightInnerRadius": 0.5,
+        "m_color": {
+            "v.x": 1.0,
+            "v.y": 0.699999988079071,
+            "v.z": 0.20000000298023225
+        }
+    },
+    "value96": 2,
+    "value97": {
+        "m_lightOuterRadius": 17.0,
+        "m_lightInnerRadius": 0.5,
+        "m_color": {
+            "v.x": 0.699999988079071,
+            "v.y": 0.20000000298023225,
+            "v.z": 1.0
+        }
+    },
+    "value98": 3,
+    "value99": {
+        "m_lightOuterRadius": 17.0,
+        "m_lightInnerRadius": 0.5,
+        "m_color": {
+            "v.x": 0.20000000298023225,
+            "v.y": 1.0,
+            "v.z": 0.699999988079071
+        }
+    },
+    "value100": 4,
+    "value101": {
+        "m_lightOuterRadius": 17.0,
+        "m_lightInnerRadius": 0.5,
+        "m_color": {
+            "v.x": 1.0,
+            "v.y": 0.4000000059604645,
+            "v.z": 0.20000000298023225
+        }
+    },
+    "value102": 1,
+    "value103": 0,
+    "value104": {
+        "m_lookTarget": {
+            "v.x": 0.0,
+            "v.y": -10.0,
+            "v.z": -1.0
+        },
+        "m_fov": 60.0,
+        "m_zNear": 0.10000000149011612,
+        "m_zFar": 800.0,
+        "m_moveSpeed": 5.0,
+        "m_moveSpeedMultiplier": 4.0
+    },
+    "value105": 3,
+    "value106": 5,
+    "value107": {
+        "dynamicFriction": 0.30000001192092898,
+        "staticFriction": 0.30000001192092898,
+        "restitution": 0.6000000238418579
+    },
+    "value108": 6,
+    "value109": {
+        "dynamicFriction": 0.30000001192092898,
+        "staticFriction": 0.30000001192092898,
+        "restitution": 0.6000000238418579
+    },
+    "value110": 7,
+    "value111": {
+        "dynamicFriction": 0.30000001192092898,
+        "staticFriction": 0.30000001192092898,
+        "restitution": 0.6000000238418579
+    },
+    "value112": 3,
+    "value113": 5,
+    "value114": {
+        "shapeType": 3,
+        "shapeSize": {
+            "v.x": 15.0,
+            "v.y": 1.0,
+            "v.z": 15.0
+        }
+    },
+    "value115": 6,
+    "value116": {
+        "shapeType": 3,
+        "shapeSize": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0
+        }
+    },
+    "value117": 7,
+    "value118": {
+        "shapeType": 3,
+        "shapeSize": {
+            "v.x": 1.0,
+            "v.y": 1.0,
+            "v.z": 1.0
+        }
+    },
+    "value119": 3,
+    "value120": 5,
+    "value121": {
+        "isDynamic": false,
+        "mass": 0.0
+    },
+    "value122": 6,
+    "value123": {
+        "isDynamic": true,
+        "mass": 40.0
+    },
+    "value124": 7,
+    "value125": {
+        "isDynamic": true,
+        "mass": 40.0
+    },
+    "value126": 0,
+    "value127": 0
+}

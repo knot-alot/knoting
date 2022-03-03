@@ -110,6 +110,13 @@ void RigidController::put_to_sleep() {
 void RigidController::wakeUp() {
     m_dynamic->get()->wakeUp();
 }
+void RigidController::on_load() {
+    bool isAwake = m_isAwake;
+    bool isKinematic = m_isKinematic;
+    on_awake();
+    m_isAwake = isAwake;
+    m_isKinematic = isKinematic;
+}
 
 }  // namespace components
 }  // namespace knot
