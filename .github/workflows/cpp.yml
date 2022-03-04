@@ -30,6 +30,7 @@ jobs:
               with:
                   repository: knot-alot/knoting-libs
                   path: lib
+                  token: ${{ secrets.KNOTING_CLONE_LIBS }}
 
             - name: Enable Developer Command Prompt
               uses: ilammy/msvc-dev-cmd@v1.10.0
