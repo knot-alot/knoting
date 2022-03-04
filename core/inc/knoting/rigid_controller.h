@@ -11,6 +11,7 @@ class RigidController {
 
     void on_awake();
     void on_destroy();
+    void on_load();
 
     std::weak_ptr<PxDynamic_ptr_wrapper> get_dynamic();
     bool get_is_kinematic();
@@ -35,6 +36,20 @@ class RigidController {
 
     void put_to_sleep();
     void wakeUp();
+
+    template <class Archive>
+    void save(Archive& archive) const {
+        archive(CEREAL_NVP(m_isAwake), CEREAL_NVP(m_isKinematic));
+    }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        bool isAwake, isKinematic;
+        archive(CEREAL_NVP(isAwake), CEREAL_NVP(isKinematic));
+        on_awake();
+        m_isAwake = isAwake;
+        m_isKinematic = isKinematic;
+    }
 
    protected:
     std::shared_ptr<PxDynamic_ptr_wrapper> m_dynamic;

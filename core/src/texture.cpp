@@ -101,10 +101,11 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
     }
 
     // load image with stb_image
-    glm::ivec2 img_size;
+    glm::ivec2 imageSize;
     int channels;
     stbi_set_flip_vertically_on_load(true);
-    stbi_uc* data = stbi_load(fsPath.string().c_str(), &img_size.x, &img_size.y, &channels, 0);
+
+    stbi_uc* data = stbi_load(fsPath.string().c_str(), &imageSize.x, &imageSize.y, &channels, 0);
     int numberOfLayers = 1;
 
     if (!data) {
@@ -114,42 +115,35 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
     }
 
     uint32_t textureFlags{0};
-    // TODO check if bgfx has anisotropic is supported flag
+    textureFlags = BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT;
 
-    if (usingAnisotropicFiltering) {
-        textureFlags =
-            BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
-    } else {
-        textureFlags = BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT;
-    }
-
-    // TODO stbi does not support mips find a way to get mips working
-    usingMipMaps = false;
-    if (usingMipMaps) {
-        textureFlags += BGFX_CAPS_FORMAT_TEXTURE_MIP_AUTOGEN;
-    }
+    if (usingAnisotropicFiltering)
+        textureFlags |= BGFX_SAMPLER_MAG_ANISOTROPIC;
+    if (usingMipMaps)
+        textureFlags |= BGFX_CAPS_FORMAT_TEXTURE_MIP_AUTOGEN;
 
     // clang-format off
     bgfx::TextureHandle textureHandle;
 
     textureHandle =
         bgfx::createTexture2D(
-        img_size.x,
-        img_size.y,
+        imageSize.x,
+        imageSize.y,
         usingMipMaps,
         numberOfLayers,
         bgfx::TextureFormat::RGBA8,
         textureFlags,
-        bgfx::copy(data, img_size.x * img_size.y * channels));
+        bgfx::copy(data, imageSize.x * imageSize.y * channels));
 
     // clang-format on
 
     if (!bgfx::isValid(textureHandle)) {
-        log::error("Error loading texture " + path);
+        log::error("Error loading texture : {}", path);
         m_textureHandle = BGFX_INVALID_HANDLE;
         m_assetState = AssetState::Failed;
     }
 
+    // free stbi image & reset global stbi state
     stbi_set_flip_vertically_on_load(false);
     stbi_image_free(data);
     m_assetState = AssetState::Finished;

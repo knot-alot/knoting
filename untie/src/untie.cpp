@@ -12,15 +12,19 @@
 #include <knoting/scene.h>
 #include <knoting/skybox.h>
 #include <knoting/spot_light.h>
+#include <fstream>
+#include <iostream>
+
+#include <cereal/archives/json.hpp>
 
 #include <iostream>
 
 namespace knot {
 Scene scene;
+Scene loadedScene;
 Untie::Untie() {
     Scene::set_active_scene(scene);
     log::Logger::setup();
-
     m_engine = std::make_unique<knot::Engine>();
     Engine::set_active_engine(*m_engine);
     {
@@ -61,11 +65,11 @@ Untie::Untie() {
         light.get_component<components::Transform>().set_position(glm::vec3(7.6706734, 3.631392, -10));
     }
     {
-        auto cubeObj = scene.create_game_object("loaded_cube");
+        auto cubeObj = scene.create_game_object("floor");
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5.0f, 0.0f, -10.0f));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(15, 1, 15));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 45, 0));
-        cubeObj.add_component<InstanceMesh>("uv_cube.obj");
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
         auto& shape = cubeObj.add_component<components::Shape>();
@@ -88,7 +92,7 @@ Untie::Untie() {
     {
         auto cubeObj = scene.create_game_object("cube_1");
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(0.0f, 3.0f, 0.0f));
-        cubeObj.add_component<InstanceMesh>("uv_cube.obj");
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
         auto& shape = cubeObj.add_component<components::Shape>();
@@ -109,13 +113,18 @@ Untie::Untie() {
     }
 
     {
-        auto cubeObj = scene.create_game_object("cube_0");
+        auto cubeObj = scene.create_game_object("cube_2");
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(1.0f, 7.0f, 1.0f));
-        cubeObj.add_component<InstanceMesh>("uv_cube.obj");
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
+
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+
         auto& shape = cubeObj.add_component<components::Shape>();
+
         vec3 halfsize = vec3(1.0f, 1.0f, 1.0f);
+
         shape.set_geometry(shape.create_cube_geometry(halfsize));
+
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
         rigidbody.create_actor(true, 5.0f);
 
@@ -127,23 +136,7 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
-
-    {
-        auto cubeObj = scene.create_game_object("loaded_dragon");
-        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-9.0f, 1.0f, -15.0f));
-        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(5, 5, 5));
-        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 180, 0));
-        cubeObj.add_component<InstanceMesh>("dragon.obj");
-
-        auto material = components::Material();
-        material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
-        material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
-        cubeObj.add_component<components::Material>(material);
-    }
-    {
+  {
         auto cubeObj = scene.create_game_object("skybox");
         //        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-2, 1.0f, -15.0f - 5));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(30, 30, 30));
@@ -156,9 +149,24 @@ Untie::Untie() {
         skybox.set_texture_slot_path(SkyBoxTextureType::Radiance, "skybox/cmtr_radiance.hdr");
         cubeObj.add_component<components::SkyBox>(skybox);
     }
+
+    std::string filename("physicsSerialScene.json");
+    std::filesystem::path path = AssetManager::get_resources_path().append(filename);
+    std::fstream serializedSceneStream(path);
+
+    serializedSceneStream.open(path, std::ios_base::out);
+    scene.save_scene_to_stream(serializedSceneStream);
+    serializedSceneStream.close();
+    Scene::set_active_scene(loadedScene);
+    serializedSceneStream.open(path, std::ios_base::in);
+    if (serializedSceneStream) {
+        loadedScene.load_scene_from_stream(serializedSceneStream);
+    } else {
+        log::debug("file not found");
+    }
+    serializedSceneStream.close();
 }
 void Untie::run() {
-    log::debug("RUN");
     while (m_engine->is_open()) {
         m_engine->update_modules();
     }

@@ -54,7 +54,7 @@ file(GLOB IMGUI_SOURCES
   imgui/imgui_widgets.cpp
   imgui/imgui_demo.cpp
 
-#  imgui/backends/imgui_impl_glfw.cpp
+  imgui/backends/imgui_impl_glfw.cpp
 #  imgui/backends/imgui_impl_opengl3.cpp
 )
 add_library(imgui ${IMGUI_SOURCES})
@@ -156,3 +156,28 @@ target_include_directories(stb INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/stb)
 
 set(UUID_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 add_subdirectory(stduuid)
+
+# Yojimbo
+
+set(sodium_USE_STATIC_LIBS SKIP_PERFORMANCE_COMPARISON ON CACHE BOOL "" FORCE)
+find_package(sodium REQUIRED)
+set(MBEDTLS_USE_STATIC_LIBS SKIP_PERFORMANCE_COMPARISON ON CACHE BOOL "" FORCE)
+find_package(MbedTLS REQUIRED)
+
+project(Yojimbo C CXX)
+add_library(yojimbo STATIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/yojimbo/yojimbo.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/yojimbo/tlsf/tlsf.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/yojimbo/netcode.io/netcode.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/yojimbo/reliable.io/reliable.c
+)
+
+target_include_directories(yojimbo PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/yojimbo
+    ${CMAKE_CURRENT_SOURCE_DIR}/yojimbo/netcode.io
+    ${CMAKE_CURRENT_SOURCE_DIR}/yojimbo/reliable.io
+)
+
+target_link_libraries(yojimbo PRIVATE sodium)
+
+target_include_directories(yojimbo PUBLIC ${MBEDTLS_INCLUDE_DIR})

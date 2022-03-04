@@ -1,6 +1,7 @@
 #pragma once
 #include <knoting/components.h>
 #include <knoting/px_variables_wrapper.h>
+#include <knoting/types.h>
 
 namespace knot {
 namespace components {
@@ -24,7 +25,7 @@ class Raycast {
     }
     bool get_is_hit() { return m_isHit; }
     vec3 get_hit_position();
-    vec3 get_hit_nomal();
+    vec3 get_hit_normal();
     float get_hit_distance();
     std::weak_ptr<PxShape_ptr_wrapper> get_hit_shape();
 
@@ -34,6 +35,12 @@ class Raycast {
     void set_raycast(const vec3& origin, const vec3& unitDir, const float& maxDistance);
 
     PxVec3 get_position_from_transform();
+
+    template <class Archive>
+    void save(Archive& archive) const;
+
+    template <class Archive>
+    void load(Archive& archive);
 
    protected:
     std::shared_ptr<PxScene_ptr_wrapper> m_scene;

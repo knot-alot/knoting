@@ -4,7 +4,9 @@
 #include <bimg/bimg.h>
 #include <bimg/decode.h>
 #include <knoting/asset.h>
+#include <knoting/asset_manager.h>
 #include <knoting/types.h>
+#include <cereal/cereal.hpp>
 #include <filesystem>
 #include <string>
 
@@ -26,9 +28,23 @@ class Texture : public Asset {
 
     void generate_solid_color_texture(const vec4& color, const std::string& name);
     void load_texture(const std::string& path);
-    void load_texture_2d(const std::string& path, bool usingMipMaps = true, bool usingAnisotropicFiltering = true);
+    void load_texture_2d(const std::string& path, bool usingMipMaps = false, bool usingAnisotropicFiltering = true);
     void load_texture_hdri(const std::string& path);
 
+    template <class Archive>
+    void save(Archive& archive) const {
+        archive(CEREAL_NVP(m_assetType), CEREAL_NVP(m_fallbackName), CEREAL_NVP(m_fullPath), CEREAL_NVP(m_assetName),
+                CEREAL_NVP(m_width), CEREAL_NVP(m_height));
+    }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(CEREAL_NVP(m_assetType), CEREAL_NVP(m_fallbackName), CEREAL_NVP(m_fullPath), CEREAL_NVP(m_assetName),
+                CEREAL_NVP(m_width), CEREAL_NVP(m_height));
+        m_assetState = AssetState::Idle;
+        on_awake();
+    }
+  
     bgfx::TextureHandle get_texture_handle() { return m_textureHandle; }
 
    private:
@@ -36,8 +52,6 @@ class Texture : public Asset {
 
    private:
     bgfx::TextureHandle m_textureHandle;
-    uint16_t width = 0;
-    uint16_t height = 0;
 
     //  PNG 1/2/4/8/16-bit-per-channel
     //  JPEG baseline & progressive (12 bpc/arithmetic not supported, same as stock IJG lib)
@@ -57,6 +71,8 @@ class Texture : public Asset {
     std::vector<std::string_view> m_supported_texture_2d{FORMAT_PNG, FORMAT_JPG, FORMAT_JPEG,
                                                          FORMAT_TGA, FORMAT_BMP, FORMAT_PSD};
     std::vector<std::string_view> m_supported_skybox{FORMAT_HDR};
+    uint16_t m_width = 0;
+    uint16_t m_height = 0;
 };
 
 }  // namespace components

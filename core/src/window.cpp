@@ -21,7 +21,7 @@
 namespace knot {
 
 Window::Window(int width, int height, std::string title, Engine& engine)
-    : m_width(width), m_height(height), m_title(title), m_window(nullptr), m_engine(engine) {
+    : m_width(width), m_height(height), m_title(title), m_window(nullptr), m_engine(engine), m_windowResizedFlag(true) {
     int glfw_init_res = glfwInit();
 
     KNOTING_ASSERT_MESSAGE(glfw_init_res == GLFW_TRUE, "Failed to initialize GLFW");
@@ -74,10 +74,16 @@ void Window::window_size_callback(GLFWwindow* window, int width, int height) {
     Window* self = (Window*)glfwGetWindowUserPointer(window);
     self->m_width = width;
     self->m_height = height;
-    self->m_engine.get_forward_render_module().lock()->recreate_framebuffer(width, height);
+    self->recreate_framebuffer(width, height);
+    // TODO REPLACE THIS FUNCTION & ALL GLFW CALLBACKS WHEN IN EDITOR
+    self->set_window_resize_flag(true);
+}
+void Window::recreate_framebuffer(int width, int height) {
+    m_engine.get_forward_render_module().lock()->recreate_framebuffer(width, height);
 }
 
 void Window::setup_callbacks() {
+    // TODO REPLACE ALL GLFW CALLBACKS WHEN IN EDITOR
     glfwSetWindowSizeCallback(m_window, Window::window_size_callback);
 }
 
@@ -86,6 +92,7 @@ bool Window::is_open() {
 }
 
 void Window::close() {
+    log::warn("closing glfw window");
     glfwSetWindowShouldClose(m_window, true);
 }
 
@@ -108,6 +115,11 @@ void Window::calculate_delta_time() {
 
 double Window::get_delta_time() {
     return m_deltaTime;
+}
+void Window::set_window_size(vec2i size) {
+    m_width = size.x;
+    m_height = size.y;
+    recreate_framebuffer(m_width, m_height);
 }
 
 }  // namespace knot
