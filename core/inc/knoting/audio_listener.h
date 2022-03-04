@@ -9,9 +9,9 @@ class AudioListener : public Asset {
    public:
     AudioListener();
     ~AudioListener();
+
    private:
     float m_hearing_range;
-
 };
 
 }  // namespace components

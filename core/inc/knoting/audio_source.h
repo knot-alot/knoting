@@ -4,14 +4,13 @@
 #include <fmod.hpp>
 #include <string>
 
-
 namespace knot {
 namespace components {
 class AudioSource : public Asset {
    public:
     AudioSource();
     AudioSource(const std::string& path);
-    ~AudioSource() ;
+    ~AudioSource();
 
     //=For ECS========
     void on_awake() override;
