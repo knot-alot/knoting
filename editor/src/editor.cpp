@@ -5,6 +5,7 @@
 #include <knoting/log.h>
 #include <knoting/scene.h>
 #include <knoting/spot_light.h>
+#include <knoting/skybox.h>
 
 #include "widget_subsystem.h"
 
@@ -142,6 +143,21 @@ Editor::Editor() {
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
+
+    {
+        auto cubeObj = scene.create_game_object("skybox");
+        //        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-2, 1.0f, -15.0f - 5));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(30, 30, 30));
+        //        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 240, 0));
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
+
+        auto skybox = components::SkyBox();
+        skybox.set_texture_slot_path(SkyBoxTextureType::Albedo, "skybox/cmft_skybox.hdr");
+        skybox.set_texture_slot_path(SkyBoxTextureType::Irradiance, "skybox/cmtr_irradiance.hdr");
+        skybox.set_texture_slot_path(SkyBoxTextureType::Radiance, "skybox/cmtr_radiance.hdr");
+        cubeObj.add_component<components::SkyBox>(skybox);
+    }
+
 
     auto widgetManager = std::make_shared<WidgetSubsystem>(m_engine);
     auto demoWidget = std::make_shared<DemoWidget>("demo");
