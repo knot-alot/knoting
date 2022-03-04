@@ -11,7 +11,7 @@ jobs:
                 os: [ubuntu-latest, windows-latest]
         steps:
             - name: Checkout repository and submodules
-              uses: actions/checkout@v2.4.0
+              uses: actions/checkout@v3
               with:
                   submodules: recursive
                   lfs: true
@@ -22,8 +22,14 @@ jobs:
               run: |
                   sudo apt-get -y update
                   sudo apt-get -y install build-essential libglu1-mesa libglu1-mesa-dev libgl1-mesa-glx libgl1-mesa-dev \
-                                                          xorg-dev libx11-dev cmake ninja-build libassimp-dev libglfw3-dev \
-                                                          libglfw3 clang
+                                                          xorg-dev libx11-dev cmake ninja-build libglfw3-dev libglfw3 \
+                                                          clang libsodium-dev libmbedtls-dev
+
+            - name: Download libraries' binaries
+              uses: actions/checkout@v3
+              with:
+                  repository: knot-alot/knoting-libs
+                  path: lib
 
             - name: Enable Developer Command Prompt
               uses: ilammy/msvc-dev-cmd@v1.10.0
