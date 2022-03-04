@@ -26,6 +26,18 @@ class SkyBox {
     void on_destroy();
     //================
 
+   public:
+    template <class Archive>
+    void save(Archive& archive) const {
+        archive(CEREAL_NVP(m_textureSlotPath), CEREAL_NVP(m_exposure), CEREAL_NVP(m_backgroundType));
+    }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(CEREAL_NVP(m_textureSlotPath), CEREAL_NVP(m_exposure), CEREAL_NVP(m_backgroundType));
+        on_awake();
+    }
+
     void set_texture_slot_path(SkyBoxTextureType slot, const std::string& path);
     void screenSpaceQuad(float _textureWidth,
                          float _textureHeight,
@@ -59,19 +71,6 @@ class SkyBox {
     SkyBoxTextureType m_backgroundType = SkyBoxTextureType::Irradiance;
 
     ShaderProgram m_shader;
-
-   public:
-    template <class Archive>
-    void save(Archive& archive) const {
-        archive(CEREAL_NVP(m_textureSlotPath), CEREAL_NVP(m_shader), CEREAL_NVP(m_exposure),
-                CEREAL_NVP(m_backgroundType));
-    }
-
-    template <class Archive>
-    void load(Archive& archive) {
-        archive(CEREAL_NVP(m_textureSlotPath), CEREAL_NVP(m_exposure), CEREAL_NVP(m_backgroundType));
-        on_awake();
-    }
 };
 }  // namespace components
 }  // namespace knot

@@ -33,6 +33,19 @@ Untie::Untie() {
         editorCamera.get_component<components::Transform>().set_position(glm::vec3(-10.0f, 15.0f, -30.0f));
     }
     {
+        auto cubeObj = scene.create_game_object("skybox");
+        //        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-2, 1.0f, -15.0f - 5));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(30, 30, 30));
+        //        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 240, 0));
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
+
+        auto skybox = components::SkyBox();
+        skybox.set_texture_slot_path(SkyBoxTextureType::Albedo, "skybox/cmft_skybox.hdr");
+        skybox.set_texture_slot_path(SkyBoxTextureType::Irradiance, "skybox/cmtr_irradiance.hdr");
+        skybox.set_texture_slot_path(SkyBoxTextureType::Radiance, "skybox/cmtr_radiance.hdr");
+        cubeObj.add_component<components::SkyBox>(skybox);
+    }
+    {
         auto light = scene.create_game_object("light_0");
         auto& spotLight = light.add_component<components::SpotLight>();
         spotLight.set_color(vec3(1.0f, 0.7f, 0.2f));
@@ -136,19 +149,7 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
-    {
-        auto cubeObj = scene.create_game_object("skybox");
-        //        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-2, 1.0f, -15.0f - 5));
-        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(30, 30, 30));
-        //        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 240, 0));
-        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
-        auto skybox = components::SkyBox();
-        skybox.set_texture_slot_path(SkyBoxTextureType::Albedo, "skybox/cmft_skybox.hdr");
-        skybox.set_texture_slot_path(SkyBoxTextureType::Irradiance, "skybox/cmtr_irradiance.hdr");
-        skybox.set_texture_slot_path(SkyBoxTextureType::Radiance, "skybox/cmtr_radiance.hdr");
-        cubeObj.add_component<components::SkyBox>(skybox);
-    }
 
     std::string filename("physicsSerialScene.json");
     std::filesystem::path path = AssetManager::get_resources_path().append(filename);

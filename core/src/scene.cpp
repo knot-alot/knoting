@@ -134,9 +134,9 @@ void Scene::save_scene_to_stream(std::ostream& serialized) {
     entt::snapshot{m_registry}
         .entities(archive)
         .component<uuid, components::Name, components::Tag, components::Transform, components::Hierarchy,
-                   components::Material, components::InstanceMesh, components::SpotLight, components::EditorCamera,
-                   components::PhysicsMaterial, components::Shape, components::RigidBody, components::RigidController,
-                   components::Raycast, components::SkyBox>(archive);
+                   components::Material, components::SkyBox, components::InstanceMesh, components::SpotLight,
+                   components::EditorCamera, components::PhysicsMaterial, components::Shape, components::RigidBody,
+                   components::RigidController, components::Raycast>(archive);
     log::debug("Scene: Save Finished");
 }
 void Scene::load_scene_from_stream(std::istream& serialized) {
@@ -153,10 +153,9 @@ void Scene::load_scene_from_stream(std::istream& serialized) {
         add_game_object(ent);
     }
     sceneLoader.component<components::Name, components::Tag, components::Transform, components::Hierarchy,
-                          components::Material, components::InstanceMesh, components::SpotLight,
+                          components::Material, components::SkyBox, components::InstanceMesh, components::SpotLight,
                           components::EditorCamera, components::PhysicsMaterial, components::Shape,
-                          components::RigidBody, components::RigidController, components::Raycast, components::SkyBox>(
-        archive);
+                          components::RigidBody, components::RigidController, components::Raycast>(archive);
 
     // I know this is horrible but it's already full jank time. Can go back and be rewritten using the meta system
     auto ents = m_registry.view<components::Shape, components::RigidBody>();
