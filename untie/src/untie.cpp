@@ -136,15 +136,16 @@ Untie::Untie() {
         cubeObj.add_component<components::Material>(material);
     }
 
-    std::string filename("physicsSerialScene.json");
+    std::string filename("newSerialScene.json");
     std::filesystem::path path = AssetManager::get_resources_path().append(filename);
+    log::debug(path.string());
     std::fstream serializedSceneStream(path);
 
-    serializedSceneStream.open(path, std::ios_base::out);
+    serializedSceneStream.open(path, std::ios::out);
     scene.save_scene_to_stream(serializedSceneStream);
     serializedSceneStream.close();
     Scene::set_active_scene(loadedScene);
-    serializedSceneStream.open(path, std::ios_base::in);
+    serializedSceneStream.open(path, std::ios::in);
     if (serializedSceneStream) {
         loadedScene.load_scene_from_stream(serializedSceneStream);
     } else {
