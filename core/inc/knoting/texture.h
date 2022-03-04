@@ -44,7 +44,7 @@ class Texture : public Asset {
         m_assetState = AssetState::Idle;
         on_awake();
     }
-  
+
     bgfx::TextureHandle get_texture_handle() { return m_textureHandle; }
 
    private:
