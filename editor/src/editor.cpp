@@ -4,8 +4,8 @@
 #include <knoting/instance_mesh.h>
 #include <knoting/log.h>
 #include <knoting/scene.h>
-#include <knoting/spot_light.h>
 #include <knoting/skybox.h>
+#include <knoting/spot_light.h>
 
 #include "widget_subsystem.h"
 
@@ -157,7 +157,6 @@ Editor::Editor() {
         skybox.set_texture_slot_path(SkyBoxTextureType::Radiance, "skybox/cmtr_radiance.hdr");
         cubeObj.add_component<components::SkyBox>(skybox);
     }
-
 
     auto widgetManager = std::make_shared<WidgetSubsystem>(m_engine);
     auto demoWidget = std::make_shared<DemoWidget>("demo");

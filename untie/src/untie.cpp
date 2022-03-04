@@ -136,7 +136,7 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
-  {
+    {
         auto cubeObj = scene.create_game_object("skybox");
         //        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-2, 1.0f, -15.0f - 5));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(30, 30, 30));

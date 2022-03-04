@@ -69,8 +69,7 @@ class SkyBox {
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(CEREAL_NVP(m_textureSlotPath), CEREAL_NVP(m_shader), CEREAL_NVP(m_exposure),
-                CEREAL_NVP(m_backgroundType));
+        archive(CEREAL_NVP(m_textureSlotPath), CEREAL_NVP(m_exposure), CEREAL_NVP(m_backgroundType));
         on_awake();
     }
 };
