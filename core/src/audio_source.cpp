@@ -23,16 +23,7 @@ AudioSource::AudioSource() : Asset{AssetType::Audio, ""} {
 
 AudioSource::AudioSource(const std::string& path) : Asset{AssetType::Audio, path} {}
 
-AudioSource::~AudioSource() {
-    m_result = m_sound->release();
-    m_result = m_system->close();
-    m_result = m_system->release();
-    delete m_instance;
-}
-
-void AudioSource::startup() {
-    m_instance = new AudioSource();
-}
+AudioSource::~AudioSource() {}
 
 void AudioSource::play() {
     m_result = m_channel->isPlaying(&is_playing);
@@ -63,6 +54,15 @@ void AudioSource::update() {
             m_result = current_sound->getLength(&len_ms, FMOD_TIMEUNIT_MS);
         }
     }
+}
+void AudioSource::on_awake() {
+    m_instance = new AudioSource();
+}
+void AudioSource::on_destroy() {
+    m_result = m_sound->release();
+    m_result = m_system->close();
+    m_result = m_system->release();
+    delete m_instance;
 }
 
 }  // namespace components

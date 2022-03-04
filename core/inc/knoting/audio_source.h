@@ -19,7 +19,6 @@ class AudioSource : public Asset {
     void generate_default_asset() override;
     //=================
 
-    static void startup();
     void play();
     void stop();
     void update();
