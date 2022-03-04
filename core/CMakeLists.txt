@@ -6,32 +6,32 @@ file(GLOB_RECURSE KNOTING_SOURCES
         )
 
 set(PUBLIC_LIBS
-    cereal
-    glm
-    spdlog
-    imgui
-    imguizmo
-    EnTT::EnTT
-    stduuid
-    ${PHYSX_LIBRARIES}
-    bgfx
-    bx
-    bimg
-    rapidjson
-    yojimbo
-    NoesisGUI
-    FMod
-    glfw
-)
+        cereal
+        glm
+        spdlog
+        imgui
+        imguizmo
+        EnTT::EnTT
+        stduuid
+        ${PHYSX_LIBRARIES}
+        bgfx
+        bx
+        bimg
+        rapidjson
+        yojimbo
+        NoesisGUI
+        FMod
+        glfw
+        )
 
 set(PRIVATE_LIBS
         stb
-)
+        )
 
 find_package(NoesisGUI REQUIRED)
 find_package(FMod REQUIRED)
 
-add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS})
+add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS} src/networked_client.cpp inc/knoting/networked_client.h inc/knoting/networked_server.h src/networked_server.cpp)
 
 set_target_properties(knoting PROPERTIES
         CXX_STANDARD 17
@@ -105,24 +105,24 @@ foreach (SHADER_FILE ${KNOTING_SHADERS})
             GLSL 430
             INCLUDES "${CMAKE_SOURCE_DIR}/res/shaders/"
     )
-endforeach()
+endforeach ()
 
 # Copy DLLs into dist/bin
 
 if (WIN32)
     set(KNOTING_LIB_DIR "${CMAKE_SOURCE_DIR}/lib/x86_64/windows")
     file(GLOB_RECURSE KNOTING_DLLs
-        ${KNOTING_LIB_DIR}/*.dll
-    )
-else()
+            ${KNOTING_LIB_DIR}/*.dll
+            )
+else ()
     set(KNOTING_LIB_DIR "${CMAKE_SOURCE_DIR}/lib/x86_64/linux")
     file(GLOB_RECURSE KNOTING_DLLs
-        ${KNOTING_LIB_DIR}/*.so
-    )
-endif()
+            ${KNOTING_LIB_DIR}/*.so
+            )
+endif ()
 
-foreach(_DLL ${KNOTING_DLLs})
+foreach (_DLL ${KNOTING_DLLs})
     get_filename_component(FILE_NAME ${_DLL} NAME)
     set(FILE_NAME "${CMAKE_BINARY_DIR}/dist/bin/${FILE_NAME}")
     configure_file(${_DLL} ${FILE_NAME} COPYONLY)
-endforeach()
+endforeach ()
