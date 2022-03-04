@@ -34,9 +34,7 @@ Untie::Untie() {
     }
     {
         auto cubeObj = scene.create_game_object("skybox");
-        //        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-2, 1.0f, -15.0f - 5));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(30, 30, 30));
-        //        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 240, 0));
         cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto skybox = components::SkyBox();
@@ -85,6 +83,7 @@ Untie::Untie() {
         cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+
         auto& shape = cubeObj.add_component<components::Shape>();
         vec3 halfsize = vec3(15.0, 1.0f, 15.0);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
@@ -133,9 +132,7 @@ Untie::Untie() {
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
         auto& shape = cubeObj.add_component<components::Shape>();
-
-        vec3 halfsize = vec3(1.0f, 1.0f, 1.0f);
-
+        vec3 halfsize = vec3(1.0f);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
 
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
@@ -149,9 +146,33 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
+    {
+        auto cubeObj = scene.create_game_object("stanford_dragon_1");
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5.0f + 5, 5.0f, -10.0f - 5));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
+        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 240, 0));
+        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
 
+        auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
-    std::string filename("physicsSerialScene.json");
+        auto& shape = cubeObj.add_component<components::Shape>();
+        vec3 halfsize = vec3(1.5f);
+        shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+        rigidbody.create_actor(true, 4.0f);
+
+        auto material = components::Material();
+        material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
+        material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        cubeObj.add_component<components::Material>(material);
+    }
+
+    std::string filename("skyboxScene.json");
     std::filesystem::path path = AssetManager::get_resources_path().append(filename);
     std::fstream serializedSceneStream(path);
 
