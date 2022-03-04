@@ -3,8 +3,7 @@
 #include <knoting/types.h>
 #include <fmod.hpp>
 
-namespace knot {
-namespace components {
+namespace knot::components {
 class AudioListener : public Asset {
    public:
     AudioListener();
@@ -14,5 +13,4 @@ class AudioListener : public Asset {
     float m_hearing_range;
 };
 
-}  // namespace components
-}  // namespace knot
+}  // namespace knot::components

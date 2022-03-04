@@ -1,7 +1,6 @@
 #include "knoting/audio_source.h"
 
-namespace knot {
-namespace components {
+namespace knot::components {
 
 FMOD_RESULT m_result;
 
@@ -21,9 +20,24 @@ AudioSource::AudioSource() : Asset{AssetType::Audio, ""} {
     m_sound->setDefaults(12000, 128);
 }
 
-AudioSource::AudioSource(const std::string& path) : Asset{AssetType::Audio, path} {}
+AudioSource::AudioSource(const std::string& path, bool loop) : Asset{AssetType::Audio, path} {
+    void* extra_driver_data = nullptr;
+    m_result = System_Create(&m_system);
+    m_result = m_system->init(32, FMOD_INIT_NORMAL, extra_driver_data);
+    m_channel = nullptr;
 
-AudioSource::~AudioSource() {}
+    // temp
+    m_result = m_system->createSound(path.c_str(), FMOD_2D, nullptr, &m_sound);
+    if (!loop) {
+        m_result = m_sound->setMode(FMOD_LOOP_OFF);
+    } else {
+        m_result = m_sound->setMode(FMOD_LOOP_NORMAL);
+    }
+    m_loops = loop;
+    m_sound->setDefaults(12000, 128);
+}
+
+AudioSource::~AudioSource() = default;
 
 void AudioSource::play() {
     m_result = m_channel->isPlaying(&is_playing);
@@ -44,7 +58,7 @@ void AudioSource::update() {
     m_result = m_system->update();
 
     if (m_channel) {
-        FMOD::Sound* current_sound = 0;
+        FMOD::Sound* current_sound = nullptr;
         m_result = m_channel->isPlaying(&playing);
         m_result = m_channel->getPaused(&paused);
         m_result = m_channel->getPosition(&pos, FMOD_TIMEUNIT_MS);
@@ -65,5 +79,4 @@ void AudioSource::on_destroy() {
     delete m_instance;
 }
 
-}  // namespace components
-}  // namespace knot
+}  // namespace knot::components

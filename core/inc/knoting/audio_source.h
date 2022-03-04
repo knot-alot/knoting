@@ -4,12 +4,11 @@
 #include <fmod.hpp>
 #include <string>
 
-namespace knot {
-namespace components {
+namespace knot::components {
 class AudioSource : public Asset {
    public:
     AudioSource();
-    AudioSource(const std::string& path);
+    AudioSource(const std::string& path, bool loop);
     ~AudioSource();
 
     //=For ECS========
@@ -25,12 +24,11 @@ class AudioSource : public Asset {
 
    private:
     static AudioSource* m_instance;
-    FMOD::System* m_system;
+    FMOD::System* m_system{};
     FMOD::Channel* m_channel;
-    FMOD::Sound* m_sound;
+    FMOD::Sound* m_sound{};
     std::string m_path;
-    bool m_loops;
-    bool is_playing;
+    bool m_loops{};
+    bool is_playing{};
 };
-}  // namespace components
-}  // namespace knot
+}  // namespace knot::components
