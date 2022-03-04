@@ -11,7 +11,7 @@
 	path = third/spdlog
 	url = https://github.com/gabime/spdlog.git
 [submodule "third/imgui"]
-	path = third/imguigit
+	path = third/imgui
 	url = https://github.com/ocornut/imgui.git
 	branch = docking
 [submodule "third/imguizmo"]
