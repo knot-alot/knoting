@@ -6,27 +6,28 @@ file(GLOB_RECURSE KNOTING_SOURCES
         )
 
 set(PUBLIC_LIBS
-        cereal
-        glm
-        spdlog
-        imgui
-        imguizmo
-        EnTT::EnTT
-        stduuid
-        ${PHYSX_LIBRARIES}
-        bgfx
-        bx
-        bimg
-        rapidjson
-        yojimbo
-        NoesisGUI
-        FMod
-        )
+    cereal
+    glm
+    spdlog
+    imgui
+    imguizmo
+    EnTT::EnTT
+    stduuid
+    ${PHYSX_LIBRARIES}
+    bgfx
+    bx
+    bimg
+    rapidjson
+    yojimbo
+    NoesisGUI
+    FMod
+    glfw
+)
 
 set(PRIVATE_LIBS
-        glfw
         stb
-        )
+)
+
 
 find_package(NoesisGUI REQUIRED)
 find_package(FMod REQUIRED)

@@ -2,6 +2,7 @@
 
 #include <knoting/camera.h>
 #include <knoting/game_object.h>
+#include <knoting/instance_mesh.h>
 #include <knoting/material.h>
 #include <knoting/mesh.h>
 #include <knoting/px_material.h>

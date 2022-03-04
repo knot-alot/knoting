@@ -27,6 +27,12 @@ class Engine {
     static std::optional<std::reference_wrapper<Engine>> get_active_engine();
     static void set_active_engine(std::optional<std::reference_wrapper<Engine>> engine);
 
+    void add_subsystem(std::shared_ptr<Subsystem> subsystem);
+
+   private:
+    void swap_frame();
+    void reset_physics_module();
+
    private:
     int m_windowWidth = 1024;
     int m_windowHeight = 768;

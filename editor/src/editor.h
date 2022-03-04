@@ -2,21 +2,21 @@
 #pragma once
 
 #include <knoting/engine.h>
+#include "demo_widget.h"
 
 namespace knot {
 class Window;
 }
 
 namespace knot {
-class Untie {
+class Editor {
    public:
-    Untie();
+    Editor();
 
     void run();
 
    private:
-    std::unique_ptr<knot::Engine> m_engine;
-    std::unique_ptr<knot::Engine> m_loadEngine;
+    std::shared_ptr<knot::Engine> m_engine;
 };
 
 }  // namespace knot

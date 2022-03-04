@@ -1,6 +1,7 @@
 #pragma once
 
 #include <knoting/types.h>
+#include <cereal/cereal.hpp>
 #include <string>
 
 static constexpr std::string_view PATH_TEXTURE = "textures/";

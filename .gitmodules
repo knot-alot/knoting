@@ -13,6 +13,7 @@
 [submodule "third/imgui"]
 	path = third/imgui
 	url = https://github.com/ocornut/imgui.git
+	branch = docking
 [submodule "third/imguizmo"]
 	path = third/imguizmo
 	url = https://github.com/Knot-Alot/ImGuizmo.git
@@ -21,7 +22,7 @@
 	url = https://github.com/skypjack/entt.git
 [submodule "third/stduuid"]
 	path = third/stduuid
-	url = https://github.com/mariusbancila/stduuid.git
+	url = https://github.com/knot-alot/stduuid.git
 [submodule "third/portable-file-dialogs"]
 	path = third/portable-file-dialogs
 	url = https://github.com/samhocevar/portable-file-dialogs.git
