@@ -25,7 +25,7 @@ set(PRIVATE_LIBS
     stb
 )
 
-add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS})
+add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS} inc/knoting/input_manager.h src/input_manager.cpp)
 
 set_target_properties(knoting PROPERTIES
     CXX_STANDARD 17
