@@ -151,12 +151,11 @@ Untie::Untie() {
     } else {
         log::debug("file not found");
     }
-
-
-
     serializedSceneStream.close();
 }
 void Untie::run() {
+    auto cliMod = m_engine->get_client_module().lock();
+    cliMod->attempt_connection();
     while (m_engine->is_open()) {
         m_engine->update_modules();
     }

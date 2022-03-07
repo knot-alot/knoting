@@ -8,13 +8,14 @@ Engine::Engine() {
     m_forwardRenderModule = std::make_shared<knot::ForwardRenderer>(*this);
     m_physicsModule = std::make_shared<knot::Physics>(*this);
     m_assetManager = std::make_shared<knot::AssetManager>();
+    m_serverModule = std::make_shared<knot::NetworkedServer>(*this);
     m_clientModule = std::make_shared<knot::NetworkedClient>(*this);
-
-    // order dependent
+    //  order dependent
     m_engineModules.emplace_back(m_windowModule);
     m_engineModules.emplace_back(m_assetManager);
     m_engineModules.emplace_back(m_forwardRenderModule);
     m_engineModules.emplace_back(m_physicsModule);
+    m_engineModules.emplace_back(m_serverModule);
     m_engineModules.emplace_back(m_clientModule);
 
     for (auto& module : m_engineModules) {
@@ -24,12 +25,12 @@ Engine::Engine() {
 }
 
 void Engine::update_modules() {
-    float dt = m_windowModule->get_delta_time();
+    double dt = m_windowModule->get_delta_time();
+    currentTime += dt;
     for (auto& module : m_engineModules) {
         module->on_update(dt);
         module->on_fixed_update();
     }
-
     // TODO move into functions when functionality exists
 
     // CORE SYSTEM ORDER
