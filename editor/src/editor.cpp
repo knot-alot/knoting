@@ -152,7 +152,7 @@ Editor::Editor() {
         cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto skybox = components::SkyBox();
-        skybox.set_texture_slot_path(SkyBoxTextureType::Albedo, "skybox/cmft_skybox.hdr");
+        skybox.set_texture_slot_path(SkyBoxTextureType::SkyBox, "skybox/cmft_skybox.hdr");
         skybox.set_texture_slot_path(SkyBoxTextureType::Irradiance, "skybox/cmtr_irradiance.hdr");
         skybox.set_texture_slot_path(SkyBoxTextureType::Radiance, "skybox/cmtr_radiance.hdr");
         cubeObj.add_component<components::SkyBox>(skybox);

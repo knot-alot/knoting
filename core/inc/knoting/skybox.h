@@ -9,13 +9,6 @@
 namespace knot {
 namespace components {
 
-// clang-format off
-
-enum class SkyBoxUniformSamplerHandle { SkyBox, Irradiance, Radiance, LAST };
-enum class SkyBoxTextureHandle { SkyBox, Irradiance, Radiance, LAST };
-
-// clang-format on
-
 class SkyBox {
    public:
     SkyBox();
@@ -50,8 +43,8 @@ class SkyBox {
     SkyBoxTextureType get_uniform_background_type() { return m_backgroundType; };
 
    private:
-    std::array<bgfx::UniformHandle, (size_t)SkyBoxUniformSamplerHandle::LAST> m_uniformSamplerHandle;
-    std::array<bgfx::TextureHandle, (size_t)SkyBoxTextureHandle::LAST> m_textureHandles;
+    std::array<bgfx::UniformHandle, (size_t)SkyBoxTextureType::LAST> m_uniformSamplerHandle;
+    std::array<bgfx::TextureHandle, (size_t)SkyBoxTextureType::LAST> m_textureHandles;
 
    private:
     std::shared_ptr<Texture> m_albedo;
