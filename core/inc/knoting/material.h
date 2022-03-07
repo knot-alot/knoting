@@ -55,7 +55,7 @@ class Material {
     void on_destroy();
     //================
 
-    void set_texture_slot_path(TextureType slot, const std::string& path);
+    void set_texture_slot_path(const TextureType slot, const std::string& path);
 
     void set_uniforms();
     bgfx::ProgramHandle get_program() { return m_shader.get_program(); };

@@ -2,6 +2,7 @@
 #include <knoting/forward_renderer.h>
 #include <knoting/instance_mesh.h>
 #include <knoting/mesh.h>
+#include <knoting/skybox.h>
 #include <knoting/spot_light.h>
 #include <knoting/texture.h>
 
@@ -30,7 +31,8 @@ void ForwardRenderer::on_render() {
     }
     Scene& scene = sceneOpt.value();
     entt::registry& registry = scene.get_registry();
-
+    mat4 invProj;
+    glm::mat4 view;
     //=CAMERA===========================
     auto cameras = registry.view<Transform, EditorCamera, Name>();
 
@@ -56,10 +58,9 @@ void ForwardRenderer::on_render() {
 
         // Set view and projection matrix for view 0.
         {
-            glm::mat4 view;
             view = glm::lookAt(pos, lookTarget, up);
             glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
-
+            invProj = inverse(proj);
             bgfx::setViewTransform(0, &view[0][0], &proj[0][0]);
         }
     }
@@ -82,6 +83,31 @@ void ForwardRenderer::on_render() {
         // Packed uniform data
         m_lightData.push_spotlight_pos_outer_rad(vec4(transform.get_position(), spotLight.get_outer_radius()));
         m_lightData.push_spotlight_color_inner_rad(vec4(spotLight.get_color(), spotLight.get_inner_radius()));
+    }
+
+    //=SKYBOX=================================
+
+    auto skyboxes = registry.view<InstanceMesh, SkyBox>();
+    for (auto& e : skyboxes) {
+        auto goOpt = scene.get_game_object_from_handle(e);
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        InstanceMesh& mesh = go.get_component<InstanceMesh>();
+        SkyBox& skyBox = go.get_component<SkyBox>();
+
+        bgfx::setVertexBuffer(0, mesh.get_vertex_buffer());
+
+        if (isValid(mesh.get_index_buffer())) {
+            bgfx::setIndexBuffer(mesh.get_index_buffer());
+        }
+
+        skyBox.set_uniforms();
+
+        bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_DEPTH_TEST_LEQUAL);
+        bgfx::submit(0, skyBox.get_program());
     }
 
     //=PBR PIPELINE===========================
@@ -134,7 +160,7 @@ void ForwardRenderer::on_late_update() {}
 void ForwardRenderer::on_destroy() {}
 
 void ForwardRenderer::recreate_framebuffer(uint16_t width, uint16_t height, uint16_t id) {
-    bgfx::reset((uint32_t)width, (uint32_t)height, BGFX_RESET_VSYNC);
+    bgfx::reset((uint32_t)width, (uint32_t)height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X2);
     bgfx::setViewClear(id, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL, (uint32_t)m_clearColor);
     bgfx::setViewRect(id, 0, 0, width, height);
 }

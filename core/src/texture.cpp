@@ -14,13 +14,81 @@ Texture::~Texture() {}
 void Texture::on_awake() {
     if (m_assetState != AssetState::Finished) {
         m_assetState = AssetState::Loading;
-        load_texture_2d(m_fullPath);
+        load_texture(m_fullPath);
     }
 }
 
 void Texture::on_destroy() {
     bgfx::destroy(m_textureHandle);
     log::info("removed texture : {}", m_fullPath);
+}
+
+void Texture::load_texture(const std::string& path) {
+    auto ext = std::filesystem::path(path).extension().string();
+
+    if (std::count(m_supported_texture_2d.begin(), m_supported_texture_2d.end(), ext)) {
+        load_texture_2d(path);
+        log::info(ext);
+    } else if (std::count(m_supported_skybox.begin(), m_supported_skybox.end(), ext)) {
+        log::info("loading HDR texture");
+        m_assetState = AssetState::Failed;
+        // TODO .hdr files using stbi for loading incorrectly
+        load_texture_hdri(path);
+    } else {
+        log::error("{} on file {} is not a supported texture format", ext, path);
+        m_assetState = AssetState::Failed;
+    }
+}
+
+void Texture::load_texture_hdri(const std::string& path) {
+    std::filesystem::path fsPath = AssetManager::get_resources_path().append(PATH_TEXTURE).append(path);
+
+    if (!exists(fsPath)) {
+        log::error("{} - does not Exist", fsPath.string());
+        m_textureHandle = BGFX_INVALID_HANDLE;
+    }
+
+    // load image with stb_image
+    glm::ivec2 img_size;
+    int channels;
+    stbi_set_flip_vertically_on_load(true);
+    stbi_uc* data = stbi_load(fsPath.string().c_str(), &img_size.x, &img_size.y, &channels, 0);
+    int numberOfLayers = 1;
+
+    if (!data) {
+        log::error("Failed to load image: {}", fsPath.string());
+        m_assetState = AssetState::Failed;
+        return;
+    }
+
+    uint32_t textureFlags{0};
+    textureFlags = BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
+
+    // clang-format off
+    bgfx::TextureHandle textureHandle;
+
+    textureHandle =
+        bgfx::createTexture2D(
+        img_size.x,
+        img_size.y,
+        false,
+        numberOfLayers,
+        bgfx::TextureFormat::RGBA8,
+        textureFlags,
+        bgfx::copy(data, img_size.x * img_size.y * channels));
+
+    // clang-format on
+
+    if (!bgfx::isValid(textureHandle)) {
+        log::error("Failed to load .hdr only 8/16 bit files supported : {} , ", fsPath.string());
+        m_textureHandle = BGFX_INVALID_HANDLE;
+        m_assetState = AssetState::Failed;
+    }
+
+    stbi_set_flip_vertically_on_load(false);
+    stbi_image_free(data);
+    m_assetState = AssetState::Finished;
+    m_textureHandle = textureHandle;
 }
 
 // TODO Return fail state for the template so that it can set the idX to the default fallback texture
@@ -67,18 +135,18 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
         textureFlags,
         bgfx::copy(data, imageSize.x * imageSize.y * channels));
 
-    m_assetState = AssetState::Finished;
-
     // clang-format on
 
     if (!bgfx::isValid(textureHandle)) {
         log::error("Error loading texture : {}", path);
         m_textureHandle = BGFX_INVALID_HANDLE;
+        m_assetState = AssetState::Failed;
     }
 
     // free stbi image & reset global stbi state
     stbi_set_flip_vertically_on_load(false);
     stbi_image_free(data);
+    m_assetState = AssetState::Finished;
     m_textureHandle = textureHandle;
 }
 
@@ -154,5 +222,6 @@ void Texture::generate_solid_color_texture(const vec4& color, const std::string&
     m_textureHandle = textureHandle;
     m_assetState = AssetState::Finished;
 }
+
 }  // namespace components
 }  // namespace knot

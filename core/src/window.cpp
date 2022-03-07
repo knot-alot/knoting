@@ -49,7 +49,7 @@ Window::Window(int width, int height, std::string title, Engine& engine)
 
     init.resolution.width = (std::uint32_t)m_width;
     init.resolution.height = (std::uint32_t)m_height;
-    init.resolution.reset = BGFX_RESET_VSYNC;
+    init.resolution.reset = BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X2;
 
     int bgfx_init_res = bgfx::init(init);
 

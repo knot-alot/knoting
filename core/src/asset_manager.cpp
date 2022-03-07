@@ -41,6 +41,9 @@ void AssetManager::load_assets_manual() {
     //=From File======
     AssetManager::load_asset<components::Texture>("UV_Grid_test.png");
     AssetManager::load_asset<components::Texture>("normal_tiles_1k.png");
+    AssetManager::load_asset<components::Texture>("skybox/cmft_skybox.hdr");
+    AssetManager::load_asset<components::Texture>("skybox/cmtr_radiance.hdr");
+    AssetManager::load_asset<components::Texture>("skybox/cmtr_irradiance.hdr");
 
     AssetManager::load_asset<components::Mesh>("uv_cube.obj");
     AssetManager::load_asset<components::Mesh>("dragon.obj");
