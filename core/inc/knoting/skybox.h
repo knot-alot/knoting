@@ -38,12 +38,7 @@ class SkyBox {
         on_awake();
     }
 
-    void set_texture_slot_path(SkyBoxTextureType slot, const std::string& path);
-    void screenSpaceQuad(float _textureWidth,
-                         float _textureHeight,
-                         bool _originBottomLeft = false,
-                         float _width = 1.0f,
-                         float _height = 1.0f);
+    void set_texture_slot_path(const SkyBoxTextureType slot, const std::string& path);
 
     void set_uniforms();
     bgfx::ProgramHandle get_program() { return m_shader.get_program(); };
