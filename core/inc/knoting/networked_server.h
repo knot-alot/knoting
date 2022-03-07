@@ -11,6 +11,8 @@ class Engine;
 
 }
 namespace knot {
+constexpr int MAX_CLIENTS = 6;
+
 class NetworkedServer : public Subsystem {
    public:
     NetworkedServer(Engine& engine);
@@ -24,5 +26,7 @@ class NetworkedServer : public Subsystem {
 
    protected:
     Engine& m_engine;
+    const int m_clientPort = 42068;
+    int[] clients;
 };
 }  // namespace knot

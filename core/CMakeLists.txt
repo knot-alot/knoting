@@ -31,7 +31,7 @@ set(PRIVATE_LIBS
 find_package(NoesisGUI REQUIRED)
 find_package(FMod REQUIRED)
 
-add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS} src/networked_client.cpp inc/knoting/networked_client.h inc/knoting/networked_server.h src/networked_server.cpp)
+add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS})
 
 set_target_properties(knoting PROPERTIES
         CXX_STANDARD 17

@@ -7,11 +7,13 @@
 
 #include <knoting/asset_manager.h>
 #include <knoting/forward_renderer.h>
+#include <knoting/networked_client.h>
 #include <knoting/physics.h>
 #include <knoting/subsystem.h>
 #include <knoting/window.h>
 
 namespace knot {
+
 class Engine {
    public:
     Engine();
@@ -43,6 +45,7 @@ class Engine {
     std::shared_ptr<Window> m_windowModule;
     std::shared_ptr<ForwardRenderer> m_forwardRenderModule;
     std::shared_ptr<Physics> m_physicsModule;
+    std::shared_ptr<NetworkedClient> m_clientModule;
 
     inline static std::optional<std::reference_wrapper<Engine>> s_activeEngine = std::nullopt;
     std::shared_ptr<AssetManager> m_assetManager;

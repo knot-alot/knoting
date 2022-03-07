@@ -90,7 +90,7 @@ Untie::Untie() {
 
     {
         auto cubeObj = scene.create_game_object("cube_1");
-        cubeObj.get_component<components::Transform>().set_position(glm::vec3(0.0f, 3.0f, 0.0f));
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5.0f, 5.0f, -10.0f));
         cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
@@ -113,7 +113,7 @@ Untie::Untie() {
 
     {
         auto cubeObj = scene.create_game_object("cube_2");
-        cubeObj.get_component<components::Transform>().set_position(glm::vec3(1.0f, 7.0f, 1.0f));
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-4.0f, 7.0f, -9.0f));
         cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
@@ -151,6 +151,8 @@ Untie::Untie() {
     } else {
         log::debug("file not found");
     }
+
+
 
     serializedSceneStream.close();
 }
