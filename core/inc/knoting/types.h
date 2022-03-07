@@ -22,6 +22,18 @@ enum class SkyBoxTextureType { SkyBox, Irradiance, Radiance, LAST };
 
 }  // namespace asset
 
+enum class FrameBufferType : uint16_t {
+    Depth,
+    Color,
+    PostProcess,
+    ShadowOne,
+    ShadowTwo,
+    ShadowThree,
+    ShadowFour,
+    Editor,
+    LAST
+};
+
 using namespace glm;
 using namespace uuids;
 

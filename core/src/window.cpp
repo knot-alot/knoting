@@ -79,7 +79,7 @@ void Window::window_size_callback(GLFWwindow* window, int width, int height) {
     self->set_window_resize_flag(true);
 }
 void Window::recreate_framebuffer(int width, int height) {
-    m_engine.get_forward_render_module().lock()->recreate_framebuffer(width, height);
+    m_engine.get_framebuffer_manager_module().lock()->recreate_framebuffer(width, height);
 }
 
 void Window::setup_callbacks() {

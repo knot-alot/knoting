@@ -22,7 +22,7 @@ ForwardRenderer::ForwardRenderer(Engine& engine) : m_engine(engine) {}
 
 void ForwardRenderer::on_render() {
     using namespace components;
-    clear_framebuffer();
+    m_engine.get_framebuffer_manager_module().lock()->clear_all_framebuffers();
     bgfx::touch(0);
 
     auto sceneOpt = Scene::get_active_scene();
@@ -139,7 +139,6 @@ void ForwardRenderer::on_render() {
         // Bind Uniforms & textures.
         material.set_uniforms();
 
-        // TODO enable MSAA in bgfx
         bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
                        BGFX_STATE_DEPTH_TEST_LESS);
 
@@ -158,16 +157,6 @@ void ForwardRenderer::on_update(double m_delta_time) {
 void ForwardRenderer::on_late_update() {}
 
 void ForwardRenderer::on_destroy() {}
-
-void ForwardRenderer::recreate_framebuffer(uint16_t width, uint16_t height, uint16_t id) {
-    bgfx::reset((uint32_t)width, (uint32_t)height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X2);
-    bgfx::setViewClear(id, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL, (uint32_t)m_clearColor);
-    bgfx::setViewRect(id, 0, 0, width, height);
-}
-
-void ForwardRenderer::clear_framebuffer(uint16_t id) {
-    bgfx::setViewClear(id, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, (uint32_t)m_clearColor);
-}
 
 int ForwardRenderer::get_window_width() {
     return m_engine.get_window_module().lock()->get_window_width();

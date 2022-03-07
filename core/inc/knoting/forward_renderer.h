@@ -29,9 +29,6 @@ class ForwardRenderer : public Subsystem {
     void on_late_update() override;
     void on_destroy() override;
 
-    void recreate_framebuffer(uint16_t width, uint16_t height, uint16_t id = 0);
-    void clear_framebuffer(uint16_t id = 0);
-
    private:
     int get_window_width();
     int get_window_height();
