@@ -3,10 +3,9 @@
 
 struct GLFWwindow;
 
-namespace knot {
+namespace knot { class Window; }
 
-class Window;
-
+namespace knot{
 enum class MouseButtonCode {
     Left = 0,
     Right = 1,
@@ -19,9 +18,15 @@ enum class MouseButtonCode {
     Button8 = 8,
     Last
 };
-
-enum class JoyStickCode { LeftX = 0, LeftY = 1, RightX = 2, RightY = 3, LeftBumper = 4, RightBumper = 5, Last };
-
+enum class JoyStickCode {
+    LeftX = 0,
+    LeftY = 1,
+    RightX = 2,
+    RightY = 3,
+    LeftBumper = 4,
+    RightBumper = 5,
+    Last
+};
 enum class PadCode {
     Pad0 = 0,
     Pad1 = 1,
@@ -41,7 +46,6 @@ enum class PadCode {
     Pad15 = 15,
     Last
 };
-
 enum class PadButtonCode {
     A = 0,
     B = 1,
@@ -60,7 +64,6 @@ enum class PadButtonCode {
     DPadLeft = 14,
     Last
 };
-
 enum class KeyCode {
     Unknown = -1,
     Space = 32,
@@ -186,48 +189,50 @@ enum class KeyCode {
     Last
 };
 
-class input_manager {
+class InputManager {
    public:
+
+    InputManager();
+    ~InputManager();
     /// KeyBoard Methods
-    bool m_keyPressed(KeyCode key);
-    bool m_keyHeldDown(KeyCode key);
-    bool m_keyOnTrigger(KeyCode key);
-    bool m_keyOnRelease(KeyCode key);
+    bool key_pressed(KeyCode key);
+    bool key_held_down(KeyCode key);
+    bool key_on_trigger(KeyCode key);
+    bool key_on_release(KeyCode key);
 
     /// Pad Methods
-    bool m_padButtonPressed(PadCode pad, PadButtonCode button);
-    bool m_padButtonHeldDown(PadCode pad, PadButtonCode button);
-    bool m_padButtonTriggered(PadCode pad, PadButtonCode button);
-    bool m_padButtonReleased(PadCode pad, PadButtonCode button);
-    float m_getPadAxis(PadCode pad, JoyStickCode joy_stick);
-    bool m_padPresent(PadCode pad);
+    bool pad_button_pressed(PadCode pad, PadButtonCode button);
+    bool pad_button_held_down(PadCode pad, PadButtonCode button);
+    bool pad_button_triggered(PadCode pad, PadButtonCode button);
+    bool pad_button_released(PadCode pad, PadButtonCode button);
+    float get_pad_axis(PadCode pad, JoyStickCode joy_stick);
+    bool pad_present(PadCode pad);
 
     /// Mouse Methods
-    bool m_mouseButtonPressed(MouseButtonCode button);
-    bool m_mouseButtonHeldDown(MouseButtonCode button);
-    bool m_mouseButtonTriggered(MouseButtonCode button);
-    bool m_mouseButtonReleased(MouseButtonCode button);
-    bool m_mouseDoubleClicked(MouseButtonCode button);
-    void SetDoubleClickLimit(float ms);
-    void m_setMouseSensitivity(float sensitivity);
-    bool m_wheelMoved();
-    vec2 m_getRelativePosition();
-    vec2 m_getAbsolutePosition();
-    vec2 m_getWheelMovement();
-
-   protected:
+    bool mouse_button_pressed(MouseButtonCode button);
+    bool mouse_button_held_down(MouseButtonCode button);
+    bool mouse_button_triggered(MouseButtonCode button);
+    bool mouse_button_released(MouseButtonCode button);
+    bool mouse_double_clicked(MouseButtonCode button);
+    bool wheel_moved();
+    vec2 get_relative_position();
+    vec2 get_absolute_position();
+    vec2 get_wheel_movement();
+    void set_mouse_sensitivity(float sensitivity);
+    void set_double_click_limit(float ms);
     friend Window;
 
-    input_manager(Window& owner);
-    ~input_manager();
 
-    void m_updatePads(GLFWwindow* glfwWindow);
-    void m_keyEvent(int key, bool pressed);
-    void m_mouseButtonEvent(int button, bool pressed);
-    void m_mouseEvent(double x, double y);
-    void m_updateHolds();
-    void m_updateRelativePositions();
-    void m_scrollEvent(vec2 offset);
+
+    void update_pads(GLFWwindow* GLFWwindow);
+    void update_relative_positions();
+
+    ///Events
+    void scroll_event(vec2 offset);
+    void key_event(int key, bool pressed);
+    void mouse_button_event(int button, bool pressed);
+    void mouse_event(double x, double y);
+    void update_holds();
 
     bool m_keyBinding[(int)KeyCode::Last];
     bool m_mouseBindings[(int)MouseButtonCode::Last];
@@ -236,9 +241,9 @@ class input_manager {
     bool m_holdMouseBindings[(int)MouseButtonCode::Last];
     bool m_holdPadBindings[(int)PadCode::Last][(int)PadButtonCode::Last];
     vec2 m_lastScroll;
-    vec<2, double> m_mousePosition;
-    vec<2, double> m_lastMousePosition;
-    vec<2, double> m_relativeMousePosition;
+    vec2d m_mousePosition;
+    vec2d m_lastMousePosition;
+    vec2d m_relativeMousePosition;
     float m_joyStickBindings[(int)PadCode::Last][(int)JoyStickCode::Last];
     float m_sensitivity;
 };

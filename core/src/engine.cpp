@@ -1,6 +1,7 @@
 #include <bx/math.h>
 #include <knoting/engine.h>
 
+
 namespace knot {
 
 Engine::Engine() {
@@ -8,12 +9,15 @@ Engine::Engine() {
     m_forwardRenderModule = std::make_shared<knot::ForwardRenderer>(*this);
     m_physicsModule = std::make_shared<knot::Physics>(*this);
     m_assetManager = std::make_shared<knot::AssetManager>();
+    m_input = std::make_unique<knot::InputManager>();
+
 
     // order dependent
     m_engineModules.emplace_back(m_windowModule);
     m_engineModules.emplace_back(m_assetManager);
     m_engineModules.emplace_back(m_forwardRenderModule);
     m_engineModules.emplace_back(m_physicsModule);
+
 
     for (auto& module : m_engineModules) {
         module->on_awake();
@@ -22,6 +26,10 @@ Engine::Engine() {
 }
 
 void Engine::update_modules() {
+    m_input->update_pads(get_window_module().lock()->get_glfw_window());
+    if(m_input.get()->key_pressed(KeyCode::Escape)){
+        get_window_module().lock()->close();
+    }
     for (auto& module : m_engineModules) {
         module->on_update(m_windowModule->get_delta_time());
         module->on_fixed_update();
@@ -65,6 +73,8 @@ Engine::~Engine() {
 bool Engine::is_open() {
     return m_windowModule->is_open();
 }
+
+
 void Engine::add_subsystem(std::shared_ptr<Subsystem> subsystem) {
     m_engineModules.emplace_back(subsystem);
     subsystem->on_awake();

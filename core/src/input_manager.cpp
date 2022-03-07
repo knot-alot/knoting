@@ -5,7 +5,7 @@
 
 namespace knot {
 
-input_manager::input_manager(Window& owner) : m_sensitivity(0.3f), m_lastScroll(0.0f) {
+InputManager::InputManager() : m_sensitivity(0.3f), m_lastScroll(0.0f) {
     for (int i = 0; i < (int)KeyCode::Last; ++i) {
         m_keyBinding[i] = false;
         m_holdKeyBindings[i] = false;
@@ -28,65 +28,65 @@ input_manager::input_manager(Window& owner) : m_sensitivity(0.3f), m_lastScroll(
     }
 }
 
-input_manager::~input_manager() {}
+InputManager::~InputManager() {}
 
 /// Start Key Keyboard
-[[maybe_unused]] bool input_manager::m_keyPressed(KeyCode key) {
+bool InputManager::key_pressed(KeyCode key) {
     return m_keyBinding[(int)key];
 }
 
-bool input_manager::m_keyHeldDown(KeyCode key) {
-    return m_keyBinding[(int)key] && m_holdKeyBindings[(int)key];
+    bool InputManager::key_held_down(KeyCode key) {
+        return m_keyBinding[(int)key] && m_holdKeyBindings[(int)key];
+    }
+
+    bool InputManager::key_on_trigger(KeyCode key) {
+        return m_keyBinding[(int)key] && !m_holdKeyBindings[(int)key];
 }
 
-bool input_manager::m_keyOnTrigger(KeyCode key) {
+bool InputManager::key_on_release(KeyCode key) {
     return m_keyBinding[(int)key] && !m_holdKeyBindings[(int)key];
 }
 
-bool input_manager::m_keyOnRelease(KeyCode key) {
-    return m_keyBinding[(int)key] && !m_holdKeyBindings[(int)key];
-}
 /// End Of Keyboard
 
 /// Start Of Pad
-bool input_manager::m_padPresent(PadCode pad) {
+bool InputManager::pad_present(PadCode pad) {
     return glfwJoystickPresent((int)pad);
 }
 
-bool input_manager::m_padButtonPressed(PadCode pad, PadButtonCode button) {
+bool InputManager::pad_button_pressed(PadCode pad, PadButtonCode button) {
     return m_padBindings[(int)pad][(int)button];
 }
 
-bool input_manager::m_padButtonHeldDown(PadCode pad, PadButtonCode button) {
+bool InputManager::pad_button_held_down(PadCode pad, PadButtonCode button) {
     return m_padBindings[(int)pad][(int)button] && m_holdPadBindings[(int)pad][(int)button];
 }
 
-bool input_manager::m_padButtonTriggered(PadCode pad, PadButtonCode button) {
+bool InputManager::pad_button_triggered(PadCode pad, PadButtonCode button) {
     return m_padBindings[(int)pad][(int)button] && !m_holdPadBindings[(int)pad][(int)button];
 }
 
-bool input_manager::m_padButtonReleased(PadCode pad, PadButtonCode button) {
+bool InputManager::pad_button_released(PadCode pad, PadButtonCode button) {
     return m_padBindings[(int)pad][(int)button] && !m_holdPadBindings[(int)pad][(int)button];
 }
 
-float input_manager::m_getPadAxis(PadCode pad, JoyStickCode joy_stick) {
+float InputManager::get_pad_axis(PadCode pad, JoyStickCode joy_stick) {
     return m_joyStickBindings[(int)pad][(int)joy_stick];
 }
 
-void input_manager::m_updatePads(GLFWwindow* glfwWindow) {
+void InputManager::update_pads(GLFWwindow* GLFWwindow) {
     for (int i = 0; i < (int)PadCode::Last; i++) {
-        if (!m_padPresent((PadCode)i))
+        if (!pad_present((PadCode)i))
             continue;
 
         int count;
-        const float* axis = glfwGetJoystickAxes(i, &count);
-        if (!axis)
-            continue;
+        const float* axes = glfwGetJoystickAxes(i, &count);
+        if (!axes) continue;
 
         if (count > (int)JoyStickCode::Last)
             count = (int)JoyStickCode::Last;
         for (int n = 0; n < count; ++n)
-            m_joyStickBindings[i][n] = axis[n];
+            m_joyStickBindings[i][n] = axes[n];
 
         GLFWgamepadstate gameState;
         if (glfwGetGamepadState(i, &gameState)) {
@@ -96,8 +96,7 @@ void input_manager::m_updatePads(GLFWwindow* glfwWindow) {
             }
         } else if (glfwJoystickPresent(i)) {
             const unsigned char* buttonPressed = glfwGetJoystickButtons(i, &count);
-            if (!buttonPressed)
-                continue;
+            if (!buttonPressed) continue;
             for (int j = 0; j < count; ++j) {
                 if (count > 0)
                     m_padBindings[i][(int)PadButtonCode::A] = buttonPressed[0];
@@ -132,70 +131,70 @@ void input_manager::m_updatePads(GLFWwindow* glfwWindow) {
 /// End Of Pad
 
 /// Start Of Mouse
-bool input_manager::m_mouseButtonPressed(MouseButtonCode button) {
+bool InputManager::mouse_button_pressed(MouseButtonCode button) {
     return m_mouseBindings[(int)button];
 }
 
-[[maybe_unused]] bool input_manager::m_mouseButtonHeldDown(MouseButtonCode button) {
+bool InputManager::mouse_button_held_down(MouseButtonCode button) {
     return m_mouseBindings[(int)button] && m_holdMouseBindings[(int)button];
 }
 
-bool input_manager::m_mouseButtonTriggered(MouseButtonCode button) {
+bool InputManager::mouse_button_triggered(MouseButtonCode button) {
     return m_mouseBindings[(int)button] && !m_holdMouseBindings[(int)button];
 }
 
-bool input_manager::m_mouseButtonReleased(MouseButtonCode button) {
+bool InputManager::mouse_button_released(MouseButtonCode button) {
     return !m_mouseBindings[(int)button] && m_holdMouseBindings[(int)button];
 }
 
-bool input_manager::m_mouseDoubleClicked(MouseButtonCode button) {
+bool InputManager::mouse_double_clicked(MouseButtonCode button) {
     return false;
 }
 
-bool input_manager::m_wheelMoved() {
+bool InputManager::wheel_moved() {
     return m_lastScroll != vec2{};
 }
 
-vec2 input_manager::m_getRelativePosition() {
+vec2 InputManager::get_relative_position() {
     return vec2(m_relativeMousePosition.x * m_sensitivity, m_relativeMousePosition.y * m_sensitivity);
 }
 
-vec2 input_manager::m_getAbsolutePosition() {
+vec2 InputManager::get_absolute_position() {
     return vec2(m_mousePosition.x, m_mousePosition.y);
 }
 
-[[maybe_unused]] vec2 input_manager::m_getWheelMovement() {
+vec2 InputManager::get_wheel_movement() {
     return m_lastScroll;
 }
 
-void input_manager::m_setMouseSensitivity(float sens) {
+void InputManager::set_mouse_sensitivity(float sens) {
     m_sensitivity = sens;
 }
 
-void input_manager::m_updateRelativePositions() {
+void InputManager::update_relative_positions() {
     m_relativeMousePosition = m_mousePosition - m_lastMousePosition;
     m_lastMousePosition = m_mousePosition;
 }
 /// End of Mouse
 
 /// Start of Events
-void input_manager::m_scrollEvent(vec2 offset) {
+void InputManager::scroll_event(vec2 offset) {
     m_lastScroll = offset;
 }
 
-void input_manager::m_keyEvent(int key, bool pressed) {
+void InputManager::key_event(int key, bool pressed) {
     m_keyBinding[key] = pressed;
 }
-void input_manager::m_mouseButtonEvent(int button, bool pressed) {
+void InputManager::mouse_button_event(int button, bool pressed) {
     m_mouseBindings[button] = pressed;
 }
-void input_manager::m_mouseEvent(double x, double y) {
+void InputManager::mouse_event(double x, double y) {
     m_mousePosition.x = x;
     m_mousePosition.y = y;
 }
 /// End of Events
 
-void input_manager::m_updateHolds() {
+void InputManager::update_holds() {
     std::copy_n(m_keyBinding, (int)KeyCode::Last, m_holdKeyBindings);
     std::copy_n(m_mouseBindings, (int)MouseButtonCode::Last, m_holdMouseBindings);
     for (int i = 0; i < (int)PadCode::Last; ++i)

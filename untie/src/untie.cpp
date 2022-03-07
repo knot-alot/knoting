@@ -152,11 +152,16 @@ Untie::Untie() {
     }
 
     serializedSceneStream.close();
+
+
+
+
 }
+
 void Untie::run() {
     while (m_engine->is_open()) {
         m_engine->update_modules();
+        }
     }
-}
 
 }  // namespace knot
