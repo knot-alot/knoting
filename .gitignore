@@ -5,6 +5,7 @@ debug/
 compile_commands.json
 Font Awesome*
 scene.json
+lib/
 
 # */**/renderer.cc
 # */**/renderer.h

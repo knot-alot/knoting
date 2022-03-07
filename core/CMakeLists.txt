@@ -6,26 +6,32 @@ file(GLOB_RECURSE KNOTING_SOURCES
         )
 
 set(PUBLIC_LIBS
-        cereal
-        glm
-        spdlog
-        imgui
-        imguizmo
-        EnTT::EnTT
-        stduuid
-        ${PHYSX_LIBRARIES}
-        bgfx
-        bx
-        bimg
-        rapidjson
-        )
+    cereal
+    glm
+    spdlog
+    imgui
+    imguizmo
+    EnTT::EnTT
+    stduuid
+    ${PHYSX_LIBRARIES}
+    bgfx
+    bx
+    bimg
+    rapidjson
+    yojimbo
+    NoesisGUI
+    FMod
+    glfw
+)
 
 set(PRIVATE_LIBS
-        glfw
         stb
-        )
+)
 
-add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS} inc/knoting/input_manager.h src/input_manager.cpp)
+find_package(NoesisGUI REQUIRED)
+find_package(FMod REQUIRED)
+
+add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS})
 
 set_target_properties(knoting PROPERTIES
         CXX_STANDARD 17
@@ -38,6 +44,7 @@ set_target_properties(knoting PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY
 set_target_properties(knoting PROPERTIES OUTPUT_NAME knoting)
 
 target_compile_definitions(knoting PUBLIC ENTT_ID_TYPE=uint64_t)
+target_compile_definitions(knoting PUBLIC PX_PHYSX_STATIC_LIB=TRUE)
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
     target_compile_definitions(knoting PUBLIC KNOTING_DEBUG=1)
@@ -63,6 +70,7 @@ endforeach ()
 
 target_include_directories(knoting PUBLIC ${CMAKE_SOURCE_DIR}/core/inc)
 target_include_directories(knoting PUBLIC ${PHYSX_INCLUDE_DIRS})
+target_include_directories(knoting PUBLIC ${CMAKE_SOURCE_DIR}/third/yojimbo)
 
 if (GLFW_FOUND)
     target_include_directories(knoting PUBLIC ${GLFW_INCLUDE_DIR})
@@ -96,5 +104,26 @@ foreach (SHADER_FILE ${KNOTING_SHADERS})
             DX11_MODEL 5_0
             GLSL 430
             INCLUDES "${CMAKE_SOURCE_DIR}/res/shaders/"
+
     )
-endforeach ()
+endforeach()
+
+# Copy DLLs into dist/bin
+
+if (WIN32)
+    set(KNOTING_LIB_DIR "${CMAKE_SOURCE_DIR}/lib/x86_64/windows")
+    file(GLOB_RECURSE KNOTING_DLLs
+        ${KNOTING_LIB_DIR}/*.dll
+    )
+else()
+    set(KNOTING_LIB_DIR "${CMAKE_SOURCE_DIR}/lib/x86_64/linux")
+    file(GLOB_RECURSE KNOTING_DLLs
+        ${KNOTING_LIB_DIR}/*.so
+    )
+endif()
+
+foreach(_DLL ${KNOTING_DLLs})
+    get_filename_component(FILE_NAME ${_DLL} NAME)
+    set(FILE_NAME "${CMAKE_BINARY_DIR}/dist/bin/${FILE_NAME}")
+    configure_file(${_DLL} ${FILE_NAME} COPYONLY)
+endforeach()

@@ -5,6 +5,7 @@
 #include <knoting/shader_program.h>
 #include <knoting/texture.h>
 #include <knoting/types.h>
+#include <cereal/cereal.hpp>
 
 namespace knot {
 namespace components {
@@ -58,6 +59,21 @@ class Material {
 
     void set_uniforms();
     bgfx::ProgramHandle get_program() { return m_shader.get_program(); };
+
+    template <class Archive>
+    void save(Archive &archive) const{
+        archive(CEREAL_NVP(m_textureSlotPath), CEREAL_NVP(m_shader),CEREAL_NVP(m_albedoColor),CEREAL_NVP(m_textureTiling),
+        CEREAL_NVP(m_albedoScalar),CEREAL_NVP(m_normalScalar),CEREAL_NVP(m_metallicScalar),CEREAL_NVP(m_roughnessScalar),CEREAL_NVP(m_occlusionScalar)
+        ,CEREAL_NVP(m_skyboxScalar),CEREAL_NVP(m_castShadows),CEREAL_NVP(m_receivesShadows),CEREAL_NVP(m_alphaCutoffEnabled),CEREAL_NVP(m_alphaCutoffAmount));
+    }
+
+    template <class Archive>
+    void load(Archive &archive){
+        archive(CEREAL_NVP(m_textureSlotPath), CEREAL_NVP(m_albedoColor),CEREAL_NVP(m_textureTiling),
+        CEREAL_NVP(m_albedoScalar),CEREAL_NVP(m_normalScalar),CEREAL_NVP(m_metallicScalar),CEREAL_NVP(m_roughnessScalar),CEREAL_NVP(m_occlusionScalar)
+        ,CEREAL_NVP(m_skyboxScalar),CEREAL_NVP(m_castShadows),CEREAL_NVP(m_receivesShadows),CEREAL_NVP(m_alphaCutoffEnabled),CEREAL_NVP(m_alphaCutoffAmount));
+        on_awake();
+    }
 
    private:
     std::array<bgfx::UniformHandle, (size_t)UniformHandle::LAST> m_uniformHandles;
