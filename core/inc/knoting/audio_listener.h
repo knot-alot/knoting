@@ -1,16 +1,19 @@
 #pragma once
-#include <knoting/asset.h>
+#include <knoting/components.h>
 #include <knoting/types.h>
 #include <fmod.hpp>
 
 namespace knot::components {
-class AudioListener : public Asset {
+class AudioListener {
    public:
-    AudioListener();
-    ~AudioListener();
+    explicit AudioListener(float range);
+    ~AudioListener() = default;
+
+    vec3 get_position() const;
+    quat get_rotation() const;
 
    private:
-    float m_hearing_range;
+    float m_range;
 };
 
 }  // namespace knot::components
