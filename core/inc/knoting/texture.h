@@ -27,7 +27,9 @@ class Texture : public Asset {
     //=================
 
     void generate_solid_color_texture(const vec4& color, const std::string& name);
+    void load_texture(const std::string& path);
     void load_texture_2d(const std::string& path, bool usingMipMaps = false, bool usingAnisotropicFiltering = true);
+    void load_texture_hdri(const std::string& path);
 
     template <class Archive>
     void save(Archive& archive) const {
@@ -50,6 +52,25 @@ class Texture : public Asset {
 
    private:
     bgfx::TextureHandle m_textureHandle;
+
+    //  PNG 1/2/4/8/16-bit-per-channel
+    //  JPEG baseline & progressive (12 bpc/arithmetic not supported, same as stock IJG lib)
+    //  TGA (not sure what subset, if a subset)
+    //  BMP non-1bpp, non-RLE
+    //  PSD (composited view only, no extra channels, 8/16 bit-per-channel)
+    //  HDR (radiance rgbE format)
+
+    static constexpr std::string_view FORMAT_PNG = ".png";
+    static constexpr std::string_view FORMAT_JPEG = ".jpeg";
+    static constexpr std::string_view FORMAT_JPG = ".jpg";
+    static constexpr std::string_view FORMAT_TGA = ".tga";
+    static constexpr std::string_view FORMAT_BMP = ".bmp";
+    static constexpr std::string_view FORMAT_PSD = ".psd";
+    static constexpr std::string_view FORMAT_HDR = ".hdr";
+
+    std::vector<std::string_view> m_supported_texture_2d{FORMAT_PNG, FORMAT_JPG, FORMAT_JPEG,
+                                                         FORMAT_TGA, FORMAT_BMP, FORMAT_PSD};
+    std::vector<std::string_view> m_supported_skybox{FORMAT_HDR};
     uint16_t m_width = 0;
     uint16_t m_height = 0;
 };

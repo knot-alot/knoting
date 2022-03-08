@@ -111,20 +111,11 @@ void Material::set_uniforms() {
 
     // clang-format off
 }
-void Material::set_texture_slot_path(TextureType slot, const std::string& path){
-switch (slot) {
-        case TextureType::Albedo:
-            break;
-        case TextureType::Normal:
-            break;
-        case TextureType::Metallic:
-            break;
-        case TextureType::Roughness:
-            break;
-        case TextureType::Occlusion:
-            break;
-        default:
-            return;
+
+void Material::set_texture_slot_path(const TextureType slot, const std::string& path){
+    if ((size_t)slot >= (size_t)TextureType::LAST){
+        log::error("invalid material texture : {}", (size_t)slot);
+        return;
     }
     m_textureSlotPath[(int)slot] = path;
 }
