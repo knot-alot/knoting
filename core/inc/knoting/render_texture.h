@@ -9,6 +9,7 @@ class RenderTexture {
    public:
     void create_render_texture(const vec2i& size, const uint64_t& flags, const bool useWindowSize = true);
     void create_depth_texture(const vec2i& size, const uint64_t& flags, const bool useWindowSize = true);
+    void create_color_texture(const vec2i& size, const uint64_t& flags, const bool useWindowSize = true);
 
     void update_state(const uint64_t& state);
     void set_state();

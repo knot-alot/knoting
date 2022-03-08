@@ -24,6 +24,8 @@ void ForwardRenderer::on_awake() {}
 
 void ForwardRenderer::on_update(double m_delta_time) {
     m_timePassed += (float)m_delta_time;
+    bgfx::touch(0);
+
     shadow_pass();
     depth_pass();
     color_pass();
@@ -40,10 +42,7 @@ void ForwardRenderer::color_pass() {
     m_engine.get_framebuffer_manager_module().lock()->clear_all_framebuffers();
     auto fbos = m_engine.get_framebuffer_manager_module().lock();
     auto colorBuffer = fbos->get_framebuffer(FrameBufferType::Color);
-    auto idx = 0;  // Backbuffer
-    //    auto idx = colorBuffer.idx; //TODO check what is render to this buffer via render doc as no editor debugging
-    //    currently available
-    bgfx::touch(idx);
+    auto idx = colorBuffer.idx;  // TODO check what is render to this buffer via render doc as no editor debugging
 
     auto sceneOpt = Scene::get_active_scene();
     if (!sceneOpt) {
@@ -165,7 +164,6 @@ void ForwardRenderer::color_pass() {
 
         bgfx::submit(idx, material.get_program());
     }
-    bgfx::touch(0);
 }
 
 void ForwardRenderer::skybox_pass() {}

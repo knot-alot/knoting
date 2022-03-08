@@ -20,6 +20,20 @@ void RenderTexture::create_render_texture(const vec2i& size, const uint64_t& fla
     m_framebufferHandle = bgfx::createFrameBuffer(m_renderTextureHandle.size(), m_renderTextureHandle.data());
 }
 
+void RenderTexture::create_color_texture(const vec2i& size, const uint64_t& flags, const bool useWindowSize) {
+    m_useWindowSize = useWindowSize;
+    m_flags = flags;
+
+    bool validFlags = (m_flags & (BGFX_TEXTURE_RT | BGFX_SAMPLER_COMPARE_LESS));
+    if (!validFlags) {
+        log::warn("invalid render texture flag using fallback");
+        m_flags = BGFX_TEXTURE_RT | BGFX_SAMPLER_COMPARE_LESS;
+    }
+
+    m_renderTextureHandle.emplace_back(
+        bgfx::createTexture2D(size.x, size.y, false, 1, bgfx::TextureFormat::BGRA8, m_flags));
+}
+
 void RenderTexture::create_depth_texture(const vec2i& size, const uint64_t& flags, const bool useWindowSize) {
     m_useWindowSize = useWindowSize;
     m_flags = flags;
