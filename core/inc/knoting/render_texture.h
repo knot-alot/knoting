@@ -7,8 +7,8 @@ namespace knot {
 
 class RenderTexture {
    public:
-    void create_render_texture(const FrameBufferType& id, const vec2i& size, const uint64_t& flags);
-    void create_depth_texture(const FrameBufferType& id, const vec2i& size, const uint64_t& flags);
+    void create_render_texture(const vec2i& size, const uint64_t& flags, const bool useWindowSize = true);
+    void create_depth_texture(const vec2i& size, const uint64_t& flags, const bool useWindowSize = true);
 
     void update_state(const uint64_t& state);
     void set_state();
@@ -18,6 +18,9 @@ class RenderTexture {
     void destroy();
     bool is_using_window_size() { return m_useWindowSize; };
     void clear_framebuffer();
+
+    bgfx::FrameBufferHandle get_framebuffer() { return m_framebufferHandle; };
+    std::vector<bgfx::TextureHandle> get_texture_attachments() { return m_renderTextureHandle; };
 
    private:
     vec2i m_size;

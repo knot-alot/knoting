@@ -20,10 +20,30 @@ ForwardRenderer::~ForwardRenderer() {}
 
 ForwardRenderer::ForwardRenderer(Engine& engine) : m_engine(engine) {}
 
-void ForwardRenderer::on_render() {
+void ForwardRenderer::on_awake() {}
+
+void ForwardRenderer::on_update(double m_delta_time) {
+    m_timePassed += (float)m_delta_time;
+    shadow_pass();
+    depth_pass();
+    color_pass();
+    skybox_pass();
+    transparent_pass();
+    post_process_pass();
+}
+
+void ForwardRenderer::shadow_pass() {}
+void ForwardRenderer::depth_pass() {}
+
+void ForwardRenderer::color_pass() {
     using namespace components;
     m_engine.get_framebuffer_manager_module().lock()->clear_all_framebuffers();
-    bgfx::touch(0);
+    auto fbos = m_engine.get_framebuffer_manager_module().lock();
+    auto colorBuffer = fbos->get_framebuffer(FrameBufferType::Color);
+    auto idx = 0;  // Backbuffer
+    //    auto idx = colorBuffer.idx; //TODO check what is render to this buffer via render doc as no editor debugging
+    //    currently available
+    bgfx::touch(idx);
 
     auto sceneOpt = Scene::get_active_scene();
     if (!sceneOpt) {
@@ -33,6 +53,7 @@ void ForwardRenderer::on_render() {
     entt::registry& registry = scene.get_registry();
     mat4 invProj;
     glm::mat4 view;
+    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
     //=CAMERA===========================
     auto cameras = registry.view<Transform, EditorCamera, Name>();
 
@@ -52,7 +73,7 @@ void ForwardRenderer::on_render() {
         const glm::vec3 up = editorCamera.get_up();
 
         const float fovY = editorCamera.get_fov();
-        const float aspectRatio = float((float)get_window_width() / (float)get_window_height());
+        const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
         const float zNear = editorCamera.get_z_near();
         const float zFar = editorCamera.get_z_far();
 
@@ -61,7 +82,7 @@ void ForwardRenderer::on_render() {
             view = glm::lookAt(pos, lookTarget, up);
             glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
             invProj = inverse(proj);
-            bgfx::setViewTransform(0, &view[0][0], &proj[0][0]);
+            bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
         }
     }
 
@@ -98,7 +119,7 @@ void ForwardRenderer::on_render() {
         InstanceMesh& mesh = go.get_component<InstanceMesh>();
         SkyBox& skyBox = go.get_component<SkyBox>();
 
-        bgfx::setVertexBuffer(0, mesh.get_vertex_buffer());
+        bgfx::setVertexBuffer(idx, mesh.get_vertex_buffer());
 
         if (isValid(mesh.get_index_buffer())) {
             bgfx::setIndexBuffer(mesh.get_index_buffer());
@@ -107,7 +128,7 @@ void ForwardRenderer::on_render() {
         skyBox.set_uniforms();
 
         bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_DEPTH_TEST_LEQUAL);
-        bgfx::submit(0, skyBox.get_program());
+        bgfx::submit(idx, skyBox.get_program());
     }
 
     //=PBR PIPELINE===========================
@@ -128,7 +149,7 @@ void ForwardRenderer::on_render() {
         bgfx::setTransform(value_ptr(transform.get_model_matrix()));
 
         // Set vertex and index buffer.
-        bgfx::setVertexBuffer(0, mesh.get_vertex_buffer());
+        bgfx::setVertexBuffer(idx, mesh.get_vertex_buffer());
 
         if (isValid(mesh.get_index_buffer())) {
             bgfx::setIndexBuffer(mesh.get_index_buffer());
@@ -142,28 +163,16 @@ void ForwardRenderer::on_render() {
         bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
                        BGFX_STATE_DEPTH_TEST_LESS);
 
-        bgfx::submit(0, material.get_program());
+        bgfx::submit(idx, material.get_program());
     }
+    bgfx::touch(0);
 }
 
-void ForwardRenderer::on_post_render() {}
-
-void ForwardRenderer::on_awake() {}
-
-void ForwardRenderer::on_update(double m_delta_time) {
-    m_timePassed += (float)m_delta_time;
-}
+void ForwardRenderer::skybox_pass() {}
+void ForwardRenderer::transparent_pass() {}
+void ForwardRenderer::post_process_pass() {}
 
 void ForwardRenderer::on_late_update() {}
-
 void ForwardRenderer::on_destroy() {}
-
-int ForwardRenderer::get_window_width() {
-    return m_engine.get_window_module().lock()->get_window_width();
-}
-
-int ForwardRenderer::get_window_height() {
-    return m_engine.get_window_module().lock()->get_window_height();
-}
 
 }  // namespace knot

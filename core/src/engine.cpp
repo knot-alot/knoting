@@ -39,17 +39,14 @@ void Engine::update_modules() {
     // SCRIPTS
     // 1) SYSTEM : Editor Camera movement
 
-    // PBR RENDERING
+    // RENDERING
     // 1) SYSTEM : Shadow pass
     // 2) SYSTEM : Update Active Camera (Runtime / Editor)
     // 3) SYSTEM : Depth Pass (No Transparent Objects)
-    // 4) SYSTEM : PBR Render Pass
+    // 4) SYSTEM : Color Render Pass
     // 5) SYSTEM : Skybox Render
     // 6) SYSTEM : Sorted Transparent Render Pass
     // 7) SYSTEM : Post Processing Stack
-
-    m_forwardRenderModule->on_render();
-    m_forwardRenderModule->on_post_render();
 
     for (auto& module : m_engineModules) {
         module->on_late_update();
