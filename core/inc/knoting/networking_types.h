@@ -10,12 +10,16 @@ constexpr int CLIENT_PORT = 12646;
 constexpr int MAX_CLIENTS = 6;
 const char* const SERVER_ADDRESS = "127.0.0.1";
 
-inline int GetNumBitsForMessage(uint16_t sequence) {
-    static int messageBitsArray[] = {1, 320, 120, 4, 256, 45, 11, 13, 101, 100, 84, 95, 203, 2, 3, 8, 512, 5, 3, 7, 50};
-    const int modulus = sizeof(messageBitsArray) / sizeof(int);
-    const int index = sequence % modulus;
-    return messageBitsArray[index];
-}
+struct m_clientServerConfig : public ClientServerConfig {
+    m_clientServerConfig() {
+        ClientServerConfig();
+        this->numChannels = 2;
+        this->channel[0].type = yojimbo::CHANNEL_TYPE_RELIABLE_ORDERED;
+        this->channel[1].type = yojimbo::CHANNEL_TYPE_UNRELIABLE_UNORDERED;
+        this->timeout = 5;
+        this->networkSimulator = false;
+    }
+};
 
 class ClientMessage : public Message {
    public:
@@ -24,17 +28,10 @@ class ClientMessage : public Message {
     template <typename Stream>
     bool Serialize(Stream& stream) {
         serialize_bits(stream, sequence, 16);
-        int numBits = GetNumBitsForMessage(sequence);
-        int numWords = numBits / 32;
-        uint32_t dummy = 0;
-        for (int i = 0; i < numWords; ++i)
-            serialize_bits(stream, dummy, 32);
-        int numRemainderBits = numBits - numWords * 32;
-        if (numRemainderBits > 0)
-            serialize_bits(stream, dummy, numRemainderBits);
         return true;
     }
 
+    uint16_t getSequence() { return sequence; }
     YOJIMBO_VIRTUAL_SERIALIZE_FUNCTIONS();
 
    protected:
@@ -44,25 +41,23 @@ class ClientMessage : public Message {
 class ServerMessage : public Message {
    public:
     ServerMessage() : sequence(0) {}
-
+    ~ServerMessage() {}
     template <typename Stream>
     bool Serialize(Stream& stream) {
         serialize_bits(stream, sequence, 16);
-        int numBits = GetNumBitsForMessage(sequence);
-        int numWords = numBits / 32;
-        uint32_t dummy = 0;
-        for (int i = 0; i < numWords; ++i)
-            serialize_bits(stream, dummy, 32);
-        int numRemainderBits = numBits - numWords * 32;
-        if (numRemainderBits > 0)
-            serialize_bits(stream, dummy, numRemainderBits);
+        for (int i = 0; i < 15; ++i) {
+            serialize_string(stream, letter, 8);
+        }
         return true;
     }
 
+    uint16_t getSequence() { return sequence; }
+    void setSequence(uint16_t seq) { sequence = seq; }
     YOJIMBO_VIRTUAL_SERIALIZE_FUNCTIONS();
 
    protected:
     uint16_t sequence;
+    char* letter = "a";
 };
 
 enum MessageTypes { CLIENT_MESSAGE, SERVER_MESSAGE, NUM_MESSAGE_TYPES };

@@ -25,10 +25,12 @@ class NetworkedServer : public Subsystem {
     void on_destroy() override;
 
     double get_time();
+    bool handle_recieved_packets();
 
    protected:
     Engine& m_engine;
     std::shared_ptr<yojimbo::Server> m_server;
-    yojimbo::ClientServerConfig m_config;
+    m_clientServerConfig m_config;
+    uint16_t seq = 0;
 };
 }  // namespace knot

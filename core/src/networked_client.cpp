@@ -4,9 +4,7 @@
 namespace knot {
 using namespace yojimbo;
 NetworkedClient::~NetworkedClient() {
-    m_config.channel[0].type = yojimbo::CHANNEL_TYPE_UNRELIABLE_UNORDERED;
-    m_config.timeout = 5;
-    m_config.networkSimulator = false;
+
 }
 
 NetworkedClient::NetworkedClient(Engine& engine) : m_engine(engine), m_client(nullptr) {}
@@ -14,20 +12,27 @@ void NetworkedClient::on_awake() {
     m_client = std::make_shared<Client>(GetDefaultAllocator(), Address("0.0.0.0", CLIENT_PORT), m_config, clientAdapter,
                                         get_time());
 
-    log::debug("CREATED CLIENT");
+    log::debug("CREATED CLIENT with {} channels", m_config.numChannels);
 }
 void NetworkedClient::on_update(double m_delta_time) {
     if (m_client->IsDisconnected()) {
-        log::debug("Client has Disconnected!");
-        attempt_connection();
+        log::debug("Client is not Connected to Server!");
+        while (!attempt_connection())
+            ;
         return;
-    } else {
-        m_client->SendPackets();
-        m_client->ReceivePackets();
     }
+
+    m_client->SendPackets();
+    m_client->ReceivePackets();
+
     if (m_client->IsConnected()) {
-        log::debug("I F***ing Worked");
+        if (!connected) {
+            connected = true;
+            log::debug("Client {} connected to server", m_clientId);
+        }
+        handle_recieved_packets();
     }
+
     m_client->AdvanceTime(get_time());
 }
 
@@ -47,14 +52,30 @@ double NetworkedClient::get_time() {
     }
 }
 bool NetworkedClient::attempt_connection() {
-    uint64_t clientId = 0;
-    yojimbo::random_bytes((uint8_t*)&clientId, 8);
+    if (m_client->IsConnecting()) {
+        return true;
+    }
+    yojimbo::random_bytes((uint8_t*)&m_clientId, 8);
     m_serverAddress = Address(SERVER_ADDRESS, SERVER_PORT);
 
     uint8_t privateNetworkingKey[yojimbo::KeyBytes];
     memset(privateNetworkingKey, 0, KeyBytes);
     m_client->InsecureConnect(privateNetworkingKey, m_clientId, m_serverAddress);
     log::debug("ATTEMPTED CLIENT CONNECTION");
-    return m_client->IsConnected();
+    return m_client->IsConnecting();
+}
+bool NetworkedClient::handle_recieved_packets() {
+    if (!m_client->IsConnected()) {
+        return false;
+    }
+    if (!(m_client)) {
+        return false;
+    }
+    Message* serMess = nullptr;
+    while ((serMess = m_client->ReceiveMessage(1))) {
+        log::debug("Client received Message {} from Server", serMess->GetType());
+        m_client->ReleaseMessage(serMess);
+    }
+    return true;
 }
 }  // namespace knot

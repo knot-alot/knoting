@@ -6,9 +6,6 @@ NetworkedServer::~NetworkedServer() {}
 
 NetworkedServer::NetworkedServer(Engine& engine) : m_engine(engine), m_server(nullptr) {
     InitializeYojimbo();
-    m_config.channel[0].type = yojimbo::CHANNEL_TYPE_UNRELIABLE_UNORDERED;
-    m_config.timeout = 5;
-    m_config.networkSimulator = false;
 }
 void NetworkedServer::on_awake() {
     uint8_t privateKey[KeyBytes];
@@ -25,9 +22,16 @@ void NetworkedServer::on_update(double m_delta_time) {
         return;
     }
     if (m_server->GetNumConnectedClients() > 0) {
-        m_server->SendPackets();
-        m_server->ReceivePackets();
+        if (m_server->CanSendMessage(0, 1)) {
+            log::debug("Server Attempts to send message");
+            ServerMessage* mess = (ServerMessage*)m_server->CreateMessage(0, MessageTypes::SERVER_MESSAGE);
+            mess->setSequence(seq);
+            seq++;
+            m_server->SendMessage(0, 1, mess);
+        }
     }
+    m_server->SendPackets();
+    m_server->ReceivePackets();
     m_server->AdvanceTime(get_time());
 }
 void NetworkedServer::on_fixed_update() {}

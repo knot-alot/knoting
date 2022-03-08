@@ -15,43 +15,6 @@ namespace knot {
 class Engine;
 
 }
-
-// namespace knot {
-// using namespace yojimbo;
-//
-// constexpr int SERVER_PORT = 42069;
-// constexpr int CLIENT_PORT = 42068;
-// const char* const SERVER_ADDRESS = "127.0.0.1";
-//
-// class ClientMessage : public Message {
-//    public:
-//     ClientMessage() : sequence(0) {}
-//
-//     template <typename Stream>
-//     bool Serialize(Stream& stream) {
-//         serialize_bits(stream, sequence, 16);
-//         return true;
-//     }
-//
-//     YOJIMBO_VIRTUAL_SERIALIZE_FUNCTIONS();
-//
-//    protected:
-//     uint16_t sequence;
-// };
-//
-// YOJIMBO_MESSAGE_FACTORY_START(ClientMessageFactory, 1);
-// YOJIMBO_DECLARE_MESSAGE_TYPE(0, ClientMessage);
-// YOJIMBO_MESSAGE_FACTORY_FINISH();
-//
-// class ClientAdapter : public Adapter {
-//    public:
-//     MessageFactory* CreateMessageFactory(Allocator& allocator) {
-//         return YOJIMBO_NEW(allocator, ClientMessageFactory, allocator);
-//     }
-// };
-// static ClientAdapter clientAdapter;
-// }  // namespace knot
-
 namespace knot {
 class NetworkedClient : public Subsystem {
    public:
@@ -68,14 +31,15 @@ class NetworkedClient : public Subsystem {
 
     bool attempt_connection();
 
+    bool handle_recieved_packets();
+
    protected:
     Engine& m_engine;
     std::shared_ptr<yojimbo::Client> m_client;
 
-    yojimbo::ClientServerConfig m_config;
+    m_clientServerConfig m_config;
     uint64_t m_clientId = 0;
     yojimbo::Address m_serverAddress;
-    float retryStep = 0.0f;
-    const float retryStepMax = 2.0f;
+    bool connected = false;
 };
 }  // namespace knot
