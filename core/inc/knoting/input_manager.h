@@ -192,8 +192,9 @@ enum class KeyCode {
 class InputManager {
    public:
 
-    InputManager();
+    InputManager(Window &owner);
     ~InputManager();
+
     /// KeyBoard Methods
     bool key_pressed(KeyCode key);
     bool key_held_down(KeyCode key);
@@ -224,7 +225,7 @@ class InputManager {
 
 
 
-    void update_pads(GLFWwindow* GLFWwindow);
+    void update_pads(GLFWwindow* glfwWindow);
     void update_relative_positions();
 
     ///Events

@@ -5,7 +5,7 @@
 
 namespace knot {
 
-InputManager::InputManager() : m_sensitivity(0.3f), m_lastScroll(0.0f) {
+InputManager::InputManager(Window &owner) : m_sensitivity(0.3f), m_lastScroll(0.0f) {
     for (int i = 0; i < (int)KeyCode::Last; ++i) {
         m_keyBinding[i] = false;
         m_holdKeyBindings[i] = false;
@@ -74,7 +74,7 @@ float InputManager::get_pad_axis(PadCode pad, JoyStickCode joy_stick) {
     return m_joyStickBindings[(int)pad][(int)joy_stick];
 }
 
-void InputManager::update_pads(GLFWwindow* GLFWwindow) {
+void InputManager::update_pads(GLFWwindow* glfwWindow) {
     for (int i = 0; i < (int)PadCode::Last; i++) {
         if (!pad_present((PadCode)i))
             continue;
