@@ -15,23 +15,30 @@ void NetworkedServer::on_awake() {
                                         clientAdapter, get_time());
     m_server->Start(MAX_CLIENTS);
     log::debug("STARTED SERVER...");
+    seq.fill(0);
+    cliSeq.fill(0);
+    cliAck.fill(0);
 }
 void NetworkedServer::on_update(double m_delta_time) {
     if (!m_server->IsRunning()) {
         log::debug("server not running!");
         return;
     }
+    m_tickTime += m_delta_time;
     if (m_server->GetNumConnectedClients() > 0) {
-        if (m_server->CanSendMessage(0, 1)) {
-            log::debug("Server Attempts to send message");
-            ServerMessage* mess = (ServerMessage*)m_server->CreateMessage(0, MessageTypes::SERVER_MESSAGE);
-            mess->setSequence(seq);
-            seq++;
-            m_server->SendMessage(0, 1, mess);
-        }
+        send_message();
+    }
+    if (m_tickTime >= TICK) {
+        m_tickTime -= TICK;
     }
     m_server->SendPackets();
     m_server->ReceivePackets();
+
+    if (m_server->GetNumConnectedClients() > 0) {
+        handle_recieved_packets();
+    } else {
+        seq.fill(0);
+    }
     m_server->AdvanceTime(get_time());
 }
 void NetworkedServer::on_fixed_update() {}
@@ -46,5 +53,42 @@ double NetworkedServer::get_time() {
     if (engOpt) {
         return engOpt.value().get().get_current_time();
     }
+}
+bool NetworkedServer::send_message() {
+    if (m_tickTime >= TICK) {
+        for (int i = 0; i < m_server->GetNumConnectedClients(); ++i) {
+            if (m_server->CanSendMessage(i, 1)) {
+                // log::debug("Server Attempts to send message");
+                ServerMessage* mess = (ServerMessage*)m_server->CreateMessage(0, MessageTypes::SERVER_MESSAGE);
+                mess->set_sequence(seq[i]);
+                mess->set_ack(cliSeq[i]);
+                seq[i]++;
+                m_server->SendMessage(0, 1, mess);
+            }
+        }
+    }
+    return true;
+}
+bool NetworkedServer::handle_recieved_packets() {
+    if (!m_server->IsRunning()) {
+        return false;
+    }
+    if (!(m_server)) {
+        return false;
+    }
+    Message* mess = nullptr;
+    for (int i = 0; i < m_server->GetNumConnectedClients(); ++i) {
+        while ((mess = m_server->ReceiveMessage(i, 1))) {
+            if (mess->GetType() == MessageTypes::CLIENT_MESSAGE) {
+                ClientMessage* cliMess = (ClientMessage*)mess;
+                cliSeq[i] = cliMess->get_sequence();
+                cliAck[i] = cliMess->get_recent_ack();
+                log::debug("Server received Message {} from client {}. Client Acknowledged message {}", cliSeq[i], i,
+                           cliAck[i]);
+            }
+            m_server->ReleaseMessage(i, mess);
+        }
+    }
+    return true;
 }
 }  // namespace knot

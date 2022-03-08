@@ -9,6 +9,7 @@ constexpr int SERVER_PORT = 13189;
 constexpr int CLIENT_PORT = 12646;
 constexpr int MAX_CLIENTS = 6;
 const char* const SERVER_ADDRESS = "127.0.0.1";
+const double TICK = 1.0 / 30.0;
 
 struct m_clientServerConfig : public ClientServerConfig {
     m_clientServerConfig() {
@@ -21,43 +22,51 @@ struct m_clientServerConfig : public ClientServerConfig {
     }
 };
 
-class ClientMessage : public Message {
+class OurMessage : public Message {
    public:
-    ClientMessage() : sequence(0) {}
+    OurMessage() : m_sequence(0), m_recentAck(0) {}
 
     template <typename Stream>
     bool Serialize(Stream& stream) {
-        serialize_bits(stream, sequence, 16);
+        serialize_bits(stream, m_sequence, 16);
+        serialize_bits(stream, m_recentAck, 16);
         return true;
     }
 
-    uint16_t getSequence() { return sequence; }
+    uint16_t get_sequence() { return m_sequence; }
+    void set_sequence(uint16_t seq) { m_sequence = seq; }
+
+    uint16_t get_recent_ack() { return m_recentAck; }
+    void set_ack(uint16_t reAck) { m_recentAck = reAck; }
     YOJIMBO_VIRTUAL_SERIALIZE_FUNCTIONS();
 
    protected:
-    uint16_t sequence;
+    uint16_t m_sequence;
+    uint16_t m_recentAck;
 };
 
-class ServerMessage : public Message {
+class ClientMessage : public OurMessage {
    public:
-    ServerMessage() : sequence(0) {}
-    ~ServerMessage() {}
-    template <typename Stream>
-    bool Serialize(Stream& stream) {
-        serialize_bits(stream, sequence, 16);
-        for (int i = 0; i < 15; ++i) {
-            serialize_string(stream, letter, 8);
-        }
-        return true;
-    }
+    ClientMessage() : OurMessage() {}
 
-    uint16_t getSequence() { return sequence; }
-    void setSequence(uint16_t seq) { sequence = seq; }
-    YOJIMBO_VIRTUAL_SERIALIZE_FUNCTIONS();
+    uint8_t m_lookXAxis;
+    uint8_t m_lookYAxis;
 
-   protected:
-    uint16_t sequence;
-    char* letter = "a";
+    uint8_t m_moveXAxis;
+    uint8_t m_moveYAxis;
+
+    bool jumpPressed;
+    bool isShooting;
+    bool abilityUsed;
+};
+
+class ServerMessage : public OurMessage {
+   public:
+    ServerMessage() : OurMessage() {}
+
+    std::array<vec3, MAX_CLIENTS> playerPos;
+    std::array<quat, MAX_CLIENTS> playerRots;
+    std::array<uint16_t, MAX_CLIENTS> fsnjfs;
 };
 
 enum MessageTypes { CLIENT_MESSAGE, SERVER_MESSAGE, NUM_MESSAGE_TYPES };

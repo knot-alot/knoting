@@ -32,6 +32,7 @@ class NetworkedClient : public Subsystem {
     bool attempt_connection();
 
     bool handle_recieved_packets();
+    bool send_message();
 
    protected:
     Engine& m_engine;
@@ -41,5 +42,9 @@ class NetworkedClient : public Subsystem {
     uint64_t m_clientId = 0;
     yojimbo::Address m_serverAddress;
     bool connected = false;
+    double m_tickTime = 0.0;
+    uint16_t seq = 0;
+    uint16_t serverSeq = 0;
+    uint16_t serverAck = 0;
 };
 }  // namespace knot

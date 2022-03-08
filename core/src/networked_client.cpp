@@ -3,9 +3,7 @@
 
 namespace knot {
 using namespace yojimbo;
-NetworkedClient::~NetworkedClient() {
-
-}
+NetworkedClient::~NetworkedClient() {}
 
 NetworkedClient::NetworkedClient(Engine& engine) : m_engine(engine), m_client(nullptr) {}
 void NetworkedClient::on_awake() {
@@ -20,6 +18,14 @@ void NetworkedClient::on_update(double m_delta_time) {
         while (!attempt_connection())
             ;
         return;
+    }
+
+    m_tickTime += m_delta_time;
+    if (m_client->IsConnected()) {
+        send_message();
+    }
+    if (m_tickTime >= TICK) {
+        m_tickTime -= TICK;
     }
 
     m_client->SendPackets();
@@ -71,10 +77,28 @@ bool NetworkedClient::handle_recieved_packets() {
     if (!(m_client)) {
         return false;
     }
-    Message* serMess = nullptr;
-    while ((serMess = m_client->ReceiveMessage(1))) {
-        log::debug("Client received Message {} from Server", serMess->GetType());
-        m_client->ReleaseMessage(serMess);
+    Message* mess = nullptr;
+    while ((mess = m_client->ReceiveMessage(1))) {
+        if (mess->GetType() == MessageTypes::SERVER_MESSAGE) {
+            ServerMessage* serMess = (ServerMessage*)mess;
+            serverSeq = serMess->get_sequence();
+            serverAck = serMess->get_recent_ack();
+            log::debug("Client received Message {} from Server and Server Acknowledged Message: {}", serverSeq,
+                       serverAck);
+        }
+        m_client->ReleaseMessage(mess);
+    }
+    return true;
+}
+bool NetworkedClient::send_message() {
+    if (m_tickTime >= TICK) {
+        if (m_client->CanSendMessage(1)) {
+            ClientMessage* mess = (ClientMessage*)m_client->CreateMessage(MessageTypes::CLIENT_MESSAGE);
+            mess->set_sequence(seq);
+            mess->set_ack(serverSeq);
+            seq++;
+            m_client->SendMessage(1, mess);
+        }
     }
     return true;
 }
