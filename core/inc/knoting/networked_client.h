@@ -34,6 +34,8 @@ class NetworkedClient : public Subsystem {
     bool handle_recieved_packets();
     bool send_message();
 
+    Message* generate_message();
+
    protected:
     Engine& m_engine;
     std::shared_ptr<yojimbo::Client> m_client;
@@ -46,5 +48,8 @@ class NetworkedClient : public Subsystem {
     uint16_t seq = 0;
     uint16_t serverSeq = 0;
     uint16_t serverAck = 0;
+
+    bool isJump = true;
+    bool isShoot = false;
 };
 }  // namespace knot

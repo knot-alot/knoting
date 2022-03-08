@@ -62,6 +62,15 @@ bool NetworkedServer::send_message() {
                 ServerMessage* mess = (ServerMessage*)m_server->CreateMessage(0, MessageTypes::SERVER_MESSAGE);
                 mess->set_sequence(seq[i]);
                 mess->set_ack(cliSeq[i]);
+                mess->playerPos.fill(vec3(1, 1, 1));
+                mess->playerRots.fill(quat(1, 2, 2, 2));
+                for (int16_t& hp : mess->playerHealth) {
+                    if (hp > 1) {
+                        hp--;
+                    } else {
+                        hp = 100;
+                    }
+                }
                 seq[i]++;
                 m_server->SendMessage(0, 1, mess);
             }
@@ -83,8 +92,16 @@ bool NetworkedServer::handle_recieved_packets() {
                 ClientMessage* cliMess = (ClientMessage*)mess;
                 cliSeq[i] = cliMess->get_sequence();
                 cliAck[i] = cliMess->get_recent_ack();
-                log::debug("Server received Message {} from client {}. Client Acknowledged message {}", cliSeq[i], i,
-                           cliAck[i]);
+                // log::debug("Server received Message {} from client {}. Client Acknowledged message {}", cliSeq[i], i,
+                // cliAck[i]);
+                log::debug("### - SERVER - ###");
+                log::debug("look Direction: x: {} y: {} ", cliMess->m_lookAxis.x, cliMess->m_lookAxis.y);
+                log::debug("move Direction: x: {} y: {} ", cliMess->m_moveAxis.x, cliMess->m_moveAxis.y);
+                if (cliMess->jumpPressed)
+                    log::debug("Jump Pressed");
+                if (cliMess->isShooting)
+                    log::debug("PEW PEW!");
+                log::debug(" ");
             }
             m_server->ReleaseMessage(i, mess);
         }
