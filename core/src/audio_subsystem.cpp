@@ -1,5 +1,5 @@
 #include "knoting/audio_subsystem.h"
-
+#include "knoting/audio_listener.h"
 namespace knot::components {
 
 void AudioSubsystem::on_awake() {
@@ -15,12 +15,17 @@ void AudioSubsystem::play_sounds() {
 }
 
 void AudioSubsystem::update() {
-    // for each sound in range, call update
+    // update listener transforms. Then, for each sound in range, call update
+    m_listener->update_velocity();
 }
 
 void AudioSubsystem::add_sound(AudioSource* sound) {
     sounds.emplace_back(sound);
     // add sort vector by distance
+}
+
+void AudioSubsystem::set_listener(AudioListener* listener) {
+    m_listener = listener;
 }
 
 }  // namespace knot::components

@@ -17,7 +17,10 @@ void AudioSource::play() {
 
     if (!m_is_playing) {
         m_result = m_system->playSound(m_sound, nullptr, false, &m_channel);
-        // m_result = m_channel->set3DAttributes(); <-- need to convert position to fmod_vector
+
+        FMOD_VECTOR pos = this->get_position();
+        FMOD_VECTOR vel = {0, 0, 0};
+        m_result = m_channel->set3DAttributes(&pos, &vel);
         m_is_playing = true;
     }
 }
@@ -27,13 +30,22 @@ void AudioSource::stop() {
         m_channel->stop();
 }
 
-void AudioSource::update() {
+void AudioSource::update(AudioListener* listener) {
+    // need to do something about getting the listener position and velocity
+
     unsigned int pos = 0;
     unsigned int len_ms = 0;
     bool playing = false;
     bool paused = false;
 
     m_result = m_system->update();
+
+    FMOD_VECTOR forward = {0, 0, listener->get_rotation().z};
+    FMOD_VECTOR up = {0.0f, listener->get_rotation().y, 0.0f};
+    FMOD_VECTOR listener_pos = listener->get_position();
+    FMOD_VECTOR vel = listener->get_velocity();
+
+    m_result = m_system->set3DListenerAttributes(0, &listener_pos, &vel, &forward, &up);
 
     if (m_channel) {
         FMOD::Sound* current_sound = nullptr;
@@ -71,7 +83,7 @@ void AudioSource::on_destroy() {
     m_result = m_system->release();
     delete m_instance;
 }
-vec3 AudioSource::get_position() const {
+FMOD_VECTOR AudioSource::get_position() const {
     auto sceneOpt = Scene::get_active_scene();
     if (sceneOpt) {
         Scene& scene = sceneOpt.value();
@@ -79,9 +91,9 @@ vec3 AudioSource::get_position() const {
         auto goOpt = scene.get_game_object_from_handle(handle);
         if (goOpt) {
             vec3 position = goOpt->get_component<components::Transform>().get_position();
-            return position;
+            FMOD_VECTOR pos = {position.x, position.y, position.z};
+            return pos;
         }
     }
 }
-
 }  // namespace knot::components

@@ -3,6 +3,7 @@
 #include <vector>
 namespace knot::components {
 class AudioSource;
+class AudioListener;
 class AudioSubsystem : public Subsystem {
    public:
     AudioSubsystem() = default;
@@ -14,9 +15,11 @@ class AudioSubsystem : public Subsystem {
     void play_sounds();
     void update();
     void add_sound(AudioSource* sound);
+    void set_listener(AudioListener* listener);
 
    private:
     std::vector<AudioSource*> sounds;
+    AudioListener* m_listener;
 };
 
 }  // namespace knot::components

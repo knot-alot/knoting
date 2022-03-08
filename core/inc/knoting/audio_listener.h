@@ -9,11 +9,15 @@ class AudioListener {
     explicit AudioListener(float range);
     ~AudioListener() = default;
 
-    vec3 get_position() const;
-    quat get_rotation() const;
+    FMOD_VECTOR get_position();
+    quat get_rotation();
+    void update_velocity();
+    FMOD_VECTOR get_velocity();
 
    private:
     float m_range;
+    FMOD_VECTOR m_last_pos;
+    FMOD_VECTOR m_velocity;
 };
 
 }  // namespace knot::components
