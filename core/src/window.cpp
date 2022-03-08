@@ -1,8 +1,8 @@
 #include <knoting/assert.h>
 #include <knoting/engine.h>
+#include <knoting/input_manager.h>
 #include <knoting/log.h>
 #include <knoting/window.h>
-#include <knoting/input_manager.h>
 
 #include <bgfx/bgfx.h>
 #include <bgfx/platform.h>
@@ -22,7 +22,13 @@
 namespace knot {
 
 Window::Window(int width, int height, std::string title, Engine& engine)
-    : m_width(width), m_height(height), m_title(title), m_window(nullptr), m_engine(engine), m_windowResizedFlag(true), m_input(*this) {
+    : m_width(width),
+      m_height(height),
+      m_title(title),
+      m_window(nullptr),
+      m_engine(engine),
+      m_windowResizedFlag(true),
+      m_input(*this) {
     int glfw_init_res = glfwInit();
 
     KNOTING_ASSERT_MESSAGE(glfw_init_res == GLFW_TRUE, "Failed to initialize GLFW");
@@ -82,33 +88,33 @@ void Window::window_size_callback(GLFWwindow* window, int width, int height) {
 
 void Window::window_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
-    if(action != GLFW_REPEAT)
-        self->m_input.key_event(key,action != GLFW_RELEASE);
+    if (action != GLFW_REPEAT)
+        self->m_input.key_event(key, action != GLFW_RELEASE);
 }
 
-void Window::window_char_callback(GLFWwindow* window, unsigned int){
+void Window::window_char_callback(GLFWwindow* window, unsigned int) {
     Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
 }
 
-void Window::window_mouse_button_callback(GLFWwindow* window, int button, int action, int mods){
+void Window::window_mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
     Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
-    self->m_input.mouse_button_event(button,action != GLFW_RELEASE);
+    self->m_input.mouse_button_event(button, action != GLFW_RELEASE);
 }
 
-void Window::window_scroll_event(GLFWwindow *window, double xoffset, double yoffset){
+void Window::window_scroll_event(GLFWwindow* window, double xoffset, double yoffset) {
     Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
-    self->m_input.scroll_event({xoffset,yoffset});
+    self->m_input.scroll_event({xoffset, yoffset});
 }
 
 void Window::window_mouse_event_callback(GLFWwindow* window, double x, double y) {
-    if(!glfwGetWindowAttrib(window,GLFW_HOVERED))
+    if (!glfwGetWindowAttrib(window, GLFW_HOVERED))
         return;
     Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
-    self->m_input.mouse_event(x,y);
+    self->m_input.mouse_event(x, y);
 }
 
-void Window::window_cursor_enter_event_callback(GLFWwindow* window, int entered){
-    Window* self=static_cast<Window*>(glfwGetWindowUserPointer(window));
+void Window::window_cursor_enter_event_callback(GLFWwindow* window, int entered) {
+    Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
 }
 
 void Window::recreate_framebuffer(int width, int height) {
@@ -118,9 +124,12 @@ void Window::recreate_framebuffer(int width, int height) {
 void Window::setup_callbacks() {
     // TODO REPLACE ALL GLFW CALLBACKS WHEN IN EDITOR
     glfwSetWindowSizeCallback(m_window, Window::window_size_callback);
+
     glfwSetKeyCallback(m_window, Window::window_key_callback);
     glfwSetCharCallback(m_window, Window::window_char_callback);
     glfwSetMouseButtonCallback(m_window, Window::window_mouse_button_callback);
+    glfwSetScrollCallback(m_window, Window::window_scroll_event);
+    glfwSetCursorPosCallback(m_window, Window::window_mouse_event_callback);
 }
 
 bool Window::is_open() {
@@ -141,7 +150,6 @@ void Window::on_update(double m_delta_time) {
     glfwPollEvents();
     m_input.update_relative_positions();
     m_input.update_pads(m_window);
-
 }
 
 void Window::on_late_update() {}
@@ -163,9 +171,8 @@ void Window::set_window_size(vec2i size) {
     recreate_framebuffer(m_width, m_height);
 }
 
-InputManager& Window::get_input_manager(){
+InputManager& Window::get_input_manager() {
     return m_input;
 }
-
 
 }  // namespace knot

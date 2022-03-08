@@ -2,10 +2,11 @@
 #include <knoting/input_manager.h>
 #include <knoting/window.h>
 #include <algorithm>
+#include <iostream>
 
 namespace knot {
 
-InputManager::InputManager(Window &owner) : m_sensitivity(0.3f), m_lastScroll(0.0f) {
+InputManager::InputManager(Window& owner) : m_sensitivity(0.3f), m_lastScroll(0.0f) {
     for (int i = 0; i < (int)KeyCode::Last; ++i) {
         m_keyBinding[i] = false;
         m_holdKeyBindings[i] = false;
@@ -35,12 +36,12 @@ bool InputManager::key_pressed(KeyCode key) {
     return m_keyBinding[(int)key];
 }
 
-    bool InputManager::key_held_down(KeyCode key) {
-        return m_keyBinding[(int)key] && m_holdKeyBindings[(int)key];
-    }
+bool InputManager::key_held_down(KeyCode key) {
+    return m_keyBinding[(int)key] && m_holdKeyBindings[(int)key];
+}
 
-    bool InputManager::key_on_trigger(KeyCode key) {
-        return m_keyBinding[(int)key] && !m_holdKeyBindings[(int)key];
+bool InputManager::key_on_trigger(KeyCode key) {
+    return m_keyBinding[(int)key] && !m_holdKeyBindings[(int)key];
 }
 
 bool InputManager::key_on_release(KeyCode key) {
@@ -81,7 +82,8 @@ void InputManager::update_pads(GLFWwindow* glfwWindow) {
 
         int count;
         const float* axes = glfwGetJoystickAxes(i, &count);
-        if (!axes) continue;
+        if (!axes)
+            continue;
 
         if (count > (int)JoyStickCode::Last)
             count = (int)JoyStickCode::Last;
@@ -96,7 +98,8 @@ void InputManager::update_pads(GLFWwindow* glfwWindow) {
             }
         } else if (glfwJoystickPresent(i)) {
             const unsigned char* buttonPressed = glfwGetJoystickButtons(i, &count);
-            if (!buttonPressed) continue;
+            if (!buttonPressed)
+                continue;
             for (int j = 0; j < count; ++j) {
                 if (count > 0)
                     m_padBindings[i][(int)PadButtonCode::A] = buttonPressed[0];
@@ -160,6 +163,7 @@ vec2 InputManager::get_relative_position() {
 }
 
 vec2 InputManager::get_absolute_position() {
+    std::cout << m_mousePosition.x << " : " << m_mousePosition.y << std::endl;
     return vec2(m_mousePosition.x, m_mousePosition.y);
 }
 
@@ -181,7 +185,6 @@ void InputManager::update_relative_positions() {
 void InputManager::scroll_event(vec2 offset) {
     m_lastScroll = offset;
 }
-
 void InputManager::key_event(int key, bool pressed) {
     m_keyBinding[key] = pressed;
 }
