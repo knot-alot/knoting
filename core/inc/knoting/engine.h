@@ -7,6 +7,7 @@
 
 #include <knoting/asset_manager.h>
 #include <knoting/forward_renderer.h>
+#include <knoting/framebuffer_manager.h>
 #include <knoting/physics.h>
 #include <knoting/subsystem.h>
 #include <knoting/window.h>
@@ -23,6 +24,7 @@ class Engine {
     std::weak_ptr<Window> get_window_module() { return m_windowModule; }
     std::weak_ptr<ForwardRenderer> get_forward_render_module() { return m_forwardRenderModule; }
     std::weak_ptr<Physics> get_physics_module() { return m_physicsModule; }
+    std::weak_ptr<FramebufferManager> get_framebuffer_manager_module() { return m_framebufferManager; }
 
     static std::optional<std::reference_wrapper<Engine>> get_active_engine();
     static void set_active_engine(std::optional<std::reference_wrapper<Engine>> engine);
@@ -40,9 +42,11 @@ class Engine {
 
    private:
     std::vector<std::shared_ptr<Subsystem>> m_engineModules;
+
     std::shared_ptr<Window> m_windowModule;
     std::shared_ptr<ForwardRenderer> m_forwardRenderModule;
     std::shared_ptr<Physics> m_physicsModule;
+    std::shared_ptr<FramebufferManager> m_framebufferManager;
 
     inline static std::optional<std::reference_wrapper<Engine>> s_activeEngine = std::nullopt;
     std::shared_ptr<AssetManager> m_assetManager;

@@ -34,6 +34,7 @@ class Window : public Subsystem {
     int get_window_width() { return m_width; };
     int get_window_height() { return m_height; };
     void set_window_size(vec2i size);
+    vec2i get_window_size() { return vec2i(m_width, m_height); };
 
     float get_mouse_change_x() { return m_mouseWheelH; };
     float get_mouse_change_y() { return m_mouseWheel; };
