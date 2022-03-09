@@ -47,18 +47,9 @@ Window::Window(int width, int height, std::string title, Engine& engine)
     init.platformData.nwh = (void*)(std::uintptr_t)glfwGetX11Window(m_window);
 #endif
 
-    init.resolution.width = (std::uint32_t)m_width;
-    init.resolution.height = (std::uint32_t)m_height;
-    init.resolution.reset = BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X2;
-
     int bgfx_init_res = bgfx::init(init);
 
     KNOTING_ASSERT_MESSAGE(bgfx_init_res != 0, "Failed to initialize bgfx");
-
-    m_viewId = 0;
-    bgfx::setViewClear(m_viewId, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff);
-    bgfx::setViewRect(m_viewId, 0, 0, std::uint16_t(m_width), std::uint16_t(m_height));
-    log::debug("BGFX initialized");
 }
 
 Window::~Window() {
@@ -79,7 +70,7 @@ void Window::window_size_callback(GLFWwindow* window, int width, int height) {
     self->set_window_resize_flag(true);
 }
 void Window::recreate_framebuffer(int width, int height) {
-    m_engine.get_forward_render_module().lock()->recreate_framebuffer(width, height);
+    m_engine.get_framebuffer_manager_module().lock()->recreate_framebuffer(width, height);
 }
 
 void Window::setup_callbacks() {
