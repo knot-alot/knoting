@@ -14,8 +14,6 @@ class Engine;
 
 namespace knot {
 
-// enum class MSAAFlags { NONE, MSAA_X2, MSAA_x4, MSAA_x8, MSAA_x16, LAST };
-
 class FramebufferManager : public Subsystem {
    public:
     explicit FramebufferManager(Engine& engine);
@@ -29,7 +27,6 @@ class FramebufferManager : public Subsystem {
     void recreate_framebuffer(int width, int height);
     void clear_all_framebuffers();
 
-    //    void set_current_view_buffer(FrameBufferType type);
     bgfx::FrameBufferHandle get_framebuffer(FrameBufferType type);
     std::vector<bgfx::TextureHandle> get_texture_attachments(FrameBufferType type);
 

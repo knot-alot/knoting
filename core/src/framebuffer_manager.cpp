@@ -144,11 +144,6 @@ void FramebufferManager::recreate_framebuffer(int width, int height) {
     bgfx::setViewFrameBuffer((size_t)m_currentViewBuffer,
                              m_renderTextures[(size_t)m_currentViewBuffer].get_framebuffer());
 }
-// void FramebufferManager::set_current_view_buffer(FrameBufferType type) {
-//     m_currentViewBuffer = type;
-//     bgfx::setViewFrameBuffer((size_t)m_currentViewBuffer,
-//                              m_renderTextures[(size_t)m_currentViewBuffer].get_framebuffer());
-// }
 
 void FramebufferManager::clear_all_framebuffers() {
     for (auto& rt : m_renderTextures) {
