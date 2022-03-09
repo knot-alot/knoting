@@ -47,6 +47,7 @@ bool InputManager::key_on_release(KeyCode key) {
 /// End Of Keyboard
 
 /// Start Of Pad
+/// Issues with the pads im still working on them.
 bool InputManager::pad_present(PadCode pad) {
     return glfwJoystickPresent((int)pad);
 }
@@ -198,6 +199,7 @@ void InputManager::update_holds() {
     std::copy(std::begin(m_mouseBindings), std::end(m_mouseBindings), std::begin(m_holdMouseBindings));
     // for (int i = 0; i < (int)PadCode::Last; ++i)
     // std::copy_n(m_padBindings, (int)PadButtonCode::Last, m_holdPadBindings);
+    //^currently not working.
     m_lastScroll = vec2(0.0f);
 }
 }  // namespace knot
