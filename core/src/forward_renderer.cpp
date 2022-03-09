@@ -61,6 +61,24 @@ void ForwardRenderer::on_render() {
             glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
 
             bgfx::setViewTransform(0, &view[0][0], &proj[0][0]);
+
+            //=PARTICLES SYSTEM=======================
+            auto particles = registry.view<Particles>();
+
+            for (auto& e : particles) {
+                auto gooOpt = scene.get_game_object_from_handle(e);
+                if (!gooOpt) {
+                    continue;
+                }
+
+                GameObject goo = gooOpt.value();
+                Particles& ps = goo.get_component<Particles>();
+                const bx::Vec3 eye =
+                    bx::Vec3(transform.get_position().x, transform.get_position().y, transform.get_position().z);
+                ps.update(m_dt);
+
+                ps.render(0, ps.mat4_to_float16(view), eye);
+            }
         }
     }
 
@@ -129,6 +147,7 @@ void ForwardRenderer::on_awake() {}
 
 void ForwardRenderer::on_update(double m_delta_time) {
     m_timePassed += (float)m_delta_time;
+    m_dt = (float)m_delta_time;
 }
 
 void ForwardRenderer::on_late_update() {}

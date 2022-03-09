@@ -41,6 +41,7 @@ void AssetManager::load_assets_manual() {
     //=From File======
     AssetManager::load_asset<components::Texture>("UV_Grid_test.png");
     AssetManager::load_asset<components::Texture>("normal_tiles_1k.png");
+    AssetManager::load_asset<components::Texture>("particles.png");
 
     AssetManager::load_asset<components::Mesh>("uv_cube.obj");
     AssetManager::load_asset<components::Mesh>("dragon.obj");

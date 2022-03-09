@@ -59,6 +59,7 @@ Untie::Untie() {
         spotLight.set_inner_radius(0.5f);
         light.get_component<components::Transform>().set_position(glm::vec3(7.6706734, 3.631392, -10));
     }
+    /*
     {
         auto cubeObj = scene.create_game_object("loaded_cube");
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5.0f, 0.0f, -10.0f));
@@ -156,6 +157,12 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
+
+    }*/
+    {
+        auto psObj = scene.create_game_object("ps1");
+        psObj.get_component<components::Transform>().set_position(glm::vec3(-9.0f, 7.0f, 1.0f));
+        psObj.add_component<components::Particles>();
     }
 }
 void Untie::run() {

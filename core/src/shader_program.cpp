@@ -4,6 +4,7 @@
 #include <knoting/log.h>
 #include <filesystem>
 #include <fstream>
+#include <bgfx/embedded_shader.h>
 
 namespace knot {
 namespace components {
@@ -36,7 +37,6 @@ bool ShaderProgram::load_shader(const std::string& folderName,
 void ShaderProgram::create_program(std::string& fullVertexPath, std::string& fullFragmentPath) {
     bgfx::ShaderHandle vs = bgfx::createShader(bgfx_load_memory(fullVertexPath.c_str()));
     bgfx::ShaderHandle fs = bgfx::createShader(bgfx_load_memory(fullFragmentPath.c_str()));
-
     m_program = bgfx::createProgram(vs, fs);
 
     bgfx::destroy(vs);
