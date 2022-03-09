@@ -510,9 +510,11 @@ struct ParticleSystem {
                 }
 
                 BX_FREE(m_allocator, particleSort);
+                /* bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_DEPTH_TEST_LESS |
+                               BGFX_STATE_CULL_CW | BGFX_STATE_BLEND_NORMAL);*/
+                bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+                               BGFX_STATE_DEPTH_TEST_LESS);
 
-                bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_DEPTH_TEST_LESS |
-                               BGFX_STATE_CULL_CW | BGFX_STATE_BLEND_NORMAL);
                 bgfx::setVertexBuffer(0, &tvb);
                 bgfx::setIndexBuffer(&tib);
                 bgfx::setTexture(0, s_texColor, m_texture);

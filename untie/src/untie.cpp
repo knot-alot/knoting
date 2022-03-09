@@ -142,7 +142,7 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
-    }
+    }*/
     {
         auto cubeObj = scene.create_game_object("loaded_dragon");
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-9.0f + 5, 1.0f, -15.0f - 5));
@@ -157,11 +157,10 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
-
-    }*/
+    }
     {
         auto psObj = scene.create_game_object("ps1");
-        psObj.get_component<components::Transform>().set_position(glm::vec3(-9.0f, 7.0f, 1.0f));
+        psObj.get_component<components::Transform>().set_position(glm::vec3(-9.0f, 1.0f, -20.0f));
         psObj.add_component<components::Particles>();
     }
 }

@@ -13,6 +13,8 @@
 #include <string_view>
 #include <vector>
 
+#include <bx/math.h>
+
 namespace knot {
 
 ForwardRenderer::~ForwardRenderer() {}
@@ -75,9 +77,14 @@ void ForwardRenderer::on_render() {
                 Particles& ps = goo.get_component<Particles>();
                 const bx::Vec3 eye =
                     bx::Vec3(transform.get_position().x, transform.get_position().y, transform.get_position().z);
+                float viewMtx[16];
+
+                bx::mtxLookAt(viewMtx, bx::load<bx::Vec3>(&eye.x), bx::load<bx::Vec3>(&lookTarget.x),
+                              bx::load<bx::Vec3>(&up.x));
+
                 ps.update(m_dt);
 
-                ps.render(0, ps.mat4_to_float16(view), eye);
+                ps.render(0, viewMtx, eye);
             }
         }
     }

@@ -42,6 +42,7 @@ void Particles::on_awake() {
 }
 void Particles::on_destroy() {
     psDestroyEmitter(m_handle);
+    psShutdown();
 }
 
 void Particles::set_position(vec3 position) {
@@ -261,17 +262,13 @@ EmitterSpriteHandle Particles::load_texture_2d(const std::string& path) {
     stbi_uc* data = stbi_load(fsPath.string().c_str(), &imageSize.x, &imageSize.y, &channels, 0);
     int numberOfLayers = 1;
 
-    /*
     if (!data) {
         log::error("Failed to load image: {}", fsPath.string());
-        return;
     }
-    */
 
     EmitterSpriteHandle handle = psCreateSprite(imageSize.x, imageSize.y, data, channels);
 
     stbi_set_flip_vertically_on_load(false);
-    stbi_image_free(data);
 
     return handle;
 }
