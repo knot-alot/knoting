@@ -127,6 +127,12 @@ std::vector<std::string> Tag::get_registered_tags() {
     }
     return tags;
 }
+uint16_t Tag::get_id_from_tag(const std::string& tag) {
+    return s_tags.at(tag);
+}
+std::string Tag::get_tag_from_id(uint16_t id) {
+    return s_ids.at(id);
+}
 
 }  // namespace components
 

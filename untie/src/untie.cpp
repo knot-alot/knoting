@@ -205,8 +205,9 @@ GameObject Untie::create_dragon(const std::string& name,
 GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rotation) {
     auto cubeObj = m_scene->create_game_object(name);
 
-    cubeObj.add_component<components::Tag>();
-    cubeObj.get_component<components::Tag>().register_tag("PLAYER");
+    auto& tag = cubeObj.add_component<components::Tag>();
+    tag.register_tag("PLAYER");
+    tag.set_tag(tag.get_id_from_tag("PLAYER"));
 
     vec3 playerScale = vec3(1, 2, 1);
     cubeObj.get_component<components::Transform>().set_position(position);
@@ -218,7 +219,7 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
 
     auto& shape = cubeObj.add_component<components::Shape>();
     vec3 halfsize = vec3(playerScale);
-    shape.set_geometry(shape.create_capsule_geometry(playerScale.x, playerScale.y));
+    shape.set_geometry(shape.create_cube_geometry(playerScale));
 
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
