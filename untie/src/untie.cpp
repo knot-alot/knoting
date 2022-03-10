@@ -27,6 +27,8 @@ Scene scene;
 Scene loadedScene;
 
 Untie::Untie() {
+    extern bx::AllocatorI* getDefaultAllocator();
+    bx::AllocatorI* g_allocator = getDefaultAllocator();
     Scene::set_active_scene(scene);
     log::Logger::setup();
     m_engine = std::make_unique<knot::Engine>();

@@ -18,17 +18,18 @@
 #include <bgfx/bgfx.h>
 #include <knoting/components.h>
 #include <knoting/engine.h>
+extern "C" int32_t _main_(int32_t _argc, char** _argv);
 #ifndef ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR
 #define ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR 1
 #endif  // ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR
+
 namespace knot {
 class Window;
 }
 
 namespace knot {
 static bx::FileReaderI* s_fileReader = NULL;
-extern bx::AllocatorI* getDefaultAllocator();
-bx::AllocatorI* g_allocator = getDefaultAllocator();
+
 #if ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR
 bx::AllocatorI* getDefaultAllocator() {
     BX_PRAGMA_DIAGNOSTIC_PUSH();
@@ -39,7 +40,20 @@ bx::AllocatorI* getDefaultAllocator() {
     BX_PRAGMA_DIAGNOSTIC_POP();
 }
 #endif
+typedef bx::StringT<&g_allocator> String;
 
+static String s_currentDir;
+
+class FileReader : public bx::FileReader {
+    typedef bx::FileReader super;
+
+   public:
+    virtual bool open(const bx::FilePath& _filePath, bx::Error* _err) override {
+        String filePath(s_currentDir);
+        filePath.append(_filePath);
+        return super::open(filePath.getPtr(), _err);
+    }
+};
 class Untie {
    public:
     Untie();
@@ -88,6 +102,11 @@ class Untie {
         }
 
         return NULL;
+    }
+    int main(int _argc, const char* const* _argv) {
+        // DBG(BX_COMPILER_NAME " / " BX_CPU_NAME " / " BX_ARCH_NAME " / " BX_PLATFORM_NAME);
+
+        s_fileReader = BX_NEW(g_allocator, FileReader);
     }
 
    private:
