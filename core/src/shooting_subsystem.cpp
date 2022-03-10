@@ -19,6 +19,13 @@ void Shooting::on_update(double m_delta_time) {
     Scene& scene = sceneOpt.value();
     entt::registry& registry = scene.get_registry();
 
+    if (bullSize > 100) {
+        auto go = bullets.front();
+        scene.remove_game_object(go);
+        bullets.pop_front();
+        bullSize--;
+    }
+
     auto players = registry.view<components::Transform, components::Health, components::Tag>();
     for (auto& player : players) {
         auto goOpt = scene.get_game_object_from_handle(player);
@@ -30,9 +37,21 @@ void Shooting::on_update(double m_delta_time) {
         auto& transform = go.get_component<components::Transform>();
         auto& health = go.get_component<components::Health>();
 
-        // when shooting
-        if (m_inManager->mouse_button_held_down(MouseButtonCode::Left)) {
+        auto tag = go.get_component<components::Tag>();
+        if (tag.get_id() != tag.get_id_from_tag("PLAYER")) {
+            continue;
+        }
+
+        // shooting
+        if (m_inManager->mouse_button_pressed(MouseButtonCode::Left)) {
             health.set_health(health.get_health() - 1);
+
+            vec3 spawnPos = transform.get_position() + transform.forward();
+            auto bullet = scene.create_cube("bullet", spawnPos, vec3(0), vec3(0.3f), true, 0.3f);
+            bullets.emplace_back(bullet);
+            bullSize++;
+            auto bulController = bullet.get_component<components::RigidController>();
+            bulController.add_force(transform.forward() * 1000.0f);
 
             if (health.get_health() < 0) {
                 health.set_health(0);

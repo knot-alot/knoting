@@ -19,6 +19,9 @@ class PlayerMovement : public Subsystem {
     void on_late_update() override;
     void on_destroy() override;
 
+    void player_movement(double m_delta_time);
+    void camera_movement(double m_delta_time);
+
    protected:
     Engine& m_engine;
     std::shared_ptr<InputManager> m_inManager;

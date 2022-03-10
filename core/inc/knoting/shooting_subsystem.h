@@ -1,6 +1,8 @@
 #pragma once
+#include <knoting/game_object.h>
 #include <knoting/subsystem.h>
 #include <knoting/types.h>
+#include <deque>
 namespace knot {
 class Engine;
 class InputManager;
@@ -19,6 +21,9 @@ class Shooting : public Subsystem {
    protected:
     Engine& m_engine;
     std::shared_ptr<InputManager> m_inManager;
+
+    std::deque<GameObject> bullets;
+    uint16_t bullSize = 0;
 };
 
 }  // namespace knot
