@@ -31,7 +31,7 @@ set(PRIVATE_LIBS
 find_package(NoesisGUI REQUIRED)
 find_package(FMod REQUIRED)
 
-add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS})
+add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS} src/shooting_subsystem.cpp inc/knoting/shooting_subsystem.h src/health.cpp inc/knoting/health.h)
 
 set_target_properties(knoting PROPERTIES
         CXX_STANDARD 17
