@@ -47,6 +47,7 @@ class Particles {
     void set_rgba1(uint32_t rgba);
     void set_rgba2(uint32_t rgba);
     void set_rgba4(uint32_t rgba);
+    void set_texture(const std::string& path);
 
     vec3 get_position();
     vec3 get_rotation_euler();
@@ -85,12 +86,26 @@ class Particles {
 
     float* mat4_to_float16(glm::mat4);
 
+    template <class Archive>
+    void save(Archive& archive) const {
+        archive(CEREAL_NVP(m_uniforms), CEREAL_NVP(m_shape), CEREAL_NVP(m_direction_type),
+                CEREAL_NVP(m_textureSlotPath));
+    }
+
+    template <class Archive>
+    void load(Archive& archive) {
+        archive(CEREAL_NVP(m_uniforms), CEREAL_NVP(m_shape), CEREAL_NVP(m_direction_type),
+                CEREAL_NVP(m_textureSlotPath));
+        on_awake();
+    }
+
    private:
     EmitterUniforms m_uniforms;
     EmitterHandle m_handle;
 
     EmitterShape::Enum m_shape;
     EmitterDirection::Enum m_direction_type;
+    std::string m_textureSlotPath = {"particles/glow1.png"};
 };
 }  // namespace components
 }  // namespace knot

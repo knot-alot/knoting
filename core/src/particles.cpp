@@ -12,8 +12,8 @@ void Particles::on_awake() {
     constexpr uint32_t default_max_particles = 1024;
 
     psInit(default_max_particles);
-
-    EmitterSpriteHandle sprite = load_texture_2d("particles/glow1.png");
+    ;
+    EmitterSpriteHandle sprite = load_texture_2d(m_textureSlotPath);
 
     m_shape = EmitterShape::Sphere;
     m_direction_type = EmitterDirection::Outward;
