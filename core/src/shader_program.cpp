@@ -4,7 +4,6 @@
 #include <knoting/log.h>
 #include <filesystem>
 #include <fstream>
-#include <bgfx/embedded_shader.h>
 
 namespace knot {
 namespace components {

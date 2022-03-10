@@ -13,7 +13,7 @@ void Particles::on_awake() {
 
     psInit(default_max_particles);
 
-    EmitterSpriteHandle sprite = load_texture_2d("particles/ptt.png");
+    EmitterSpriteHandle sprite = load_texture_2d("particles/glow1.png");
 
     m_shape = EmitterShape::Sphere;
     m_direction_type = EmitterDirection::Outward;
@@ -23,7 +23,6 @@ void Particles::on_awake() {
 
     m_uniforms.m_handle = sprite;
 
-    //
     m_uniforms.m_particlesPerSecond = 100;
 
     auto sceneOpt = Scene::get_active_scene();

@@ -14,14 +14,6 @@
 #include <bx/easing.h>
 #include <bx/handlealloc.h>
 
-#include <../bgfx/bgfx/examples/common/ps/fs_particle.bin.h>
-#include <../bgfx/bgfx/examples/common/ps/vs_particle.bin.h>
-
-static const bgfx::EmbeddedShader s_embeddedShaders[] = {BGFX_EMBEDDED_SHADER(vs_particle),
-                                                         BGFX_EMBEDDED_SHADER(fs_particle),
-
-                                                         BGFX_EMBEDDED_SHADER_END()};
-
 struct PosColorTexCoord0Vertex {
     float m_x;
     float m_y;
@@ -414,9 +406,9 @@ struct ParticleSystem {
 
         bgfx::RendererType::Enum type = bgfx::getRendererType();
 
-        m_particleProgram =
-            bgfx::createProgram(bgfx::createEmbeddedShader(s_embeddedShaders, type, "vs_particle"),
-                                bgfx::createEmbeddedShader(s_embeddedShaders, type, "fs_particle"), true);
+        m_shader.load_shader("particles", "vs_particle.bin", "fs_particle.bin");
+
+        m_particleProgram = m_shader.get_program();
     }
 
     void shutdown() {
@@ -512,8 +504,11 @@ struct ParticleSystem {
                 BX_FREE(m_allocator, particleSort);
                 /* bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_DEPTH_TEST_LESS |
                                BGFX_STATE_CULL_CW | BGFX_STATE_BLEND_NORMAL);*/
+                /* bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+                               BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_NORMAL );*/
+
                 bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-                               BGFX_STATE_DEPTH_TEST_LESS);
+                               BGFX_STATE_DEPTH_TEST_LESS | BGFX_STATE_BLEND_NORMAL);
 
                 bgfx::setVertexBuffer(0, &tvb);
                 bgfx::setIndexBuffer(&tib);

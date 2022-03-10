@@ -82,7 +82,7 @@ void ForwardRenderer::on_render() {
                 bx::mtxLookAt(viewMtx, bx::load<bx::Vec3>(&eye.x), bx::load<bx::Vec3>(&lookTarget.x),
                               bx::load<bx::Vec3>(&up.x));
 
-                ps.update(m_dt);
+                ps.update(m_dt * 0.1);
 
                 ps.render(0, viewMtx, eye);
             }
