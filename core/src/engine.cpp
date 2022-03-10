@@ -8,12 +8,14 @@ Engine::Engine() {
     m_windowModule = std::make_shared<knot::Window>(m_windowWidth, m_windowHeight, m_windowTitle, *this);
     m_forwardRenderModule = std::make_shared<knot::ForwardRenderer>(*this);
     m_physicsModule = std::make_shared<knot::Physics>(*this);
+    m_cameraRotationModule = std::make_shared<knot::CameraRotation>(*this);
     m_assetManager = std::make_shared<knot::AssetManager>();
 
     // order dependent
     m_engineModules.emplace_back(m_framebufferManager);
     m_engineModules.emplace_back(m_windowModule);
     m_engineModules.emplace_back(m_assetManager);
+    m_engineModules.emplace_back(m_cameraRotationModule);
     m_engineModules.emplace_back(m_forwardRenderModule);
     m_engineModules.emplace_back(m_physicsModule);
 
@@ -24,8 +26,11 @@ Engine::Engine() {
 }
 
 void Engine::update_modules() {
+    m_windowModule->calculate_delta_time();
+    auto deltaTime = m_windowModule->get_delta_time();
+//    log::info(deltaTime);
     for (auto& module : m_engineModules) {
-        module->on_update(m_windowModule->get_delta_time());
+        module->on_update(deltaTime);
         module->on_fixed_update();
     }
 
