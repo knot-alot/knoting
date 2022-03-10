@@ -47,6 +47,18 @@ glm::mat4 Transform::get_model_matrix() const {
     modelMatrix = translate(glm::mat4(1.0f), m_position) * glm::toMat4(m_rotation) * glm::scale(mat4(1.0f), m_scale);
     return modelMatrix;
 }
+vec3 Transform::forward() const {
+    constexpr vec3 forward = vec3(0, 0, 1);
+    return m_rotation * forward;
+}
+vec3 Transform::up() const {
+    constexpr vec3 up = vec3(0, 1, 0);
+    return m_rotation * up;
+}
+vec3 Transform::right() const {
+    constexpr vec3 right = vec3(1, 0, 0);
+    return m_rotation * right;
+}
 
 }  // namespace components
 }  // namespace knot
