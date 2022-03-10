@@ -42,7 +42,7 @@ Untie::Untie() {
     create_floor("floor", vec3(-5.0f, 0.0f, -15.0f), 15, 15);
     create_wall("wall_1", vec3(-5, 5, 0), vec3(0, 0, 0), vec3(15.0f, 5, 1));
 
-    create_cube("cube_1", vec3(-5, 5, -10), vec3(0, 0, 0), vec3(1, 1, 1), true, 5);
+    m_scene->create_cube("cube_1", vec3(-5, 5, -10), vec3(0, 0, 0), vec3(1, 1, 1), true, 5);
     create_dragon("dragon_1", vec3(0, 10, -7), vec3(45, 45, 45), vec3(5, 5, 5), true, 4);
 
     create_player("player_1", vec3(-10, 6, -2), vec3(0, 33, 0));

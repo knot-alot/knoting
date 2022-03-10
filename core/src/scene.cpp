@@ -193,5 +193,30 @@ GameObject Scene::add_game_object(entt::entity handle) {
 void Scene::add_to_postLoadBuffer(std::function<void()> func) {
     postLoadBuffer.emplace_back(func);
 }
+GameObject* Scene::create_cube(std::string name, vec3 position, vec3 rotation, vec3 scale, bool isDynamic, float mass) {
+    auto cubeObj = this->create_game_object(name);
+    cubeObj.get_component<components::Transform>().set_position(position);
+    cubeObj.get_component<components::Transform>().set_scale(scale);
+    cubeObj.get_component<components::Transform>().set_rotation_euler(rotation);
+    cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
+    auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+
+    auto& shape = cubeObj.add_component<components::Shape>();
+    vec3 halfsize = vec3(scale);
+    shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+    auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+    rigidbody.create_actor(isDynamic, mass);
+
+    auto material = components::Material();
+    material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
+    material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
+    material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+    cubeObj.add_component<components::Material>(material);
+    return &cubeObj;
+}
 
 }  // namespace knot
