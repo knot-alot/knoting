@@ -171,7 +171,18 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
+     bgfx::dbgTextClear();
+    // abcdABCD
+    //
+    // 15 white
+    // 14 Yellow
+    // 12 lightred
+    bgfx::dbgTextPrintf(10, 10,25,
+                        "\x1b[15;ma\x1b[10;mb\x1b[11;mc\x1b[12;md"    // abcd
+                        "\x1b[7;mA\x1b[14; mB\x1b[8; mC\x1b[13;mD");  // ABCD
+    bgfx::setDebug(false ? BGFX_DEBUG_STATS : BGFX_DEBUG_TEXT); 
 
+   
     std::string filename("skyboxScene.json");
     std::filesystem::path path = AssetManager::get_resources_path().append(filename);
     std::fstream serializedSceneStream(path);
@@ -189,6 +200,7 @@ Untie::Untie() {
     serializedSceneStream.close();
 }
 void Untie::run() {
+
     while (m_engine->is_open()) {
         m_engine->update_modules();
         auto im = m_engine->get_window_module().lock()->get_input_manager();
