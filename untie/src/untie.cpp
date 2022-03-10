@@ -47,6 +47,7 @@ Untie::Untie() {
 
     create_player("player_1", vec3(-10, 6, -2), vec3(0, 33, 0));
 }
+
 void Untie::run() {
     while (m_engine->is_open()) {
         m_engine->update_modules();

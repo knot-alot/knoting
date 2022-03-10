@@ -24,9 +24,6 @@ class Scene {
     std::optional<GameObject> get_game_object_from_handle(entt::entity handle);
     entt::registry& get_registry();
 
-    template <typename T>
-    static std::optional<GameObject> get_game_object_from_component(T& component);
-
     static std::optional<std::reference_wrapper<Scene>> get_active_scene();
     static void set_active_scene(std::optional<std::reference_wrapper<Scene>> scene);
 
