@@ -34,7 +34,7 @@ class EditorCamera {
     }
 
    private:
-    glm::vec3 m_lookTarget = vec3(0, -10, -1);
+    glm::vec3 m_lookTarget = vec3(0,0,-1);
 
     float m_fov = 60.0f;
 

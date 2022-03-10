@@ -22,21 +22,24 @@ class CameraRotation : public Subsystem {
     void on_destroy() override;
 
    private:
+    void toggle_mouse_hidden();
+
+   private:
     Engine& m_engine;
     InputManager& m_inputManager;
 
     vec2d m_lastMousePosition = vec2d(0.0);
     vec2d m_mouseSensitivity = vec2d(1.0);
     vec2d m_pitchClamp = vec2(-60, 60);
-    double m_yaw = 0;
-    double m_pitch = 0;
-    double m_roll = 0;
+    vec2d m_currentMousePos = vec2d(0.0);
+    vec2d m_mouseDelta = vec2d(0.0);
 
-    bool is_dirty = false;
+    double m_roll = 0;   // roll = x
+    double m_pitch = 0;  // pitch = y
+    double m_yaw = 0;    // yaw = z
 
+    bool m_ePressed = true;
     bool m_lockState = true;
-
-
 };
 
 }  // namespace knot
