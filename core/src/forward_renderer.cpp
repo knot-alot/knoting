@@ -69,16 +69,21 @@ void ForwardRenderer::color_pass() {
 
         glm::vec3 pos = transform.get_position();
         auto& hierarchy = go.get_component<Hierarchy>();
+
+        const vec3 cameraOffset = vec3(0, 1, 0);
+        vec3 parentPos = vec3(0);
+
         if (hierarchy.has_parent()) {
             auto parentOpt = scene.get_game_object_from_id(hierarchy.get_parent().value());
 
             if (parentOpt) {
                 auto& parentTransform = parentOpt.value().get_component<Transform>();
-                pos = parentTransform.get_model_matrix() * vec4(pos, 1);
+                parentPos = parentTransform.get_position();
+                pos = pos + parentPos + cameraOffset;
             }
         }
 
-        const glm::vec3 lookTarget = editorCamera.get_look_target();
+        const glm::vec3 lookTarget = parentPos + editorCamera.get_look_target() + cameraOffset;
         const glm::vec3 up = editorCamera.get_up();
 
         const float fovY = editorCamera.get_fov();
