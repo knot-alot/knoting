@@ -7,6 +7,9 @@ class Health {
     Health() = default;
     ~Health() = default;
 
+    void on_awake();
+    void on_destroy();
+
     int get_health() const { return m_health; };
     void set_health(int hp) { m_health = hp; }
 
