@@ -9,6 +9,7 @@ Engine::Engine() {
     m_forwardRenderModule = std::make_shared<knot::ForwardRenderer>(*this);
     m_physicsModule = std::make_shared<knot::Physics>(*this);
     m_assetManager = std::make_shared<knot::AssetManager>();
+    m_playerMovementModule = std::make_shared<PlayerMovement>(*this);
 
     // order dependent
     m_engineModules.emplace_back(m_framebufferManager);
@@ -16,6 +17,9 @@ Engine::Engine() {
     m_engineModules.emplace_back(m_assetManager);
     m_engineModules.emplace_back(m_forwardRenderModule);
     m_engineModules.emplace_back(m_physicsModule);
+
+    //Gameplay Subsystems
+    m_engineModules.emplace_back(m_playerMovementModule);
 
     for (auto& module : m_engineModules) {
         module->on_awake();
