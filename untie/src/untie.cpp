@@ -51,17 +51,17 @@ void Untie::run() {
     while (m_engine->is_open()) {
         m_engine->update_modules();
         auto im = m_engine->get_window_module().lock()->get_input_manager();
-        if (im.key_pressed(KeyCode::Escape)) {
+        if (im->key_pressed(KeyCode::Escape)) {
             m_engine->get_window_module().lock()->close();
         }
     }
 }
 
-GameObject* Untie::create_pointlight(std::string name,
-                                     vec3 position,
-                                     float innerRadius,
-                                     float outerRadius,
-                                     vec3 color) {
+GameObject Untie::create_pointlight(const std::string& name,
+                                    vec3 position,
+                                    float innerRadius,
+                                    float outerRadius,
+                                    vec3 color) {
     auto light = m_scene->create_game_object(name);
     auto& spotLight = light.add_component<components::SpotLight>();
     spotLight.set_color(color);
@@ -69,10 +69,10 @@ GameObject* Untie::create_pointlight(std::string name,
     spotLight.set_inner_radius(innerRadius);
     light.get_component<components::Transform>().set_position(position);
 
-    return &light;
+    return light;
 }
 
-GameObject* Untie::create_skybox() {
+GameObject Untie::create_skybox() {
     auto cubeObj = m_scene->create_game_object("skybox");
     cubeObj.get_component<components::Transform>().set_scale(glm::vec3(30, 30, 30));
     cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
@@ -83,9 +83,9 @@ GameObject* Untie::create_skybox() {
     skybox.set_texture_slot_path(SkyBoxTextureType::Radiance, "skybox/cmtr_radiance.hdr");
     cubeObj.add_component<components::SkyBox>(skybox);
 
-    return &cubeObj;
+    return cubeObj;
 }
-GameObject* Untie::create_floor(std::string name, vec3 position, float width, float depth) {
+GameObject Untie::create_floor(const std::string& name, vec3 position, float width, float depth) {
     auto cubeObj = m_scene->create_game_object(name);
     cubeObj.get_component<components::Transform>().set_position(position);
     cubeObj.get_component<components::Transform>().set_scale(glm::vec3(width, 0.5f, depth));
@@ -110,9 +110,9 @@ GameObject* Untie::create_floor(std::string name, vec3 position, float width, fl
 
     rigidbody.create_actor(false);
 
-    return &cubeObj;
+    return cubeObj;
 }
-GameObject* Untie::create_wall(std::string name, vec3 position, vec3 rotation, vec3 scale) {
+GameObject Untie::create_wall(const std::string& name, vec3 position, vec3 rotation, vec3 scale) {
     auto cubeObj = m_scene->create_game_object(name);
     cubeObj.get_component<components::Transform>().set_position(position);
     cubeObj.get_component<components::Transform>().set_rotation_euler(rotation);
@@ -136,9 +136,14 @@ GameObject* Untie::create_wall(std::string name, vec3 position, vec3 rotation, v
     material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
     cubeObj.add_component<components::Material>(material);
 
-    return &cubeObj;
+    return cubeObj;
 }
-GameObject* Untie::create_cube(std::string name, vec3 position, vec3 rotation, vec3 scale, bool isDynamic, float mass) {
+GameObject Untie::create_cube(const std::string& name,
+                              vec3 position,
+                              vec3 rotation,
+                              vec3 scale,
+                              bool isDynamic,
+                              float mass) {
     auto cubeObj = m_scene->create_game_object(name);
     cubeObj.get_component<components::Transform>().set_position(position);
     cubeObj.get_component<components::Transform>().set_scale(scale);
@@ -161,14 +166,14 @@ GameObject* Untie::create_cube(std::string name, vec3 position, vec3 rotation, v
     material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
     material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
     cubeObj.add_component<components::Material>(material);
-    return &cubeObj;
+    return cubeObj;
 }
-GameObject* Untie::create_dragon(std::string name,
-                                 vec3 position,
-                                 vec3 rotation,
-                                 vec3 scale,
-                                 bool isDynamic,
-                                 float mass) {
+GameObject Untie::create_dragon(const std::string& name,
+                                vec3 position,
+                                vec3 rotation,
+                                vec3 scale,
+                                bool isDynamic,
+                                float mass) {
     auto cubeObj = m_scene->create_game_object(name);
     cubeObj.get_component<components::Transform>().set_position(position);
     cubeObj.get_component<components::Transform>().set_scale(scale);
@@ -193,10 +198,10 @@ GameObject* Untie::create_dragon(std::string name,
     material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
     cubeObj.add_component<components::Material>(material);
 
-    return &cubeObj;
+    return cubeObj;
 }
 
-GameObject* Untie::create_player(std::string name, vec3 position, vec3 rotation) {
+GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rotation) {
     auto cubeObj = m_scene->create_game_object(name);
 
     cubeObj.add_component<components::Tag>();
@@ -228,7 +233,7 @@ GameObject* Untie::create_player(std::string name, vec3 position, vec3 rotation)
 
     // TODO: ADD CAMERA AS CHILD OBJECT AT TOP OF PLAYER
 
-    return &cubeObj;
+    return cubeObj;
 }
 
 void Untie::serialize_test() {
@@ -247,15 +252,6 @@ void Untie::serialize_test() {
         log::debug("file not found");
     }
     serializedSceneStream.close();
-}
-void Untie::run() {
-    while (m_engine->is_open()) {
-        m_engine->update_modules();
-        auto im = m_engine->get_window_module().lock()->get_input_manager();
-        if (im->key_pressed(KeyCode::Escape)) {
-            m_engine->get_window_module().lock()->close();
-        }
-    }
 }
 
 }  // namespace knot
