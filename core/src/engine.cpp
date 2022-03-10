@@ -18,7 +18,7 @@ Engine::Engine() {
     m_engineModules.emplace_back(m_forwardRenderModule);
     m_engineModules.emplace_back(m_physicsModule);
 
-    //Gameplay Subsystems
+    // Gameplay Subsystems
     m_engineModules.emplace_back(m_playerMovementModule);
 
     for (auto& module : m_engineModules) {
