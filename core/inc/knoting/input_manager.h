@@ -226,16 +226,17 @@ class InputManager {
     void mouse_event(double x, double y);
     void update_holds();
 
-    std::array<bool, (int)KeyCode::Last> m_keyBinding;
-    std::array<bool, (int)KeyCode::Last> m_holdKeyBindings;
+    std::array<bool, static_cast<size_t>(KeyCode::Last)> m_keyBinding;
+    std::array<bool, static_cast<size_t>(KeyCode::Last)> m_holdKeyBindings;
 
-    std::array<bool, (int)KeyCode::Last> m_mouseBindings;
-    std::array<bool, (int)KeyCode::Last> m_holdMouseBindings;
+    std::array<bool, static_cast<size_t>(KeyCode::Last)> m_mouseBindings;
+    std::array<bool, static_cast<size_t>(KeyCode::Last)> m_holdMouseBindings;
 
-    bool m_padBindings[(int)PadCode::Last][(int)PadButtonCode::Last];
-    bool m_holdPadBindings[(int)PadCode::Last][(int)PadButtonCode::Last];
+    std::array<std::array<bool, static_cast<size_t>(KeyCode::Last)>, static_cast<size_t>(PadCode::Last)> m_padBindings;
+    std::array<std::array<bool, static_cast<size_t>(KeyCode::Last)>, static_cast<size_t>(PadCode::Last)>
+        m_holdPadBindings;
 
-    float m_joyStickBindings[(int)PadCode::Last][(int)JoyStickCode::Last];
+    std::array<bool, static_cast<size_t>(JoyStickCode::Last)> m_joyStickBindings[static_cast<size_t>(PadCode::Last)];
 
     vec2 m_lastScroll;
     vec2d m_mousePosition;
