@@ -12,3 +12,4 @@
 #include <knoting/shape.h>
 #include <knoting/texture.h>
 #include <knoting/transform.h>
+#include <knoting/Font.h>

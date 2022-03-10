@@ -7,6 +7,9 @@
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/scene.h>
 #include <knoting/texture.h>
+#include <knoting/font_manager.h>
+#include <knoting/text_buffer_manager.h>
+#include <knoting/Font.h>
 
 #include <knoting/components.h>
 #include <knoting/scene.h>
@@ -22,10 +25,20 @@
 namespace knot {
 Scene scene;
 Scene loadedScene;
+
 Untie::Untie() {
     Scene::set_active_scene(scene);
     log::Logger::setup();
     m_engine = std::make_unique<knot::Engine>();
+    FontManager* m_fontManager = new FontManager(512);
+    TextBufferManager* m_textBufferManager = new TextBufferManager(m_fontManager);
+    TrueTypeHandle m_fontFiles = loadTtf(m_fontManager,"droidsans.ttf");
+    FontHandle m_fonts = m_fontManager->createFontByPixelSize(m_fontFiles,0,32);
+    m_fontManager->preloadGlyph(m_fonts, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");
+    TextBufferHandle m_transientText;
+    TextBufferHandle m_staticText = m_textBufferManager->createTextBuffer(FONT_TYPE_ALPHA, BufferType::Static);
+    m_textBufferManager->setPenPosition(m_staticText, 24.0f, 100.0f);
+    m_textBufferManager->appendText(m_staticText, m_fonts, L"The quick brown fox jumps over the lazy dog\n");
     Engine::set_active_engine(*m_engine);
     {
         auto editorCamera = scene.create_game_object("camera");
@@ -170,19 +183,8 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
-    }
-     bgfx::dbgTextClear();
-    // abcdABCD
-    //
-    // 15 white
-    // 14 Yellow
-    // 12 lightred
-    bgfx::dbgTextPrintf(10, 10,25,
-                        "\x1b[15;ma\x1b[10;mb\x1b[11;mc\x1b[12;md"    // abcd
-                        "\x1b[7;mA\x1b[14; mB\x1b[8; mC\x1b[13;mD");  // ABCD
-    bgfx::setDebug(false ? BGFX_DEBUG_STATS : BGFX_DEBUG_TEXT); 
 
-   
+    }
     std::string filename("skyboxScene.json");
     std::filesystem::path path = AssetManager::get_resources_path().append(filename);
     std::fstream serializedSceneStream(path);
@@ -197,6 +199,16 @@ Untie::Untie() {
     } else {
         log::debug("file not found");
     }
+    bgfx::dbgTextClear();
+    // abcdABCD
+    //
+    // 15 white
+    // 14 Yellow
+    // 12 lightred
+    bgfx::dbgTextPrintf(10, 10, 0x0f,
+                        "\x1b[15;ma\x1b[10;mb\x1b[11;mc\x1b[12;md"    // abcd
+                        "\x1b[7;mA\x1b[14; mB\x1b[8; mC\x1b[13;mF");  // ABCD
+    bgfx::setDebug(BGFX_DEBUG_TEXT); 
     serializedSceneStream.close();
 }
 void Untie::run() {
