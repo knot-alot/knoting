@@ -28,7 +28,6 @@ Engine::Engine() {
 void Engine::update_modules() {
     m_windowModule->calculate_delta_time();
     auto deltaTime = m_windowModule->get_delta_time();
-//    log::info(deltaTime);
     for (auto& module : m_engineModules) {
         module->on_update(deltaTime);
         module->on_fixed_update();

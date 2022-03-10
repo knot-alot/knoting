@@ -135,7 +135,7 @@ void Window::on_awake() {}
 
 void Window::on_update(double m_delta_time) {
     glfwPollEvents();
-//    calculate_delta_time();
+    //    calculate_delta_time();
 }
 
 void Window::on_late_update() {
@@ -163,7 +163,6 @@ InputManager& Window::get_input_manager() {
 }
 void Window::set_cursor_hide(bool state) {
     glfwSetInputMode(m_window, GLFW_CURSOR, state ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
-
 }
 
 }  // namespace knot
