@@ -15,10 +15,25 @@ namespace knot {
 namespace asset {
 
 enum class AssetState { Idle, Loading, Finished, Failed, LAST };
-enum class AssetType { Unknown, Texture, Mesh, Shader, Cubemap, Audio, LAST };
+enum class AssetType { Unknown, Texture, Mesh, Shader, Cubemap, LAST };
+
 enum class TextureType { Albedo, Normal, Metallic, Roughness, Occlusion, LAST };
+enum class SkyBoxTextureType { SkyBox, Irradiance, Radiance, LAST };
 
 }  // namespace asset
+
+enum class FrameBufferType : uint16_t {
+    Back,
+    Depth,
+    Color,
+    PostProcess,
+    Gui,
+    ShadowOne,
+    ShadowTwo,
+    ShadowThree,
+    ShadowFour,
+    LAST
+};
 
 using namespace glm;
 using namespace uuids;
