@@ -50,7 +50,7 @@ class Window : public Subsystem {
     bool get_window_resize_flag() { return m_windowResizedFlag; };
     void set_window_resize_flag(bool newState) { m_windowResizedFlag = newState; };
 
-    InputManager& get_input_manager();
+    std::shared_ptr<InputManager> get_input_manager();
 
    protected:
     bool m_windowResizedFlag;
@@ -78,7 +78,7 @@ class Window : public Subsystem {
     GLFWwindow* m_window;
     std::uint16_t m_viewId;
     Engine& m_engine;
-    InputManager m_input;
+    std::shared_ptr<InputManager> m_input;
 };
 
 }  // namespace knot
