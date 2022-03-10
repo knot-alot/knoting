@@ -227,7 +227,7 @@ class Tag {
         archive(this->get_registered_tags());
     }
 
-    void set_tag(uint16_t id) { m_id  =id;}
+    void set_tag(uint16_t id) { m_id = id; }
 
     static uint16_t get_id_from_tag(const std::string& tag);
     static std::string get_tag_from_id(uint16_t id);
