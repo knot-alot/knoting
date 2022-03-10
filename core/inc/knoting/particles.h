@@ -1,5 +1,4 @@
 #pragma once
-#include <../bgfx/bgfx/examples/common/bgfx_utils.h>
 #include <bgfx/bgfx.h>
 #include <bgfx/embedded_shader.h>
 #include <bimg/bimg.h>

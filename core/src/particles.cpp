@@ -259,7 +259,12 @@ EmitterSpriteHandle Particles::load_texture_2d(const std::string& path) {
     stbi_set_flip_vertically_on_load(true);
 
     stbi_uc* data = stbi_load(fsPath.string().c_str(), &imageSize.x, &imageSize.y, &channels, 0);
+
     int numberOfLayers = 1;
+
+    if (imageSize.x != imageSize.y) {
+        log::error("image is not a square");
+    }
 
     if (!data) {
         log::error("Failed to load image: {}", fsPath.string());

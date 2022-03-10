@@ -19,7 +19,6 @@ Scene scene;
 Untie::Untie() {
     Scene::set_active_scene(scene);
     log::Logger::setup();
-
     m_engine = std::make_unique<knot::Engine>();
     Engine::set_active_engine(*m_engine);
     {
