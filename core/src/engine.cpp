@@ -12,12 +12,9 @@ Engine::Engine() {
 
     m_serverModule = std::make_shared<knot::NetworkedServer>(*this);
     m_clientModule = std::make_shared<knot::NetworkedClient>(*this);
+
     //  order dependent
-
-
-    // order dependent
     m_engineModules.emplace_back(m_framebufferManager);
-
     m_engineModules.emplace_back(m_windowModule);
     m_engineModules.emplace_back(m_assetManager);
     m_engineModules.emplace_back(m_forwardRenderModule);
