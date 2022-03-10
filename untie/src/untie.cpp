@@ -248,5 +248,14 @@ void Untie::serialize_test() {
     }
     serializedSceneStream.close();
 }
+void Untie::run() {
+    while (m_engine->is_open()) {
+        m_engine->update_modules();
+        auto im = m_engine->get_window_module().lock()->get_input_manager();
+        if (im->key_pressed(KeyCode::Escape)) {
+            m_engine->get_window_module().lock()->close();
+        }
+    }
+}
 
 }  // namespace knot
