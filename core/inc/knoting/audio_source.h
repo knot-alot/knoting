@@ -19,20 +19,20 @@ class AudioSource : public Asset {
     void generate_default_asset() override;
     //=================
 
-    void play();
-    void stop();
-    void update(AudioListener* listener);
-    void set_path(std::string& path) { m_path = path; };
+    void set_path(std::string& path) { m_path = path; }
+    std::string get_path() { return m_path; }
     void set_loop(bool loop) { m_loops = loop; }
+    bool get_loop() { return m_loops; }
     FMOD_VECTOR get_position() const;
 
+    bool get_is_playing() { return m_is_playing; }
+    void set_is_playing(bool is_playing) { m_is_playing = is_playing; }
+    FMOD::Sound* get_sound() { return m_sound; }
+
    private:
-    static AudioSource* m_instance;
-    FMOD::System* m_system;
-    FMOD::Channel* m_channel;
-    FMOD::Sound* m_sound;
+    FMOD::Sound* m_sound{};
     std::string m_path;
-    bool m_loops;
-    bool m_is_playing;
+    bool m_loops{};
+    bool m_is_playing{};
 };
 }  // namespace knot::components

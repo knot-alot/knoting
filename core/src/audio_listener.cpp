@@ -32,7 +32,7 @@ quat AudioListener::get_rotation() {
     }
 }
 void AudioListener::update_velocity() {
-    // this needs to be changed to (pos-last_pos) / time_taken_since_last_frame_in_seconds to make doppler effect work
+    // TODO needs to be changed to (pos-last_pos) / time_taken_since_last_frame_in_seconds to make doppler effect work
     FMOD_VECTOR vel;
     vel.x = (get_position().x - m_last_pos.x);
     vel.y = (get_position().y - m_last_pos.y);
