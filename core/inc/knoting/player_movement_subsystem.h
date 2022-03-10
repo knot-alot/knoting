@@ -25,9 +25,12 @@ class PlayerMovement : public Subsystem {
 
    private:
     vec3 player_inputs();
+    bool can_jump();
 
     const float m_baseSpeedMulti = 100000.0f;
     float m_speedMulti = 5;
+
+    float jumpForce = 10000;
 };
 
 }  // namespace knot
