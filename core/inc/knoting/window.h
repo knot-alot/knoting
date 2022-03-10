@@ -64,7 +64,6 @@ class Window : public Subsystem {
     static void window_mouse_event_callback(GLFWwindow* window, double x, double y);
     static void window_cursor_enter_event_callback(GLFWwindow* window, int entered);
 
-
     int m_width;
     int m_height;
     float m_mouseWheelH = 0.0f;
