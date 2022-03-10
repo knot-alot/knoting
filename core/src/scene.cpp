@@ -193,7 +193,12 @@ GameObject Scene::add_game_object(entt::entity handle) {
 void Scene::add_to_postLoadBuffer(std::function<void()> func) {
     postLoadBuffer.emplace_back(func);
 }
-GameObject* Scene::create_cube(std::string name, vec3 position, vec3 rotation, vec3 scale, bool isDynamic, float mass) {
+GameObject Scene::create_cube(const std::string& name,
+                              vec3 position,
+                              vec3 rotation,
+                              vec3 scale,
+                              bool isDynamic,
+                              float mass) {
     auto cubeObj = this->create_game_object(name);
     cubeObj.get_component<components::Transform>().set_position(position);
     cubeObj.get_component<components::Transform>().set_scale(scale);
@@ -216,7 +221,7 @@ GameObject* Scene::create_cube(std::string name, vec3 position, vec3 rotation, v
     material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
     material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
     cubeObj.add_component<components::Material>(material);
-    return &cubeObj;
+    return cubeObj;
 }
 
 }  // namespace knot

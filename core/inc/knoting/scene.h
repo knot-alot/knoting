@@ -30,12 +30,12 @@ class Scene {
     static std::optional<std::reference_wrapper<Scene>> get_active_scene();
     static void set_active_scene(std::optional<std::reference_wrapper<Scene>> scene);
 
-    GameObject* create_cube(std::string name,
-                            vec3 position = vec3(0),
-                            vec3 rotation = vec3(0),
-                            vec3 scale = vec3(1),
-                            bool isDynamic = false,
-                            float mass = 1);
+    GameObject create_cube(const std::string& name,
+                           vec3 position = vec3(0),
+                           vec3 rotation = vec3(0),
+                           vec3 scale = vec3(1),
+                           bool isDynamic = false,
+                           float mass = 1);
 
     void save_scene_to_stream(std::ostream& serialized);
     void load_scene_from_stream(std::istream& serializedSc);
