@@ -27,7 +27,7 @@ Window::Window(int width, int height, std::string title, Engine& engine)
       m_window(nullptr),
       m_engine(engine),
       m_windowResizedFlag(true),
-      m_input(*this) {
+      m_input(std::make_shared<InputManager>(*this)) {
     int glfw_init_res = glfwInit();
 
     KNOTING_ASSERT_MESSAGE(glfw_init_res == GLFW_TRUE, "Failed to initialize GLFW");
@@ -79,7 +79,7 @@ void Window::window_size_callback(GLFWwindow* window, int width, int height) {
 void Window::window_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
     if (action != GLFW_REPEAT)
-        self->m_input.key_event(key, action != GLFW_RELEASE);
+        self->m_input->key_event(key, action != GLFW_RELEASE);
 }
 
 void Window::window_char_callback(GLFWwindow* window, unsigned int) {
@@ -88,19 +88,19 @@ void Window::window_char_callback(GLFWwindow* window, unsigned int) {
 
 void Window::window_mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
     Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
-    self->m_input.mouse_button_event(button, action != GLFW_RELEASE);
+    self->m_input->mouse_button_event(button, action != GLFW_RELEASE);
 }
 
 void Window::window_scroll_event(GLFWwindow* window, double xoffset, double yoffset) {
     Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
-    self->m_input.scroll_event({xoffset, yoffset});
+    self->m_input->scroll_event({xoffset, yoffset});
 }
 
 void Window::window_mouse_event_callback(GLFWwindow* window, double x, double y) {
     if (!glfwGetWindowAttrib(window, GLFW_HOVERED))
         return;
     Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
-    self->m_input.mouse_event(x, y);
+    self->m_input->mouse_event(x, y);
 }
 
 void Window::window_cursor_enter_event_callback(GLFWwindow* window, int entered) {
@@ -135,17 +135,17 @@ void Window::on_awake() {}
 
 void Window::on_update(double m_delta_time) {
     glfwPollEvents();
-    calculate_delta_time();
 }
 
-void Window::on_late_update() {}
+void Window::on_late_update() {
+    m_lastTime = m_currentTime;
+}
 
 void Window::on_destroy() {}
 
 void Window::calculate_delta_time() {
-    double currentFrame = glfwGetTime();
-    m_deltaTime = currentFrame - m_lastFrame;
-    m_lastFrame = currentFrame;
+    m_currentTime = glfwGetTime();
+    m_deltaTime = float(m_currentTime - m_lastTime);
 }
 
 double Window::get_delta_time() {
@@ -157,8 +157,12 @@ void Window::set_window_size(vec2i size) {
     recreate_framebuffer(m_width, m_height);
 }
 
-InputManager& Window::get_input_manager() {
+std::shared_ptr<InputManager> Window::get_input_manager() {
     return m_input;
+}
+
+void Window::set_cursor_hide(bool state) {
+    glfwSetInputMode(m_window, GLFW_CURSOR, state ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 }
 
 }  // namespace knot
