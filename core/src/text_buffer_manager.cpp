@@ -158,8 +158,8 @@ class TextBuffer {
     }
 
     void setVertex(uint32_t _i, float _x, float _y, uint32_t _rgba, uint8_t _style = STYLE_NORMAL) {
-        m_vertexBuffer[_i].x = _x;
-        m_vertexBuffer[_i].y = _y;
+        m_vertexBuffer[_i].x = -_x;
+        m_vertexBuffer[_i].y = -_y;
         m_vertexBuffer[_i].rgba = _rgba;
         m_styleBuffer[_i] = _style;
     }

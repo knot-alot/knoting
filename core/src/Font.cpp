@@ -9,12 +9,12 @@ void Font::on_awake() {
     m_textBufferManager = new TextBufferManager(m_fontManager);
      m_fontFiles = loadTtf(m_fontManager, "../res/textures/droidsans.ttf");
 
-    m_fonts = m_fontManager->createFontByPixelSize(m_fontFiles, 0, 100);
+    m_fonts = m_fontManager->createFontByPixelSize(m_fontFiles, 0, 25);
     m_fontManager->preloadGlyph(m_fonts, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");
     m_staticText = m_textBufferManager->createTextBuffer(FONT_TYPE_DISTANCE_SUBPIXEL, BufferType::Static);
-    m_textBufferManager->setPenPosition(m_staticText, 12.0f, -100.0f);
+    m_textBufferManager->setPenPosition(m_staticText, -70.0f, -50.0f);
 
-    m_textBufferManager->appendText(m_staticText, m_fonts, L"The quick brown fox jumps over the lazy dog\n");
+    m_textBufferManager->appendText(m_staticText, m_fonts, L"Knoting Game\n");
 }
 
 void* Font::load(bx::FileReaderI* _reader, bx::AllocatorI* _allocator, const char* _filePath, uint32_t* _size) {
