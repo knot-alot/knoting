@@ -1,11 +1,15 @@
 #include "untie.h"
+#include <knoting/Font.h>
 #include <knoting/components.h>
+#include <knoting/entry.h>
+#include <knoting/font_manager.h>
 #include <knoting/game_object.h>
 #include <knoting/instance_mesh.h>
 #include <knoting/log.h>
 #include <knoting/mesh.h>
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/scene.h>
+#include <knoting/text_buffer_manager.h>
 #include <knoting/texture.h>
 
 #include <knoting/components.h>
@@ -17,22 +21,17 @@
 
 #include <cereal/archives/json.hpp>
 #include <iostream>
-
+namespace {}
 namespace knot {
+
 Untie::Untie() {
     m_scene = std::make_unique<Scene>();
     m_loadedScene = std::make_unique<Scene>();
     Scene::set_active_scene(*m_scene);
     log::Logger::setup();
     m_engine = std::make_unique<knot::Engine>();
-    Engine::set_active_engine(*m_engine);
 
-    {
-        auto editorCamera = m_scene->create_game_object("camera");
-        auto& cam = editorCamera.add_component<components::EditorCamera>();
-        editorCamera.get_component<components::Transform>().set_position(glm::vec3(0, 150, 0));
-        // editorCamera.get_component<components::Transform>().set_rotation_euler(glm::vec3(90, 00, 0));
-    }
+    Engine::set_active_engine(*m_engine);
 
     create_skybox();
     create_pointlight("main_light", vec3(0, 40, 0), 0.5f, 75.0f, vec3(1.0f, 0.95f, 0.72f));
@@ -60,7 +59,13 @@ Untie::Untie() {
     // create_dragon("dragon_1", vec3(-8, 10, -5), vec3(45, 45, 45), vec3(5, 5, 5), true, 4);
 
     // create_player("player_1", vec3(-10, 6, -2), vec3(0, 33, 0));
+
+    {
+        auto fontObj = m_scene->create_game_object("font");
+        fontObj.add_component<components::Font>();
+    }
 }
+
 void Untie::run() {
     while (m_engine->is_open()) {
         m_engine->update_modules();
@@ -106,13 +111,13 @@ GameObject Untie::create_floor(const std::string& name, vec3 position, float wid
     cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 0, 0));
     cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
-    auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
-
     auto& shape = cubeObj.add_component<components::Shape>();
-    vec3 halfsize = vec3(width, 0.5f, depth);
+    vec3 halfsize = vec3(vec3(width, 0.5f, depth));
     shape.set_geometry(shape.create_cube_geometry(halfsize));
 
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+    rigidbody.create_actor(false);
 
     auto material = components::Material();
     material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
@@ -122,10 +127,9 @@ GameObject Untie::create_floor(const std::string& name, vec3 position, float wid
     material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
     cubeObj.add_component<components::Material>(material);
 
-    rigidbody.create_actor(false);
-
     return cubeObj;
 }
+
 GameObject Untie::create_wall(const std::string& name, vec3 position, vec3 rotation, vec3 scale) {
     auto cubeObj = m_scene->create_game_object(name);
     cubeObj.get_component<components::Transform>().set_position(position);
@@ -246,8 +250,9 @@ GameObject Untie::create_dragon(const std::string& name,
 GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rotation) {
     auto cubeObj = m_scene->create_game_object(name);
 
-    cubeObj.add_component<components::Tag>();
-    cubeObj.get_component<components::Tag>().register_tag("PLAYER");
+    auto& tag = cubeObj.add_component<components::Tag>();
+    tag.register_tag("PLAYER");
+    tag.set_tag(tag.get_id_from_tag("PLAYER"));
 
     vec3 playerScale = vec3(1, 2, 1);
     cubeObj.get_component<components::Transform>().set_position(position);
@@ -259,11 +264,18 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
 
     auto& shape = cubeObj.add_component<components::Shape>();
     vec3 halfsize = vec3(playerScale);
-    shape.set_geometry(shape.create_cube_geometry(halfsize));
+    shape.set_geometry(shape.create_cube_geometry(playerScale));
 
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
     rigidbody.create_actor(true, 8);
+
+    auto& controller = cubeObj.add_component<components::RigidController>();
+    controller.lockRotations();
+    controller.set_linear_damping(1.0f);
+    controller.set_angular_damping(1.0f);
+
+    auto& hp = cubeObj.add_component<components::Health>();
 
     auto material = components::Material();
     material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
@@ -273,7 +285,13 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
     cubeObj.add_component<components::Material>(material);
 
-    // TODO: ADD CAMERA AS CHILD OBJECT AT TOP OF PLAYER
+    auto editorCamera = m_scene->create_game_object("camera");
+    auto& cam = editorCamera.add_component<components::EditorCamera>();
+    editorCamera.get_component<components::Transform>().set_position(glm::vec3(0, 0.7f, playerScale.z));
+
+    auto& hier = cubeObj.get_component<components::Hierarchy>();
+
+    hier.add_child(editorCamera);
 
     return cubeObj;
 }
@@ -293,6 +311,7 @@ void Untie::serialize_test() {
     } else {
         log::debug("file not found");
     }
+
     serializedSceneStream.close();
 }
 

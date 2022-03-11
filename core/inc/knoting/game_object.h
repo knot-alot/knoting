@@ -114,6 +114,19 @@ class GameObject {
     }
 
     template <typename T>
+    static std::optional<GameObject> get_game_object_from_component(T& component) {
+        auto sceneOpt = Scene::get_active_scene();
+        if (!sceneOpt) {
+            return std::nullopt;
+        }
+
+        Scene& scene = sceneOpt.value();
+        entt::registry& registry = scene.m_registry;
+        entt::entity handle = entt::to_entity(registry, component);
+        return scene.get_game_object_from_handle(handle);
+    }
+
+    template <typename T>
     void remove_component() {
         KNOTING_ASSERT_MESSAGE(has_component<T>(), "GameObject does not have component");
 
@@ -171,8 +184,11 @@ class Hierarchy {
     Hierarchy(const std::vector<GameObject>& children);
 
     std::optional<uuid> get_parent() const;
+    bool has_parent() const;
+    void set_parent(GameObject parent);
 
     bool has_children() const;
+    bool has_child(uuid id) const;
     std::vector<uuid> get_children() const;
     void add_child(GameObject child);
     void remove_child(GameObject child);
@@ -183,7 +199,7 @@ class Hierarchy {
     }
 
    protected:
-    std::optional<uuid> m_parent;
+    uuid m_parent;
     std::vector<uuid> m_children;
 };
 
@@ -226,6 +242,11 @@ class Tag {
     void serialize(Archive& archive) {
         archive(this->get_registered_tags());
     }
+
+    void set_tag(uint16_t id) { m_id = id; }
+
+    static uint16_t get_id_from_tag(const std::string& tag);
+    static std::string get_tag_from_id(uint16_t id);
 
    protected:
     uint16_t m_id;

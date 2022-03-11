@@ -62,37 +62,16 @@ void Scene::remove_game_object(GameObject game_object) {
             }
         }
     }
-
-    for (auto [id, pool] : m_registry.storage()) {
-        using namespace entt::literals;
-
-        if (!pool.contains(game_object.m_handle)) {
-            continue;
-        }
-
-        auto meta = entt::resolve(id);
-        if (!meta) {
-            log::debug("Could not resolve meta for id {}", id);
-            continue;
-        }
-
-        auto removeComponent = meta.func("on_destroy"_hs);
-        if (!removeComponent) {
-            log::debug("Could not find remove_component function for id {}", id);
-            continue;
-        }
-
-        removeComponent.invoke(game_object.m_handle);
-    }
-
     m_uuidGameObjectMap.erase(game_object.get_id());
     m_entityGameObjectMap.erase(game_object.m_handle);
 
     m_registry.destroy(game_object.m_handle);
-    log::debug("Removed game object with id {}", to_string(game_object.get_id()));
 }
 
 std::optional<GameObject> Scene::get_game_object_from_id(uuid id) {
+    if (id.is_nil())
+        return std::nullopt;
+
     auto it = m_uuidGameObjectMap.find(id);
     if (it == m_uuidGameObjectMap.end()) {
         return std::nullopt;
@@ -101,6 +80,9 @@ std::optional<GameObject> Scene::get_game_object_from_id(uuid id) {
 }
 
 std::optional<GameObject> Scene::get_game_object_from_handle(entt::entity handle) {
+    if (handle == entt::null || handle == entt::tombstone)
+        return std::nullopt;
+
     auto it = m_entityGameObjectMap.find(handle);
     if (it == m_entityGameObjectMap.end()) {
         return std::nullopt;
@@ -114,18 +96,6 @@ std::optional<std::reference_wrapper<Scene>> Scene::get_active_scene() {
 
 void Scene::set_active_scene(std::optional<std::reference_wrapper<Scene>> scene) {
     s_activeScene = std::ref(scene);
-}
-
-template <typename T>
-std::optional<GameObject> Scene::get_game_object_from_component(T& component) {
-    auto sceneOpt = get_active_scene();
-    if (!sceneOpt) {
-        return std::nullopt;
-    }
-
-    Scene& scene = sceneOpt.value();
-    entt::entity handle = entt::to_entity(scene.m_registry, component);
-    return scene.get_game_object_from_handle(handle);
 }
 
 void Scene::save_scene_to_stream(std::ostream& serialized) {
@@ -213,6 +183,8 @@ GameObject Scene::create_cube(const std::string& name,
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
     rigidbody.create_actor(isDynamic, mass);
+
+    auto& controller = cubeObj.add_component<components::RigidController>();
 
     auto material = components::Material();
     material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");

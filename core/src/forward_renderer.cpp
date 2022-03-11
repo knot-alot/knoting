@@ -67,7 +67,29 @@ void ForwardRenderer::color_pass() {
         EditorCamera& editorCamera = go.get_component<EditorCamera>();
         Name& name = go.get_component<Name>();
 
-        const glm::vec3 pos = transform.get_position();
+        glm::vec3 cameraPos = transform.get_position();
+        auto& hierarchy = go.get_component<Hierarchy>();
+
+        vec3 parentPos = vec3(0);
+
+        if (hierarchy.has_parent()) {
+            auto parentOpt = scene.get_game_object_from_id(hierarchy.get_parent().value());
+
+            if (parentOpt) {
+                auto& parentTransform = parentOpt.value().get_component<Transform>();
+                parentPos = parentTransform.get_position();
+                vec3 lookTarget = editorCamera.get_look_target();
+                editorCamera.set_look_target(lookTarget);
+
+                vec3 diffCameraPosLookTager = lookTarget - cameraPos;
+
+                cameraPos = parentTransform.get_model_matrix() * vec4(cameraPos, 1.0f);
+
+                diffCameraPosLookTager = toMat4(parentTransform.get_rotation()) * vec4(diffCameraPosLookTager, 1.0f);
+                editorCamera.set_look_target(cameraPos + diffCameraPosLookTager);
+            }
+        }
+
         const glm::vec3 lookTarget = editorCamera.get_look_target();
         const glm::vec3 up = editorCamera.get_up();
 
@@ -78,7 +100,7 @@ void ForwardRenderer::color_pass() {
 
         // Set view and projection matrix for view 0.
         {
-            view = glm::lookAt(pos, lookTarget, up);
+            view = glm::lookAt(cameraPos, lookTarget, up);
             glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
             invProj = inverse(proj);
             bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
@@ -163,6 +185,18 @@ void ForwardRenderer::color_pass() {
                        BGFX_STATE_DEPTH_TEST_LESS);
 
         bgfx::submit(idx, material.get_program());
+    }
+    // font
+    auto f = registry.view<Font>();
+    for (auto& e : f) {
+        auto goOpt = scene.get_game_object_from_handle(e);
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        Font& font = go.get_component<Font>();
+        font.get_textBuffer()->submitTextBuffer(font.get_text(), 1);
     }
 }
 
