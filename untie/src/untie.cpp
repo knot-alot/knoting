@@ -48,13 +48,14 @@ Untie::Untie() {
     m_engine = std::make_unique<knot::Engine>();
     FontManager* m_fontManager = new FontManager(512);
     TextBufferManager* m_textBufferManager = new TextBufferManager(m_fontManager);
-    
-    TrueTypeHandle m_fontFiles = loadtf(m_fontManager, "../res/textures/droidsans.ttf");
-      FontHandle m_fonts = m_fontManager->createFontByPixelSize(m_fontFiles,0,32);
-      m_fontManager->preloadGlyph(m_fonts, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");
+    TrueTypeHandle m_fontFiles = loadTtf(m_fontManager, "../res/textures/droidsans.ttf");
+    FontHandle m_fonts = m_fontManager->createFontByPixelSize(m_fontFiles,0,32);
+    m_fontManager->preloadGlyph(m_fonts, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");
     TextBufferHandle m_staticText = m_textBufferManager->createTextBuffer(FONT_TYPE_ALPHA, BufferType::Static);
     m_textBufferManager->setPenPosition(m_staticText, 24.0f, 100.0f);
     m_textBufferManager->appendText(m_staticText, m_fonts, L"The quick brown fox jumps over the lazy dog\n");
+    m_textBufferManager->submitTextBuffer(m_staticText,0);
+    
     Engine::set_active_engine(*m_engine);
     {
         auto editorCamera = scene.create_game_object("camera");
@@ -215,7 +216,21 @@ Untie::Untie() {
     } else {
         log::debug("file not found");
     }
+    TextRectangle a = m_textBufferManager->getRectangle(m_staticText);
     
+    bgfx::dbgTextClear();
+    // abcdABCD
+    //
+    // 15 white
+    // 14 Yellow
+    // 12 lightred
+    if (a.height != NULL) {
+        bgfx::dbgTextPrintf(10, 10, 0x0f,
+                            "\x1b[15;ma\x1b[10;mb\x1b[11;mc\x1b[12;md"    // abcd
+                            "\x1b[7;mA\x1b[14; mB\x1b[8; mC\x1b[13;mF");  // ABCD
+    }
+
+    bgfx::setDebug(BGFX_DEBUG_TEXT); 
     serializedSceneStream.close();
 }
 void Untie::run() {
