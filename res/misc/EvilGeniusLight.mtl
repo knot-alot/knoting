@@ -1,0 +1,15 @@
+# Blender MTL File: 'None'
+# Material Count: 1
+
+newmtl Corridor_Light_M
+Ns 179.999996
+Ka 0.500000 0.500000 0.500000
+Kd 1.000000 1.000000 1.000000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Bump C:\\Dev\\paint-prototype\\paint-prototype\\Assets\\EvilGeniusFBX\\Corridor_Light_Normal.tga
+map_Kd C:\\Dev\\paint-prototype\\paint-prototype\\Assets\\EvilGeniusFBX\\Corridor_Light_Colour.tga
+map_d C:\\Dev\\paint-prototype\\paint-prototype\\Assets\\EvilGeniusFBX\\Corridor_Light_Colour.tga
