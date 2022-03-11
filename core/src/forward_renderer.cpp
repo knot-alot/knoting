@@ -174,8 +174,8 @@ void ForwardRenderer::color_pass() {
 
         GameObject go = goOpt.value();
         Font& font = go.get_component<Font>();
-        font.on_awake();
-        font.get_textBuffer()->submitTextBuffer(font.get_text(), 0);
+        font.get_textBuffer()->submitTextBuffer(font.get_text(), 1);
+
     }
 }
 

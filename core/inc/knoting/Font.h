@@ -25,12 +25,14 @@ class Font {
     Font();
     ~Font();
     void on_awake();
-    void on_destrou();
+    void on_destroy();
     void* load(const char* _filePath, uint32_t* _size);
     void* load(bx::FileReaderI* _reader, bx::AllocatorI* _allocator, const char* _filePath, uint32_t* _size);
     TrueTypeHandle loadTtf(FontManager* _fm, const char* _filePath);
     TextBufferHandle get_text() { return m_staticText; }
     TextBufferManager* get_textBuffer() { return m_textBufferManager; }
+
+
 
    private:
     FontManager* m_fontManager;

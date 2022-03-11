@@ -182,11 +182,11 @@ Untie::Untie() {
         auto fontObj = scene.create_game_object("font");
         fontObj.add_component<components::Font>();
     }
-
+    /*
     std::string filename("skyboxScene.json");
     std::filesystem::path path = AssetManager::get_resources_path().append(filename);
     std::fstream serializedSceneStream(path);
-
+    
     serializedSceneStream.open(path, std::ios_base::out);
     scene.save_scene_to_stream(serializedSceneStream);
     serializedSceneStream.close();
@@ -197,22 +197,9 @@ Untie::Untie() {
     } else {
         log::debug("file not found");
     }
-    
-    bgfx::dbgTextClear();
-    // abcdABCD
-    //
-    // 15 white
-    // 14 Yellow
-    // 12 lightred
-    if (a.height != NULL) {
-        bgfx::dbgTextPrintf(10, 10, 0x0f,
-                            "\x1b[15;ma\x1b[10;mb\x1b[11;mc\x1b[12;md"    // abcd
-                            "\x1b[7;mA\x1b[14; mB\x1b[8; mC\x1b[13;mF");  // ABCD
-    }
-
-    bgfx::setDebug(BGFX_DEBUG_TEXT); 
 
     serializedSceneStream.close();
+    */
 }
 void Untie::run() {
     while (m_engine->is_open()) {

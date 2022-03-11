@@ -5,15 +5,14 @@ namespace components {
 Font::Font() {}
 Font::~Font() {}
 void Font::on_awake() {
-    bgfx::touch(0);
     m_fontManager = new FontManager(512);
     m_textBufferManager = new TextBufferManager(m_fontManager);
      m_fontFiles = loadTtf(m_fontManager, "../res/textures/droidsans.ttf");
 
     m_fonts = m_fontManager->createFontByPixelSize(m_fontFiles, 0, 100);
     m_fontManager->preloadGlyph(m_fonts, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");
-    m_staticText = m_textBufferManager->createTextBuffer(FONT_TYPE_ALPHA, BufferType::Static);
-    m_textBufferManager->setPenPosition(m_staticText, 12.0f, 12.0f);
+    m_staticText = m_textBufferManager->createTextBuffer(FONT_TYPE_DISTANCE_SUBPIXEL, BufferType::Static);
+    m_textBufferManager->setPenPosition(m_staticText, 12.0f, -100.0f);
 
     m_textBufferManager->appendText(m_staticText, m_fonts, L"The quick brown fox jumps over the lazy dog\n");
 }
@@ -55,6 +54,7 @@ TrueTypeHandle Font::loadTtf(FontManager* _fm, const char* _filePath) {
 
     TrueTypeHandle invalid = BGFX_INVALID_HANDLE;
     return invalid;
+
 }
 
 };  // namespace components
