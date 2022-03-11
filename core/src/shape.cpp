@@ -18,7 +18,7 @@ void Shape::on_awake() {
     } else {
         constexpr PxReal default_staticFriction = 0.3f;
         constexpr PxReal default_dynamicFriction = 0.3f;
-        constexpr PxReal default_restitution = 0.0f;
+        constexpr PxReal default_restitution = 0.6f;
         m_material = std::make_shared<PxMaterial_ptr_wrapper>(
             m_physics->get()->createMaterial(default_staticFriction, default_dynamicFriction, default_restitution));
     }

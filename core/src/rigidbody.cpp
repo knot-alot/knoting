@@ -71,16 +71,16 @@ void RigidBody::set_transform(const vec3& position, const quat& rotation) {
 
 void RigidBody::set_position(const vec3& position) {
     if (m_dynamic) {
-        m_dynamic->get()->setGlobalPose(PxTransform(vec3_to_PxVec3(position), m_dynamic->get()->getGlobalPose().q));
+        m_dynamic->get()->setGlobalPose(PxTransform(vec3_to_PxVec3(position)));
     } else {
-        m_static->get()->setGlobalPose(PxTransform(vec3_to_PxVec3(position), m_static->get()->getGlobalPose().q));
+        m_static->get()->setGlobalPose(PxTransform(vec3_to_PxVec3(position)));
     }
 }
 void RigidBody::set_rotation(const quat& rotation) {
     if (m_dynamic) {
-        m_dynamic->get()->setGlobalPose(PxTransform(m_dynamic->get()->getGlobalPose().p, quat_to_PxQuat(rotation)));
+        m_dynamic->get()->setGlobalPose(PxTransform(quat_to_PxQuat(rotation)));
     } else {
-        m_static->get()->setGlobalPose(PxTransform(m_static->get()->getGlobalPose().p, quat_to_PxQuat(rotation)));
+        m_static->get()->setGlobalPose(PxTransform(quat_to_PxQuat(rotation)));
     }
 }
 
