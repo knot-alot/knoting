@@ -23,7 +23,6 @@ class RigidController {
     vec3 get_linear_velocity();
 
     void set_dynamic(std::shared_ptr<PxDynamic_ptr_wrapper> dynamic);
-
     void set_kinematic(const bool& isKinematic);
     void set_mass(const float& mass);
     void set_angular_damping(const float& angDamp);
@@ -34,8 +33,6 @@ class RigidController {
     void add_torque(const vec3& torque);
     void clear_force();
     void clear_torque();
-
-    void lockRotations();
 
     void put_to_sleep();
     void wakeUp();

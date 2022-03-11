@@ -155,6 +155,7 @@ vec2 InputManager::get_relative_position() {
 }
 
 vec2 InputManager::get_absolute_position() {
+    std::cout << m_mousePosition.x << " : " << m_mousePosition.y << std::endl;
     return vec2(m_mousePosition.x, m_mousePosition.y);
 }
 

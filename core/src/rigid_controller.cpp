@@ -117,10 +117,6 @@ void RigidController::on_load() {
     m_isAwake = isAwake;
     m_isKinematic = isKinematic;
 }
-void RigidController::lockRotations() {
-    m_dynamic->get()->setRigidDynamicLockFlags(PxRigidDynamicLockFlag::eLOCK_ANGULAR_X |
-                                               PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z);
-}
 
 }  // namespace components
 }  // namespace knot

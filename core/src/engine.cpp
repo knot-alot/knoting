@@ -9,21 +9,13 @@ Engine::Engine() {
     m_forwardRenderModule = std::make_shared<knot::ForwardRenderer>(*this);
     m_physicsModule = std::make_shared<knot::Physics>(*this);
     m_assetManager = std::make_shared<knot::AssetManager>();
-    m_playerMovementModule = std::make_shared<PlayerMovement>(*this);
-    m_shootingModule = std::make_shared<Shooting>(*this);
-    m_cameraRotationModule = std::make_shared<knot::CameraRotation>(*this);
 
     // order dependent
     m_engineModules.emplace_back(m_framebufferManager);
     m_engineModules.emplace_back(m_windowModule);
     m_engineModules.emplace_back(m_assetManager);
-    m_engineModules.emplace_back(m_cameraRotationModule);
     m_engineModules.emplace_back(m_forwardRenderModule);
     m_engineModules.emplace_back(m_physicsModule);
-
-    // Gameplay Subsystems
-    m_engineModules.emplace_back(m_playerMovementModule);
-    m_engineModules.emplace_back(m_shootingModule);
 
     for (auto& module : m_engineModules) {
         module->on_awake();
@@ -32,10 +24,8 @@ Engine::Engine() {
 }
 
 void Engine::update_modules() {
-    m_windowModule->calculate_delta_time();
-    auto deltaTime = m_windowModule->get_delta_time();
     for (auto& module : m_engineModules) {
-        module->on_update(deltaTime);
+        module->on_update(m_windowModule->get_delta_time());
         module->on_fixed_update();
     }
 

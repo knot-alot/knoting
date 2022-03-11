@@ -18,9 +18,9 @@ void Physics::on_awake() {
 
     m_Physics = std::make_shared<PxPhysics_ptr_wrapper>(
         PxCreatePhysics(PX_PHYSICS_VERSION, *m_Foundation->get(), PxTolerancesScale(), false, NULL));
-    constexpr float default_gravity = -9.81f * 3.0f;
+    constexpr float defalut_gravity = -9.81f;
     PxSceneDesc sceneDesc(m_Physics->get()->getTolerancesScale());
-    sceneDesc.gravity = PxVec3(0, default_gravity, 0);
+    sceneDesc.gravity = PxVec3(0, defalut_gravity, 0);
     m_Dispatcher = std::make_shared<PxDispatcher_ptr_wrapper>(PxDefaultCpuDispatcherCreate(2));
     sceneDesc.cpuDispatcher = m_Dispatcher->get();
     sceneDesc.filterShader = PxDefaultSimulationFilterShader;
