@@ -31,7 +31,7 @@ Untie::Untie() {
         auto editorCamera = m_scene->create_game_object("camera");
         auto& cam = editorCamera.add_component<components::EditorCamera>();
         editorCamera.get_component<components::Transform>().set_position(glm::vec3(0, 150, 0));
-        //editorCamera.get_component<components::Transform>().set_rotation_euler(glm::vec3(90, 00, 0));
+        // editorCamera.get_component<components::Transform>().set_rotation_euler(glm::vec3(90, 00, 0));
     }
 
     create_skybox();
@@ -41,12 +41,12 @@ Untie::Untie() {
     create_pointlight("orange_light_top", vec3(-35, 8, -35), 0.5f, 25.0f, vec3(1.0f, 0.27f, 0.0f));
     create_pointlight("orange_light_bottom", vec3(-35, 8, 35), 0.5f, 25.0f, vec3(1.0f, 0.27f, 0.0f));
 
-    //create_pointlight("light_3", vec3(7.6706734, 3.631392, -10), 0.5f, 17.0f, vec3(1.0f, 0.4f, 0.2f));
+    // create_pointlight("light_3", vec3(7.6706734, 3.631392, -10), 0.5f, 17.0f, vec3(1.0f, 0.4f, 0.2f));
 
     create_floor("floor", vec3(0.0f, 0.0f, 0.0f), 50, 50);
-    //create_wall("wall_1", vec3(0, 5, 0), vec3(0, 0, 0), vec3(15.0f, 5, 1));
-    //create_wall("wall_top", vec3(-5, 5, 25), vec3(0, 0, 0), vec3(15.0f, 5, 1));
-    //create_wall("wall_left", vec3(-5, 5, 25), vec3(0, 0, 0), vec3(15.0f, 5, 1));
+    // create_wall("wall_1", vec3(0, 5, 0), vec3(0, 0, 0), vec3(15.0f, 5, 1));
+    // create_wall("wall_top", vec3(-5, 5, 25), vec3(0, 0, 0), vec3(15.0f, 5, 1));
+    // create_wall("wall_left", vec3(-5, 5, 25), vec3(0, 0, 0), vec3(15.0f, 5, 1));
 
     create_eg_wall("evil_genius_wall_top", vec3(0, 12, 50), vec3(0, 0, 180), vec3(100, 4, 1));
     create_eg_wall("evil_genius_wall_bottom", vec3(0, 12, -50), vec3(0, 0, -180), vec3(100, 4, 1));
@@ -56,10 +56,10 @@ Untie::Untie() {
     create_eg_wall("evil_genius_wall_middle_right", vec3(20, 12, -20), vec3(0, -90, 180), vec3(60, 4, 1));
     create_eg_wall("evil_genius_wall_middle_left", vec3(-20, 12, 20), vec3(0, -90, 180), vec3(60, 4, 1));
 
-    //m_scene->create_cube("cube_1", vec3(-35, 1, 35), vec3(0, 0, 0), vec3(2, 2, 2), false, 5);
-    //create_dragon("dragon_1", vec3(-8, 10, -5), vec3(45, 45, 45), vec3(5, 5, 5), true, 4);
+    // m_scene->create_cube("cube_1", vec3(-35, 1, 35), vec3(0, 0, 0), vec3(2, 2, 2), false, 5);
+    // create_dragon("dragon_1", vec3(-8, 10, -5), vec3(45, 45, 45), vec3(5, 5, 5), true, 4);
 
-    //create_player("player_1", vec3(-10, 6, -2), vec3(0, 33, 0));
+    // create_player("player_1", vec3(-10, 6, -2), vec3(0, 33, 0));
 }
 void Untie::run() {
     while (m_engine->is_open()) {
