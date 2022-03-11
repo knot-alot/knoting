@@ -10,5 +10,4 @@ bx::AllocatorI* getDefaultAllocator();
 bx::FileReaderI* getFileReader();
 bx::AllocatorI* getAllocator();
 
-};
-  
+};  // namespace entry

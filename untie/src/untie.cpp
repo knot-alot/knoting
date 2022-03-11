@@ -58,7 +58,7 @@ Untie::Untie() {
     // m_scene->create_cube("cube_1", vec3(-35, 1, 35), vec3(0, 0, 0), vec3(2, 2, 2), false, 5);
     // create_dragon("dragon_1", vec3(-8, 10, -5), vec3(45, 45, 45), vec3(5, 5, 5), true, 4);
 
-    // create_player("player_1", vec3(-10, 6, -2), vec3(0, 33, 0));
+    create_player("player_1", vec3(-10, 6, -2), vec3(0, 33, 0));
 
     {
         auto fontObj = m_scene->create_game_object("font");

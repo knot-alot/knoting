@@ -67,7 +67,5 @@ TrueTypeHandle Font::loadTtf(FontManager* _fm, const char* _filePath) {
     return invalid;
 }
 
-
-
 };  // namespace components
 }  // namespace knot

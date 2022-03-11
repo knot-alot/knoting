@@ -19,7 +19,6 @@
 namespace knot {
 namespace components {
 
-
 class Font {
    public:
     Font();

@@ -11,4 +11,4 @@
 
 uint32_t utf8_decode(uint32_t* _state, uint32_t* _codep, uint8_t _ch);
 
-#endif // UTF8_H_HEADER_GUARD
+#endif  // UTF8_H_HEADER_GUARD

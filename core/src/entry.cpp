@@ -1,15 +1,17 @@
+#include <bgfx/bgfx.h>
 #include <bx/bx.h>
 #include <bx/file.h>
 #include <bx/sort.h>
-#include <bgfx/bgfx.h>
 #include <knoting/entry.h>
+
 namespace bx {
 struct FileReaderI;
 struct FileWriterI;
 struct AllocatorI;
 }  // namespace bx
+
 namespace entry {
- 
+
 static bx::FileReaderI* s_fileReader = NULL;
 extern bx::AllocatorI* getDefaultAllocator();
 bx::AllocatorI* g_allocator = getDefaultAllocator();
@@ -39,12 +41,11 @@ bx::AllocatorI* getDefaultAllocator() {
 }
 
 #endif
-bx::FileReaderI*  getFileReader() {
+bx::FileReaderI* getFileReader() {
     s_fileReader = BX_NEW(g_allocator, FileReader);
     return s_fileReader;
 }
-bx::AllocatorI*  getAllocator() {
-    
+bx::AllocatorI* getAllocator() {
     if (NULL == g_allocator) {
         g_allocator = getDefaultAllocator();
     }
