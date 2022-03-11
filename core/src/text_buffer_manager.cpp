@@ -3,18 +3,15 @@
  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
-
-
 #include <bgfx/bgfx.h>
 #include <bgfx/embedded_shader.h>
 
 #include <stddef.h>  // offsetof
 #include <wchar.h>   // wcslen
 
-#include "../bgfx/bgfx/examples/common/cube_atlas.h"
 #include <knoting/text_buffer_manager.h>
 #include <knoting/utf8.h>
-
+#include "../bgfx/bgfx/examples/common/cube_atlas.h"
 
 #include "../bgfx/bgfx/examples/common/font/fs_font_basic.bin.h"
 #include "../bgfx/bgfx/examples/common/font/fs_font_distance_field.bin.h"

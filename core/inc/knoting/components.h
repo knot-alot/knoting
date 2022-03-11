@@ -1,5 +1,6 @@
 #pragma once
 
+#include <knoting/Font.h>
 #include <knoting/camera.h>
 #include <knoting/game_object.h>
 #include <knoting/health.h>
@@ -13,4 +14,3 @@
 #include <knoting/shape.h>
 #include <knoting/texture.h>
 #include <knoting/transform.h>
-#include <knoting/Font.h>
