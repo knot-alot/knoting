@@ -186,6 +186,18 @@ void ForwardRenderer::color_pass() {
 
         bgfx::submit(idx, material.get_program());
     }
+    // font
+    auto f = registry.view<Font>();
+    for (auto& e : f) {
+        auto goOpt = scene.get_game_object_from_handle(e);
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        Font& font = go.get_component<Font>();
+        font.get_textBuffer()->submitTextBuffer(font.get_text(), 1);
+    }
 }
 
 void ForwardRenderer::skybox_pass() {}

@@ -1,11 +1,15 @@
 #include "untie.h"
+#include <knoting/Font.h>
 #include <knoting/components.h>
+#include <knoting/entry.h>
+#include <knoting/font_manager.h>
 #include <knoting/game_object.h>
 #include <knoting/instance_mesh.h>
 #include <knoting/log.h>
 #include <knoting/mesh.h>
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/scene.h>
+#include <knoting/text_buffer_manager.h>
 #include <knoting/texture.h>
 
 #include <knoting/components.h>
@@ -17,14 +21,16 @@
 
 #include <cereal/archives/json.hpp>
 #include <iostream>
-
+namespace {}
 namespace knot {
+
 Untie::Untie() {
     m_scene = std::make_unique<Scene>();
     m_loadedScene = std::make_unique<Scene>();
     Scene::set_active_scene(*m_scene);
     log::Logger::setup();
     m_engine = std::make_unique<knot::Engine>();
+
     Engine::set_active_engine(*m_engine);
 
     create_skybox();
@@ -40,6 +46,11 @@ Untie::Untie() {
     create_dragon("dragon_1", vec3(0, 10, -7), vec3(45, 45, 45), vec3(5, 5, 5), true, 4);
 
     create_player("player_1", vec3(-10, 6, -2), vec3(0, 33, 0));
+
+    {
+        auto fontObj = m_scene->create_game_object("font");
+        fontObj.add_component<components::Font>();
+    }
 }
 
 void Untie::run() {
@@ -87,13 +98,13 @@ GameObject Untie::create_floor(const std::string& name, vec3 position, float wid
     cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 45, 0));
     cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
-    auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
-
     auto& shape = cubeObj.add_component<components::Shape>();
-    vec3 halfsize = vec3(width, 0.5f, depth);
+    vec3 halfsize = vec3(vec3(width, 0.5f, depth));
     shape.set_geometry(shape.create_cube_geometry(halfsize));
 
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+    rigidbody.create_actor(false);
 
     auto material = components::Material();
     material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
@@ -103,10 +114,9 @@ GameObject Untie::create_floor(const std::string& name, vec3 position, float wid
     material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
     cubeObj.add_component<components::Material>(material);
 
-    rigidbody.create_actor(false);
-
     return cubeObj;
 }
+
 GameObject Untie::create_wall(const std::string& name, vec3 position, vec3 rotation, vec3 scale) {
     auto cubeObj = m_scene->create_game_object(name);
     cubeObj.get_component<components::Transform>().set_position(position);
@@ -260,6 +270,7 @@ void Untie::serialize_test() {
     } else {
         log::debug("file not found");
     }
+
     serializedSceneStream.close();
 }
 
