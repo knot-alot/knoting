@@ -30,22 +30,36 @@ Untie::Untie() {
     {
         auto editorCamera = m_scene->create_game_object("camera");
         auto& cam = editorCamera.add_component<components::EditorCamera>();
-        editorCamera.get_component<components::Transform>().set_position(glm::vec3(-10.0f, 15.0f, -30.0f));
+        editorCamera.get_component<components::Transform>().set_position(glm::vec3(0, 150, 0));
+        //editorCamera.get_component<components::Transform>().set_rotation_euler(glm::vec3(90, 00, 0));
     }
 
     create_skybox();
-    create_pointlight("light_0", vec3(2.3897731, 14.570069, -10), 0.5f, 17.0f, vec3(1.0f, 0.7f, 0.2f));
-    create_pointlight("light_1", vec3(10.351221, -13.538474, -10), 0.5f, 17.0f, vec3(0.7f, 0.2f, 1.0f));
-    create_pointlight("light_2", vec3(-14.905335, 6.3970194, -10), 0.5f, 17.0f, vec3(0.2f, 1.0f, 0.7f));
-    create_pointlight("light_3", vec3(7.6706734, 3.631392, -10), 0.5f, 17.0f, vec3(1.0f, 0.4f, 0.2f));
+    create_pointlight("main_light", vec3(0, 40, 0), 0.5f, 75.0f, vec3(1.0f, 0.95f, 0.72f));
+    create_pointlight("blue_light_1", vec3(35, 8, 35), 0.5f, 25.0f, vec3(0.0f, 0.0f, 1.0f));
+    create_pointlight("blue_light_2", vec3(35, 8, -35), 0.5f, 25.0f, vec3(0.0f, 0.0f, 1.0f));
+    create_pointlight("orange_light_top", vec3(-35, 8, -35), 0.5f, 25.0f, vec3(1.0f, 0.27f, 0.0f));
+    create_pointlight("orange_light_bottom", vec3(-35, 8, 35), 0.5f, 25.0f, vec3(1.0f, 0.27f, 0.0f));
 
-    create_floor("floor", vec3(-5.0f, 0.0f, -15.0f), 15, 15);
-    create_wall("wall_1", vec3(-5, 5, 0), vec3(0, 0, 0), vec3(15.0f, 5, 1));
+    //create_pointlight("light_3", vec3(7.6706734, 3.631392, -10), 0.5f, 17.0f, vec3(1.0f, 0.4f, 0.2f));
 
-    m_scene->create_cube("cube_1", vec3(-5, 5, -10), vec3(0, 0, 0), vec3(1, 1, 1), true, 5);
-    create_dragon("dragon_1", vec3(0, 10, -7), vec3(45, 45, 45), vec3(5, 5, 5), true, 4);
+    create_floor("floor", vec3(0.0f, 0.0f, 0.0f), 50, 50);
+    //create_wall("wall_1", vec3(0, 5, 0), vec3(0, 0, 0), vec3(15.0f, 5, 1));
+    //create_wall("wall_top", vec3(-5, 5, 25), vec3(0, 0, 0), vec3(15.0f, 5, 1));
+    //create_wall("wall_left", vec3(-5, 5, 25), vec3(0, 0, 0), vec3(15.0f, 5, 1));
 
-    create_player("player_1", vec3(-10, 6, -2), vec3(0, 33, 0));
+    create_eg_wall("evil_genius_wall_top", vec3(0, 12, 50), vec3(0, 0, 180), vec3(100, 4, 1));
+    create_eg_wall("evil_genius_wall_bottom", vec3(0, 12, -50), vec3(0, 0, -180), vec3(100, 4, 1));
+    create_eg_wall("evil_genius_wall_right", vec3(50, 12, 0), vec3(180, -90, 0), vec3(100, 4, 1));
+    create_eg_wall("evil_genius_wall_left", vec3(-50, 12, 0), vec3(-180, 90, 0), vec3(100, 4, 1));
+
+    create_eg_wall("evil_genius_wall_middle_right", vec3(20, 12, -20), vec3(0, -90, 180), vec3(60, 4, 1));
+    create_eg_wall("evil_genius_wall_middle_left", vec3(-20, 12, 20), vec3(0, -90, 180), vec3(60, 4, 1));
+
+    //m_scene->create_cube("cube_1", vec3(-35, 1, 35), vec3(0, 0, 0), vec3(2, 2, 2), false, 5);
+    //create_dragon("dragon_1", vec3(-8, 10, -5), vec3(45, 45, 45), vec3(5, 5, 5), true, 4);
+
+    //create_player("player_1", vec3(-10, 6, -2), vec3(0, 33, 0));
 }
 void Untie::run() {
     while (m_engine->is_open()) {
@@ -89,7 +103,7 @@ GameObject Untie::create_floor(const std::string& name, vec3 position, float wid
     auto cubeObj = m_scene->create_game_object(name);
     cubeObj.get_component<components::Transform>().set_position(position);
     cubeObj.get_component<components::Transform>().set_scale(glm::vec3(width, 0.5f, depth));
-    cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 45, 0));
+    cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 0, 0));
     cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
     auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
@@ -129,8 +143,8 @@ GameObject Untie::create_wall(const std::string& name, vec3 position, vec3 rotat
     rigidbody.create_actor(false);
 
     auto material = components::Material();
-    material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
-    material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
+    material.set_texture_slot_path(TextureType::Albedo, "wall_tex.png");
+    material.set_texture_slot_path(TextureType::Normal, "wall_normal.png");
     material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
     material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
     material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
@@ -138,6 +152,34 @@ GameObject Untie::create_wall(const std::string& name, vec3 position, vec3 rotat
 
     return cubeObj;
 }
+
+GameObject Untie::create_eg_wall(const std::string& name, vec3 position, vec3 rotation, vec3 scale) {
+    auto cubeObj = m_scene->create_game_object(name);
+    cubeObj.get_component<components::Transform>().set_position(position);
+    cubeObj.get_component<components::Transform>().set_rotation_euler(rotation);
+    cubeObj.get_component<components::Transform>().set_scale(scale);
+    cubeObj.add_component<components::InstanceMesh>("EG_wall_main.obj");
+    auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+
+    auto& shape = cubeObj.add_component<components::Shape>();
+    vec3 halfsize = vec3(scale);
+    shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+    auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+    rigidbody.create_actor(false);
+
+    auto material = components::Material();
+    material.set_texture_slot_path(TextureType::Albedo, "wall_tex.png");
+    material.set_texture_slot_path(TextureType::Normal, "wall_normal.png");
+    material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+    cubeObj.add_component<components::Material>(material);
+
+    return cubeObj;
+}
+
 GameObject Untie::create_cube(const std::string& name,
                               vec3 position,
                               vec3 rotation,
@@ -160,7 +202,7 @@ GameObject Untie::create_cube(const std::string& name,
     rigidbody.create_actor(isDynamic, mass);
 
     auto material = components::Material();
-    material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
+    material.set_texture_slot_path(TextureType::Albedo, "orange.png");
     material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
     material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
     material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
