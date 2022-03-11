@@ -1,16 +1,16 @@
 #include "untie.h"
+#include <knoting/Font.h>
 #include <knoting/components.h>
+#include <knoting/entry.h>
+#include <knoting/font_manager.h>
 #include <knoting/game_object.h>
 #include <knoting/instance_mesh.h>
 #include <knoting/log.h>
 #include <knoting/mesh.h>
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/scene.h>
-#include <knoting/texture.h>
-#include <knoting/font_manager.h>
 #include <knoting/text_buffer_manager.h>
-#include <knoting/Font.h>
-#include <knoting/entry.h>
+#include <knoting/texture.h>
 
 #include <knoting/components.h>
 #include <knoting/scene.h>
@@ -22,21 +22,7 @@
 #include <cereal/archives/json.hpp>
 
 #include <iostream>
-namespace {
-TrueTypeHandle loadTtf(FontManager* _fm, const char* _filePath) {
-    uint32_t size;
-    void* data = font::load(_filePath, &size);
-
-    if (NULL != data) {
-        TrueTypeHandle handle = _fm->createTtf((uint8_t*)data, size);
-        BX_FREE(entry::getAllocator(), data);
-        return handle;
-    }
-
-    TrueTypeHandle invalid = BGFX_INVALID_HANDLE;
-    return invalid;
-}
-}
+namespace {}
 namespace knot {
 Scene scene;
 Scene loadedScene;
@@ -46,16 +32,7 @@ Untie::Untie() {
     Scene::set_active_scene(scene);
     log::Logger::setup();
     m_engine = std::make_unique<knot::Engine>();
-    FontManager* m_fontManager = new FontManager(512);
-    TextBufferManager* m_textBufferManager = new TextBufferManager(m_fontManager);
-    TrueTypeHandle m_fontFiles = loadTtf(m_fontManager, "../res/textures/droidsans.ttf");
-    FontHandle m_fonts = m_fontManager->createFontByPixelSize(m_fontFiles,0,32);
-    m_fontManager->preloadGlyph(m_fonts, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");
-    TextBufferHandle m_staticText = m_textBufferManager->createTextBuffer(FONT_TYPE_ALPHA, BufferType::Static);
-    m_textBufferManager->setPenPosition(m_staticText, 24.0f, 100.0f);
-    m_textBufferManager->appendText(m_staticText, m_fonts, L"The quick brown fox jumps over the lazy dog\n");
-    m_textBufferManager->submitTextBuffer(m_staticText,0);
-    
+
     Engine::set_active_engine(*m_engine);
     {
         auto editorCamera = scene.create_game_object("camera");
@@ -200,8 +177,12 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
-
     }
+    {
+        auto fontObj = scene.create_game_object("font");
+        fontObj.add_component<components::Font>();
+    }
+
     std::string filename("skyboxScene.json");
     std::filesystem::path path = AssetManager::get_resources_path().append(filename);
     std::fstream serializedSceneStream(path);
@@ -216,7 +197,6 @@ Untie::Untie() {
     } else {
         log::debug("file not found");
     }
-    TextRectangle a = m_textBufferManager->getRectangle(m_staticText);
     
     bgfx::dbgTextClear();
     // abcdABCD
@@ -231,10 +211,10 @@ Untie::Untie() {
     }
 
     bgfx::setDebug(BGFX_DEBUG_TEXT); 
+
     serializedSceneStream.close();
 }
 void Untie::run() {
-
     while (m_engine->is_open()) {
         m_engine->update_modules();
         auto im = m_engine->get_window_module().lock()->get_input_manager();
