@@ -1,6 +1,6 @@
+#include <knoting/game_object.h>
 #include <knoting/log.h>
 #include <knoting/transform.h>
-#include <knoting/game_object.h>
 
 namespace knot {
 namespace components {
@@ -40,7 +40,7 @@ void Transform::set_rotation(const quat& rotation) {
 }
 
 void Transform::set_rotation_euler(const vec3& euler) {
-    m_rotation = quat(radians (euler));
+    m_rotation = quat(radians(euler));
 }
 
 glm::mat4 Transform::get_model_matrix() const {
