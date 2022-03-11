@@ -47,11 +47,42 @@ void Shooting::on_update(double m_delta_time) {
             health.set_health(health.get_health() - 1);
 
             vec3 spawnPos = transform.get_position() + transform.forward();
-            auto bullet = scene.create_cube("bullet", spawnPos, vec3(0), vec3(0.3f), true, 0.3f);
+            auto bullet = scene.create_cube("bullet", spawnPos, vec3(0), vec3(0.2f), true, 1.0f);
             bullets.emplace_back(bullet);
             bullSize++;
             auto bulController = bullet.get_component<components::RigidController>();
-            bulController.add_force(transform.forward() * 1000.0f);
+
+            vec3 shootDir;
+            auto& hier = go.get_component<components::Hierarchy>();
+            auto children = hier.get_children();
+            for (auto& id : children) {
+                auto camOpt = scene.get_game_object_from_id(id);
+                if (!camOpt) {
+                    continue;
+                }
+                auto cam = camOpt.value();
+
+                if (!cam.has_component<components::EditorCamera>()) {
+                    continue;
+                }
+                auto& edCam = cam.get_component<components::EditorCamera>();
+
+                double pitch = edCam.get_PitchYawRoll().x;
+
+                vec3 a = vec3(0, 0, 1);
+                double cosTheta = cos(radians(pitch));
+                double sinTheta = sin(radians(pitch));
+                vec3 b = vec3(0);
+                b.x = a.x;
+                b.y = ((a.y * cosTheta) - (a.z * sinTheta)) * -1.0f;
+                b.z = (a.y * sinTheta) + (a.z * cosTheta);
+                b = normalize(b);
+                b = shootDir = transform.get_rotation() * b;
+                //                shootDir.y = pitch;
+                //                shootDir = normalize(shootDir);
+            }
+
+            bulController.add_force(shootDir * 500.0f);
 
             if (health.get_health() < 0) {
                 health.set_health(0);

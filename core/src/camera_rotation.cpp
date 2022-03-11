@@ -82,7 +82,7 @@ void CameraRotation::on_update(double m_delta_time) {
 
         m_pitch = clamp(m_pitch, m_pitchClamp.x, m_pitchClamp.y);
 
-        transform.set_rotation_euler(vec3(m_roll, m_pitch, m_yaw));
+        transform.set_rotation_euler(vec3(0, m_pitch, 0));
         auto pos = transform.get_rotation_euler();
 
         //= CALCULATE FORWARD VECTOR == // TODO STORE / CALC THESE IN TRANSFORM
@@ -99,7 +99,7 @@ void CameraRotation::on_update(double m_delta_time) {
         //= SET LOOK TARGET POSITION USING FORWARD VECTOR
         vec3 targetPos = transform.get_position() + forward;
         editorCamera.set_look_target(targetPos);
-
+        editorCamera.set_PitchYawRoll(vec3(m_pitch, m_yaw, m_roll));
         m_lastMousePosition = currentMousePos;
     }
 }

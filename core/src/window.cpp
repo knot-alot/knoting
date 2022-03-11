@@ -134,7 +134,10 @@ void Window::close() {
 void Window::on_awake() {}
 
 void Window::on_update(double m_delta_time) {
+    m_input->update_holds();
     glfwPollEvents();
+    m_input->update_relative_positions();
+    m_input->update_pads(m_window);
 }
 
 void Window::on_late_update() {

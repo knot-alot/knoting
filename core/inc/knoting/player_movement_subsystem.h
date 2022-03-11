@@ -34,6 +34,7 @@ class PlayerMovement : public Subsystem {
     float m_speedMulti = 5;
 
     float jumpForce = 10000;
+    float lookMulti = 3.0f;
 };
 
 }  // namespace knot

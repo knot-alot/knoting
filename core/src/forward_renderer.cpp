@@ -67,10 +67,9 @@ void ForwardRenderer::color_pass() {
         EditorCamera& editorCamera = go.get_component<EditorCamera>();
         Name& name = go.get_component<Name>();
 
-        glm::vec3 pos = transform.get_position();
+        glm::vec3 cameraPos = transform.get_position();
         auto& hierarchy = go.get_component<Hierarchy>();
 
-        const vec3 cameraOffset = vec3(0, 1, 0);
         vec3 parentPos = vec3(0);
 
         if (hierarchy.has_parent()) {
@@ -79,11 +78,19 @@ void ForwardRenderer::color_pass() {
             if (parentOpt) {
                 auto& parentTransform = parentOpt.value().get_component<Transform>();
                 parentPos = parentTransform.get_position();
-                pos = pos + parentPos + cameraOffset;
+                vec3 lookTarget = editorCamera.get_look_target();
+                editorCamera.set_look_target(lookTarget);
+
+                vec3 diffCameraPosLookTager = lookTarget - cameraPos;
+
+                cameraPos = parentTransform.get_model_matrix() * vec4(cameraPos, 1.0f);
+
+                diffCameraPosLookTager = toMat4(parentTransform.get_rotation()) * vec4(diffCameraPosLookTager, 1.0f);
+                editorCamera.set_look_target(cameraPos + diffCameraPosLookTager);
             }
         }
 
-        const glm::vec3 lookTarget = parentPos + editorCamera.get_look_target() + cameraOffset;
+        const glm::vec3 lookTarget = editorCamera.get_look_target();
         const glm::vec3 up = editorCamera.get_up();
 
         const float fovY = editorCamera.get_fov();
@@ -93,7 +100,7 @@ void ForwardRenderer::color_pass() {
 
         // Set view and projection matrix for view 0.
         {
-            view = glm::lookAt(pos, lookTarget, up);
+            view = glm::lookAt(cameraPos, lookTarget, up);
             glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
             invProj = inverse(proj);
             bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);

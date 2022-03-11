@@ -222,6 +222,7 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     auto& controller = cubeObj.add_component<components::RigidController>();
     controller.lockRotations();
     controller.set_linear_damping(1.0f);
+    controller.set_angular_damping(1.0f);
 
     auto& hp = cubeObj.add_component<components::Health>();
 
@@ -235,7 +236,7 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
 
     auto editorCamera = m_scene->create_game_object("camera");
     auto& cam = editorCamera.add_component<components::EditorCamera>();
-    editorCamera.get_component<components::Transform>().set_position(glm::vec3(0, 2, 0));
+    editorCamera.get_component<components::Transform>().set_position(glm::vec3(0, 0.7f, playerScale.z));
 
     auto& hier = cubeObj.get_component<components::Hierarchy>();
 

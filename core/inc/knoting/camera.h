@@ -19,6 +19,7 @@ class EditorCamera {
     float get_fov() { return radians(m_fov); };
     float get_z_near() { return m_zNear; };
     float get_z_far() { return m_zFar; };
+    vec3 get_PitchYawRoll() { return m_pitchYawRoll; }
 
     vec3 get_up();
 
@@ -26,6 +27,7 @@ class EditorCamera {
     void set_fov(float fov) { m_fov = fov; };
     void set_z_near(float zNear) { m_zNear = zNear; };
     void set_z_far(float zFar) { m_zFar = zFar; };
+    void set_PitchYawRoll(vec3 pyr) { m_pitchYawRoll = pyr; }
 
     template <class Archive>
     void serialize(Archive& archive) {
@@ -43,6 +45,8 @@ class EditorCamera {
 
     float m_moveSpeed = 5;
     float m_moveSpeedMultiplier = 4;
+
+    vec3 m_pitchYawRoll = vec3(0, 0, 0);
 };
 
 }  // namespace components

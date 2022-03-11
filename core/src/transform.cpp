@@ -54,8 +54,10 @@ void Transform::set_rotation_euler(const vec3& euler) {
 }
 
 mat4 Transform::get_model_matrix_internal() const {
-    mat4 modelMatrix = mat4(1.0f);
-    modelMatrix = translate(mat4(1.0f), m_position) * toMat4(m_rotation) * scale(mat4(1.0f), m_scale);
+    mat4 modelMatrix(1.0f);
+    modelMatrix = translate(modelMatrix, m_position);
+    modelMatrix *= toMat4(m_rotation);
+    modelMatrix = scale(modelMatrix, m_scale);
     return modelMatrix;
 }
 vec3 Transform::forward() const {
