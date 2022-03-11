@@ -10,6 +10,7 @@
 #include <knoting/font_manager.h>
 #include <knoting/text_buffer_manager.h>
 #include <knoting/Font.h>
+#include <knoting/entry.h>
 
 #include <knoting/components.h>
 #include <knoting/scene.h>
@@ -21,26 +22,39 @@
 #include <cereal/archives/json.hpp>
 
 #include <iostream>
+namespace {
+TrueTypeHandle loadTtf(FontManager* _fm, const char* _filePath) {
+    uint32_t size;
+    void* data = font::load(_filePath, &size);
 
+    if (NULL != data) {
+        TrueTypeHandle handle = _fm->createTtf((uint8_t*)data, size);
+        BX_FREE(entry::getAllocator(), data);
+        return handle;
+    }
+
+    TrueTypeHandle invalid = BGFX_INVALID_HANDLE;
+    return invalid;
+}
+}
 namespace knot {
 Scene scene;
 Scene loadedScene;
 
 Untie::Untie() {
-    extern bx::AllocatorI* getDefaultAllocator();
-    bx::AllocatorI* g_allocator = getDefaultAllocator();
+    uint32_t size;
     Scene::set_active_scene(scene);
     log::Logger::setup();
     m_engine = std::make_unique<knot::Engine>();
     FontManager* m_fontManager = new FontManager(512);
     TextBufferManager* m_textBufferManager = new TextBufferManager(m_fontManager);
-    TrueTypeHandle m_fontFiles = loadTtf(m_fontManager,"droidsans.ttf");
-    FontHandle m_fonts = m_fontManager->createFontByPixelSize(m_fontFiles,0,32);
-    m_fontManager->preloadGlyph(m_fonts, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");
-    TextBufferHandle m_transientText;
-    TextBufferHandle m_staticText = m_textBufferManager->createTextBuffer(FONT_TYPE_ALPHA, BufferType::Static);
-    m_textBufferManager->setPenPosition(m_staticText, 24.0f, 100.0f);
-    m_textBufferManager->appendText(m_staticText, m_fonts, L"The quick brown fox jumps over the lazy dog\n");
+    
+
+    //FontHandle m_fonts = m_fontManager->createFontByPixelSize(m_fontFiles,0,32);
+  //  m_fontManager->preloadGlyph(m_fonts, L"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ. \n");
+  //  TextBufferHandle m_staticText = m_textBufferManager->createTextBuffer(FONT_TYPE_ALPHA, BufferType::Static);
+  //  m_textBufferManager->setPenPosition(m_staticText, 24.0f, 100.0f);
+  //  m_textBufferManager->appendText(m_staticText, m_fonts, L"The quick brown fox jumps over the lazy dog\n");
     Engine::set_active_engine(*m_engine);
     {
         auto editorCamera = scene.create_game_object("camera");
@@ -201,15 +215,22 @@ Untie::Untie() {
     } else {
         log::debug("file not found");
     }
+    void* data = font::load("skybox/cmft_skybox.hdr", &size);
+
+    
+   
     bgfx::dbgTextClear();
     // abcdABCD
     //
     // 15 white
     // 14 Yellow
     // 12 lightred
-    bgfx::dbgTextPrintf(10, 10, 0x0f,
-                        "\x1b[15;ma\x1b[10;mb\x1b[11;mc\x1b[12;md"    // abcd
-                        "\x1b[7;mA\x1b[14; mB\x1b[8; mC\x1b[13;mF");  // ABCD
+    if (NULL != data) {
+        bgfx::dbgTextPrintf(10, 10, 0x0f,
+                            "\x1b[15;ma\x1b[10;mb\x1b[11;mc\x1b[12;md"    // abcd
+                            "\x1b[7;mA\x1b[14; mB\x1b[8; mC\x1b[13;mF");  // ABCD
+    }
+  
     bgfx::setDebug(BGFX_DEBUG_TEXT); 
     serializedSceneStream.close();
 }
