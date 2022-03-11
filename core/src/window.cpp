@@ -134,18 +134,21 @@ void Window::close() {
 void Window::on_awake() {}
 
 void Window::on_update(double m_delta_time) {
+    m_input->update_holds();
     glfwPollEvents();
-    calculate_delta_time();
+    m_input->update_relative_positions();
+    m_input->update_pads(m_window);
 }
 
-void Window::on_late_update() {}
+void Window::on_late_update() {
+    m_lastTime = m_currentTime;
+}
 
 void Window::on_destroy() {}
 
 void Window::calculate_delta_time() {
-    double currentFrame = glfwGetTime();
-    m_deltaTime = currentFrame - m_lastFrame;
-    m_lastFrame = currentFrame;
+    m_currentTime = glfwGetTime();
+    m_deltaTime = float(m_currentTime - m_lastTime);
 }
 
 double Window::get_delta_time() {
@@ -159,6 +162,10 @@ void Window::set_window_size(vec2i size) {
 
 std::shared_ptr<InputManager> Window::get_input_manager() {
     return m_input;
+}
+
+void Window::set_cursor_hide(bool state) {
+    glfwSetInputMode(m_window, GLFW_CURSOR, state ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 }
 
 }  // namespace knot

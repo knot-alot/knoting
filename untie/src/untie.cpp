@@ -27,12 +27,6 @@ Untie::Untie() {
     m_engine = std::make_unique<knot::Engine>();
     Engine::set_active_engine(*m_engine);
 
-    {
-        auto editorCamera = m_scene->create_game_object("camera");
-        auto& cam = editorCamera.add_component<components::EditorCamera>();
-        editorCamera.get_component<components::Transform>().set_position(glm::vec3(-10.0f, 15.0f, -30.0f));
-    }
-
     create_skybox();
     create_pointlight("light_0", vec3(2.3897731, 14.570069, -10), 0.5f, 17.0f, vec3(1.0f, 0.7f, 0.2f));
     create_pointlight("light_1", vec3(10.351221, -13.538474, -10), 0.5f, 17.0f, vec3(0.7f, 0.2f, 1.0f));
@@ -205,8 +199,9 @@ GameObject Untie::create_dragon(const std::string& name,
 GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rotation) {
     auto cubeObj = m_scene->create_game_object(name);
 
-    cubeObj.add_component<components::Tag>();
-    cubeObj.get_component<components::Tag>().register_tag("PLAYER");
+    auto& tag = cubeObj.add_component<components::Tag>();
+    tag.register_tag("PLAYER");
+    tag.set_tag(tag.get_id_from_tag("PLAYER"));
 
     vec3 playerScale = vec3(1, 2, 1);
     cubeObj.get_component<components::Transform>().set_position(position);
@@ -218,7 +213,7 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
 
     auto& shape = cubeObj.add_component<components::Shape>();
     vec3 halfsize = vec3(playerScale);
-    shape.set_geometry(shape.create_capsule_geometry(playerScale.x, playerScale.y));
+    shape.set_geometry(shape.create_cube_geometry(playerScale));
 
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
@@ -227,6 +222,9 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     auto& controller = cubeObj.add_component<components::RigidController>();
     controller.lockRotations();
     controller.set_linear_damping(1.0f);
+    controller.set_angular_damping(1.0f);
+
+    auto& hp = cubeObj.add_component<components::Health>();
 
     auto material = components::Material();
     material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
@@ -236,7 +234,13 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
     cubeObj.add_component<components::Material>(material);
 
-    // TODO: ADD CAMERA AS CHILD OBJECT AT TOP OF PLAYER
+    auto editorCamera = m_scene->create_game_object("camera");
+    auto& cam = editorCamera.add_component<components::EditorCamera>();
+    editorCamera.get_component<components::Transform>().set_position(glm::vec3(0, 0.7f, playerScale.z));
+
+    auto& hier = cubeObj.get_component<components::Hierarchy>();
+
+    hier.add_child(editorCamera);
 
     return cubeObj;
 }

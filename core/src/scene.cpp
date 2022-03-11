@@ -62,34 +62,10 @@ void Scene::remove_game_object(GameObject game_object) {
             }
         }
     }
-
-    for (auto [id, pool] : m_registry.storage()) {
-        using namespace entt::literals;
-
-        if (!pool.contains(game_object.m_handle)) {
-            continue;
-        }
-
-        auto meta = entt::resolve(id);
-        if (!meta) {
-            log::debug("Could not resolve meta for id {}", id);
-            continue;
-        }
-
-        auto removeComponent = meta.func("on_destroy"_hs);
-        if (!removeComponent) {
-            log::debug("Could not find remove_component function for id {}", id);
-            continue;
-        }
-
-        removeComponent.invoke(game_object.m_handle);
-    }
-
     m_uuidGameObjectMap.erase(game_object.get_id());
     m_entityGameObjectMap.erase(game_object.m_handle);
 
     m_registry.destroy(game_object.m_handle);
-    log::debug("Removed game object with id {}", to_string(game_object.get_id()));
 }
 
 std::optional<GameObject> Scene::get_game_object_from_id(uuid id) {
@@ -207,6 +183,8 @@ GameObject Scene::create_cube(const std::string& name,
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
     rigidbody.create_actor(isDynamic, mass);
+
+    auto& controller = cubeObj.add_component<components::RigidController>();
 
     auto material = components::Material();
     material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
