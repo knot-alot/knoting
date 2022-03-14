@@ -167,6 +167,7 @@ GameObject Untie::create_eg_wall(const std::string& name, vec3 position, vec3 ro
 
     auto& shape = cubeObj.add_component<components::Shape>();
     vec3 halfsize = vec3(scale);
+    halfsize.y += scale.y * 2.0f;
     shape.set_geometry(shape.create_cube_geometry(halfsize));
 
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
