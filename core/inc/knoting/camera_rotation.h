@@ -44,9 +44,9 @@ class CameraRotation : public Subsystem {
     double m_pitch = 0;  // pitch = y
     double m_yaw = 0;    // yaw = z
 
-    vec3 m_right;
-    vec3 m_up;
-    vec3 m_forward;
+    vec3 m_right = vec3(1, 0, 0);
+    vec3 m_up = vec3(0, 1, 0);
+    vec3 m_forward = vec3(0, 0, 1);
 
     bool m_ePressed = true;
     bool m_lockState = true;
