@@ -35,6 +35,10 @@ class CameraRotation : public Subsystem {
     vec2d m_mouseDelta = vec2d(0.0);
 
     vec3 m_keyboardDirection = vec3(0);
+    vec3 m_movementMultiplier = vec3(1);
+    vec3 m_maxMovementMultiplier = vec3(5);
+    vec3 m_minMovementMultiplier = vec3(1);
+    vec3 m_moveSpeed = vec3(10);
 
     double m_roll = 0;   // roll = x
     double m_pitch = 0;  // pitch = y

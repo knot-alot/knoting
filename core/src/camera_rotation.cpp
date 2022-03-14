@@ -75,7 +75,7 @@ void CameraRotation::on_update(double m_delta_time) {
         Transform& transform = go.get_component<Transform>();
         EditorCamera& editorCamera = go.get_component<EditorCamera>();
         Name& name = go.get_component<Name>();
-        
+
         //= CAMERA ROTATION
         m_roll = 0.0f;
         m_pitch += ((float)-m_mouseDelta.y * (float)m_mouseSensitivity.y) * (float)m_delta_time;
@@ -98,9 +98,9 @@ void CameraRotation::on_update(double m_delta_time) {
         m_up = glm::normalize(glm::cross(m_right, m_forward));
 
         //= CAMERA MOVEMENT
-
+        vec3 vecDeltaTime = vec3(m_delta_time);
         vec3 position = transform.get_position();
-        vec3 nextPosition = position + (m_keyboardDirection);
+        vec3 nextPosition = position + (m_keyboardDirection * m_movementMultiplier * m_moveSpeed * vecDeltaTime);
         transform.set_position(nextPosition);
 
         //= SET LOOK TARGET POSITION USING FORWARD VECTOR
@@ -146,6 +146,14 @@ void CameraRotation::camera_key_input() {
     if (m_inputManager.key_on_release(KeyCode::F)) {
         movementDirectionXYZ += -m_up;
     }
+
+    vec3 speedTarget;
+    if (m_inputManager.key_on_release(KeyCode::LeftShift)) {
+        speedTarget = m_maxMovementMultiplier;
+    } else {
+        speedTarget = m_minMovementMultiplier;
+    }
+    m_movementMultiplier = lerp(m_movementMultiplier, speedTarget, .15f);
 
     m_keyboardDirection = movementDirectionXYZ;
 }
