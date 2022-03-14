@@ -50,7 +50,7 @@ void CameraRotation::on_update(double m_delta_time) {
     m_mouseDelta = (currentMousePos - m_lastMousePosition);
 
     //= 'E' TOGGLE MOUSE HIDDEN ==
-    toggle_mouse_hidden();
+    camera_key_input();
 
     using namespace components;
     auto sceneOpt = Scene::get_active_scene();
@@ -75,7 +75,8 @@ void CameraRotation::on_update(double m_delta_time) {
         Transform& transform = go.get_component<Transform>();
         EditorCamera& editorCamera = go.get_component<EditorCamera>();
         Name& name = go.get_component<Name>();
-
+        
+        //= CAMERA ROTATION
         m_roll = 0.0f;
         m_pitch += ((float)-m_mouseDelta.y * (float)m_mouseSensitivity.y) * (float)m_delta_time;
         m_yaw += ((float)-m_mouseDelta.x * (float)m_mouseSensitivity.x) * (float)m_delta_time;
@@ -83,21 +84,27 @@ void CameraRotation::on_update(double m_delta_time) {
         m_pitch = clamp(m_pitch, m_pitchClamp.x, m_pitchClamp.y);
 
         transform.set_rotation_euler(vec3(m_roll, m_pitch, m_yaw));
-        auto pos = transform.get_rotation_euler();
+        auto eulerRotation = transform.get_rotation_euler();
 
         //= CALCULATE FORWARD VECTOR == // TODO STORE / CALC THESE IN TRANSFORM
         glm::vec3 look;
-        look.x = cosf(radians(pos.y)) * sinf(radians(pos.z));
-        look.y = sinf(radians(pos.y));
-        look.z = cosf(radians(pos.y)) * cosf(radians(pos.z));
-        vec3 forward = glm::normalize(look);
+        look.x = cosf(radians(eulerRotation.y)) * sinf(radians(eulerRotation.z));
+        look.y = sinf(radians(eulerRotation.y));
+        look.z = cosf(radians(eulerRotation.y)) * cosf(radians(eulerRotation.z));
+        m_forward = glm::normalize(look);
 
         //= CALCULATE LOCAL RIGHT AND UP == // TODO STORE / CALC THESE IN TRANSFORM
-        vec3 right = glm::normalize(glm::cross(forward, vec3(0, 1, 0)));
-        vec3 up = glm::normalize(glm::cross(right, forward));
+        m_right = glm::normalize(glm::cross(m_forward, vec3(0, 1, 0)));
+        m_up = glm::normalize(glm::cross(m_right, m_forward));
+
+        //= CAMERA MOVEMENT
+
+        vec3 position = transform.get_position();
+        vec3 nextPosition = position + (m_keyboardDirection);
+        transform.set_position(nextPosition);
 
         //= SET LOOK TARGET POSITION USING FORWARD VECTOR
-        vec3 targetPos = transform.get_position() + forward;
+        vec3 targetPos = transform.get_position() + m_forward;
         editorCamera.set_look_target(targetPos);
 
         m_lastMousePosition = currentMousePos;
@@ -106,10 +113,9 @@ void CameraRotation::on_update(double m_delta_time) {
 void CameraRotation::on_late_update() {}
 void CameraRotation::on_destroy() {}
 
-void CameraRotation::toggle_mouse_hidden() {
+void CameraRotation::camera_key_input() {
     if (m_inputManager.key_on_release(KeyCode::E)) {
         if (m_ePressed) {
-            log::info("E PRESSED");
             m_lockState = !m_lockState;
             m_engine.get_window_module().lock()->set_cursor_hide(m_lockState);
         }
@@ -117,5 +123,30 @@ void CameraRotation::toggle_mouse_hidden() {
     } else {
         m_ePressed = true;
     }
+
+    //= XYZ editor movement input
+
+    vec3 movementDirectionXYZ = vec3(0);
+
+    if (m_inputManager.key_on_release(KeyCode::W)) {
+        movementDirectionXYZ += m_forward;
+    }
+    if (m_inputManager.key_on_release(KeyCode::S)) {
+        movementDirectionXYZ += -m_forward;
+    }
+    if (m_inputManager.key_on_release(KeyCode::A)) {
+        movementDirectionXYZ += -m_right;
+    }
+    if (m_inputManager.key_on_release(KeyCode::D)) {
+        movementDirectionXYZ += m_right;
+    }
+    if (m_inputManager.key_on_release(KeyCode::R)) {
+        movementDirectionXYZ += m_up;
+    }
+    if (m_inputManager.key_on_release(KeyCode::F)) {
+        movementDirectionXYZ += -m_up;
+    }
+
+    m_keyboardDirection = movementDirectionXYZ;
 }
 }  // namespace knot

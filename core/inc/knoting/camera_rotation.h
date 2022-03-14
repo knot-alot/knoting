@@ -22,7 +22,7 @@ class CameraRotation : public Subsystem {
     void on_destroy() override;
 
    private:
-    void toggle_mouse_hidden();
+    void camera_key_input();
 
    private:
     Engine& m_engine;
@@ -34,9 +34,15 @@ class CameraRotation : public Subsystem {
     vec2d m_currentMousePos = vec2d(0.0);
     vec2d m_mouseDelta = vec2d(0.0);
 
+    vec3 m_keyboardDirection = vec3(0);
+
     double m_roll = 0;   // roll = x
     double m_pitch = 0;  // pitch = y
     double m_yaw = 0;    // yaw = z
+
+    vec3 m_right;
+    vec3 m_up;
+    vec3 m_forward;
 
     bool m_ePressed = true;
     bool m_lockState = true;
