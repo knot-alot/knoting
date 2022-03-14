@@ -20,7 +20,7 @@ BX_PRAGMA_DIAGNOSTIC_POP()
 #include <tinystl/unordered_map.h>
 namespace stl = tinystl;
 
-#include <bx\math.h>
+#include <bx/math.h>
 #include <knoting/font_manager.h>
 #include "../bgfx/bgfx/examples/common/cube_atlas.h"
 #define STB_TRUETYPE_IMPLEMENTATION

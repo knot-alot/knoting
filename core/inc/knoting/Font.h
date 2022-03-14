@@ -15,6 +15,7 @@
 #include <bgfx/bgfx.h>
 #include <knoting/components.h>
 #include <knoting/entry.h>
+#include <cereal/cereal.hpp>
 
 namespace knot {
 namespace components {

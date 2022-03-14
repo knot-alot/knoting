@@ -8,7 +8,7 @@
 #include <limits.h>  // INT_MAX
 #include <vector>
 
-#include <bx\bx.h>
+#include <bx/bx.h>
 #include "knoting/cube_atlas.h"
 
 class RectanglePacker {
