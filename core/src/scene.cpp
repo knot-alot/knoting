@@ -93,6 +93,9 @@ void Scene::remove_game_object(GameObject game_object) {
 }
 
 std::optional<GameObject> Scene::get_game_object_from_id(uuid id) {
+    if (id.is_nil())
+        return std::nullopt;
+
     auto it = m_uuidGameObjectMap.find(id);
     if (it == m_uuidGameObjectMap.end()) {
         return std::nullopt;
@@ -101,6 +104,9 @@ std::optional<GameObject> Scene::get_game_object_from_id(uuid id) {
 }
 
 std::optional<GameObject> Scene::get_game_object_from_handle(entt::entity handle) {
+    if (handle == entt::null || handle == entt::tombstone)
+        return std::nullopt;
+
     auto it = m_entityGameObjectMap.find(handle);
     if (it == m_entityGameObjectMap.end()) {
         return std::nullopt;
@@ -114,18 +120,6 @@ std::optional<std::reference_wrapper<Scene>> Scene::get_active_scene() {
 
 void Scene::set_active_scene(std::optional<std::reference_wrapper<Scene>> scene) {
     s_activeScene = std::ref(scene);
-}
-
-template <typename T>
-std::optional<GameObject> Scene::get_game_object_from_component(T& component) {
-    auto sceneOpt = get_active_scene();
-    if (!sceneOpt) {
-        return std::nullopt;
-    }
-
-    Scene& scene = sceneOpt.value();
-    entt::entity handle = entt::to_entity(scene.m_registry, component);
-    return scene.get_game_object_from_handle(handle);
 }
 
 void Scene::save_scene_to_stream(std::ostream& serialized) {
