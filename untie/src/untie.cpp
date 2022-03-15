@@ -172,7 +172,22 @@ Untie::Untie() {
         cubeObj.add_component<components::Material>(material);
     }
 
-    std::string filename("skyboxScene.json");
+    {
+        auto cubeObj = scene.create_game_object("post processing");
+        cubeObj.get_component<components::Transform>().set_position(vec3(0));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(7, 7, 7));
+        cubeObj.add_component<components::InstanceMesh>("postProcessPlane");
+
+        auto material = components::Material();
+        material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
+        material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        cubeObj.add_component<components::Material>(material);
+    }
+
+    std::string filename("rnasdd1355.json");
     std::filesystem::path path = AssetManager::get_resources_path().append(filename);
     std::fstream serializedSceneStream(path);
 

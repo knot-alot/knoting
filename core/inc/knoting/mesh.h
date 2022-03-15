@@ -33,6 +33,7 @@ class Mesh : public Asset {
     void on_destroy() override;
     //=For Asset=======
     void generate_default_asset() override;
+    void generate_post_process_plane();
     //=================
 
     void create_cube();

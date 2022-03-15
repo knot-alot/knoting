@@ -12,8 +12,8 @@
 namespace knot {
 
 class Engine;
+}  // namespace knot
 
-}
 namespace knot {
 
 class ForwardRenderer : public Subsystem {

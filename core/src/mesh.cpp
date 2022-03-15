@@ -31,6 +31,47 @@ void Mesh::on_destroy() {
     log::info("removed mesh : {}", m_fullPath);
 }
 
+void Mesh::generate_post_process_plane() {
+    m_assetState = AssetState::Loading;
+    m_fullPath = "postProcessPlane";
+
+    std::vector<unsigned int> tempIndex = {1, 2, 3, 4, 5, 6};
+
+    m_indexBuffer = std::make_shared<IndexBuffer>();
+    m_indexBuffer->set_index_buffer(tempIndex);
+
+    m_ibh = bgfx::createIndexBuffer(bgfx::makeRef(&m_indexBuffer->get_index_start(), m_indexBuffer->get_memory_size()));
+    VertexLayout::init();
+
+    m_vertexLayout = {{-1.0f, 1.0f, 0.0f, encode_normal_rgba8(1.0f, 0.0f, 0.0f), 0, 0.0f, 1.0f},
+                      {-1.0f, -1.0f, 0.0f, encode_normal_rgba8(1.0f, 0.0f, 0.0f), 0, 0.0f, 0.0f},
+                      {1.0f, -1.0f, 0.0f, encode_normal_rgba8(1.0f, 0.0f, 0.0f), 0, 1.0f, 0.0f},
+                      {-1.0f, 1.0f, 0.0f, encode_normal_rgba8(1.0f, 0.0f, 0.0f), 0, 0.0f, 1.0f},
+                      {1.0f, -1.0f, 0.0f, encode_normal_rgba8(1.0f, 0.0f, 0.0f), 0, 1.0f, 0.0f},
+                      {1.0f, 1.0f, 0.0f, encode_normal_rgba8(1.0f, 0.0f, 0.0f), 0, 1.0f, 1.0f}};
+
+    m_vbh =
+        bgfx::createVertexBuffer(bgfx::makeRef(&m_vertexLayout[0], sizeof(m_vertexLayout[0]) * m_vertexLayout.size()),
+                                 VertexLayout::s_meshVertexLayout);
+
+    if (!bgfx::isValid(m_vbh)) {
+        log::error("VBH : postProcessPlane failed to be created");
+        m_vbh = BGFX_INVALID_HANDLE;
+        m_assetState = AssetState::Failed;
+        return;
+    }
+
+    if (!bgfx::isValid(m_ibh)) {
+        log::error("IBH : postProcessPlane failed to be created");
+        m_ibh = BGFX_INVALID_HANDLE;
+        m_assetState = AssetState::Failed;
+        return;
+    }
+
+    m_assetState = AssetState::Finished;
+    log::info("postProcessPlane created");
+}
+
 void Mesh::create_cube() {
     std::vector<unsigned int> tempIndex = {
         0,  2,  1,  1,  2,  3,  4,  5,  6,  5,  7,  6,
@@ -44,8 +85,8 @@ void Mesh::create_cube() {
     m_indexBuffer->set_index_buffer(tempIndex);
 
     m_ibh = bgfx::createIndexBuffer(bgfx::makeRef(&m_indexBuffer->get_index_start(), m_indexBuffer->get_memory_size()));
-
     VertexLayout::init();
+
     m_vertexLayout = {
         {-1.0f, 1.0f, 1.0f, encode_normal_rgba8(0.0f, 0.0f, 1.0f), 0, 0, 0},
         {1.0f, 1.0f, 1.0f, encode_normal_rgba8(0.0f, 0.0f, 1.0f), 0, 1, 0},

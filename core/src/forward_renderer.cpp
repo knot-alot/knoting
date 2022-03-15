@@ -8,6 +8,7 @@
 
 #include <knoting/components.h>
 #include <knoting/engine.h>
+#include <knoting/post_processing.h>
 #include <knoting/scene.h>
 #include <stb_image.h>
 #include <fstream>
@@ -163,6 +164,24 @@ void ForwardRenderer::color_pass() {
                        BGFX_STATE_DEPTH_TEST_LESS);
 
         bgfx::submit(idx, material.get_program());
+    }
+
+    //=POST PROCESSING========================
+    auto postProcessEntities = registry.view<Transform, PostProcessing, Name>();
+    for (auto& e : entities) {
+        auto goOpt = scene.get_game_object_from_handle(e);
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        Transform& transform = go.get_component<Transform>();
+        Name& name = go.get_component<Name>();
+        PostProcessing& postProcessing = go.get_component<PostProcessing>();
+
+        log::info("IN POST PROCESS {}", name.name);
+
+        //        postProcessing.set_geometry_framebuffer(colorBuffer);
     }
 }
 
