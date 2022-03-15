@@ -246,8 +246,10 @@ void ForwardRenderer::post_process_pass() {
 
             log::info("IN POST PROCESS {}", name.name);
 
-            postProcessing.set_geometry_framebuffer(geometryPass);
-            postProcessing.set_gui_framebuffer(guiPass);
+            auto tex = frameBuffers->get_texture_attachments(FrameBufferType::Color);
+            postProcessing.set_color_render_texture(tex[0]);
+            //            postProcessing.set_geometry_framebuffer(geometryPass);
+            //            postProcessing.set_gui_framebuffer(guiPass);
 
             postProcessing.set_uniforms();
 
@@ -255,7 +257,6 @@ void ForwardRenderer::post_process_pass() {
                            BGFX_STATE_DEPTH_TEST_LESS);
 
             bgfx::submit(idx, postProcessing.get_program());
-
         }
     }
 }

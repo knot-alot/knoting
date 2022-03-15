@@ -22,6 +22,7 @@ class PostProcessing {
 
     void set_geometry_framebuffer(const bgfx::FrameBufferHandle& fbh);
     void set_gui_framebuffer(const bgfx::FrameBufferHandle& fbh);
+    void set_color_render_texture(const bgfx::TextureHandle& tbh);
 
     bgfx::TextureHandle get_color_geometry_render_texture();
     bgfx::TextureHandle get_color_gui_render_texture();
@@ -35,6 +36,8 @@ class PostProcessing {
     // MAX PS4 Attachments 8
     bgfx::FrameBufferHandle m_geometryPass;
     bgfx::FrameBufferHandle m_guiPass;
+
+    bgfx::TextureHandle m_geoTBH;
 
     ShaderProgram m_shader;
     bgfx::UniformHandle m_uniformGeometry;
