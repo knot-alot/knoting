@@ -31,7 +31,7 @@ class FramebufferManager : public Subsystem {
     std::vector<bgfx::TextureHandle> get_texture_attachments(FrameBufferType type);
 
    private:
-    FrameBufferType m_currentViewBuffer = FrameBufferType::Color;
+    FrameBufferType m_currentViewBuffer = FrameBufferType::PostProcess;
     std::array<RenderTexture, (size_t)FrameBufferType::LAST> m_renderTextures;
     Engine& m_engine;
 };

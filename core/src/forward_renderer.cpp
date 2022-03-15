@@ -165,29 +165,100 @@ void ForwardRenderer::color_pass() {
 
         bgfx::submit(idx, material.get_program());
     }
+}
 
-    //=POST PROCESSING========================
-    auto postProcessEntities = registry.view<Transform, PostProcessing, Name>();
-    for (auto& e : entities) {
-        auto goOpt = scene.get_game_object_from_handle(e);
+void ForwardRenderer::skybox_pass() {}
+void ForwardRenderer::transparent_pass() {}
+void ForwardRenderer::post_process_pass() {
+    using namespace components;
+    auto sceneOpt = Scene::get_active_scene();
+    if (!sceneOpt) {
+        return;
+    }
+    Scene& scene = sceneOpt.value();
+    entt::registry& registry = scene.get_registry();
+
+    //=GET FBO DATA===========================
+
+    auto frameBuffers = m_engine.get_framebuffer_manager_module().lock();
+    auto geometryPass = frameBuffers->get_framebuffer(FrameBufferType::Color);
+    auto guiPass = frameBuffers->get_framebuffer(FrameBufferType::Gui);
+    auto postProcessPass = frameBuffers->get_framebuffer(FrameBufferType::PostProcess);
+    auto idx = postProcessPass.idx;
+
+    //=SET BGFX GLOBAL UNIFORMS===============
+
+    mat4 invProj;
+    glm::mat4 view;
+    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
+    //=CAMERA===========================
+    auto cameras = registry.view<Transform, EditorCamera, Name>();
+
+    for (auto& cam : cameras) {
+        auto goOpt = scene.get_game_object_from_handle(cam);
         if (!goOpt) {
             continue;
         }
 
         GameObject go = goOpt.value();
         Transform& transform = go.get_component<Transform>();
+        EditorCamera& editorCamera = go.get_component<EditorCamera>();
         Name& name = go.get_component<Name>();
-        PostProcessing& postProcessing = go.get_component<PostProcessing>();
 
-        log::info("IN POST PROCESS {}", name.name);
+        const glm::vec3 pos = transform.get_position();
+        const glm::vec3 lookTarget = editorCamera.get_look_target();
+        const glm::vec3 up = editorCamera.get_up();
 
-        //        postProcessing.set_geometry_framebuffer(colorBuffer);
+        const float fovY = editorCamera.get_fov();
+        const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
+        const float zNear = editorCamera.get_z_near();
+        const float zFar = editorCamera.get_z_far();
+
+        // Set view and projection matrix for view 0.
+        {
+            view = glm::lookAt(pos, lookTarget, up);
+            glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
+            bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
+        }
+    }
+
+    //=POST PROCESSING========================
+    {
+        auto postProcessEntities = registry.view<Transform, PostProcessing, Name, InstanceMesh>();
+        for (auto& e : postProcessEntities) {
+            auto goOpt = scene.get_game_object_from_handle(e);
+            if (!goOpt) {
+                continue;
+            }
+
+            GameObject go = goOpt.value();
+            Transform& transform = go.get_component<Transform>();
+            InstanceMesh& mesh = go.get_component<InstanceMesh>();
+            Name& name = go.get_component<Name>();
+            PostProcessing& postProcessing = go.get_component<PostProcessing>();
+
+            bgfx::setTransform(value_ptr(transform.get_model_matrix()));
+            bgfx::setVertexBuffer(idx, mesh.get_vertex_buffer());
+
+            if (isValid(mesh.get_index_buffer())) {
+                bgfx::setIndexBuffer(mesh.get_index_buffer());
+            }
+
+            log::info("IN POST PROCESS {}", name.name);
+
+            postProcessing.set_geometry_framebuffer(geometryPass);
+            postProcessing.set_gui_framebuffer(guiPass);
+
+            postProcessing.set_uniforms();
+
+            bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+                           BGFX_STATE_DEPTH_TEST_LESS);
+
+            bgfx::submit(idx, postProcessing.get_program());
+
+        }
     }
 }
-
-void ForwardRenderer::skybox_pass() {}
-void ForwardRenderer::transparent_pass() {}
-void ForwardRenderer::post_process_pass() {}
 
 void ForwardRenderer::on_late_update() {}
 void ForwardRenderer::on_destroy() {}

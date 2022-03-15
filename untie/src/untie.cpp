@@ -4,6 +4,7 @@
 #include <knoting/instance_mesh.h>
 #include <knoting/log.h>
 #include <knoting/mesh.h>
+#include <knoting/post_processing.h>
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/scene.h>
 #include <knoting/texture.h>
@@ -177,31 +178,32 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(vec3(0));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(7, 7, 7));
         cubeObj.add_component<components::InstanceMesh>("postProcessPlane");
+        cubeObj.add_component<components::PostProcessing>();
 
         auto material = components::Material();
-        material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
-        material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
+        material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
         material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
 
-    std::string filename("rnasdd1355.json");
-    std::filesystem::path path = AssetManager::get_resources_path().append(filename);
-    std::fstream serializedSceneStream(path);
-
-    serializedSceneStream.open(path, std::ios_base::out);
-    scene.save_scene_to_stream(serializedSceneStream);
-    serializedSceneStream.close();
-    Scene::set_active_scene(loadedScene);
-    serializedSceneStream.open(path, std::ios_base::in);
-    if (serializedSceneStream) {
-        loadedScene.load_scene_from_stream(serializedSceneStream);
-    } else {
-        log::debug("file not found");
-    }
-    serializedSceneStream.close();
+    //    std::string filename("rnasdd135586.json");
+    //    std::filesystem::path path = AssetManager::get_resources_path().append(filename);
+    //    std::fstream serializedSceneStream(path);
+    //
+    //    serializedSceneStream.open(path, std::ios_base::out);
+    //    scene.save_scene_to_stream(serializedSceneStream);
+    //    serializedSceneStream.close();
+    //    Scene::set_active_scene(loadedScene);
+    //    serializedSceneStream.open(path, std::ios_base::in);
+    //    if (serializedSceneStream) {
+    //        loadedScene.load_scene_from_stream(serializedSceneStream);
+    //    } else {
+    //        log::debug("file not found");
+    //    }
+    //    serializedSceneStream.close();
 }
 void Untie::run() {
     while (m_engine->is_open()) {
