@@ -14,7 +14,7 @@ void RenderTexture::create_render_texture(const vec2i& size, const uint64_t& fla
     }
 
     m_renderTextureHandle.emplace_back(
-        bgfx::createTexture2D(size.x, size.y, false, 3, bgfx::TextureFormat::BGRA8, m_flags));
+        bgfx::createTexture2D(size.x, size.y, false, 4, bgfx::TextureFormat::BGRA8, m_flags));
     m_renderTextureHandle.emplace_back(
         bgfx::createTexture2D(size.x, size.y, false, 1, bgfx::TextureFormat::D16, m_flags));
     m_framebufferHandle = bgfx::createFrameBuffer(m_renderTextureHandle.size(), m_renderTextureHandle.data());

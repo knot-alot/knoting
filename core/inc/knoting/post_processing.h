@@ -38,6 +38,8 @@ class PostProcessing {
     bgfx::FrameBufferHandle m_guiPass;
 
     bgfx::TextureHandle m_geoTBH;
+    std::shared_ptr<Texture> m_albedo;
+
 
     ShaderProgram m_shader;
     bgfx::UniformHandle m_uniformGeometry;
