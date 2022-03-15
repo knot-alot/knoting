@@ -61,39 +61,38 @@ void RigidBody::set_transform(const vec3& position, const quat& rotation) {
         return;
     }
     if (m_dynamic) {
-        m_dynamic->get()->setGlobalPose(PxTransform(vec3_to_PxVec3(position)));
-        m_dynamic->get()->setGlobalPose(PxTransform(quat_to_PxQuat(rotation)));
+        m_dynamic->get()->setGlobalPose(PxTransform(vec3_to_PxVec3(position), quat_to_PxQuat(rotation)));
     } else {
-        m_static->get()->setGlobalPose(PxTransform(vec3_to_PxVec3(position)));
-        m_static->get()->setGlobalPose(PxTransform(quat_to_PxQuat(rotation)));
+        m_static->get()->setGlobalPose(PxTransform(vec3_to_PxVec3(position), quat_to_PxQuat(rotation)));
     }
 }
 
 void RigidBody::set_position(const vec3& position) {
     if (m_dynamic) {
-        m_dynamic->get()->setGlobalPose(PxTransform(vec3_to_PxVec3(position)));
+        m_dynamic->get()->setGlobalPose(PxTransform(vec3_to_PxVec3(position), m_dynamic->get()->getGlobalPose().q));
     } else {
-        m_static->get()->setGlobalPose(PxTransform(vec3_to_PxVec3(position)));
+        m_static->get()->setGlobalPose(PxTransform(vec3_to_PxVec3(position), m_static->get()->getGlobalPose().q));
     }
 }
+
 void RigidBody::set_rotation(const quat& rotation) {
     if (m_dynamic) {
-        m_dynamic->get()->setGlobalPose(PxTransform(quat_to_PxQuat(rotation)));
+        m_dynamic->get()->setGlobalPose(PxTransform(m_dynamic->get()->getGlobalPose().p, quat_to_PxQuat(rotation)));
     } else {
-        m_static->get()->setGlobalPose(PxTransform(quat_to_PxQuat(rotation)));
+        m_static->get()->setGlobalPose(PxTransform(m_static->get()->getGlobalPose().p, quat_to_PxQuat(rotation)));
     }
 }
 
 void RigidBody::create_actor(bool isDynamic, const float& mass) {
     if (isDynamic) {
-        m_dynamic = std::make_shared<PxDynamic_ptr_wrapper>(
-            m_physics->get()->createRigidDynamic(PxTransform(get_position_from_transform())));
+        m_dynamic = std::make_shared<PxDynamic_ptr_wrapper>(m_physics->get()->createRigidDynamic(
+            PxTransform(get_position_from_transform(), get_rotation_from_transform())));
         m_dynamic->get()->attachShape(*m_shape->get());
         PxRigidBodyExt::updateMassAndInertia(*m_dynamic->get(), mass);
         m_scene->get()->addActor(*m_dynamic->get());
     } else {
-        m_static = std::make_shared<PxStatic_ptr_wrapper>(
-            m_physics->get()->createRigidStatic(PxTransform(get_position_from_transform())));
+        m_static = std::make_shared<PxStatic_ptr_wrapper>(m_physics->get()->createRigidStatic(
+            PxTransform(get_position_from_transform(), get_rotation_from_transform())));
         m_static->get()->attachShape(*m_shape->get());
         m_scene->get()->addActor(*m_static->get());
     }
@@ -103,12 +102,9 @@ PxVec3 RigidBody::get_position_from_transform() {
     auto sceneOpt = Scene::get_active_scene();
     if (sceneOpt) {
         Scene& scene = sceneOpt.value();
-        entt::entity handle = entt::to_entity(scene.get_registry(), *this);
-        auto goOpt = scene.get_game_object_from_handle(handle);
-        ;
+        auto goOpt = GameObject::get_game_object_from_component(*this);
         if (goOpt) {
             PxVec3 position = vec3_to_PxVec3(goOpt->get_component<components::Transform>().get_position());
-
             return position;
         }
     }
@@ -119,10 +115,11 @@ PxQuat RigidBody::get_rotation_from_transform() {
     auto sceneOpt = Scene::get_active_scene();
     if (sceneOpt) {
         Scene& scene = sceneOpt.value();
-        entt::entity handle = entt::to_entity(scene.get_registry(), *this);
-        auto goOpt = scene.get_game_object_from_handle(handle);
+        auto goOpt = GameObject::get_game_object_from_component(*this);
         if (goOpt) {
-            return quat_to_PxQuat(goOpt->get_component<components::Transform>().get_rotation());
+            Transform& transform = goOpt->get_component<Transform>();
+            quat r = transform.get_rotation();
+            return quat_to_PxQuat(r);
         }
     }
     return PxQuat();
