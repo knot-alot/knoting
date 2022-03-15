@@ -50,6 +50,7 @@ Untie::Untie() {
     {
         auto fontObj = m_scene->create_game_object("font");
         fontObj.add_component<components::Font>();
+     
     }
 }
 
