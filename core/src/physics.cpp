@@ -1,4 +1,3 @@
-#include <knoting/components.h>
 #include <knoting/engine.h>
 #include <knoting/physics.h>
 #include <knoting/scene.h>
@@ -25,6 +24,13 @@ void Physics::on_awake() {
     sceneDesc.cpuDispatcher = m_Dispatcher->get();
     sceneDesc.filterShader = PxDefaultSimulationFilterShader;
     m_Scene = std::make_shared<PxScene_ptr_wrapper>(m_Physics->get()->createScene(sceneDesc));
+
+    PxAggregate* aggregate = m_Physics->get()->createAggregate(128, false);
+    std::shared_ptr<PxAggregate_ptr_wrapper> ag = std::make_shared<PxAggregate_ptr_wrapper>(aggregate, "default");
+    std::vector<std::shared_ptr<PxAggregate_ptr_wrapper>> ags;
+    ags.push_back(ag);
+    m_Aggregates = std::make_shared<std::vector<std::shared_ptr<PxAggregate_ptr_wrapper>>>(ags);
+    m_Scene->get()->addAggregate(*ag->get_aggregate());
 }
 
 void Physics::on_update(double m_deltatime) {}
@@ -75,5 +81,4 @@ void Physics::set_gravity(PxVec3 gravity) {
     gravity = gravity;
     m_Scene->get()->setGravity(gravity);
 }
-
 }  // namespace knot

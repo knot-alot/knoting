@@ -1,8 +1,11 @@
 #pragma once
 
+#include <vector>
+
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/rigidbody.h>
 #include <knoting/subsystem.h>
+#include <iostream>
 
 namespace knot {
 
@@ -28,6 +31,7 @@ class Physics : public Subsystem {
     std::weak_ptr<PxScene_ptr_wrapper> get_active_Scene() { return m_Scene; }
     std::weak_ptr<PxPhysics_ptr_wrapper> get_physics() { return m_Physics; }
     PxVec3 get_gravity() { return m_gravity; }
+    std::weak_ptr<std::vector<std::shared_ptr<PxAggregate_ptr_wrapper>>> get_Aggregates() { return m_Aggregates; }
 
     void set_gravity(PxVec3 gravity);
 
@@ -37,6 +41,7 @@ class Physics : public Subsystem {
     std::shared_ptr<PxPhysics_ptr_wrapper> m_Physics;
     std::shared_ptr<PxDispatcher_ptr_wrapper> m_Dispatcher;
     std::shared_ptr<PxScene_ptr_wrapper> m_Scene;
+    std::shared_ptr<std::vector<std::shared_ptr<PxAggregate_ptr_wrapper>>> m_Aggregates;
     PxVec3 m_gravity;
 };
 

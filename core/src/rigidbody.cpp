@@ -1,3 +1,4 @@
+#include <knoting/aggregate.h>
 #include <knoting/engine.h>
 #include <knoting/rigidbody.h>
 #include <knoting/scene.h>
@@ -5,7 +6,12 @@
 namespace knot {
 namespace components {
 RigidBody::RigidBody()
-    : m_physics(nullptr), m_dynamic(nullptr), m_static(nullptr), m_scene(nullptr), m_shape(nullptr) {}
+    : m_physics(nullptr),
+      m_dynamic(nullptr),
+      m_static(nullptr),
+      m_scene(nullptr),
+      m_shape(nullptr),
+      m_aggregate(nullptr) {}
 
 RigidBody::~RigidBody() {}
 
@@ -18,6 +24,9 @@ void RigidBody::on_awake() {
     }
     if (get_shape_from_shape()) {
         this->m_shape = get_shape_from_shape();
+    }
+    if (get_aggregate_from_aggregate()) {
+        this->m_aggregate = get_aggregate_from_aggregate();
     }
 }
 void RigidBody::on_destroy() {
@@ -83,18 +92,67 @@ void RigidBody::set_rotation(const quat& rotation) {
     }
 }
 
+void RigidBody::set_name(char* name) {
+    m_name = name;
+    if (m_dynamic) {
+        m_dynamic->get()->setName(name);
+    } else {
+        m_static->get()->setName(name);
+    }
+}
+
+void RigidBody::set_shape(std::shared_ptr<PxShape_ptr_wrapper> shape) {
+    if (m_dynamic) {
+        if (m_shape) {
+            m_dynamic->get()->detachShape(*m_shape->get());
+            m_shape = shape;
+            m_dynamic->get()->attachShape(*m_shape->get());
+        } else {
+            m_shape = shape;
+        }
+    } else {
+        if (m_shape) {
+            m_static->get()->detachShape(*m_shape->get());
+            m_shape = shape;
+            m_static->get()->attachShape(*m_shape->get());
+        } else {
+            m_shape = shape;
+        }
+    }
+}
+
+void RigidBody::set_aggregate(std::shared_ptr<PxAggregate_ptr_wrapper> aggragate) {
+    if (m_dynamic) {
+        if (m_aggregate) {
+            m_aggregate->get_aggregate()->removeActor(*m_dynamic->get());
+            m_aggregate = aggragate;
+            m_aggregate->get_aggregate()->addActor(*m_dynamic->get());
+        } else {
+            m_aggregate = aggragate;
+        }
+    } else {
+        if (m_aggregate) {
+            m_aggregate->get_aggregate()->removeActor(*m_static->get());
+            m_aggregate = aggragate;
+            m_aggregate->get_aggregate()->addActor(*m_static->get());
+        } else {
+            m_aggregate = aggragate;
+        }
+    }
+}
+
 void RigidBody::create_actor(bool isDynamic, const float& mass) {
     if (isDynamic) {
         m_dynamic = std::make_shared<PxDynamic_ptr_wrapper>(m_physics->get()->createRigidDynamic(
             PxTransform(get_position_from_transform(), get_rotation_from_transform())));
         m_dynamic->get()->attachShape(*m_shape->get());
         PxRigidBodyExt::updateMassAndInertia(*m_dynamic->get(), mass);
-        m_scene->get()->addActor(*m_dynamic->get());
+        m_aggregate->get_aggregate()->addActor(*m_dynamic->get());
     } else {
         m_static = std::make_shared<PxStatic_ptr_wrapper>(m_physics->get()->createRigidStatic(
             PxTransform(get_position_from_transform(), get_rotation_from_transform())));
         m_static->get()->attachShape(*m_shape->get());
-        m_scene->get()->addActor(*m_static->get());
+        m_aggregate->get_aggregate()->addActor(*m_static->get());
     }
 }
 
@@ -135,6 +193,22 @@ std::shared_ptr<PxShape_ptr_wrapper> RigidBody::get_shape_from_shape() {
             if (goOpt->has_component<components::Shape>()) {
                 Shape& shape = goOpt->get_component<components::Shape>();
                 return shape.get_shape().lock();
+            }
+        }
+    }
+    return nullptr;
+}
+
+std::shared_ptr<PxAggregate_ptr_wrapper> RigidBody::get_aggregate_from_aggregate() {
+    auto sceneOpt = Scene::get_active_scene();
+    if (sceneOpt) {
+        Scene& scene = sceneOpt.value();
+        entt::entity handle = entt::to_entity(scene.get_registry(), *this);
+        auto goOpt = scene.get_game_object_from_handle(handle);
+        if (goOpt) {
+            if (goOpt->has_component<components::Aggregate>()) {
+                Aggregate& aggregate = goOpt->get_component<components::Aggregate>();
+                return aggregate.get_aggregate().lock();
             }
         }
     }

@@ -1,5 +1,7 @@
 #pragma once
 #include <PxPhysicsAPI.h>
+#include <iostream>
+#include <vector>
 
 using namespace physx;
 
@@ -173,6 +175,30 @@ class PxMaterial_ptr_wrapper {
 
    private:
     PxMaterial* m_material;
+};
+
+class PxAggregate_ptr_wrapper {
+   public:
+    PxAggregate_ptr_wrapper(PxAggregate* aggregate = nullptr, std::string name = nullptr)
+        : m_aggregate(aggregate), m_aggregate_name(name) {}
+    ~PxAggregate_ptr_wrapper() { clean(); }
+    void set(PxAggregate* aggregate, std::string name) {
+        clean();
+        m_aggregate = aggregate;
+        m_aggregate_name = name;
+    }
+    PxAggregate* get_aggregate() { return m_aggregate; }
+    std::string get_name() { return m_aggregate_name; }
+    void clean() {
+        if (m_aggregate) {
+            m_aggregate->release();
+            m_aggregate = nullptr;
+        }
+    }
+
+   private:
+    PxAggregate* m_aggregate;
+    std::string m_aggregate_name;
 };
 
 };  // namespace knot
