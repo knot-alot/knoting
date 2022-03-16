@@ -28,6 +28,8 @@ class NetworkedServer : public Subsystem {
     bool handle_recieved_packets();
     bool send_message();
 
+    Message* generateMessage(uint16_t cliNum);
+
    protected:
     Engine& m_engine;
     std::shared_ptr<yojimbo::Server> m_server;

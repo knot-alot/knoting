@@ -9,7 +9,7 @@ NetworkedClient::NetworkedClient(Engine& engine) : m_engine(engine), m_client(nu
 void NetworkedClient::on_awake() {
     m_client = std::make_shared<Client>(GetDefaultAllocator(), Address("0.0.0.0", CLIENT_PORT), m_config, clientAdapter,
                                         get_time());
-
+    m_inManager = m_engine.get_window_module().lock()->get_input_manager();
     log::debug("CREATED CLIENT with {} channels", m_config.numChannels);
 }
 void NetworkedClient::on_update(double m_delta_time) {
@@ -22,6 +22,7 @@ void NetworkedClient::on_update(double m_delta_time) {
 
     m_tickTime += m_delta_time;
     if (m_client->IsConnected()) {
+        test_player_input();
         send_message();
     }
     if (m_tickTime >= TICK) {
@@ -83,16 +84,44 @@ bool NetworkedClient::handle_recieved_packets() {
             ServerMessage* serMess = (ServerMessage*)mess;
             serverSeq = serMess->get_sequence();
             serverAck = serMess->get_recent_ack();
-            //            log::debug("Client received Message {} from Server and Server Acknowledged Message: {}",
-            //            serverSeq,
-            //                       serverAck);
-            log::debug("### - CLIENT - ###");
+            if (!cliNumSet) {
+                m_clientNum = serMess->m_clientNum;
+            }
+            log::debug("### - CLIENT {}- ###", m_clientNum);
             log::debug("Player 0 position : x: {} y: {} z: {}", serMess->playerPos[0].x, serMess->playerPos[0].y,
                        serMess->playerPos[0].z);
             log::debug("Player 0 rotation : x: {} y: {} z: {} w: {}", serMess->playerRots[0].x,
                        serMess->playerRots[0].y, serMess->playerRots[0].z, serMess->playerRots[0].w);
             log::debug("Player 0 hp: {}", serMess->playerHealth[0]);
             log::debug(" ");
+
+            auto sceneOpt = Scene::get_active_scene();
+            if (!sceneOpt) {
+                return false;
+            }
+            Scene& scene = sceneOpt.value();
+            entt::registry& registry = scene.get_registry();
+
+            auto players = registry.view<components::ClientPlayer, components::RigidBody>();
+
+            for (auto playerHandle : players) {
+                auto playerOpt = scene.get_game_object_from_handle(playerHandle);
+                if (!playerOpt) {
+                    continue;
+                }
+                auto playerGO = playerOpt.value();
+                auto& playerComp = playerGO.get_component<components::ClientPlayer>();
+                auto& transform = playerGO.get_component<components::Transform>();
+                auto& rigidBody = playerGO.get_component<components::RigidBody>();
+
+                uint16_t playerNum = playerComp.get_client_num();
+                if (!(m_clientNum == playerNum)) {
+                    transform.set_position(serMess->playerPos[playerNum]);
+                    transform.set_rotation(serMess->playerRots[playerNum]);
+                    rigidBody.set_transform(serMess->playerPos[playerNum], serMess->playerRots[playerNum]);
+                    // TODO: set player health, pass the paint collisions to somewhere they can be handled?
+                }
+            }
         }
         m_client->ReleaseMessage(mess);
     }
@@ -102,25 +131,89 @@ bool NetworkedClient::send_message() {
     if (m_tickTime >= TICK) {
         if (m_client->CanSendMessage(1)) {
             Message* mess = generate_message();
-            m_client->SendMessage(1, mess);
-            seq++;
+            if (mess) {
+                m_client->SendMessage(1, mess);
+                seq++;
+            }
+        } else {
+            return false;
         }
     }
     return true;
 }
 Message* NetworkedClient::generate_message() {
-    auto* mess = (ClientMessage*)m_client->CreateMessage(MessageTypes::CLIENT_MESSAGE);
-    mess->set_sequence(seq);
-    mess->set_ack(serverSeq);
-    mess->m_lookAxis = vec2i(seq, (-((int16_t)serverSeq)));
-    mess->m_moveAxis = vec2i((-((int16_t)serverSeq)), seq);
+    auto sceneOpt = Scene::get_active_scene();
+    if (!sceneOpt) {
+        return nullptr;
+    }
+    Scene& scene = sceneOpt.value();
+    entt::registry& registry = scene.get_registry();
 
-    mess->jumpPressed = isJump;
-    isJump = !isJump;
+    auto players = registry.view<components::ClientPlayer>();
 
-    mess->isShooting = isShoot;
-    isShoot = !isShoot;
+    for (auto playerHandle : players) {
+        auto playerOpt = scene.get_game_object_from_handle(playerHandle);
+        if (!playerOpt) {
+            continue;
+        }
+        auto playerGO = playerOpt.value();
+        auto& playerComp = playerGO.get_component<components::ClientPlayer>();
 
-    return mess;
+        if (!(playerComp.get_client_num() == m_clientNum)) {
+            continue;
+        }
+        auto* mess = (ClientMessage*)m_client->CreateMessage(MessageTypes::CLIENT_MESSAGE);
+        mess->set_sequence(seq);
+        mess->set_ack(serverSeq);
+        mess->m_lookAxis = playerComp.get_look_axis();
+        mess->m_moveAxis = playerComp.get_movement_axis();
+        mess->jumpPressed = playerComp.get_jumping_pressed();
+        mess->isShooting = playerComp.get_is_shooting();
+        return mess;
+    }
+    return nullptr;
+}
+void NetworkedClient::test_player_input() {
+    auto sceneOpt = Scene::get_active_scene();
+    if (!sceneOpt) {
+        return;
+    }
+    Scene& scene = sceneOpt.value();
+    entt::registry& registry = scene.get_registry();
+
+    auto players = registry.view<components::ClientPlayer>();
+
+    for (auto playerHandle : players) {
+        auto playerOpt = scene.get_game_object_from_handle(playerHandle);
+        if (!playerOpt) {
+            continue;
+        }
+        auto playerGO = playerOpt.value();
+        auto& playerComp = playerGO.get_component<components::ClientPlayer>();
+
+        if (!(playerComp.get_client_num() == m_clientNum)) {
+            continue;
+        }
+
+        playerComp.set_is_shooting(!playerComp.get_is_shooting());
+        playerComp.set_jumping_pressed(!playerComp.get_jumping_pressed());
+
+        vec3 m_playerInputs = vec3();
+        if (m_inManager->key_pressed(KeyCode::A)) {
+            m_playerInputs.x += 1;
+        }
+        if (m_inManager->key_pressed(KeyCode::D)) {
+            m_playerInputs.x -= 1;
+        }
+        if (m_inManager->key_pressed(KeyCode::W)) {
+            m_playerInputs.z += 1;
+        }
+        if (m_inManager->key_pressed(KeyCode::S)) {
+            m_playerInputs.z -= 1;
+        }
+
+        playerComp.set_XZ_movement_axis(vec2i(m_playerInputs.x, m_playerInputs.z));
+        playerComp.set_look_axis(vec2i(0, -1));
+    }
 }
 }  // namespace knot

@@ -34,6 +34,8 @@ class RigidController {
     void clear_force();
     void clear_torque();
 
+    void lockRotations();
+
     void put_to_sleep();
     void wakeUp();
 

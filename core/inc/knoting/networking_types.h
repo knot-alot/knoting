@@ -96,14 +96,17 @@ bool serialize_quat(Stream& stream, quat& val) {
 class ServerMessage : public Message {
    public:
     ServerMessage() : m_sequence(0), m_recentAck(0) {
-        playerPos.fill(vec3());
+        playerPos.fill(vec3(0));
+        playerRots.fill(quat(1, 0, 0, 0));
         playerHealth.fill(100);
+        paintCollisions.fill(vec3(0, 0, 0));
     }
 
     template <typename Stream>
     bool Serialize(Stream& stream) {
         serialize_bits(stream, m_sequence, 16);
         serialize_bits(stream, m_recentAck, 16);
+        serialize_bits(stream, m_clientNum, 16);
         for (vec3& pp : playerPos) {
             serialize_vec3(stream, pp);
         }
@@ -119,6 +122,7 @@ class ServerMessage : public Message {
         return true;
     }
 
+    uint16_t m_clientNum = 10;
     std::array<vec3, MAX_CLIENTS> playerPos;
     std::array<quat, MAX_CLIENTS> playerRots;
     std::array<int16_t, MAX_CLIENTS> playerHealth;

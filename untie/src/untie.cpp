@@ -177,6 +177,11 @@ Untie::Untie() {
 
         rigidbody.create_actor(true, 4.0f);
 
+        auto& rigidController = cubeObj.add_component<components::RigidController>();
+        rigidController.lockRotations();
+        rigidController.set_linear_damping(1.0f);
+        rigidController.set_angular_damping(1.0f);
+
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
@@ -184,24 +189,63 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
+
+        auto& client = cubeObj.add_component<components::ClientPlayer>();
+        client.set_client_num(0);
+        client.set_is_shooting(true);
     }
 
-    std::string filename("skyboxScene.json");
-    std::filesystem::path path = AssetManager::get_resources_path().append(filename);
-    log::debug(path.string());
-    std::fstream serializedSceneStream(path);
+    {
+        auto cubeObj = scene.create_game_object("stanford_dragon_1");
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(5.0f + 5, 5.0f, -2.0f - 5));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
+        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 10, 0));
+        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
 
-    serializedSceneStream.open(path, std::ios::out);
-    scene.save_scene_to_stream(serializedSceneStream);
-    serializedSceneStream.close();
-    Scene::set_active_scene(loadedScene);
-    serializedSceneStream.open(path, std::ios::in);
-    if (serializedSceneStream) {
-        loadedScene.load_scene_from_stream(serializedSceneStream);
-    } else {
-        log::debug("file not found");
+        auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+
+        auto& shape = cubeObj.add_component<components::Shape>();
+        vec3 halfsize = vec3(1.5f);
+        shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+        rigidbody.create_actor(true, 4.0f);
+
+        auto& rigidController = cubeObj.add_component<components::RigidController>();
+        rigidController.lockRotations();
+        rigidController.set_linear_damping(1.0f);
+        rigidController.set_angular_damping(1.0f);
+
+        auto material = components::Material();
+        material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
+        material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        cubeObj.add_component<components::Material>(material);
+
+        auto& client = cubeObj.add_component<components::ClientPlayer>();
+        client.set_client_num(1);
+        client.set_is_shooting(true);
     }
-    serializedSceneStream.close();
+
+    //    std::string filename("skyboxScene.json");
+    //    std::filesystem::path path = AssetManager::get_resources_path().append(filename);
+    //    log::debug(path.string());
+    //    std::fstream serializedSceneStream(path);
+    //
+    //    serializedSceneStream.open(path, std::ios::out);
+    //    scene.save_scene_to_stream(serializedSceneStream);
+    //    serializedSceneStream.close();
+    //    Scene::set_active_scene(loadedScene);
+    //    serializedSceneStream.open(path, std::ios::in);
+    //    if (serializedSceneStream) {
+    //        loadedScene.load_scene_from_stream(serializedSceneStream);
+    //    } else {
+    //        log::debug("file not found");
+    //    }
+    //    serializedSceneStream.close();
 }
 
 void Untie::run() {
