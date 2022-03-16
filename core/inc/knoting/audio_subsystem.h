@@ -25,8 +25,10 @@ class AudioSubsystem : public Subsystem {
     };
     void play(components::AudioSource* source);
     void stop(components::AudioSource* source);
-    void update(components::AudioListener& listener);
+    void update();
     void add_sound(components::AudioSource* sound);
+    void update_source(components::AudioSource* source);
+    void update_listener(components::AudioListener* listener);
 
     void on_update(double m_delta_time) override;
 

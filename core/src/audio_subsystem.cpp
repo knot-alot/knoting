@@ -10,7 +10,8 @@ void AudioSubsystem::on_awake() {
     ErrorCheck(m_result);
     m_result = m_system->init(512, FMOD_INIT_NORMAL, extra_driver_data);
     ErrorCheck(m_result);
-    //  m_result = m_system->set3DSettings(1.0f, 1.0f, 1.0f);
+    m_result = m_system->set3DSettings(1.0f, 1.0f, 1.0f);
+    ErrorCheck(m_result);
     m_channel = nullptr;
     log::debug("AudioSubsystem created!");
 }
@@ -33,10 +34,8 @@ void AudioSubsystem::play(components::AudioSource* source) {
         m_result = m_system->playSound(source->get_sound(), nullptr, false, &m_channel);
         ErrorCheck(m_result);
 
-        //        FMOD_VECTOR pos = source->get_position();
-        FMOD_VECTOR pos = {0, 0, 0};
-        FMOD_VECTOR vel = {0, 0, 0};
-        // m_result = m_channel->set3DAttributes(&pos, &vel);
+        update_source(source);
+
         source->set_is_playing(true);
     }
 }
@@ -46,7 +45,7 @@ void AudioSubsystem::stop(components::AudioSource* source) {
         m_channel->stop();
 }
 
-void AudioSubsystem::update(components::AudioListener& listener) {
+void AudioSubsystem::update() {
     unsigned int pos = 0;
     unsigned int len_ms = 0;
     bool playing = false;
@@ -54,17 +53,6 @@ void AudioSubsystem::update(components::AudioListener& listener) {
 
     m_result = m_system->update();
     ErrorCheck(m_result);
-
-    //    FMOD_VECTOR forward = {0, 0, listener.get_rotation().z};
-    //    FMOD_VECTOR up = {0.0f, listener.get_rotation().y, 0.0f};
-    //    FMOD_VECTOR listener_pos = listener.get_position();
-    //    FMOD_VECTOR vel = listener.get_velocity();
-    FMOD_VECTOR forward = {0, 0, 1};
-    FMOD_VECTOR up = {0.0f, 1, 0.0f};
-    FMOD_VECTOR listener_pos = {0, 0, 0};
-    FMOD_VECTOR vel = {0, 0, 0};
-
-    // m_result = m_system->set3DListenerAttributes(0, &listener_pos, &vel, &forward, &up);
 
     if (m_channel) {
         FMOD::Sound* current_sound = nullptr;
@@ -85,9 +73,12 @@ void AudioSubsystem::update(components::AudioListener& listener) {
 
 void AudioSubsystem::add_sound(components::AudioSource* source) {
     log::info("TRYING TO LOAD AUDIO FILE {}", source->get_path().string());
-    m_result = m_system->createSound(source->get_path().string().c_str(), FMOD_2D, nullptr, &source->get_sound());
+    m_result = m_system->createSound(source->get_path().string().c_str(), FMOD_3D_LINEARROLLOFF, nullptr,
+                                     &source->get_sound());
     ErrorCheck(m_result);
-    // m_result = source->get_sound()->set3DMinMaxDistance(0.0f, 5000.0f);
+
+    m_result = source->get_sound()->set3DMinMaxDistance(0.0f, 50000.0f);
+    ErrorCheck(m_result);
     if (!source->get_loop()) {
         m_result = source->get_sound()->setMode(FMOD_LOOP_OFF);
         ErrorCheck(m_result);
@@ -117,6 +108,7 @@ void AudioSubsystem::on_update(double m_delta_time) {
 
         auto& source = sourceGO.get_component<components::AudioSource>();
         this->play(&source);
+        this->update_source(&source);
     }
 
     auto listeners = registry.view<components::AudioListener>();
@@ -128,8 +120,28 @@ void AudioSubsystem::on_update(double m_delta_time) {
         auto listenerGO = listenerOpt.value();
 
         auto& listener = listenerGO.get_component<components::AudioListener>();
-        this->update(listener);
+        this->update_listener(&listener);
     }
+}
+void AudioSubsystem::update_source(components::AudioSource* source) {
+    FMOD_VECTOR* pos = source->get_position();
+    FMOD_VECTOR vel = {0, 0, 0};
+    m_result = m_channel->set3DAttributes(pos, &vel);
+    ErrorCheck(m_result);
+    update();
+}
+void AudioSubsystem::update_listener(components::AudioListener* listener) {
+    //    FMOD_VECTOR forward = {0, 0, listener.get_rotation().z};
+    FMOD_VECTOR forward = {0, 0, 1};
+    //    FMOD_VECTOR up = {0.0f, listener.get_rotation().y, 0.0f};
+    FMOD_VECTOR up = {0.0f, 1, 0.0f};
+    FMOD_VECTOR* listener_pos = listener->get_position();
+    //    FMOD_VECTOR vel = listener.get_velocity();
+    FMOD_VECTOR vel = {0, 0, 0};
+
+    m_result = m_system->set3DListenerAttributes(0, listener_pos, &vel, &forward, &up);
+    ErrorCheck(m_result);
+    update();
 }
 
 }  // namespace knot

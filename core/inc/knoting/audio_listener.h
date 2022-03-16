@@ -9,7 +9,7 @@ class AudioListener {
     explicit AudioListener(float range);
     ~AudioListener() = default;
 
-    FMOD_VECTOR get_position();
+    FMOD_VECTOR* get_position();
     quat get_rotation();
     void update_velocity();
     FMOD_VECTOR get_velocity();

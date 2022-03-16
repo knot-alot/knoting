@@ -34,7 +34,7 @@ class AudioSource : public Asset {
 
     void set_loop(bool loop) { m_loops = loop; }
     bool get_loop() { return m_loops; }
-    FMOD_VECTOR get_position() const;
+    FMOD_VECTOR* get_position() const;
 
     bool& get_is_playing() { return m_isPlaying; }
     void set_is_playing(bool isPlaying) { m_isPlaying = isPlaying; }

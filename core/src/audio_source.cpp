@@ -19,7 +19,7 @@ void AudioSource::on_awake() {
     engine.get_audio_module().lock()->add_sound(this);
 }
 
-FMOD_VECTOR AudioSource::get_position() const {
+FMOD_VECTOR* AudioSource::get_position() const {
     auto sceneOpt = Scene::get_active_scene();
     if (sceneOpt) {
         Scene& scene = sceneOpt.value();
@@ -28,7 +28,7 @@ FMOD_VECTOR AudioSource::get_position() const {
         if (goOpt) {
             vec3 position = goOpt->get_component<components::Transform>().get_position();
             FMOD_VECTOR pos = {position.x, position.y, position.z};
-            return pos;
+            return &pos;
         }
     }
 }
