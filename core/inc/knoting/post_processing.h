@@ -20,17 +20,10 @@ class PostProcessing {
 
     void set_uniforms();
 
-    void set_geometry_framebuffer(const bgfx::FrameBufferHandle& fbh);
-    void set_gui_framebuffer(const bgfx::FrameBufferHandle& fbh);
     void set_color_render_texture(const bgfx::TextureHandle& tbh);
-
-    bgfx::TextureHandle get_color_geometry_render_texture();
-    bgfx::TextureHandle get_color_gui_render_texture();
+    void set_gui_render_texture(const bgfx::TextureHandle& tbh);
 
     bgfx::ProgramHandle get_program() { return m_shader.get_program(); };
-
-    uint16_t get_geometry_id();
-    uint16_t get_gui_id();
 
    private:
     // MAX PS4 Attachments 8
@@ -38,7 +31,7 @@ class PostProcessing {
     bgfx::FrameBufferHandle m_guiPass;
 
     bgfx::TextureHandle m_geoTBH;
-    std::shared_ptr<Texture> m_albedo;
+    bgfx::TextureHandle m_guiTBH;
 
     ShaderProgram m_shader;
     bgfx::UniformHandle m_uniformGeometry;

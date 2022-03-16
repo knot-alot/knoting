@@ -38,7 +38,7 @@ class ForwardRenderer : public Subsystem {
     void shadow_pass(uint16_t idx);
     void depth_pass(uint16_t idx);
     void color_pass(uint16_t idx);
-    void skybox_pass(uint16_t idx);
+    void gui_pass(uint16_t idx);
     void transparent_pass(uint16_t idx);
     void post_process_pass(uint16_t idx);
 

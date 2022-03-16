@@ -28,32 +28,22 @@ void ForwardRenderer::on_update(double m_delta_time) {
     m_engine.get_framebuffer_manager_module().lock()->clear_all_framebuffers();
     auto framebufferManager = m_engine.get_framebuffer_manager_module().lock();
 
-    //    Back,
-    //    Depth,
-    //    Color,
-    //    PostProcess,
-    //    Gui,
-    //    ShadowOne,
-    //    ShadowTwo,
-    //    ShadowThree,
-    //    ShadowFour,
-    //    LAST
-
-    auto back = framebufferManager->get_framebuffer(FrameBufferType::Back);
     auto depth = framebufferManager->get_framebuffer(FrameBufferType::Depth);
     auto color = framebufferManager->get_framebuffer(FrameBufferType::Color);
-    auto post = framebufferManager->get_framebuffer(FrameBufferType::PostProcess);
     auto gui = framebufferManager->get_framebuffer(FrameBufferType::Gui);
 
-    //    shadow_pass(0);
-    bgfx::setViewFrameBuffer(0, depth);
-    depth_pass(1);
-    bgfx::setViewFrameBuffer(0, color);
-    color_pass(2);
-    //    skybox_pass(0);
-    //    transparent_pass(0);
-    bgfx::setViewFrameBuffer(0, post);
-    post_process_pass(3);
+    bgfx::setViewFrameBuffer(depth.idx, depth);
+    depth_pass(depth.idx);
+
+    bgfx::setViewFrameBuffer(color.idx, color);
+    color_pass(color.idx);
+
+    bgfx::setViewFrameBuffer(gui.idx, gui);
+    gui_pass(gui.idx);
+
+    // RENDER TO BACK BUFFER
+    bgfx::setViewFrameBuffer(0, BGFX_INVALID_HANDLE);
+    post_process_pass(0);
 }
 
 void ForwardRenderer::shadow_pass(uint16_t idx) {}
@@ -125,8 +115,7 @@ void ForwardRenderer::depth_pass(uint16_t idx) {
         // Bind Uniforms & textures.
         material.set_uniforms();
 
-        bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
-                       BGFX_STATE_DEPTH_TEST_LESS);
+        bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
 
         bgfx::submit(idx, material.get_program());
     }
@@ -257,8 +246,83 @@ void ForwardRenderer::color_pass(uint16_t idx) {
     }
 }
 
-void ForwardRenderer::skybox_pass(uint16_t idx) {}
+void ForwardRenderer::gui_pass(uint16_t idx) {
+    using namespace components;
+    auto sceneOpt = Scene::get_active_scene();
+    if (!sceneOpt) {
+        return;
+    }
+
+    Scene& scene = sceneOpt.value();
+    entt::registry& registry = scene.get_registry();
+    mat4 invProj;
+    glm::mat4 view;
+    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
+    //=CAMERA===========================
+    auto cameras = registry.view<Transform, EditorCamera, Name>();
+
+    for (auto& cam : cameras) {
+        auto goOpt = scene.get_game_object_from_handle(cam);
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        Transform& transform = go.get_component<Transform>();
+        EditorCamera& editorCamera = go.get_component<EditorCamera>();
+        Name& name = go.get_component<Name>();
+
+        const glm::vec3 pos = transform.get_position();
+        const glm::vec3 lookTarget = editorCamera.get_look_target();
+        const glm::vec3 up = editorCamera.get_up();
+
+        const float fovY = editorCamera.get_fov();
+        const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
+        const float zNear = editorCamera.get_z_near();
+        const float zFar = editorCamera.get_z_far();
+
+        // Set view and projection matrix for view 0.
+        {
+            view = glm::lookAt(pos, lookTarget, up);
+            glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
+            bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
+        }
+    }
+
+    auto entities = registry.view<Transform, InstanceMesh, Material, Name, PostProcessing>();
+    for (auto& e : entities) {
+        auto goOpt = scene.get_game_object_from_handle(e);
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        Transform& transform = go.get_component<Transform>();
+        InstanceMesh& mesh = go.get_component<InstanceMesh>();
+        Material& material = go.get_component<Material>();
+        Name& name = go.get_component<Name>();
+
+        bgfx::setTransform(value_ptr(transform.get_model_matrix()));
+
+        // Set vertex and index buffer.
+        bgfx::setVertexBuffer(idx, mesh.get_vertex_buffer());
+
+        if (isValid(mesh.get_index_buffer())) {
+            bgfx::setIndexBuffer(mesh.get_index_buffer());
+        }
+
+        // Bind Uniforms & textures.
+        material.set_uniforms();
+
+        bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+                       BGFX_STATE_DEPTH_TEST_LESS);
+
+        bgfx::submit(idx, material.get_program());
+    }
+}
+
 void ForwardRenderer::transparent_pass(uint16_t idx) {}
+
 void ForwardRenderer::post_process_pass(uint16_t idx) {
     using namespace components;
     auto sceneOpt = Scene::get_active_scene();
@@ -326,18 +390,19 @@ void ForwardRenderer::post_process_pass(uint16_t idx) {
                 bgfx::setIndexBuffer(mesh.get_index_buffer());
             }
 
-            log::info("IN POST PROCESS {}", name.name);
             auto frameBuffers = m_engine.get_framebuffer_manager_module().lock();
-            auto tex = frameBuffers->get_texture_attachments(FrameBufferType::Color);
-            //            auto geo = frameBuffers->get_framebuffer(FrameBufferType::Color);
-            postProcessing.set_color_render_texture(tex[0]);
+
+            auto colTex = frameBuffers->get_texture_attachments(FrameBufferType::Color);
+            auto guiTex = frameBuffers->get_texture_attachments(FrameBufferType::Gui);
+
+            postProcessing.set_color_render_texture(colTex[0]);
+            postProcessing.set_gui_render_texture(guiTex[0]);
 
             postProcessing.set_uniforms();
 
             bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
                            BGFX_STATE_DEPTH_TEST_LESS);
 
-            //            frameBuffers->set_active_framebuffer(FrameBufferType::Gui);
             bgfx::submit(idx, postProcessing.get_program());
         }
     }

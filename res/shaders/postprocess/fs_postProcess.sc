@@ -14,12 +14,16 @@ SAMPLER2D(s_texNormal, 1);
 void main()
 {
 	vec4 color = vec4(1,1,1,1);
-	
-	vec4 img_0 = texture2D(s_texColor, v_texcoord0);
-	vec4 img_1 = texture2D(s_texColor, v_texcoord0);
-	vec4 mixImage = mix(img_0, img_1,0.5);
 
-	vec4 outCol = mix(mixImage, color, 0.5);
+	vec4 img_0 = texture2D(s_texColor, vec2(v_texcoord0.x,-v_texcoord0.y));
+	vec4 img_1 = texture2D(s_texNormal, vec2(v_texcoord0.x,-v_texcoord0.y));
+
+	vec4 mixImage = img_0;
+	if(img_1.a > 0.0){
+		mixImage = img_1;
+	}
+
+	vec4 outCol = mixImage;
 
 	gl_FragColor = outCol;
 }
