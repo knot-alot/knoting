@@ -93,6 +93,9 @@ Untie::Untie() {
         vec3 halfsize = vec3(15.0, 1.0f, 15.0);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
 
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.add_aggregate("floor", 10, false);
+
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
         auto material = components::Material();
@@ -115,6 +118,9 @@ Untie::Untie() {
         auto& shape = cubeObj.add_component<components::Shape>();
         vec3 halfsize = vec3(1.0f, 1.0f, 1.0f);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.find_aggregate("floor");
 
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
@@ -160,6 +166,7 @@ Untie::Untie() {
 
         cubeTwo = cubeObj;
     }
+
     {
         auto cubeObj = scene.create_game_object("stanford_dragon_1");
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5.0f + 5, 5.0f, -10.0f - 5));
@@ -173,6 +180,9 @@ Untie::Untie() {
         vec3 halfsize = vec3(1.5f);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
 
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.find_aggregate("default");
+
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
         rigidbody.create_actor(true, 4.0f);
@@ -185,9 +195,10 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
-
+    /*
     std::string filename("skyboxScene.json");
     std::filesystem::path path = AssetManager::get_resources_path().append(filename);
+
     std::fstream serializedSceneStream(path);
 
     serializedSceneStream.open(path, std::ios_base::out);
@@ -201,6 +212,7 @@ Untie::Untie() {
         log::debug("file not found");
     }
     serializedSceneStream.close();
+    */
 }
 
 void Untie::run() {
