@@ -27,11 +27,13 @@ class FramebufferManager : public Subsystem {
     void recreate_framebuffer(int width, int height);
     void clear_all_framebuffers();
 
+    void set_active_framebuffer(FrameBufferType type);
+
     bgfx::FrameBufferHandle get_framebuffer(FrameBufferType type);
     std::vector<bgfx::TextureHandle> get_texture_attachments(FrameBufferType type);
 
    private:
-    FrameBufferType m_currentViewBuffer = FrameBufferType::PostProcess;
+    FrameBufferType m_currentViewBuffer = FrameBufferType::Color;
     std::array<RenderTexture, (size_t)FrameBufferType::LAST> m_renderTextures;
     Engine& m_engine;
 };

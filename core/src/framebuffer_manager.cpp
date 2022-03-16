@@ -138,7 +138,7 @@ void FramebufferManager::recreate_framebuffer(int width, int height) {
                             m_renderTextures[(size_t)FrameBufferType::ShadowThree].get_framebuffer().idx,
                             m_renderTextures[(size_t)FrameBufferType::ShadowFour].get_framebuffer().idx};
 
-    bgfx::setViewOrder(0, m_renderTextures.size(), order);
+    bgfx::setViewOrder(0, m_renderTextures.size() - 1, order);
 
     //
     bgfx::setViewFrameBuffer((size_t)m_currentViewBuffer,
@@ -156,6 +156,11 @@ bgfx::FrameBufferHandle FramebufferManager::get_framebuffer(FrameBufferType type
 
 std::vector<bgfx::TextureHandle> FramebufferManager::get_texture_attachments(FrameBufferType type) {
     return m_renderTextures[(size_t)type].get_texture_attachments();
+}
+void FramebufferManager::set_active_framebuffer(FrameBufferType type) {
+    m_currentViewBuffer = type;
+    bgfx::setViewFrameBuffer((size_t)m_currentViewBuffer,
+                             m_renderTextures[(size_t)m_currentViewBuffer].get_framebuffer());
 }
 
 }  // namespace knot

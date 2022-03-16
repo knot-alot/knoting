@@ -42,6 +42,7 @@ void PostProcessing::set_uniforms() {
     if (isValid(m_geoTBH)) {
         log::info("is valid geo");
         bgfx::setTexture(0, m_uniformGeometry, m_albedo->get_texture_handle());
+        //        bgfx::setTexture(0, m_uniformGeometry, m_geoTBH);
         //        bgfx::setTexture(1, m_uniformGeometry, m_geoTBH);
     }
 }

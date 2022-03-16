@@ -35,12 +35,12 @@ class ForwardRenderer : public Subsystem {
     // 6) SYSTEM : Sorted Transparent Render Pass
     // 7) SYSTEM : Post Processing Stack
 
-    void shadow_pass();
-    void depth_pass();
-    void color_pass();
-    void skybox_pass();
-    void transparent_pass();
-    void post_process_pass();
+    void shadow_pass(uint16_t idx);
+    void depth_pass(uint16_t idx);
+    void color_pass(uint16_t idx);
+    void skybox_pass(uint16_t idx);
+    void transparent_pass(uint16_t idx);
+    void post_process_pass(uint16_t idx);
 
     Engine& m_engine;
     LightData m_lightData;
