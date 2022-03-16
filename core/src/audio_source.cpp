@@ -1,13 +1,23 @@
 #include "knoting/audio_source.h"
+#include <knoting/engine.h>
 #include <knoting/scene.h>
 
 namespace knot::components {
 
-AudioSource::AudioSource() : Asset{AssetType::Audio, m_path} {}
+AudioSource::AudioSource(const std::filesystem::path& path)
+    : Asset{AssetType::Audio, ""}, m_sound(nullptr), m_path(path) {}
 
 AudioSource::~AudioSource() = default;
 
-void AudioSource::on_awake() {}
+void AudioSource::on_awake() {
+    auto engOpt = Engine::get_active_engine();
+    if (!engOpt) {
+        return;
+    }
+    auto engineWrapper = engOpt.value();
+    auto& engine = engineWrapper.get();
+    engine.get_audio_module().lock()->add_sound(this);
+}
 
 FMOD_VECTOR AudioSource::get_position() const {
     auto sceneOpt = Scene::get_active_scene();
@@ -22,4 +32,9 @@ FMOD_VECTOR AudioSource::get_position() const {
         }
     }
 }
+void AudioSource::on_destroy() {
+    m_sound->release();
+}
+void AudioSource::generate_default_asset() {}
+
 }  // namespace knot::components

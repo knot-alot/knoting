@@ -8,6 +8,9 @@
 #include <knoting/scene.h>
 #include <knoting/texture.h>
 
+#include <knoting/audio_listener.h>
+#include <knoting/audio_source.h>
+#include <knoting/audio_subsystem.h>
 #include <knoting/components.h>
 #include <knoting/scene.h>
 #include <knoting/skybox.h>
@@ -31,6 +34,7 @@ Untie::Untie() {
         auto editorCamera = scene.create_game_object("camera");
         auto& cam = editorCamera.add_component<components::EditorCamera>();
         editorCamera.get_component<components::Transform>().set_position(glm::vec3(-10.0f, 15.0f, -30.0f));
+        auto& listen = editorCamera.add_component<components::AudioListener>(1000000);
     }
     {
         auto cubeObj = scene.create_game_object("skybox");
@@ -122,6 +126,15 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
+
+        std::filesystem::path path = AssetManager::get_resources_path();
+        path.append("misc").append("drumloop.wav");
+        if (!std::filesystem::exists(path))
+            log::critical("drumloop not found!");
+        else
+            log::critical("drumloop was found!");
+        auto& source = cubeObj.add_component<components::AudioSource>(path);
+        source.set_loop(true);
     }
 
     {
@@ -171,22 +184,22 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
     }
-
-    std::string filename("skyboxScene.json");
-    std::filesystem::path path = AssetManager::get_resources_path().append(filename);
-    std::fstream serializedSceneStream(path);
-
-    serializedSceneStream.open(path, std::ios_base::out);
-    scene.save_scene_to_stream(serializedSceneStream);
-    serializedSceneStream.close();
-    Scene::set_active_scene(loadedScene);
-    serializedSceneStream.open(path, std::ios_base::in);
-    if (serializedSceneStream) {
-        loadedScene.load_scene_from_stream(serializedSceneStream);
-    } else {
-        log::debug("file not found");
-    }
-    serializedSceneStream.close();
+    //
+    //    std::string filename("skyboxScene.json");
+    //    std::filesystem::path path = AssetManager::get_resources_path().append(filename);
+    //    std::fstream serializedSceneStream(path);
+    //
+    //    serializedSceneStream.open(path, std::ios_base::out);
+    //    scene.save_scene_to_stream(serializedSceneStream);
+    //    serializedSceneStream.close();
+    //    Scene::set_active_scene(loadedScene);
+    //    serializedSceneStream.open(path, std::ios_base::in);
+    //    if (serializedSceneStream) {
+    //        loadedScene.load_scene_from_stream(serializedSceneStream);
+    //    } else {
+    //        log::debug("file not found");
+    //    }
+    //    serializedSceneStream.close();
 }
 void Untie::run() {
     while (m_engine->is_open()) {
