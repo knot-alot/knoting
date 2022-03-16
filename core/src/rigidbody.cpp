@@ -22,12 +22,8 @@ void RigidBody::on_awake() {
         this->m_physics = engine.get_physics_module().lock()->get_physics().lock();
         this->m_scene = engine.get_physics_module().lock()->get_active_Scene().lock();
     }
-    if (get_shape_from_shape()) {
-        this->m_shape = get_shape_from_shape();
-    }
-    if (get_aggregate_from_aggregate()) {
-        this->m_aggregate = get_aggregate_from_aggregate();
-    }
+    this->m_shape = get_shape_from_shape();
+    this->m_aggregate = get_aggregate_from_aggregate();
 }
 void RigidBody::on_destroy() {
     if (m_dynamic) {
@@ -92,12 +88,12 @@ void RigidBody::set_rotation(const quat& rotation) {
     }
 }
 
-void RigidBody::set_name(char* name) {
+void RigidBody::set_name(const std::string& name) {
     m_name = name;
     if (m_dynamic) {
-        m_dynamic->get()->setName(name);
+        m_dynamic->get()->setName(name.c_str());
     } else {
-        m_static->get()->setName(name);
+        m_static->get()->setName(name.c_str());
     }
 }
 
@@ -185,34 +181,36 @@ PxQuat RigidBody::get_rotation_from_transform() {
 
 std::shared_ptr<PxShape_ptr_wrapper> RigidBody::get_shape_from_shape() {
     auto sceneOpt = Scene::get_active_scene();
-    if (sceneOpt) {
-        Scene& scene = sceneOpt.value();
-        entt::entity handle = entt::to_entity(scene.get_registry(), *this);
-        auto goOpt = scene.get_game_object_from_handle(handle);
-        if (goOpt) {
-            if (goOpt->has_component<components::Shape>()) {
-                Shape& shape = goOpt->get_component<components::Shape>();
-                return shape.get_shape().lock();
-            }
-        }
+    if (!sceneOpt) {
+        return nullptr;
     }
-    return nullptr;
+    Scene& scene = sceneOpt.value();
+    entt::entity handle = entt::to_entity(scene.get_registry(), *this);
+    auto goOpt = scene.get_game_object_from_handle(handle);
+    if (!goOpt) {
+        return nullptr;
+    }
+    if (goOpt->has_component<components::Shape>()) {
+        Shape& shape = goOpt->get_component<components::Shape>();
+        return shape.get_shape().lock();
+    }
 }
 
 std::shared_ptr<PxAggregate_ptr_wrapper> RigidBody::get_aggregate_from_aggregate() {
     auto sceneOpt = Scene::get_active_scene();
-    if (sceneOpt) {
-        Scene& scene = sceneOpt.value();
-        entt::entity handle = entt::to_entity(scene.get_registry(), *this);
-        auto goOpt = scene.get_game_object_from_handle(handle);
-        if (goOpt) {
-            if (goOpt->has_component<components::Aggregate>()) {
-                Aggregate& aggregate = goOpt->get_component<components::Aggregate>();
-                return aggregate.get_aggregate().lock();
-            }
-        }
+    if (!sceneOpt) {
+        return nullptr;
     }
-    return nullptr;
+    Scene& scene = sceneOpt.value();
+    entt::entity handle = entt::to_entity(scene.get_registry(), *this);
+    auto goOpt = scene.get_game_object_from_handle(handle);
+    if (!goOpt) {
+        return nullptr;
+    }
+    if (goOpt->has_component<components::Aggregate>()) {
+        Aggregate& aggregate = goOpt->get_component<components::Aggregate>();
+        return aggregate.get_aggregate().lock();
+    }
 }
 
 vec3 RigidBody::PxVec3_to_vec3(PxVec3 v) {

@@ -7,38 +7,38 @@ PxDefaultErrorCallback g_ErrorCallback;
 
 namespace knot {
 Physics::Physics(Engine& engine)
-    : m_engine(engine), m_Physics(nullptr), m_Scene(nullptr), m_Foundation(nullptr), m_Dispatcher(nullptr) {}
+    : m_engine(engine), m_physics(nullptr), m_scene(nullptr), m_foundation(nullptr), m_dispatcher(nullptr) {}
 
 Physics::~Physics() {}
 
 void Physics::on_awake() {
-    m_Foundation = std::make_shared<PxFoundation_ptr_wrapper>(
+    m_foundation = std::make_shared<PxFoundation_ptr_wrapper>(
         PxCreateFoundation(PX_PHYSICS_VERSION, g_Allocator, g_ErrorCallback));
 
-    m_Physics = std::make_shared<PxPhysics_ptr_wrapper>(
-        PxCreatePhysics(PX_PHYSICS_VERSION, *m_Foundation->get(), PxTolerancesScale(), false, NULL));
+    m_physics = std::make_shared<PxPhysics_ptr_wrapper>(
+        PxCreatePhysics(PX_PHYSICS_VERSION, *m_foundation->get(), PxTolerancesScale(), false, NULL));
     constexpr float defalut_gravity = -9.81f;
-    PxSceneDesc sceneDesc(m_Physics->get()->getTolerancesScale());
+    PxSceneDesc sceneDesc(m_physics->get()->getTolerancesScale());
     sceneDesc.gravity = PxVec3(0, defalut_gravity, 0);
-    m_Dispatcher = std::make_shared<PxDispatcher_ptr_wrapper>(PxDefaultCpuDispatcherCreate(2));
-    sceneDesc.cpuDispatcher = m_Dispatcher->get();
+    m_dispatcher = std::make_shared<PxDispatcher_ptr_wrapper>(PxDefaultCpuDispatcherCreate(2));
+    sceneDesc.cpuDispatcher = m_dispatcher->get();
     sceneDesc.filterShader = PxDefaultSimulationFilterShader;
-    m_Scene = std::make_shared<PxScene_ptr_wrapper>(m_Physics->get()->createScene(sceneDesc));
+    m_scene = std::make_shared<PxScene_ptr_wrapper>(m_physics->get()->createScene(sceneDesc));
 
-    PxAggregate* aggregate = m_Physics->get()->createAggregate(128, false);
+    PxAggregate* aggregate = m_physics->get()->createAggregate(128, false);
     std::shared_ptr<PxAggregate_ptr_wrapper> ag = std::make_shared<PxAggregate_ptr_wrapper>(aggregate, "default");
     std::vector<std::shared_ptr<PxAggregate_ptr_wrapper>> ags;
     ags.push_back(ag);
-    m_Aggregates = std::make_shared<std::vector<std::shared_ptr<PxAggregate_ptr_wrapper>>>(ags);
-    m_Scene->get()->addAggregate(*ag->get_aggregate());
+    m_aggregates = std::make_shared<std::vector<std::shared_ptr<PxAggregate_ptr_wrapper>>>(ags);
+    m_scene->get()->addAggregate(*ag->get_aggregate());
 }
 
 void Physics::on_update(double m_deltatime) {}
 
 void Physics::on_fixed_update() {
     constexpr float timestep = 1.0 / 120.0f;
-    m_Scene->get()->simulate(timestep);
-    m_Scene->get()->fetchResults(true);
+    m_scene->get()->simulate(timestep);
+    m_scene->get()->fetchResults(true);
     update_info_to_transform();
 }
 
@@ -79,6 +79,6 @@ void Physics::update_info_to_transform() {
 
 void Physics::set_gravity(PxVec3 gravity) {
     gravity = gravity;
-    m_Scene->get()->setGravity(gravity);
+    m_scene->get()->setGravity(gravity);
 }
 }  // namespace knot

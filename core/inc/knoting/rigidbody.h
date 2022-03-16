@@ -36,7 +36,7 @@ class RigidBody {
     void set_transform(const vec3& position, const quat& rotation = quat());
     void set_position(const vec3& position);
     void set_rotation(const quat& rotation);
-    void set_name(char* name);
+    void set_name(const std::string& name);
     //
 
     void create_actor(bool isDynamic, const float& mass = 0);

@@ -179,7 +179,7 @@ class PxMaterial_ptr_wrapper {
 
 class PxAggregate_ptr_wrapper {
    public:
-    PxAggregate_ptr_wrapper(PxAggregate* aggregate = nullptr, std::string name = nullptr)
+    PxAggregate_ptr_wrapper(PxAggregate* aggregate = nullptr, const std::string& name = "")
         : m_aggregate(aggregate), m_aggregate_name(name) {}
     ~PxAggregate_ptr_wrapper() { clean(); }
     void set(PxAggregate* aggregate, std::string name) {
