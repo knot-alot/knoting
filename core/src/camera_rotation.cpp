@@ -42,7 +42,7 @@ void CameraRotation::on_awake() {
 
 void CameraRotation::on_update(double m_delta_time) {
     //= CHECK VALID INPUT ==
-    InputManager& m_inputManager = m_engine.get_window_module().lock()->get_input_manager();
+    InputManager m_inputManager = m_engine.get_window_module().lock()->get_input_manager();
 
     vec2d currentMousePos = m_inputManager.get_absolute_position();
     if (glm::isinf(currentMousePos.x) || glm::isinf(currentMousePos.y)) {
@@ -115,7 +115,7 @@ void CameraRotation::on_late_update() {}
 void CameraRotation::on_destroy() {}
 
 void CameraRotation::camera_key_input() {
-    InputManager& m_inputManager = m_engine.get_window_module().lock()->get_input_manager();
+    InputManager m_inputManager = m_engine.get_window_module().lock()->get_input_manager();
 
     if (m_inputManager.key_on_release(KeyCode::E)) {
         if (m_ePressed) {

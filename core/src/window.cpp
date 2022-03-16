@@ -158,9 +158,10 @@ void Window::set_window_size(vec2i size) {
     recreate_framebuffer(m_width, m_height);
 }
 
-InputManager& Window::get_input_manager() {
+const InputManager& Window::get_input_manager() {
     return m_input;
 }
+
 void Window::set_cursor_hide(bool state) {
     glfwSetInputMode(m_window, GLFW_CURSOR, state ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 }

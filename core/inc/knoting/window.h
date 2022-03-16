@@ -51,7 +51,7 @@ class Window : public Subsystem {
     bool get_window_resize_flag() { return m_windowResizedFlag; };
     void set_window_resize_flag(bool newState) { m_windowResizedFlag = newState; };
 
-    InputManager& get_input_manager();
+    const InputManager& get_input_manager();
 
    protected:
     bool m_windowResizedFlag;
