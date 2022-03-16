@@ -9,7 +9,9 @@ namespace components {
 
 class Transform {
    public:
-    Transform(const vec3& position = vec3(0.0f), const vec3& scale = vec3(1.0f), const quat& rotation = quat());
+    Transform(const vec3& position = vec3(0.0f),
+              const vec3& scale = vec3(1.0f),
+              const quat& rotation = quat(1.0f, 0.0f, 0.0f, 0.0f));
 
     //=For ECS========
     void on_awake();
@@ -26,7 +28,8 @@ class Transform {
     void set_rotation(const quat& rotation);
     void set_rotation_euler(const vec3& rotation);
 
-    mat4 get_model_matrix() const;
+    mat4 get_model_matrix();
+    mat4 get_parent_model_matrix() const;
 
     template <class Archive>
     void serialize(Archive& archive) {
@@ -34,9 +37,15 @@ class Transform {
     }
 
    protected:
+    mat4 get_model_matrix_internal() const;
+
     vec3 m_position;
     vec3 m_scale;
     quat m_rotation;
+
+    bool m_isDirty;
+    mat4 m_modelMatrix;
+    mat4 m_parentModelMatrix;
 };
 
 }  // namespace components
