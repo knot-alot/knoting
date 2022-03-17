@@ -4,12 +4,9 @@
 namespace knot {
 NetworkedServer::~NetworkedServer() {}
 
-NetworkedServer::NetworkedServer(Engine& engine) : m_engine(engine), m_server(nullptr) {
-
-}
+NetworkedServer::NetworkedServer(Engine& engine) : m_engine(engine), m_server(nullptr) {}
 void NetworkedServer::on_awake() {
     uint8_t privateKey[KeyBytes] = {0};
-
     m_server = std::make_shared<Server>(GetDefaultAllocator(), privateKey, Address(SERVER_ADDRESS, SERVER_PORT),
                                         m_config, gameAdapter, get_time());
     m_server->Start(MAX_CLIENTS);
@@ -26,22 +23,19 @@ void NetworkedServer::on_update(double m_delta_time) {
 
     m_server->AdvanceTime(get_time());
     m_server->ReceivePackets();
-    if (m_server->GetNumConnectedClients() > 0) {
-        handle_recieved_packets();
-    } else {
-        seq.fill(0);
-    }
+
     m_tickTime += m_delta_time;
     if (m_server->GetNumConnectedClients() > 0) {
+        handle_recieved_packets();
         send_message();
+    } else {
+        seq.fill(0);
     }
     if (m_tickTime >= TICK) {
         m_tickTime -= TICK;
     }
     m_server->SendPackets();
 }
-void NetworkedServer::on_fixed_update() {}
-void NetworkedServer::on_late_update() {}
 void NetworkedServer::on_destroy() {
     m_server->DisconnectAllClients();
     m_server->Stop();
@@ -57,7 +51,6 @@ bool NetworkedServer::send_message() {
     if (m_tickTime >= TICK) {
         for (int i = 0; i < m_server->GetNumConnectedClients(); ++i) {
             if (m_server->CanSendMessage(i, 1)) {
-                // log::debug("Server Attempts to send message");
                 Message* mess = generateMessage(i);
                 seq[i]++;
                 m_server->SendMessage(i, 1, mess);
@@ -80,17 +73,15 @@ bool NetworkedServer::handle_recieved_packets() {
                 ClientMessage* cliMess = (ClientMessage*)mess;
                 cliSeq[i] = cliMess->get_sequence();
                 cliAck[i] = cliMess->get_recent_ack();
-                // log::debug("Server received Message {} from client {}. Client Acknowledged message {}", cliSeq[i], i,
-                // cliAck[i]);
-                log::debug("### - SERVER - ###");
-                log::debug("CLIENT {}:", i);
-                log::debug("look Direction: x: {} y: {} ", cliMess->m_lookAxis.x, cliMess->m_lookAxis.y);
-                log::debug("move Direction: x: {} y: {} ", cliMess->m_moveAxis.x, cliMess->m_moveAxis.y);
-                if (cliMess->jumpPressed)
-                    log::debug("Jump Pressed");
-                if (cliMess->isShooting)
-                    log::debug("PEW PEW!");
-                log::debug(" ");
+                //                log::debug("### - SERVER - ###");
+                //                log::debug("CLIENT {}:", i);
+                //                log::debug("look Direction: x: {} y: {} ", cliMess->m_lookAxis.x,
+                //                cliMess->m_lookAxis.y); log::debug("move Direction: x: {} y: {} ",
+                //                cliMess->m_moveAxis.x, cliMess->m_moveAxis.y); if (cliMess->jumpPressed)
+                //                    log::debug("Jump Pressed");
+                //                if (cliMess->isShooting)
+                //                    log::debug("PEW PEW!");
+                //                log::debug(" ");
 
                 auto sceneOpt = Scene::get_active_scene();
                 if (!sceneOpt) {
@@ -122,10 +113,12 @@ bool NetworkedServer::handle_recieved_packets() {
                     playerComp.set_jumping_pressed(cliMess->jumpPressed);
                     playerComp.set_is_shooting(cliMess->isShooting);
 
-                    vec2i inputs = playerComp.get_movement_axis();
-                    vec3 playerInputs = vec3(-inputs.x, 0, -inputs.y);
+                    // here downwards will be removed and handled by scripts
 
-                    if (glm::abs(playerInputs.x + playerInputs.y + playerInputs.z) <= 0.1f) {
+                    vec2i inputs = playerComp.get_movement_axis();
+                    vec3 playerInputs = vec3(inputs.x, 0, -inputs.y);
+
+                    if (glm::length(playerInputs) <= 0.1f) {
                         continue;
                     }
 
@@ -166,7 +159,6 @@ Message* NetworkedServer::generateMessage(uint16_t cliNum) {
         auto& transform = playerGO.get_component<components::Transform>();
 
         uint16_t cliNum = playerComp.get_client_num();
-
         mess->playerPos[cliNum] = transform.get_position();
         mess->playerRots[cliNum] = transform.get_rotation();
         mess->playerHealth[cliNum] = 92;

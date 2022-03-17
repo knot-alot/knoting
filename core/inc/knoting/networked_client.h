@@ -31,30 +31,28 @@ class NetworkedClient : public Subsystem {
     double get_time();
 
     bool attempt_connection();
-
     bool handle_recieved_packets();
     bool send_message();
+    Message* generate_message();
 
     void test_player_input();
-
-    Message* generate_message();
 
    protected:
     Engine& m_engine;
     std::shared_ptr<yojimbo::Client> m_client;
-    m_clientServerConfig m_config;
-    uint64_t m_clientId = 0;
-
-    uint16_t m_clientNum = 10;
-    bool cliNumSet = false;
-
     yojimbo::Address m_serverAddress;
-    bool connected = false;
-    double m_tickTime = 0.0;
+    GameConfig m_config;
+
     uint16_t seq = 0;
     uint16_t serverSeq = 0;
     uint16_t serverAck = 0;
 
+    uint64_t m_clientId = 0;
+    uint16_t m_clientNum = 10;
+    bool cliNumSet = false;
+    bool connected = false;
+
+    double m_tickTime = 0.0;
     std::shared_ptr<InputManager> m_inManager;
 };
 }  // namespace knot

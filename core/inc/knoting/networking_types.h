@@ -8,12 +8,13 @@ using namespace yojimbo;
 constexpr int SERVER_PORT = 13189;
 constexpr int CLIENT_PORT = 12646;
 constexpr int MAX_CLIENTS = 6;
-const char* const SERVER_ADDRESS = "100.117.241.88";
+const char* const SERVER_ADDRESS = "100.100.113.40";
 // const char* const SERVER_ADDRESS = "127.0.0.1";
+//^^^ FOR LOCAL HOST TESTING ^^^
 const double TICK = 1.0 / 30.0;
 
-struct m_clientServerConfig : public ClientServerConfig {
-    m_clientServerConfig() {
+struct GameConfig : public ClientServerConfig {
+    GameConfig() {
         ClientServerConfig();
         this->numChannels = 2;
         this->channel[0].type = yojimbo::CHANNEL_TYPE_RELIABLE_ORDERED;
@@ -23,6 +24,17 @@ struct m_clientServerConfig : public ClientServerConfig {
         this->maxPacketSize = 1500;
     }
 };
+
+template <typename Stream>
+bool serialize_vec2i(Stream& stream, vec2i& val) {
+    auto valX = (int16_t)val.x;
+    auto valY = (int16_t)val.y;
+    serialize_int(stream, valX, -32767, 32767);
+    serialize_int(stream, valY, -32767, 32767);
+    val.x = valX;
+    val.y = valY;
+    return true;
+}
 
 class ClientMessage : public Message {
    public:
@@ -38,20 +50,8 @@ class ClientMessage : public Message {
         serialize_bits(stream, m_sequence, 16);
         serialize_bits(stream, m_recentAck, 16);
 
-        auto m_lookXAxis = (int16_t)m_lookAxis.x;
-        auto m_lookYAxis = (int16_t)m_lookAxis.y;
-        serialize_int(stream, m_lookXAxis, -32767, 32767);
-        serialize_int(stream, m_lookYAxis, -32767, 32767);
-        m_lookAxis.x = m_lookXAxis;
-        m_lookAxis.y = m_lookYAxis;
-
-        auto m_moveXAxis = (int16_t)m_moveAxis.x;
-        auto m_moveYAxis = (int16_t)m_moveAxis.y;
-        serialize_int(stream, m_moveXAxis, -32767, 32767);
-        serialize_int(stream, m_moveYAxis, -32767, 32767);
-        m_moveAxis.x = m_moveXAxis;
-        m_moveAxis.y = m_moveYAxis;
-
+        serialize_vec2i(stream, m_lookAxis);
+        serialize_vec2i(stream, m_moveAxis);
         serialize_bool(stream, jumpPressed);
         serialize_bool(stream, isShooting);
         return true;
@@ -75,8 +75,6 @@ class ClientMessage : public Message {
     uint16_t m_recentAck;
 };
 
-constexpr uint16_t MAX_COLLISIONS = 20;
-
 template <typename Stream>
 bool serialize_vec3(Stream& stream, vec3& val) {
     serialize_float(stream, val.x);
@@ -93,6 +91,8 @@ bool serialize_quat(Stream& stream, quat& val) {
     serialize_float(stream, val.w);
     return true;
 }
+
+constexpr uint16_t MAX_COLLISIONS = 20;
 
 class ServerMessage : public Message {
    public:
@@ -143,7 +143,7 @@ class ServerMessage : public Message {
 
 enum MessageTypes { CLIENT_MESSAGE, SERVER_MESSAGE, NUM_MESSAGE_TYPES };
 
-YOJIMBO_MESSAGE_FACTORY_START(ClientMessageFactory, NUM_MESSAGE_TYPES);
+YOJIMBO_MESSAGE_FACTORY_START(GameMessageFactory, NUM_MESSAGE_TYPES);
 YOJIMBO_DECLARE_MESSAGE_TYPE(CLIENT_MESSAGE, ClientMessage);
 YOJIMBO_DECLARE_MESSAGE_TYPE(SERVER_MESSAGE, ServerMessage);
 YOJIMBO_MESSAGE_FACTORY_FINISH();
@@ -152,7 +152,7 @@ class GameAdapter : public Adapter {
    public:
     explicit GameAdapter(Server* server = nullptr) : m_server(server) {}
     MessageFactory* CreateMessageFactory(Allocator& allocator) {
-        return YOJIMBO_NEW(allocator, ClientMessageFactory, allocator);
+        return YOJIMBO_NEW(allocator, GameMessageFactory, allocator);
     }
 
    private:

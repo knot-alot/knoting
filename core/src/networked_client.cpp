@@ -23,16 +23,13 @@ void NetworkedClient::on_update(double m_delta_time) {
     m_client->AdvanceTime(get_time());
     m_client->ReceivePackets();
 
+    m_tickTime += m_delta_time;
     if (m_client->IsConnected()) {
         if (!connected) {
             connected = true;
             log::debug("Client {} connected to server", m_clientId);
         }
         handle_recieved_packets();
-    }
-
-    m_tickTime += m_delta_time;
-    if (m_client->IsConnected()) {
         test_player_input();
         send_message();
     }
@@ -50,7 +47,6 @@ void NetworkedClient::on_late_update() {
 void NetworkedClient::on_destroy() {
     m_client->Disconnect();
     m_client = nullptr;
-    ShutdownYojimbo();
 }
 double NetworkedClient::get_time() {
     auto engOpt = Engine::get_active_engine();
@@ -80,21 +76,24 @@ bool NetworkedClient::handle_recieved_packets() {
     Message* mess = nullptr;
     while ((mess = m_client->ReceiveMessage(1))) {
         if (mess->GetType() == MessageTypes::SERVER_MESSAGE) {
-            ServerMessage* serMess = (ServerMessage*)mess;
+            auto serMess = (ServerMessage*)mess;
             serverSeq = serMess->get_sequence();
             serverAck = serMess->get_recent_ack();
             if (!cliNumSet) {
                 m_clientNum = serMess->m_clientNum;
             }
-            log::debug("### - CLIENT {}- ###", m_clientNum);
-            log::debug("Player {} position : x: {} y: {} z: {}", serMess->m_clientNum,
-                       serMess->playerPos[serMess->m_clientNum].x, serMess->playerPos[serMess->m_clientNum].y,
-                       serMess->playerPos[serMess->m_clientNum].z);
-            log::debug("Player {} rotation : x: {} y: {} z: {} w: {}", serMess->m_clientNum,
-                       serMess->playerRots[serMess->m_clientNum].x, serMess->playerRots[serMess->m_clientNum].y,
-                       serMess->playerRots[serMess->m_clientNum].z, serMess->playerRots[serMess->m_clientNum].w);
-            log::debug("Player 0 hp: {}", serMess->playerHealth[serMess->m_clientNum]);
-            log::debug(" ");
+            //            log::debug("### - CLIENT {}- ###", m_clientNum);
+            //            log::debug("Player {} position : x: {} y: {} z: {}", serMess->m_clientNum,
+            //                       serMess->playerPos[serMess->m_clientNum].x,
+            //                       serMess->playerPos[serMess->m_clientNum].y,
+            //                       serMess->playerPos[serMess->m_clientNum].z);
+            //            log::debug("Player {} rotation : x: {} y: {} z: {} w: {}", serMess->m_clientNum,
+            //                       serMess->playerRots[serMess->m_clientNum].x,
+            //                       serMess->playerRots[serMess->m_clientNum].y,
+            //                       serMess->playerRots[serMess->m_clientNum].z,
+            //                       serMess->playerRots[serMess->m_clientNum].w);
+            //            log::debug("Player 0 hp: {}", serMess->playerHealth[serMess->m_clientNum]);
+            //            log::debug(" ");
 
             auto sceneOpt = Scene::get_active_scene();
             if (!sceneOpt) {
@@ -116,10 +115,10 @@ bool NetworkedClient::handle_recieved_packets() {
                 auto& rigidBody = playerGO.get_component<components::RigidBody>();
 
                 uint16_t playerNum = playerComp.get_client_num();
-                    transform.set_position(serMess->playerPos[playerNum]);
-                    transform.set_rotation(serMess->playerRots[playerNum]);
-                    rigidBody.set_transform(serMess->playerPos[playerNum], serMess->playerRots[playerNum]);
-                    // TODO: set player health, pass the paint collisions to somewhere they can be handled?
+                transform.set_position(serMess->playerPos[playerNum]);
+                transform.set_rotation(serMess->playerRots[playerNum]);
+                rigidBody.set_transform(serMess->playerPos[playerNum], serMess->playerRots[playerNum]);
+                // TODO: set player health, pass the paint collisions to somewhere they can be handled?
             }
         }
         m_client->ReleaseMessage(mess);
@@ -199,10 +198,10 @@ void NetworkedClient::test_player_input() {
 
         vec3 m_playerInputs = vec3();
         if (m_inManager->key_pressed(KeyCode::A)) {
-            m_playerInputs.x += 1;
+            m_playerInputs.x -= 1;
         }
         if (m_inManager->key_pressed(KeyCode::D)) {
-            m_playerInputs.x -= 1;
+            m_playerInputs.x += 1;
         }
         if (m_inManager->key_pressed(KeyCode::W)) {
             m_playerInputs.z += 1;

@@ -42,6 +42,7 @@ class Engine {
     double get_current_time() { return currentTime; }
 
     inline static bool isClient = true;
+
    private:
     void swap_frame();
     void reset_physics_module();
