@@ -10,8 +10,8 @@ NetworkedServer::NetworkedServer(Engine& engine) : m_engine(engine), m_server(nu
 void NetworkedServer::on_awake() {
     uint8_t privateKey[KeyBytes] = {0};
 
-    m_server = std::make_shared<Server>(GetDefaultAllocator(), privateKey, Address(SERVER_ADDRESS, SERVER_PORT), m_config,
-                                        gameAdapter, get_time());
+    m_server = std::make_shared<Server>(GetDefaultAllocator(), privateKey, Address(SERVER_ADDRESS, SERVER_PORT),
+                                        m_config, gameAdapter, get_time());
     m_server->Start(MAX_CLIENTS);
     log::debug("STARTED SERVER...");
     seq.fill(0);

@@ -87,10 +87,12 @@ bool NetworkedClient::handle_recieved_packets() {
                 m_clientNum = serMess->m_clientNum;
             }
             log::debug("### - CLIENT {}- ###", m_clientNum);
-            log::debug("Player {} position : x: {} y: {} z: {}", serMess->m_clientNum,serMess->playerPos[serMess->m_clientNum].x, serMess->playerPos[serMess->m_clientNum].y,
+            log::debug("Player {} position : x: {} y: {} z: {}", serMess->m_clientNum,
+                       serMess->playerPos[serMess->m_clientNum].x, serMess->playerPos[serMess->m_clientNum].y,
                        serMess->playerPos[serMess->m_clientNum].z);
-            log::debug("Player {} rotation : x: {} y: {} z: {} w: {}",serMess->m_clientNum, serMess->playerRots[serMess->m_clientNum].x,
-                       serMess->playerRots[serMess->m_clientNum].y, serMess->playerRots[serMess->m_clientNum].z, serMess->playerRots[serMess->m_clientNum].w);
+            log::debug("Player {} rotation : x: {} y: {} z: {} w: {}", serMess->m_clientNum,
+                       serMess->playerRots[serMess->m_clientNum].x, serMess->playerRots[serMess->m_clientNum].y,
+                       serMess->playerRots[serMess->m_clientNum].z, serMess->playerRots[serMess->m_clientNum].w);
             log::debug("Player 0 hp: {}", serMess->playerHealth[serMess->m_clientNum]);
             log::debug(" ");
 
