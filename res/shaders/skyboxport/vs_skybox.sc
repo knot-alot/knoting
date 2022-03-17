@@ -19,8 +19,6 @@ mat3 mtx3FromCols(vec3 c0, vec3 c1, vec3 c2)
 
 void main()
 {
-
-
 	vec3 pos = a_position ;
 	mat4 invproj = u_invProj;
     pos.xy *= vec2 (invproj[0][0] , invproj [1][1]);

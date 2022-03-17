@@ -11,20 +11,23 @@ SAMPLERCUBE(s_skyboxAlbedo,  	 0);
 SAMPLERCUBE(s_skyboxIrraiance, 1);
 SAMPLERCUBE(s_skyboxRadiance,  2);
 
+const vec2 invAtan = vec2(0.1591, 0.3183);
+vec2 SampleSphericalMap(vec3 v)
+{
+    vec2 uv = vec2(atan2(v.z, v.x), asin(v.y));
+    uv *= invAtan;
+    //uv -= 0.5;
+    return uv;
+}
+
+
 void main(){
 	vec4 color;
+    vec2 uv = SampleSphericalMap(normalize(v_wpos));
     vec3 dir = normalize(v_view);
 
+	color = vec4(v_view,1);
 	
-	if(u_lodAmount == 0.0){
-		color = toLinear(textureCube(s_skyboxAlbedo, dir));
-	}
-	else if(u_lodAmount == 1.0){
-		color = toLinear(textureCube(s_skyboxIrraiance, dir));
-	}
-	else{
-		color = toLinear(textureCube(s_skyboxRadiance, dir));
-	}
 
 	color *= exp2(u_exposure);
 	gl_FragColor = toFilmic(color);
