@@ -7,34 +7,28 @@ uniform vec4 m_skyboxData;
 #include <bgfx_shader.sh>
 #include <common.sh>
 
-SAMPLER2D(s_skyboxAlbedo,  	 0);
-SAMPLER2D(s_skyboxIrraiance, 1);
-SAMPLER2D(s_skyboxRadiance,  2);
+SAMPLERCUBE(s_skyboxAlbedo,  	 0);
+SAMPLERCUBE(s_skyboxIrraiance, 1);
+SAMPLERCUBE(s_skyboxRadiance,  2);
 
 void main(){
-//	vec4 color;
+	vec4 color;
+    vec3 dir = normalize(v_view);
+
 	
-//	if(u_lodAmount == 0.0){
-//		color = toLinear(texture2D(s_skyboxAlbedo, v_view.xy));
-//	}
-//	else if(u_lodAmount == 1.0){
-//		color = toLinear(texture2D(s_skyboxIrraiance, v_view.xy));	
-//	}
-//	else{
-//		color = toLinear(texture2D(s_skyboxRadiance,v_view.xy));
-//	}
-//
-//	color *= exp2(u_exposure);
-//	gl_FragColor = toFilmic(color);
+	if(u_lodAmount == 0.0){
+		color = toLinear(textureCube(s_skyboxAlbedo, dir));
+	}
+	else if(u_lodAmount == 1.0){
+		color = toLinear(textureCube(s_skyboxIrraiance, dir));
+	}
+	else{
+		color = toLinear(textureCube(s_skyboxRadiance, dir));
+	}
 
+	color *= exp2(u_exposure);
+	gl_FragColor = toFilmic(color);
 
-	vec3 envColor = texture2D(s_skyboxAlbedo, v_view.xy).rgb;
-    
-    envColor = envColor / (envColor + vec3(1.0,1.0, 1.0));
-    envColor = pow(envColor, vec3(1.0/2.2,1.0/2.2,1.0/2.2)); 
-
-
-    gl_FragColor = vec4(envColor, 1.0);
 
 
 

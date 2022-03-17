@@ -35,15 +35,15 @@ Untie::Untie() {
     }
     {
         auto cubeObj = scene.create_game_object("skybox");
-        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(30, 30, 30));
-        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(0, 8, 0));
+        cubeObj.add_component<components::InstanceMesh>("postProcessPlane");
 
         auto skybox = components::SkyBox();
 
         skybox.set_texture_slot_path(SkyBoxTextureType::SkyBox, "skybox/cmft_skybox.hdr");
         skybox.set_texture_slot_path(SkyBoxTextureType::Irradiance, "skybox/cmtr_irradiance.hdr");
         skybox.set_texture_slot_path(SkyBoxTextureType::Radiance, "skybox/cmtr_radiance.hdr");
-        skybox.set_uniform_background_type(SkyBoxTextureType::SkyBox);
+        skybox.set_uniform_background_type(SkyBoxTextureType::Irradiance);
 
         cubeObj.add_component<components::SkyBox>(skybox);
     }
@@ -182,14 +182,6 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(7, 7, 7));
         cubeObj.add_component<components::InstanceMesh>("postProcessPlane");
         cubeObj.add_component<components::PostProcessing>();
-
-        auto material = components::Material();
-        material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
-        material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
-        cubeObj.add_component<components::Material>(material);
     }
 
     //    std::string filename("rnasdd135586.json");
