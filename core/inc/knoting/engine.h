@@ -41,6 +41,7 @@ class Engine {
     void add_subsystem(std::shared_ptr<Subsystem> subsystem);
     double get_current_time() { return currentTime; }
 
+    inline static bool isClient = true;
    private:
     void swap_frame();
     void reset_physics_module();

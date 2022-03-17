@@ -9,8 +9,11 @@ Engine::Engine() {
     m_forwardRenderModule = std::make_shared<knot::ForwardRenderer>(*this);
     m_physicsModule = std::make_shared<knot::Physics>(*this);
     m_assetManager = std::make_shared<knot::AssetManager>();
+    InitializeYojimbo();
+    if(!isClient){
+        m_serverModule = std::make_shared<knot::NetworkedServer>(*this);
+    }
 
-    m_serverModule = std::make_shared<knot::NetworkedServer>(*this);
     m_clientModule = std::make_shared<knot::NetworkedClient>(*this);
 
     //  order dependent
@@ -19,7 +22,9 @@ Engine::Engine() {
     m_engineModules.emplace_back(m_assetManager);
     m_engineModules.emplace_back(m_forwardRenderModule);
     m_engineModules.emplace_back(m_physicsModule);
-    m_engineModules.emplace_back(m_serverModule);
+    if(!isClient){
+        m_engineModules.emplace_back(m_serverModule);
+    }
     m_engineModules.emplace_back(m_clientModule);
 
     for (auto& module : m_engineModules) {

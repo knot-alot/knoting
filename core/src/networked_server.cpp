@@ -5,7 +5,7 @@ namespace knot {
 NetworkedServer::~NetworkedServer() {}
 
 NetworkedServer::NetworkedServer(Engine& engine) : m_engine(engine), m_server(nullptr) {
-    InitializeYojimbo();
+
 }
 void NetworkedServer::on_awake() {
     uint8_t privateKey[KeyBytes] = {0};
@@ -123,7 +123,7 @@ bool NetworkedServer::handle_recieved_packets() {
                     playerComp.set_is_shooting(cliMess->isShooting);
 
                     vec2i inputs = playerComp.get_movement_axis();
-                    vec3 playerInputs = transform.get_rotation() * vec3(inputs.x, 0, inputs.y);
+                    vec3 playerInputs = vec3(-inputs.x, 0, -inputs.y);
 
                     if (glm::abs(playerInputs.x + playerInputs.y + playerInputs.z) <= 0.1f) {
                         continue;

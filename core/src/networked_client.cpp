@@ -116,12 +116,10 @@ bool NetworkedClient::handle_recieved_packets() {
                 auto& rigidBody = playerGO.get_component<components::RigidBody>();
 
                 uint16_t playerNum = playerComp.get_client_num();
-                if (!(m_clientNum == playerNum)) {
                     transform.set_position(serMess->playerPos[playerNum]);
                     transform.set_rotation(serMess->playerRots[playerNum]);
                     rigidBody.set_transform(serMess->playerPos[playerNum], serMess->playerRots[playerNum]);
                     // TODO: set player health, pass the paint collisions to somewhere they can be handled?
-                }
             }
         }
         m_client->ReleaseMessage(mess);
