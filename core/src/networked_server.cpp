@@ -8,11 +8,10 @@ NetworkedServer::NetworkedServer(Engine& engine) : m_engine(engine), m_server(nu
     InitializeYojimbo();
 }
 void NetworkedServer::on_awake() {
-    uint8_t privateKey[KeyBytes];
-    memset(privateKey, 0, KeyBytes);
+    uint8_t privateKey[KeyBytes] = {0};
 
-    m_server = std::make_shared<Server>(GetDefaultAllocator(), privateKey, Address("127.0.0.1", SERVER_PORT), m_config,
-                                        clientAdapter, get_time());
+    m_server = std::make_shared<Server>(GetDefaultAllocator(), privateKey, Address(SERVER_ADDRESS, SERVER_PORT), m_config,
+                                        gameAdapter, get_time());
     m_server->Start(MAX_CLIENTS);
     log::debug("STARTED SERVER...");
     seq.fill(0);
@@ -24,6 +23,14 @@ void NetworkedServer::on_update(double m_delta_time) {
         log::debug("server not running!");
         return;
     }
+
+    m_server->AdvanceTime(get_time());
+    m_server->ReceivePackets();
+    if (m_server->GetNumConnectedClients() > 0) {
+        handle_recieved_packets();
+    } else {
+        seq.fill(0);
+    }
     m_tickTime += m_delta_time;
     if (m_server->GetNumConnectedClients() > 0) {
         send_message();
@@ -32,14 +39,6 @@ void NetworkedServer::on_update(double m_delta_time) {
         m_tickTime -= TICK;
     }
     m_server->SendPackets();
-    m_server->ReceivePackets();
-
-    if (m_server->GetNumConnectedClients() > 0) {
-        handle_recieved_packets();
-    } else {
-        seq.fill(0);
-    }
-    m_server->AdvanceTime(get_time());
 }
 void NetworkedServer::on_fixed_update() {}
 void NetworkedServer::on_late_update() {}
@@ -61,7 +60,7 @@ bool NetworkedServer::send_message() {
                 // log::debug("Server Attempts to send message");
                 Message* mess = generateMessage(i);
                 seq[i]++;
-                m_server->SendMessage(0, 1, mess);
+                m_server->SendMessage(i, 1, mess);
             }
         }
     }
@@ -142,7 +141,7 @@ bool NetworkedServer::handle_recieved_packets() {
     return true;
 }
 Message* NetworkedServer::generateMessage(uint16_t cliNum) {
-    ServerMessage* mess = (ServerMessage*)m_server->CreateMessage(0, MessageTypes::SERVER_MESSAGE);
+    ServerMessage* mess = (ServerMessage*)m_server->CreateMessage(cliNum, MessageTypes::SERVER_MESSAGE);
     mess->set_sequence(seq[cliNum]);
     mess->set_ack(cliSeq[cliNum]);
     mess->m_clientNum = cliNum;

@@ -8,7 +8,8 @@ using namespace yojimbo;
 constexpr int SERVER_PORT = 13189;
 constexpr int CLIENT_PORT = 12646;
 constexpr int MAX_CLIENTS = 6;
-const char* const SERVER_ADDRESS = "127.0.0.1";
+const char* const SERVER_ADDRESS = "100.70.155.65";
+//const char* const SERVER_ADDRESS = "127.0.0.1";
 const double TICK = 1.0 / 30.0;
 
 struct m_clientServerConfig : public ClientServerConfig {
@@ -147,11 +148,15 @@ YOJIMBO_DECLARE_MESSAGE_TYPE(CLIENT_MESSAGE, ClientMessage);
 YOJIMBO_DECLARE_MESSAGE_TYPE(SERVER_MESSAGE, ServerMessage);
 YOJIMBO_MESSAGE_FACTORY_FINISH();
 
-class ClientAdapter : public Adapter {
+class GameAdapter : public Adapter {
    public:
+    explicit GameAdapter(Server* server = nullptr) : m_server(server){}
     MessageFactory* CreateMessageFactory(Allocator& allocator) {
         return YOJIMBO_NEW(allocator, ClientMessageFactory, allocator);
     }
+
+   private:
+    Server* m_server;
 };
-static ClientAdapter clientAdapter;
+static GameAdapter gameAdapter;
 }  // namespace knot

@@ -6,8 +6,9 @@ using namespace yojimbo;
 NetworkedClient::~NetworkedClient() {}
 
 NetworkedClient::NetworkedClient(Engine& engine) : m_engine(engine), m_client(nullptr) {}
+
 void NetworkedClient::on_awake() {
-    m_client = std::make_shared<Client>(GetDefaultAllocator(), Address("0.0.0.0", CLIENT_PORT), m_config, clientAdapter,
+    m_client = std::make_shared<Client>(GetDefaultAllocator(), Address("0.0.0.0", CLIENT_PORT), m_config, gameAdapter,
                                         get_time());
     m_inManager = m_engine.get_window_module().lock()->get_input_manager();
     log::debug("CREATED CLIENT with {} channels", m_config.numChannels);
@@ -18,6 +19,16 @@ void NetworkedClient::on_update(double m_delta_time) {
         while (!attempt_connection())
             ;
         return;
+    }
+    m_client->AdvanceTime(get_time());
+    m_client->ReceivePackets();
+
+    if (m_client->IsConnected()) {
+        if (!connected) {
+            connected = true;
+            log::debug("Client {} connected to server", m_clientId);
+        }
+        handle_recieved_packets();
     }
 
     m_tickTime += m_delta_time;
@@ -30,17 +41,6 @@ void NetworkedClient::on_update(double m_delta_time) {
     }
 
     m_client->SendPackets();
-    m_client->ReceivePackets();
-
-    if (m_client->IsConnected()) {
-        if (!connected) {
-            connected = true;
-            log::debug("Client {} connected to server", m_clientId);
-        }
-        handle_recieved_packets();
-    }
-
-    m_client->AdvanceTime(get_time());
 }
 
 void NetworkedClient::on_fixed_update() {}
@@ -65,8 +65,7 @@ bool NetworkedClient::attempt_connection() {
     yojimbo::random_bytes((uint8_t*)&m_clientId, 8);
     m_serverAddress = Address(SERVER_ADDRESS, SERVER_PORT);
 
-    uint8_t privateNetworkingKey[yojimbo::KeyBytes];
-    memset(privateNetworkingKey, 0, KeyBytes);
+    uint8_t privateNetworkingKey[yojimbo::KeyBytes] = {0};
     m_client->InsecureConnect(privateNetworkingKey, m_clientId, m_serverAddress);
     log::debug("ATTEMPTED CLIENT CONNECTION");
     return m_client->IsConnecting();
@@ -88,11 +87,11 @@ bool NetworkedClient::handle_recieved_packets() {
                 m_clientNum = serMess->m_clientNum;
             }
             log::debug("### - CLIENT {}- ###", m_clientNum);
-            log::debug("Player 0 position : x: {} y: {} z: {}", serMess->playerPos[0].x, serMess->playerPos[0].y,
-                       serMess->playerPos[0].z);
-            log::debug("Player 0 rotation : x: {} y: {} z: {} w: {}", serMess->playerRots[0].x,
-                       serMess->playerRots[0].y, serMess->playerRots[0].z, serMess->playerRots[0].w);
-            log::debug("Player 0 hp: {}", serMess->playerHealth[0]);
+            log::debug("Player {} position : x: {} y: {} z: {}", serMess->m_clientNum,serMess->playerPos[serMess->m_clientNum].x, serMess->playerPos[serMess->m_clientNum].y,
+                       serMess->playerPos[serMess->m_clientNum].z);
+            log::debug("Player {} rotation : x: {} y: {} z: {} w: {}",serMess->m_clientNum, serMess->playerRots[serMess->m_clientNum].x,
+                       serMess->playerRots[serMess->m_clientNum].y, serMess->playerRots[serMess->m_clientNum].z, serMess->playerRots[serMess->m_clientNum].w);
+            log::debug("Player 0 hp: {}", serMess->playerHealth[serMess->m_clientNum]);
             log::debug(" ");
 
             auto sceneOpt = Scene::get_active_scene();
