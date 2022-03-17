@@ -13,6 +13,8 @@ class AudioListener {
     quat get_rotation();
     void update_velocity();
     FMOD_VECTOR get_velocity();
+    FMOD_VECTOR* get_forward();
+    FMOD_VECTOR* get_up();
 
    private:
     float m_range;

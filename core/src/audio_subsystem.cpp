@@ -131,11 +131,11 @@ void AudioSubsystem::update_source(components::AudioSource* source) {
     update();
 }
 void AudioSubsystem::update_listener(components::AudioListener* listener) {
-    //    FMOD_VECTOR forward = {0, 0, listener.get_rotation().z};
-    FMOD_VECTOR forward = {0, 0, 1};
-    //    FMOD_VECTOR up = {0.0f, listener.get_rotation().y, 0.0f};
-    FMOD_VECTOR up = {0.0f, 1, 0.0f};
+    FMOD_VECTOR forward = {listener->get_forward()->x, listener->get_forward()->y, listener->get_forward()->z};
+    FMOD_VECTOR up = {listener->get_up()->x, listener->get_up()->y, listener->get_up()->z};
+
     FMOD_VECTOR* listener_pos = listener->get_position();
+
     //    FMOD_VECTOR vel = listener.get_velocity();
     FMOD_VECTOR vel = {0, 0, 0};
 
