@@ -1,9 +1,12 @@
 #pragma once
+
 #include <knoting/components.h>
 #include <knoting/types.h>
 #include <fmod.hpp>
 
-namespace knot::components {
+namespace knot {
+namespace components {
+
 class AudioListener {
    public:
     explicit AudioListener(float range);
@@ -22,4 +25,5 @@ class AudioListener {
     FMOD_VECTOR m_velocity;
 };
 
-}  // namespace knot::components
+}  // namespace components
+}  // namespace knot

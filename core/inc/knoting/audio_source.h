@@ -11,13 +11,15 @@
 
 namespace knot {
 class Engine;
-}
+class AudioSubsystem;
+}  // namespace knot
 
-namespace knot::components {
+namespace knot {
+namespace components {
 
 class AudioSource : public Asset {
    public:
-    AudioSource(const std::filesystem::path& path);
+    AudioSource(const std::filesystem::path& path, bool loops = false);
     ~AudioSource();
 
     //=For ECS========
@@ -32,7 +34,6 @@ class AudioSource : public Asset {
     }
     const std::filesystem::path& get_path() { return m_path; }
 
-    void set_loop(bool loop) { m_loops = loop; }
     bool get_loop() { return m_loops; }
     FMOD_VECTOR* get_position() const;
 
@@ -41,11 +42,17 @@ class AudioSource : public Asset {
     FMOD::Sound*& get_sound() { return m_sound; }
 
    private:
+    friend class AudioSubsystem;
+
     FMOD::Sound* m_sound;
+    FMOD::Channel* m_channel = nullptr;
     std::filesystem::path m_path;
+
+    bool m_isPaused = false;
     bool m_loops = true;
     bool m_isPlaying = false;
     bool isLoaded = false;
 };
 
-}  // namespace knot::components
+}  // namespace components
+}  // namespace knot

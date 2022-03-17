@@ -138,8 +138,10 @@ Untie::Untie() {
             log::critical("drumloop not found!");
         else
             log::critical("drumloop was found!");
-        auto& source = cubeObj.add_component<components::AudioSource>(path);
-        source.set_loop(true);
+        auto& source = cubeObj.add_component<components::AudioSource>(path, true);
+
+        m_engine->get_audio_module().lock()->play(source);
+        cubeOne = cubeObj;
     }
 
     {
@@ -163,6 +165,16 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
+
+        std::filesystem::path path = AssetManager::get_resources_path();
+        path.append("misc").append("jaguar.wav");
+        if (!std::filesystem::exists(path))
+            log::critical("jaguar not found!");
+        else
+            log::critical("jaguar was found!");
+        auto& source = cubeObj.add_component<components::AudioSource>(path, false);
+
+        cubeTwo = cubeObj;
     }
     {
         auto cubeObj = scene.create_game_object("stanford_dragon_1");
@@ -211,6 +223,29 @@ void Untie::run() {
     while (m_engine->is_open()) {
         m_engine->update_modules();
         auto im = m_engine->get_window_module().lock()->get_input_manager();
+
+        if (im->key_on_trigger(KeyCode::P)) {
+            if (cubeOne) {
+                components::AudioSource& source = cubeOne->get_component<components::AudioSource>();
+                auto weakAudioModule = m_engine->get_audio_module();
+                if (!weakAudioModule.expired()) {
+                    auto audioModule = weakAudioModule.lock();
+                    audioModule->toggle(source);
+                }
+            }
+        }
+
+        if (im->key_on_trigger(KeyCode::Y)) {
+            if (cubeOne) {
+                components::AudioSource& source = cubeTwo->get_component<components::AudioSource>();
+                auto weakAudioModule = m_engine->get_audio_module();
+                if (!weakAudioModule.expired()) {
+                    auto audioModule = weakAudioModule.lock();
+                    audioModule->play(source);
+                }
+            }
+        }
+
         if (im->key_pressed(KeyCode::Escape)) {
             m_engine->get_window_module().lock()->close();
         }

@@ -4,8 +4,8 @@
 
 namespace knot::components {
 
-AudioSource::AudioSource(const std::filesystem::path& path)
-    : Asset{AssetType::Audio, ""}, m_sound(nullptr), m_path(path) {}
+AudioSource::AudioSource(const std::filesystem::path& path, bool loops)
+    : Asset{AssetType::Audio, ""}, m_sound(nullptr), m_path(path), m_loops(loops) {}
 
 AudioSource::~AudioSource() = default;
 
@@ -16,7 +16,7 @@ void AudioSource::on_awake() {
     }
     auto engineWrapper = engOpt.value();
     auto& engine = engineWrapper.get();
-    engine.get_audio_module().lock()->add_sound(this);
+    engine.get_audio_module().lock()->add_sound(*this);
 }
 
 FMOD_VECTOR* AudioSource::get_position() const {
