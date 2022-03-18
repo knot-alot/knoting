@@ -24,8 +24,6 @@ class NetworkedClient : public Subsystem {
 
     void on_awake() override;
     void on_update(double m_delta_time) override;
-    void on_fixed_update() override;
-    void on_late_update() override;
     void on_destroy() override;
 
     double get_time();

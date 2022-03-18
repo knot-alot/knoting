@@ -1,17 +1,17 @@
 #pragma once
 #include <knoting/types.h>
 #include <yojimbo.h>
-
+#include <cstdlib>
 namespace knot {
 using namespace yojimbo;
 
 constexpr int SERVER_PORT = 13189;
 constexpr int CLIENT_PORT = 12646;
 constexpr int MAX_CLIENTS = 6;
-const char* const SERVER_ADDRESS = "100.117.241.88";
-// const char* const SERVER_ADDRESS = "127.0.0.1";
-//^^^ FOR LOCAL HOST TESTING ^^^
-const double TICK = 1.0 / 30.0;
+const double TICK = 1.0 / 64.0;
+
+constexpr int clientTimeout = 5;
+constexpr int maxPacketSize = 1500;
 
 struct GameConfig : public ClientServerConfig {
     GameConfig() {
@@ -19,9 +19,9 @@ struct GameConfig : public ClientServerConfig {
         this->numChannels = 2;
         this->channel[0].type = yojimbo::CHANNEL_TYPE_RELIABLE_ORDERED;
         this->channel[1].type = yojimbo::CHANNEL_TYPE_UNRELIABLE_UNORDERED;
-        this->timeout = 5;
+        this->timeout = clientTimeout;
         this->networkSimulator = false;
-        this->maxPacketSize = 1500;
+        this->maxPacketSize = maxPacketSize;
     }
 };
 
@@ -29,8 +29,8 @@ template <typename Stream>
 bool serialize_vec2i(Stream& stream, vec2i& val) {
     auto valX = (int16_t)val.x;
     auto valY = (int16_t)val.y;
-    serialize_int(stream, valX, -32767, 32767);
-    serialize_int(stream, valY, -32767, 32767);
+    serialize_int(stream, valX, -1, 1);
+    serialize_int(stream, valY, -1, 1);
     val.x = valX;
     val.y = valY;
     return true;
@@ -38,12 +38,13 @@ bool serialize_vec2i(Stream& stream, vec2i& val) {
 
 class ClientMessage : public Message {
    public:
-    ClientMessage() : m_sequence(0), m_recentAck(0) {
-        m_lookAxis = vec2i();
-        m_moveAxis = vec2i();
-        jumpPressed = false;
-        isShooting = false;
-    }
+    ClientMessage()
+        : m_sequence(0),
+          m_recentAck(0),
+          m_lookAxis(vec2i()),
+          m_moveAxis(vec2i()),
+          jumpPressed(false),
+          isShooting(false) {}
 
     template <typename Stream>
     bool Serialize(Stream& stream) {
@@ -60,19 +61,13 @@ class ClientMessage : public Message {
     vec2i m_lookAxis;
     vec2i m_moveAxis;
 
-    bool jumpPressed;
-    bool isShooting;
+    bool jumpPressed = false;
+    bool isShooting = false;
 
-    uint16_t get_sequence() { return m_sequence; }
-    void set_sequence(uint16_t seq) { m_sequence = seq; }
-
-    uint16_t get_recent_ack() { return m_recentAck; }
-    void set_ack(uint16_t reAck) { m_recentAck = reAck; }
-    YOJIMBO_VIRTUAL_SERIALIZE_FUNCTIONS();
-
-   protected:
     uint16_t m_sequence;
     uint16_t m_recentAck;
+
+    YOJIMBO_VIRTUAL_SERIALIZE_FUNCTIONS();
 };
 
 template <typename Stream>
@@ -129,23 +124,17 @@ class ServerMessage : public Message {
     std::array<int16_t, MAX_CLIENTS> playerHealth;
     std::array<vec3, MAX_COLLISIONS> paintCollisions;
 
-    uint16_t get_sequence() { return m_sequence; }
-    void set_sequence(uint16_t seq) { m_sequence = seq; }
-
-    uint16_t get_recent_ack() { return m_recentAck; }
-    void set_ack(uint16_t reAck) { m_recentAck = reAck; }
-    YOJIMBO_VIRTUAL_SERIALIZE_FUNCTIONS();
-
-   protected:
     uint16_t m_sequence;
     uint16_t m_recentAck;
+
+    YOJIMBO_VIRTUAL_SERIALIZE_FUNCTIONS();
 };
 
-enum MessageTypes { CLIENT_MESSAGE, SERVER_MESSAGE, NUM_MESSAGE_TYPES };
+enum class NetworkMessageTypes { ClientMessage, ServerMessage, LAST };
 
-YOJIMBO_MESSAGE_FACTORY_START(GameMessageFactory, NUM_MESSAGE_TYPES);
-YOJIMBO_DECLARE_MESSAGE_TYPE(CLIENT_MESSAGE, ClientMessage);
-YOJIMBO_DECLARE_MESSAGE_TYPE(SERVER_MESSAGE, ServerMessage);
+YOJIMBO_MESSAGE_FACTORY_START(GameMessageFactory, static_cast<size_t>(NetworkMessageTypes::LAST));
+YOJIMBO_DECLARE_MESSAGE_TYPE(static_cast<size_t>(NetworkMessageTypes::ClientMessage), ClientMessage);
+YOJIMBO_DECLARE_MESSAGE_TYPE(static_cast<size_t>(NetworkMessageTypes::ServerMessage), ServerMessage);
 YOJIMBO_MESSAGE_FACTORY_FINISH();
 
 class GameAdapter : public Adapter {
@@ -156,7 +145,7 @@ class GameAdapter : public Adapter {
     }
 
    private:
-    Server* m_server;
+    std::shared_ptr<Server> m_server;
 };
 static GameAdapter gameAdapter;
 }  // namespace knot

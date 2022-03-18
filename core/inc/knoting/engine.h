@@ -39,7 +39,6 @@ class Engine {
     static void set_active_engine(std::optional<std::reference_wrapper<Engine>> engine);
 
     void add_subsystem(std::shared_ptr<Subsystem> subsystem);
-    double get_current_time() { return currentTime; }
 
     inline static bool isClient = true;
 
@@ -66,8 +65,6 @@ class Engine {
 
     inline static std::optional<std::reference_wrapper<Engine>> s_activeEngine = std::nullopt;
     std::shared_ptr<AssetManager> m_assetManager;
-
-    double currentTime = 0.0;
 };
 
 }  // namespace knot

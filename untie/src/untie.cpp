@@ -130,7 +130,7 @@ Untie::Untie() {
         rigidbody.create_actor(true, 4.0f);
 
         auto& rigidController = cubeObj.add_component<components::RigidController>();
-        rigidController.lockRotations();
+        rigidController.lockRotations(true, false, true);
         rigidController.set_linear_damping(1.0f);
         rigidController.set_angular_damping(1.0f);
 
@@ -143,8 +143,7 @@ Untie::Untie() {
         cubeObj.add_component<components::Material>(material);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
-        client.set_client_num(0);
-        client.set_is_shooting(true);
+        client.m_clientNum = 0;
     }
     // PLAYER 2
     {
@@ -168,7 +167,7 @@ Untie::Untie() {
         rigidbody.create_actor(true, 4.0f);
 
         auto& rigidController = cubeObj.add_component<components::RigidController>();
-        rigidController.lockRotations();
+        rigidController.lockRotations(true, false, true);
         rigidController.set_linear_damping(1.0f);
         rigidController.set_angular_damping(1.0f);
 
@@ -181,8 +180,7 @@ Untie::Untie() {
         cubeObj.add_component<components::Material>(material);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
-        client.set_client_num(1);
-        client.set_is_shooting(true);
+        client.m_clientNum = (1);
     }
     // PLAYER 3
     {
@@ -206,7 +204,7 @@ Untie::Untie() {
         rigidbody.create_actor(true, 4.0f);
 
         auto& rigidController = cubeObj.add_component<components::RigidController>();
-        rigidController.lockRotations();
+        rigidController.lockRotations(true, false, true);
         rigidController.set_linear_damping(1.0f);
         rigidController.set_angular_damping(1.0f);
 
@@ -219,8 +217,7 @@ Untie::Untie() {
         cubeObj.add_component<components::Material>(material);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
-        client.set_client_num(2);
-        client.set_is_shooting(true);
+        client.m_clientNum = (2);
     }
     // PLAYER 4
     {
@@ -244,7 +241,7 @@ Untie::Untie() {
         rigidbody.create_actor(true, 4.0f);
 
         auto& rigidController = cubeObj.add_component<components::RigidController>();
-        rigidController.lockRotations();
+        rigidController.lockRotations(true, false, true);
         rigidController.set_linear_damping(1.0f);
         rigidController.set_angular_damping(1.0f);
 
@@ -257,8 +254,7 @@ Untie::Untie() {
         cubeObj.add_component<components::Material>(material);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
-        client.set_client_num(3);
-        client.set_is_shooting(true);
+        client.m_clientNum = (3);
     }
     // PLAYER 5
     {
@@ -282,7 +278,7 @@ Untie::Untie() {
         rigidbody.create_actor(true, 4.0f);
 
         auto& rigidController = cubeObj.add_component<components::RigidController>();
-        rigidController.lockRotations();
+        rigidController.lockRotations(true, false, true);
         rigidController.set_linear_damping(1.0f);
         rigidController.set_angular_damping(1.0f);
 
@@ -295,8 +291,7 @@ Untie::Untie() {
         cubeObj.add_component<components::Material>(material);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
-        client.set_client_num(4);
-        client.set_is_shooting(true);
+        client.m_clientNum = (4);
     }
     // PLAYER 6
     {
@@ -320,7 +315,7 @@ Untie::Untie() {
         rigidbody.create_actor(true, 4.0f);
 
         auto& rigidController = cubeObj.add_component<components::RigidController>();
-        rigidController.lockRotations();
+        rigidController.lockRotations(true, false, true);
         rigidController.set_linear_damping(1.0f);
         rigidController.set_angular_damping(1.0f);
 
@@ -333,8 +328,7 @@ Untie::Untie() {
         cubeObj.add_component<components::Material>(material);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
-        client.set_client_num(5);
-        client.set_is_shooting(true);
+        client.m_clientNum = (5);
     }
     //    std::string filename("skyboxScene.json");
     //    std::filesystem::path path = AssetManager::get_resources_path().append(filename);

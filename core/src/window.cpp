@@ -134,7 +134,10 @@ void Window::close() {
 void Window::on_awake() {}
 
 void Window::on_update(double m_delta_time) {
+    m_input->update_holds();
     glfwPollEvents();
+    m_input->update_pads(m_window);
+    m_input->update_relative_positions();
     calculate_delta_time();
 }
 
@@ -159,6 +162,9 @@ void Window::set_window_size(vec2i size) {
 
 std::shared_ptr<InputManager> Window::get_input_manager() {
     return m_input;
+}
+double Window::get_current_time() {
+    return glfwGetTime();
 }
 
 }  // namespace knot

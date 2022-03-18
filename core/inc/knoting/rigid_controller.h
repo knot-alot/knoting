@@ -34,10 +34,10 @@ class RigidController {
     void clear_force();
     void clear_torque();
 
-    void lockRotations();
+    void lockRotations(bool x, bool y, bool z);
 
     void put_to_sleep();
-    void wakeUp();
+    void wake_up();
 
     template <class Archive>
     void save(Archive& archive) const {

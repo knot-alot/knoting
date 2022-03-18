@@ -28,6 +28,7 @@ class Window : public Subsystem {
 
     void calculate_delta_time();
     double get_delta_time();
+    double get_current_time();
 
     bool is_open();
     void close();
