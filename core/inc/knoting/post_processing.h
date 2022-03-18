@@ -48,6 +48,7 @@ class PostProcessing {
     template <class Archive>
     void load(Archive& archive) {
         archive(CEREAL_NVP(m_depthOfFieldEnabled));
+        on_awake();
     }
 };
 }  // namespace components

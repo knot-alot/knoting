@@ -99,9 +99,8 @@ void CameraRotation::on_update(double m_delta_time) {
         m_up = glm::normalize(glm::cross(m_right, m_forward));
 
         //= CAMERA MOVEMENT
-        vec3 vecDeltaTime = vec3(m_delta_time);
         vec3 position = transform.get_position();
-        vec3 nextPosition = position + (m_keyboardDirection * m_movementMultiplier * m_moveSpeed * vecDeltaTime);
+        vec3 nextPosition = position + (m_keyboardDirection * m_movementMultiplier * m_moveSpeed * (float)m_delta_time);
         transform.set_position(nextPosition);
 
         //= SET LOOK TARGET POSITION USING FORWARD VECTOR
