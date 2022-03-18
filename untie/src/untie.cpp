@@ -122,6 +122,9 @@ Untie::Untie() {
         vec3 halfsize = vec3(1.5f);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
 
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.add_aggregate("player1", 10, false);
+
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
         rigidbody.create_actor(true, 4.0f);
@@ -158,7 +161,7 @@ Untie::Untie() {
         shape.set_geometry(shape.create_cube_geometry(halfsize));
 
         auto& aggregate = cubeObj.add_component<components::Aggregate>();
-        aggregate.find_aggregate("floor");
+        aggregate.add_aggregate("player2", 10, false);
 
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
@@ -195,6 +198,9 @@ Untie::Untie() {
         vec3 halfsize = vec3(1.5f);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
 
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.add_aggregate("player3", 10, false);
+
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
         rigidbody.create_actor(true, 4.0f);
@@ -229,6 +235,9 @@ Untie::Untie() {
         auto& shape = cubeObj.add_component<components::Shape>();
         vec3 halfsize = vec3(1.5f);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.add_aggregate("player4", 10, false);
 
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
@@ -266,7 +275,7 @@ Untie::Untie() {
         shape.set_geometry(shape.create_cube_geometry(halfsize));
 
         auto& aggregate = cubeObj.add_component<components::Aggregate>();
-        aggregate.find_aggregate("default");
+        aggregate.add_aggregate("player5", 10, false);
 
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
@@ -302,6 +311,9 @@ Untie::Untie() {
         auto& shape = cubeObj.add_component<components::Shape>();
         vec3 halfsize = vec3(1.5f);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.add_aggregate("player6", 10, false);
 
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
