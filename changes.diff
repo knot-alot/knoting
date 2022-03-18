@@ -1,0 +1,143 @@
+diff --git a/core/inc/knoting/camera_rotation.h b/core/inc/knoting/camera_rotation.h
+index 731bca6..35026f5 100644
+--- a/core/inc/knoting/camera_rotation.h
++++ b/core/inc/knoting/camera_rotation.h
+@@ -39,9 +39,9 @@ class CameraRotation : public Subsystem {
+     vec3 m_minMovementMultiplier = vec3(1);
+     vec3 m_moveSpeed = vec3(10);
+ 
+-    double m_roll = 0;   // roll = x
+-    double m_pitch = 0;  // pitch = y
+-    double m_yaw = 0;    // yaw = z
++    float m_roll = 0;   // roll = x
++    float m_pitch = 0;  // pitch = y
++    float m_yaw = 0;    // yaw = z
+ 
+     vec3 m_right = vec3(1, 0, 0);
+     vec3 m_up = vec3(0, 1, 0);
+diff --git a/core/src/camera_rotation.cpp b/core/src/camera_rotation.cpp
+index 483aa4b..945b24b 100644
+--- a/core/src/camera_rotation.cpp
++++ b/core/src/camera_rotation.cpp
+@@ -34,9 +34,9 @@ void CameraRotation::on_awake() {
+ 
+         auto rotation = transform.get_rotation_euler();
+ 
+-        m_roll = rotation.x;
+-        m_pitch = rotation.y;
+-        m_yaw = rotation.z;
++        m_pitch = rotation.x;
++        m_yaw = rotation.y;
++        m_roll = rotation.z;
+     }
+ }
+ 
+@@ -45,7 +45,7 @@ void CameraRotation::on_update(double m_delta_time) {
+     InputManager m_inputManager = m_engine.get_window_module().lock()->get_input_manager();
+ 
+     vec2d currentMousePos = m_inputManager.get_absolute_position();
+-    if (glm::isinf(currentMousePos.x) || glm::isinf(currentMousePos.y)) {
++    if (isinf(currentMousePos.x) || isinf(currentMousePos.y)) {
+         return;
+     }
+     m_mouseDelta = (currentMousePos - m_lastMousePosition);
+@@ -79,24 +79,23 @@ void CameraRotation::on_update(double m_delta_time) {
+ 
+         //= CAMERA ROTATION
+         m_roll = 0.0f;
+-        m_pitch += ((float)-m_mouseDelta.y * (float)m_mouseSensitivity.y) * (float)m_delta_time;
++        m_pitch += ((float)m_mouseDelta.y * (float)m_mouseSensitivity.y) * (float)m_delta_time;
+         m_yaw += ((float)-m_mouseDelta.x * (float)m_mouseSensitivity.x) * (float)m_delta_time;
+ 
+-        m_pitch = clamp(m_pitch, m_pitchClamp.x, m_pitchClamp.y);
+-
+-        transform.set_rotation_euler(vec3(m_roll, m_pitch, m_yaw));
+-        auto eulerRotation = transform.get_rotation_euler();
++        m_pitch = clamp(m_pitch, -89.f, 89.f);
++        transform.set_rotation_euler(vec3(m_pitch, m_yaw, m_roll));
+ 
+         //= CALCULATE FORWARD VECTOR == // TODO STORE / CALC THESE IN TRANSFORM
+-        glm::vec3 look;
+-        look.x = cosf(radians(eulerRotation.y)) * sinf(radians(eulerRotation.z));
+-        look.y = sinf(radians(eulerRotation.y));
+-        look.z = cosf(radians(eulerRotation.y)) * cosf(radians(eulerRotation.z));
+-        m_forward = glm::normalize(look);
++        vec3 look;
++        look.x = sinf(radians(m_yaw));
++        look.y = cosf(radians(m_pitch));
++        look.z = sinf(radians(m_pitch)) + cosf(radians(m_yaw));
++
++        m_forward = normalize(look);
+ 
+         //= CALCULATE LOCAL RIGHT AND UP == // TODO STORE / CALC THESE IN TRANSFORM
+-        m_right = glm::normalize(glm::cross(m_forward, vec3(0, 1, 0)));
+-        m_up = glm::normalize(glm::cross(m_right, m_forward));
++        m_right = normalize(cross(m_forward, vec3(0, 1, 0)));
++        m_up = normalize(cross(m_right, m_forward));
+ 
+         //= CAMERA MOVEMENT
+         vec3 vecDeltaTime = vec3(m_delta_time);
+@@ -117,7 +116,7 @@ void CameraRotation::on_destroy() {}
+ void CameraRotation::camera_key_input() {
+     InputManager m_inputManager = m_engine.get_window_module().lock()->get_input_manager();
+ 
+-    if (m_inputManager.key_on_release(KeyCode::E)) {
++    if (m_inputManager.key_pressed(KeyCode::E)) {
+         if (m_ePressed) {
+             m_lockState = !m_lockState;
+             m_engine.get_window_module().lock()->set_cursor_hide(m_lockState);
+@@ -131,27 +130,27 @@ void CameraRotation::camera_key_input() {
+ 
+     vec3 movementDirectionXYZ = vec3(0);
+ 
+-    if (m_inputManager.key_on_release(KeyCode::W)) {
++    if (m_inputManager.key_pressed(KeyCode::W)) {
+         movementDirectionXYZ += m_forward;
+     }
+-    if (m_inputManager.key_on_release(KeyCode::S)) {
++    if (m_inputManager.key_pressed(KeyCode::S)) {
+         movementDirectionXYZ += -m_forward;
+     }
+-    if (m_inputManager.key_on_release(KeyCode::A)) {
++    if (m_inputManager.key_pressed(KeyCode::A)) {
+         movementDirectionXYZ += -m_right;
+     }
+-    if (m_inputManager.key_on_release(KeyCode::D)) {
++    if (m_inputManager.key_pressed(KeyCode::D)) {
+         movementDirectionXYZ += m_right;
+     }
+-    if (m_inputManager.key_on_release(KeyCode::R)) {
++    if (m_inputManager.key_pressed(KeyCode::R)) {
+         movementDirectionXYZ += m_up;
+     }
+-    if (m_inputManager.key_on_release(KeyCode::F)) {
++    if (m_inputManager.key_pressed(KeyCode::F)) {
+         movementDirectionXYZ += -m_up;
+     }
+ 
+     vec3 speedTarget;
+-    if (m_inputManager.key_on_release(KeyCode::LeftShift)) {
++    if (m_inputManager.key_pressed(KeyCode::LeftShift)) {
+         speedTarget = m_maxMovementMultiplier;
+     } else {
+         speedTarget = m_minMovementMultiplier;
+@@ -160,4 +159,4 @@ void CameraRotation::camera_key_input() {
+ 
+     m_keyboardDirection = movementDirectionXYZ;
+ }
+-}  // namespace knot
+\ No newline at end of file
++}  // namespace knot
+diff --git a/core/src/window.cpp b/core/src/window.cpp
+index 4c32907..057d742 100644
+--- a/core/src/window.cpp
++++ b/core/src/window.cpp
+@@ -46,6 +46,8 @@ Window::Window(int width, int height, std::string title, Engine& engine)
+     bgfx::renderFrame();
+     bgfx::Init init;
+ 
++    init.type = bgfx::RendererType::Vulkan;
++
+ #if BX_PLATFORM_WINDOWS
+     init.platformData.nwh = glfwGetWin32Window(m_window);
+ #elif BX_PLATFORM_LINUX || BX_PLATFORM_BSD

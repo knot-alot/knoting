@@ -4,6 +4,7 @@
 #include <knoting/instance_mesh.h>
 #include <knoting/log.h>
 #include <knoting/mesh.h>
+#include <knoting/post_processing.h>
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/scene.h>
 #include <knoting/texture.h>
@@ -39,13 +40,16 @@ Untie::Untie() {
     }
     {
         auto cubeObj = scene.create_game_object("skybox");
-        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(30, 30, 30));
-        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(0, 8, 0));
+        cubeObj.add_component<components::InstanceMesh>("postProcessPlane");
 
         auto skybox = components::SkyBox();
+
         skybox.set_texture_slot_path(SkyBoxTextureType::SkyBox, "skybox/cmft_skybox.hdr");
         skybox.set_texture_slot_path(SkyBoxTextureType::Irradiance, "skybox/cmtr_irradiance.hdr");
         skybox.set_texture_slot_path(SkyBoxTextureType::Radiance, "skybox/cmtr_radiance.hdr");
+        skybox.set_uniform_background_type(SkyBoxTextureType::Radiance);
+
         cubeObj.add_component<components::SkyBox>(skybox);
     }
     {
@@ -330,16 +334,23 @@ Untie::Untie() {
         auto& client = cubeObj.add_component<components::ClientPlayer>();
         client.m_clientNum = (5);
     }
-    //    std::string filename("skyboxScene.json");
+    {
+        auto cubeObj = scene.create_game_object("post processing");
+        cubeObj.get_component<components::Transform>().set_position(vec3(0));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(7, 7, 7));
+        cubeObj.add_component<components::InstanceMesh>("postProcessPlane");
+        cubeObj.add_component<components::PostProcessing>();
+    }
+
+    //    std::string filename("post_process.json");
     //    std::filesystem::path path = AssetManager::get_resources_path().append(filename);
-    //    log::debug(path.string());
     //    std::fstream serializedSceneStream(path);
     //
-    //    serializedSceneStream.open(path, std::ios::out);
+    //    serializedSceneStream.open(path, std::ios_base::out);
     //    scene.save_scene_to_stream(serializedSceneStream);
     //    serializedSceneStream.close();
     //    Scene::set_active_scene(loadedScene);
-    //    serializedSceneStream.open(path, std::ios::in);
+    //    serializedSceneStream.open(path, std::ios_base::in);
     //    if (serializedSceneStream) {
     //        loadedScene.load_scene_from_stream(serializedSceneStream);
     //    } else {

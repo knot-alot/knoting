@@ -25,6 +25,7 @@ class Texture : public Asset {
     //=For Asset=======
     void generate_default_asset() override;
     //=================
+    void set_texture_handle(const bgfx::TextureHandle& textureHandle) { m_textureHandle = textureHandle; };
 
     void generate_solid_color_texture(const vec4& color, const std::string& name);
     void load_texture(const std::string& path);
