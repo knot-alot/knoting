@@ -93,6 +93,9 @@ Untie::Untie() {
         vec3 halfsize = vec3(25.0, 1.0f, 25.0);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
 
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.add_aggregate("floor", 10, false);
+
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
         auto material = components::Material();
@@ -153,6 +156,9 @@ Untie::Untie() {
         auto& shape = cubeObj.add_component<components::Shape>();
         vec3 halfsize = vec3(1.5f);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.find_aggregate("floor");
 
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
@@ -258,6 +264,9 @@ Untie::Untie() {
         auto& shape = cubeObj.add_component<components::Shape>();
         vec3 halfsize = vec3(1.5f);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.find_aggregate("default");
 
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
