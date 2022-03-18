@@ -8,6 +8,7 @@
 
 #include <knoting/components.h>
 #include <knoting/engine.h>
+#include <knoting/post_processing.h>
 #include <knoting/scene.h>
 #include <stb_image.h>
 #include <fstream>
@@ -24,25 +25,104 @@ void ForwardRenderer::on_awake() {}
 
 void ForwardRenderer::on_update(double m_delta_time) {
     m_timePassed += (float)m_delta_time;
-    bgfx::touch(0);
+    m_engine.get_framebuffer_manager_module().lock()->clear_all_framebuffers();
+    auto framebufferManager = m_engine.get_framebuffer_manager_module().lock();
 
-    shadow_pass();
-    depth_pass();
-    color_pass();
-    skybox_pass();
-    transparent_pass();
-    post_process_pass();
+    auto depth = framebufferManager->get_framebuffer(FrameBufferType::Depth);
+    auto color = framebufferManager->get_framebuffer(FrameBufferType::Color);
+    auto gui = framebufferManager->get_framebuffer(FrameBufferType::Gui);
+
+    bgfx::setViewFrameBuffer(depth.idx, depth);
+    depth_pass(depth.idx);
+
+    bgfx::setViewFrameBuffer(color.idx, color);
+    color_pass(color.idx);
+
+    bgfx::setViewFrameBuffer(gui.idx, gui);
+    gui_pass(gui.idx);
+
+    // RENDER TO BACK BUFFER
+    bgfx::setViewFrameBuffer(0, BGFX_INVALID_HANDLE);
+    post_process_pass(0);
 }
 
-void ForwardRenderer::shadow_pass() {}
-void ForwardRenderer::depth_pass() {}
-
-void ForwardRenderer::color_pass() {
+void ForwardRenderer::shadow_pass(uint16_t idx) {}
+void ForwardRenderer::depth_pass(uint16_t idx) {
     using namespace components;
-    m_engine.get_framebuffer_manager_module().lock()->clear_all_framebuffers();
-    auto fbos = m_engine.get_framebuffer_manager_module().lock();
-    auto colorBuffer = fbos->get_framebuffer(FrameBufferType::Color);
-    auto idx = colorBuffer.idx;  // TODO check what is render to this buffer via render doc as no editor debugging
+    auto sceneOpt = Scene::get_active_scene();
+    if (!sceneOpt) {
+        return;
+    }
+
+    Scene& scene = sceneOpt.value();
+    entt::registry& registry = scene.get_registry();
+    mat4 invProj;
+    glm::mat4 view;
+    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
+    //=CAMERA===========================
+    auto cameras = registry.view<Transform, EditorCamera, Name>();
+
+    for (auto& cam : cameras) {
+        auto goOpt = scene.get_game_object_from_handle(cam);
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        Transform& transform = go.get_component<Transform>();
+        EditorCamera& editorCamera = go.get_component<EditorCamera>();
+        Name& name = go.get_component<Name>();
+
+        const glm::vec3 pos = transform.get_position();
+        const glm::vec3 lookTarget = editorCamera.get_look_target();
+        const glm::vec3 up = editorCamera.get_up();
+
+        const float fovY = editorCamera.get_fov();
+        const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
+        const float zNear = editorCamera.get_z_near();
+        const float zFar = editorCamera.get_z_far();
+
+        // Set view and projection matrix for view 0.
+        {
+            view = glm::lookAt(pos, lookTarget, up);
+            glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
+            bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
+        }
+    }
+
+    auto entities = registry.view<Transform, InstanceMesh, Material, Name>();
+    for (auto& e : entities) {
+        auto goOpt = scene.get_game_object_from_handle(e);
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        Transform& transform = go.get_component<Transform>();
+        InstanceMesh& mesh = go.get_component<InstanceMesh>();
+        Material& material = go.get_component<Material>();
+        Name& name = go.get_component<Name>();
+
+        bgfx::setTransform(value_ptr(transform.get_model_matrix()));
+
+        // Set vertex and index buffer.
+        bgfx::setVertexBuffer(idx, mesh.get_vertex_buffer());
+
+        if (isValid(mesh.get_index_buffer())) {
+            bgfx::setIndexBuffer(mesh.get_index_buffer());
+        }
+
+        // Bind Uniforms & textures.
+        material.set_uniforms();
+
+        bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_Z | BGFX_STATE_DEPTH_TEST_LESS);
+
+        bgfx::submit(idx, material.get_program());
+    }
+}
+
+void ForwardRenderer::color_pass(uint16_t idx) {
+    using namespace components;
 
     auto sceneOpt = Scene::get_active_scene();
     if (!sceneOpt) {
@@ -166,9 +246,167 @@ void ForwardRenderer::color_pass() {
     }
 }
 
-void ForwardRenderer::skybox_pass() {}
-void ForwardRenderer::transparent_pass() {}
-void ForwardRenderer::post_process_pass() {}
+void ForwardRenderer::gui_pass(uint16_t idx) {
+    using namespace components;
+    auto sceneOpt = Scene::get_active_scene();
+    if (!sceneOpt) {
+        return;
+    }
+
+    Scene& scene = sceneOpt.value();
+    entt::registry& registry = scene.get_registry();
+    mat4 invProj;
+    glm::mat4 view;
+    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
+    //=CAMERA===========================
+    auto cameras = registry.view<Transform, EditorCamera, Name>();
+
+    for (auto& cam : cameras) {
+        auto goOpt = scene.get_game_object_from_handle(cam);
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        Transform& transform = go.get_component<Transform>();
+        EditorCamera& editorCamera = go.get_component<EditorCamera>();
+        Name& name = go.get_component<Name>();
+
+        const glm::vec3 pos = transform.get_position();
+        const glm::vec3 lookTarget = editorCamera.get_look_target();
+        const glm::vec3 up = editorCamera.get_up();
+
+        const float fovY = editorCamera.get_fov();
+        const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
+        const float zNear = editorCamera.get_z_near();
+        const float zFar = editorCamera.get_z_far();
+
+        // Set view and projection matrix for view 0.
+        {
+            view = glm::lookAt(pos, lookTarget, up);
+            glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
+            bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
+        }
+    }
+
+    auto entities = registry.view<Transform, InstanceMesh, Material, Name, PostProcessing>();
+    for (auto& e : entities) {
+        auto goOpt = scene.get_game_object_from_handle(e);
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        Transform& transform = go.get_component<Transform>();
+        InstanceMesh& mesh = go.get_component<InstanceMesh>();
+        Material& material = go.get_component<Material>();
+        Name& name = go.get_component<Name>();
+
+        bgfx::setTransform(value_ptr(transform.get_model_matrix()));
+
+        // Set vertex and index buffer.
+        bgfx::setVertexBuffer(idx, mesh.get_vertex_buffer());
+
+        if (isValid(mesh.get_index_buffer())) {
+            bgfx::setIndexBuffer(mesh.get_index_buffer());
+        }
+
+        // Bind Uniforms & textures.
+        material.set_uniforms();
+
+        bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+                       BGFX_STATE_DEPTH_TEST_LESS);
+
+        bgfx::submit(idx, material.get_program());
+    }
+}
+
+void ForwardRenderer::transparent_pass(uint16_t idx) {}
+
+void ForwardRenderer::post_process_pass(uint16_t idx) {
+    using namespace components;
+    auto sceneOpt = Scene::get_active_scene();
+    if (!sceneOpt) {
+        return;
+    }
+    Scene& scene = sceneOpt.value();
+    entt::registry& registry = scene.get_registry();
+
+    //=SET BGFX GLOBAL UNIFORMS===============
+
+    mat4 invProj;
+    glm::mat4 view;
+    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
+    //=CAMERA===========================
+    auto cameras = registry.view<Transform, EditorCamera, Name>();
+
+    for (auto& cam : cameras) {
+        auto goOpt = scene.get_game_object_from_handle(cam);
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        Transform& transform = go.get_component<Transform>();
+        EditorCamera& editorCamera = go.get_component<EditorCamera>();
+        Name& name = go.get_component<Name>();
+
+        const glm::vec3 pos = transform.get_position();
+        const glm::vec3 lookTarget = editorCamera.get_look_target();
+        const glm::vec3 up = editorCamera.get_up();
+
+        const float fovY = editorCamera.get_fov();
+        const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
+        const float zNear = editorCamera.get_z_near();
+        const float zFar = editorCamera.get_z_far();
+
+        // Set view and projection matrix for view 0.
+        {
+            view = glm::lookAt(pos, lookTarget, up);
+            glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
+            bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
+        }
+    }
+
+    //=POST PROCESSING========================
+    {
+        auto postProcessEntities = registry.view<Transform, PostProcessing, Name, InstanceMesh>();
+        for (auto& e : postProcessEntities) {
+            auto goOpt = scene.get_game_object_from_handle(e);
+            if (!goOpt) {
+                continue;
+            }
+
+            GameObject go = goOpt.value();
+            Transform& transform = go.get_component<Transform>();
+            InstanceMesh& mesh = go.get_component<InstanceMesh>();
+            Name& name = go.get_component<Name>();
+            PostProcessing& postProcessing = go.get_component<PostProcessing>();
+
+            bgfx::setTransform(value_ptr(transform.get_model_matrix()));
+            bgfx::setVertexBuffer(idx, mesh.get_vertex_buffer());
+
+            if (isValid(mesh.get_index_buffer())) {
+                bgfx::setIndexBuffer(mesh.get_index_buffer());
+            }
+
+            auto frameBuffers = m_engine.get_framebuffer_manager_module().lock();
+
+            auto colTex = frameBuffers->get_texture_attachments(FrameBufferType::Color);
+            auto guiTex = frameBuffers->get_texture_attachments(FrameBufferType::Gui);
+
+            postProcessing.set_color_render_texture(colTex[0]);
+            postProcessing.set_gui_render_texture(guiTex[0]);
+
+            postProcessing.set_uniforms();
+
+            bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
+                           BGFX_STATE_DEPTH_TEST_LESS);
+
+            bgfx::submit(idx, postProcessing.get_program());
+        }
+    }
+}
 
 void ForwardRenderer::on_late_update() {}
 void ForwardRenderer::on_destroy() {}

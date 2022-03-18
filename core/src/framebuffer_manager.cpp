@@ -59,67 +59,73 @@ void FramebufferManager::recreate_framebuffer(int width, int height) {
     auto windowSize = m_engine.get_window_module().lock()->get_window_size();
 
     {
-        auto backFB = m_renderTextures[(size_t)FrameBufferType::Back].get_framebuffer();
-        bgfx::setViewName(backFB.idx, "back buffer");
-        bgfx::setViewClear(backFB.idx, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
-        bgfx::setViewRect(backFB.idx, 0, 0, bgfx::BackbufferRatio::Equal);
-        bgfx::setViewFrameBuffer(backFB.idx, backFB);
+        auto backFB = m_renderTextures[(size_t)FrameBufferType::Back];
+        bgfx::setViewName(backFB.get_framebuffer().idx, "back buffer");
+        bgfx::setViewClear(backFB.get_framebuffer().idx, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, backFB.get_clear_color(),
+                           1.0f, 0);
+        bgfx::setViewRect(backFB.get_framebuffer().idx, 0, 0, bgfx::BackbufferRatio::Equal);
+        bgfx::setViewFrameBuffer(backFB.get_framebuffer().idx, backFB.get_framebuffer());
     }
     {
-        auto depthFB = m_renderTextures[(size_t)FrameBufferType::Depth].get_framebuffer();
-        bgfx::setViewName(depthFB.idx, "depth pass");
-        bgfx::setViewClear(depthFB.idx, BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
-        bgfx::setViewRect(depthFB.idx, 0, 0, windowSize.x, windowSize.y);
-        bgfx::setViewFrameBuffer(depthFB.idx, depthFB);
+        auto depthFB = m_renderTextures[(size_t)FrameBufferType::Depth];
+        bgfx::setViewName(depthFB.get_framebuffer().idx, "depth pass");
+        bgfx::setViewClear(depthFB.get_framebuffer().idx, BGFX_CLEAR_DEPTH, depthFB.get_clear_color(), 1.0f, 0);
+        bgfx::setViewRect(depthFB.get_framebuffer().idx, 0, 0, windowSize.x, windowSize.y);
+        bgfx::setViewFrameBuffer(depthFB.get_framebuffer().idx, depthFB.get_framebuffer());
     }
     {
-        auto colorFB = m_renderTextures[(size_t)FrameBufferType::Color].get_framebuffer();
-        bgfx::setViewName(colorFB.idx, "color pass");
-        bgfx::setViewClear(colorFB.idx, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
-        bgfx::setViewRect(colorFB.idx, 0, 0, windowSize.x, windowSize.y);
-        bgfx::setViewFrameBuffer(colorFB.idx, colorFB);
+        auto colorFB = m_renderTextures[(size_t)FrameBufferType::Color];
+        bgfx::setViewName(colorFB.get_framebuffer().idx, "color pass");
+        bgfx::setViewClear(colorFB.get_framebuffer().idx, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
+                           colorFB.get_clear_color(), 1.0f, 0);
+        bgfx::setViewRect(colorFB.get_framebuffer().idx, 0, 0, windowSize.x, windowSize.y);
+        bgfx::setViewFrameBuffer(colorFB.get_framebuffer().idx, colorFB.get_framebuffer());
     }
     {
-        auto postProcessFB = m_renderTextures[(size_t)FrameBufferType::PostProcess].get_framebuffer();
-        bgfx::setViewName(postProcessFB.idx, "post process pass");
-        bgfx::setViewClear(postProcessFB.idx, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
-        bgfx::setViewRect(postProcessFB.idx, 0, 0, windowSize.x, windowSize.y);
-        bgfx::setViewFrameBuffer(postProcessFB.idx, postProcessFB);
+        auto postProcessFB = m_renderTextures[(size_t)FrameBufferType::PostProcess];
+        bgfx::setViewName(postProcessFB.get_framebuffer().idx, "post process pass");
+        bgfx::setViewClear(postProcessFB.get_framebuffer().idx, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH,
+                           postProcessFB.get_clear_color(), 1.0f, 0);
+        bgfx::setViewRect(postProcessFB.get_framebuffer().idx, 0, 0, windowSize.x, windowSize.y);
+        bgfx::setViewFrameBuffer(postProcessFB.get_framebuffer().idx, postProcessFB.get_framebuffer());
     }
     {
-        auto guiFB = m_renderTextures[(size_t)FrameBufferType::Gui].get_framebuffer();
-        bgfx::setViewName(guiFB.idx, "gui pass");
-        bgfx::setViewClear(guiFB.idx, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
-        bgfx::setViewRect(guiFB.idx, 0, 0, windowSize.x, windowSize.y);
-        bgfx::setViewFrameBuffer(guiFB.idx, guiFB);
+        auto guiFB = m_renderTextures[(size_t)FrameBufferType::Gui];
+        bgfx::setViewName(guiFB.get_framebuffer().idx, "gui pass");
+        bgfx::setViewClear(guiFB.get_framebuffer().idx, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, guiFB.get_clear_color(),
+                           1.0f, 0);
+        bgfx::setViewRect(guiFB.get_framebuffer().idx, 0, 0, windowSize.x, windowSize.y);
+        bgfx::setViewFrameBuffer(guiFB.get_framebuffer().idx, guiFB.get_framebuffer());
     }
     {
-        auto shadowOneFB = m_renderTextures[(size_t)FrameBufferType::ShadowOne].get_framebuffer();
-        bgfx::setViewName(shadowOneFB.idx, "shadow one pass");
-        bgfx::setViewClear(shadowOneFB.idx, BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
-        bgfx::setViewRect(shadowOneFB.idx, 0, 0, 512, 512);
-        bgfx::setViewFrameBuffer(shadowOneFB.idx, shadowOneFB);
+        auto shadowOneFB = m_renderTextures[(size_t)FrameBufferType::ShadowOne];
+        bgfx::setViewName(shadowOneFB.get_framebuffer().idx, "shadow one pass");
+        bgfx::setViewClear(shadowOneFB.get_framebuffer().idx, BGFX_CLEAR_DEPTH, shadowOneFB.get_clear_color(), 1.0f, 0);
+        bgfx::setViewRect(shadowOneFB.get_framebuffer().idx, 0, 0, 512, 512);
+        bgfx::setViewFrameBuffer(shadowOneFB.get_framebuffer().idx, shadowOneFB.get_framebuffer());
     }
     {
-        auto shadowTwoFB = m_renderTextures[(size_t)FrameBufferType::ShadowTwo].get_framebuffer();
-        bgfx::setViewName(shadowTwoFB.idx, "shadow two pass");
-        bgfx::setViewClear(shadowTwoFB.idx, BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
-        bgfx::setViewRect(shadowTwoFB.idx, 0, 0, 512, 512);
-        bgfx::setViewFrameBuffer(shadowTwoFB.idx, shadowTwoFB);
+        auto shadowTwoFB = m_renderTextures[(size_t)FrameBufferType::ShadowTwo];
+        bgfx::setViewName(shadowTwoFB.get_framebuffer().idx, "shadow two pass");
+        bgfx::setViewClear(shadowTwoFB.get_framebuffer().idx, BGFX_CLEAR_DEPTH, shadowTwoFB.get_clear_color(), 1.0f, 0);
+        bgfx::setViewRect(shadowTwoFB.get_framebuffer().idx, 0, 0, 512, 512);
+        bgfx::setViewFrameBuffer(shadowTwoFB.get_framebuffer().idx, shadowTwoFB.get_framebuffer());
     }
     {
-        auto shadowThreeFB = m_renderTextures[(size_t)FrameBufferType::ShadowThree].get_framebuffer();
-        bgfx::setViewName(shadowThreeFB.idx, "shadow three pass");
-        bgfx::setViewClear(shadowThreeFB.idx, BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
-        bgfx::setViewRect(shadowThreeFB.idx, 0, 0, 512, 512);
-        bgfx::setViewFrameBuffer(shadowThreeFB.idx, shadowThreeFB);
+        auto shadowThreeFB = m_renderTextures[(size_t)FrameBufferType::ShadowThree];
+        bgfx::setViewName(shadowThreeFB.get_framebuffer().idx, "shadow three pass");
+        bgfx::setViewClear(shadowThreeFB.get_framebuffer().idx, BGFX_CLEAR_DEPTH, shadowThreeFB.get_clear_color(), 1.0f,
+                           0);
+        bgfx::setViewRect(shadowThreeFB.get_framebuffer().idx, 0, 0, 512, 512);
+        bgfx::setViewFrameBuffer(shadowThreeFB.get_framebuffer().idx, shadowThreeFB.get_framebuffer());
     }
     {
-        auto shadowFourFB = m_renderTextures[(size_t)FrameBufferType::ShadowFour].get_framebuffer();
-        bgfx::setViewName(shadowFourFB.idx, "shadow four pass");
-        bgfx::setViewClear(shadowFourFB.idx, BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
-        bgfx::setViewRect(shadowFourFB.idx, 0, 0, 512, 512);
-        bgfx::setViewFrameBuffer(shadowFourFB.idx, shadowFourFB);
+        auto shadowFourFB = m_renderTextures[(size_t)FrameBufferType::ShadowFour];
+        bgfx::setViewName(shadowFourFB.get_framebuffer().idx, "shadow four pass");
+        bgfx::setViewClear(shadowFourFB.get_framebuffer().idx, BGFX_CLEAR_DEPTH, shadowFourFB.get_clear_color(), 1.0f,
+                           0);
+        bgfx::setViewRect(shadowFourFB.get_framebuffer().idx, 0, 0, 512, 512);
+        bgfx::setViewFrameBuffer(shadowFourFB.get_framebuffer().idx, shadowFourFB.get_framebuffer());
     }
 
     for (auto& rt : m_renderTextures) {
@@ -156,6 +162,9 @@ bgfx::FrameBufferHandle FramebufferManager::get_framebuffer(FrameBufferType type
 
 std::vector<bgfx::TextureHandle> FramebufferManager::get_texture_attachments(FrameBufferType type) {
     return m_renderTextures[(size_t)type].get_texture_attachments();
+}
+void FramebufferManager::set_active_framebuffer(FrameBufferType type) {
+    m_currentViewBuffer = type;
 }
 
 }  // namespace knot
