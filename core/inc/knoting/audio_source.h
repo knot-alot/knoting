@@ -51,7 +51,7 @@ class AudioSource : public Asset {
         on_awake();
     }
 
-   private:
+   protected:
     friend class AudioSubsystem;
 
     FMOD::Sound* m_sound;

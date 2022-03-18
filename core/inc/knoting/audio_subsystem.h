@@ -41,7 +41,7 @@ class AudioSubsystem : public Subsystem {
 
     void on_update(double m_delta_time) override;
 
-   private:
+   protected:
     FMOD::System* m_system = nullptr;
 
     FMOD_RESULT m_result;
