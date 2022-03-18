@@ -25,37 +25,37 @@ void AudioSubsystem::on_destroy() {
 }
 
 void AudioSubsystem::play(components::AudioSource& source) {
-    source.set_is_playing(false);
-    if (source.m_channel) {
-        m_result = source.m_channel->isPlaying(&source.get_is_playing());
+    source.set_playing(false);
+    if (source.get_channel()) {
+        m_result = source.get_channel()->isPlaying(&source.get_playing());
         ErrorCheck(m_result);
     }
 
-    if (!source.get_is_playing()) {
-        m_result = m_system->playSound(source.get_sound(), nullptr, false, &source.m_channel);
+    if (!source.get_playing()) {
+        m_result = m_system->playSound(source.get_sound(), nullptr, false, &source.get_channel());
         ErrorCheck(m_result);
 
         update_source(source);
 
-        source.set_is_playing(true);
+        source.set_playing(true);
     }
 }
 
 void AudioSubsystem::toggle(components::AudioSource& source) {
-    if (!source.m_channel)
+    if (!source.get_channel())
         return;
 
-    source.m_isPaused = !source.m_isPaused;
-    source.m_channel->setPaused(source.m_isPaused);
+    source.get_paused() = !source.get_paused();
+    source.get_channel()->setPaused(source.get_paused());
 }
 
 void AudioSubsystem::stop(components::AudioSource& source) {
-    if (!source.m_channel)
+    if (!source.get_channel())
         return;
 
-    source.m_isPlaying = false;
-    source.m_channel->setPaused(true);
-    source.m_channel = nullptr;
+    source.set_playing(false);
+    source.get_channel()->setPaused(true);
+    source.set_channel(nullptr);
 }
 
 void AudioSubsystem::stop() {
@@ -102,20 +102,20 @@ void AudioSubsystem::update() {
         auto go = goOpt.value();
         components::AudioSource& source = go.get_component<components::AudioSource>();
 
-        if (source.m_channel) {
+        if (source.get_channel()) {
             FMOD::Sound* current_sound = nullptr;
-            m_result = source.m_channel->isPlaying(&playing);
+            m_result = source.get_channel()->isPlaying(&playing);
 
             if (m_result == FMOD_ERR_INVALID_HANDLE) {
-                source.m_channel = nullptr;
+                source.set_channel(nullptr);
                 continue;
             }
 
-            m_result = source.m_channel->getPaused(&paused);
+            m_result = source.get_channel()->getPaused(&paused);
             ErrorCheck(m_result);
-            m_result = source.m_channel->getPosition(&pos, FMOD_TIMEUNIT_MS);
+            m_result = source.get_channel()->getPosition(&pos, FMOD_TIMEUNIT_MS);
             ErrorCheck(m_result);
-            source.m_channel->getCurrentSound(&current_sound);
+            source.get_channel()->getCurrentSound(&current_sound);
 
             if (current_sound) {
                 m_result = current_sound->getLength(&len_ms, FMOD_TIMEUNIT_MS);
@@ -126,7 +126,7 @@ void AudioSubsystem::update() {
 }
 
 void AudioSubsystem::set_loop(components::AudioSource& source, bool loops) {
-    source.m_loops = loops;
+    source.set_loops(loops);
 
     m_result = source.get_sound()->setMode(source.get_loops() ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
     ErrorCheck(m_result);
@@ -182,8 +182,8 @@ void AudioSubsystem::update_source(components::AudioSource& source) {
     FMOD_VECTOR* pos = source.get_position();
     FMOD_VECTOR vel = {0, 0, 0};
 
-    if (source.m_channel) {
-        m_result = source.m_channel->set3DAttributes(pos, &vel);
+    if (source.get_channel()) {
+        m_result = source.get_channel()->set3DAttributes(pos, &vel);
         ErrorCheck(m_result);
     }
 

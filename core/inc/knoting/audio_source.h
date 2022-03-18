@@ -28,14 +28,28 @@ class AudioSource : public Asset {
     //=================
 
     void set_path(const std::filesystem::path& path) { m_path = path; }
+
     const std::filesystem::path& get_path() { return m_path; }
 
     bool get_loops() { return m_loops; }
+
+    void set_loops(bool loops) { m_loops=loops; }
+
     FMOD_VECTOR* get_position() const;
 
-    bool& get_is_playing() { return m_isPlaying; }
-    void set_is_playing(bool isPlaying) { m_isPlaying = isPlaying; }
+    bool& get_playing() { return m_isPlaying; }
+
+    void set_playing(bool isPlaying) { m_isPlaying = isPlaying; }
+
+    bool& get_paused() { return m_isPaused; }
+
+    void set_paused(bool isPaused) { m_isPaused = isPaused; }
+
     FMOD::Sound*& get_sound() { return m_sound; }
+
+    FMOD::Channel*& get_channel() { return m_channel; }
+
+    void set_channel(FMOD::Channel* channel) { m_channel = channel; }
 
     template <class Archive>
     void save(Archive& archive) const {
