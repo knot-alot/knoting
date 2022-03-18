@@ -24,7 +24,6 @@ void NetworkedClient::on_update(double m_delta_time) {
     m_client->AdvanceTime(get_time());
     m_client->ReceivePackets();
 
-    m_tickTime += m_delta_time;
     if (m_client->IsConnected()) {
         if (!connected) {
             connected = true;
@@ -34,10 +33,7 @@ void NetworkedClient::on_update(double m_delta_time) {
         test_player_input();
         send_message();
     }
-    if (m_tickTime >= TICK) {
-        m_tickTime -= TICK;
-    }
-
+    reset_tick(m_delta_time);
     m_client->SendPackets();
 }
 
@@ -92,6 +88,7 @@ bool NetworkedClient::handle_recieved_packets() {
     auto players = registry.view<components::ClientPlayer, components::RigidBody>();
 
     Message* mess = nullptr;
+
     while ((mess = m_client->ReceiveMessage(1))) {
         if (mess->GetType() != static_cast<size_t>(NetworkMessageTypes::ServerMessage)) {
             continue;
@@ -216,6 +213,12 @@ void NetworkedClient::test_player_input() {
 
         playerComp.m_moveAxis = (vec2i(m_playerInputs.x, m_playerInputs.z));
         playerComp.m_lookAxis = (vec2i(0, -1));
+    }
+}
+void NetworkedClient::reset_tick(double m_delta_time) {
+    m_tickTime += m_delta_time;
+    if (m_tickTime >= TICK) {
+        m_tickTime -= TICK;
     }
 }
 

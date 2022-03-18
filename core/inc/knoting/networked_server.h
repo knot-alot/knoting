@@ -26,6 +26,7 @@ class NetworkedServer : public Subsystem {
 
     bool handle_recieved_packets(double m_delta_time);
     bool send_message();
+    void reset_tick(double m_delta_time);
     Message* generateMessage(uint16_t cliNum);
 
    protected:

@@ -28,20 +28,16 @@ void NetworkedServer::on_update(double m_delta_time) {
         log::debug("server not running!");
         return;
     }
-
     m_server->AdvanceTime(get_time());
     m_server->ReceivePackets();
 
-    m_tickTime += m_delta_time;
     if (m_server->GetNumConnectedClients() > 0) {
         handle_recieved_packets(m_delta_time);
         send_message();
     } else {
         seq.fill(0);
     }
-    if (m_tickTime >= TICK) {
-        m_tickTime -= TICK;
-    }
+    reset_tick(m_delta_time);
     m_server->SendPackets();
 }
 
@@ -181,6 +177,12 @@ Message* NetworkedServer::generateMessage(uint16_t cliNum) {
         mess->paintCollisions.fill(vec3(1, 5, -1));
     }
     return mess;
+}
+void NetworkedServer::reset_tick(double m_delta_time) {
+    m_tickTime += m_delta_time;
+    if (m_tickTime >= TICK) {
+        m_tickTime -= TICK;
+    }
 }
 
 }  // namespace knot

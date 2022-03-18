@@ -32,6 +32,7 @@ class NetworkedClient : public Subsystem {
     bool handle_recieved_packets();
     bool send_message();
     Message* generate_message();
+    void reset_tick(double m_delta_time);
 
     void test_player_input();
 
