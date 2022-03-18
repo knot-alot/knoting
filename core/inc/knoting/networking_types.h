@@ -8,7 +8,7 @@ using namespace yojimbo;
 constexpr int SERVER_PORT = 13189;
 constexpr int CLIENT_PORT = 12646;
 constexpr int MAX_CLIENTS = 6;
-const char* const SERVER_ADDRESS = "100.100.113.40";
+const char* const SERVER_ADDRESS = "100.117.241.88";
 // const char* const SERVER_ADDRESS = "127.0.0.1";
 //^^^ FOR LOCAL HOST TESTING ^^^
 const double TICK = 1.0 / 30.0;

@@ -36,7 +36,7 @@ Engine::Engine() {
 void Engine::update_modules() {
     double dt = m_windowModule->get_delta_time();
     currentTime += dt;
-    
+
     for (auto& module : m_engineModules) {
         module->on_update(dt);
         module->on_fixed_update();

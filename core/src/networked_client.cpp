@@ -210,6 +210,8 @@ void NetworkedClient::test_player_input() {
             m_playerInputs.z -= 1;
         }
 
+        playerComp.set_jumping_pressed(m_inManager->key_pressed(KeyCode::Space));
+
         playerComp.set_XZ_movement_axis(vec2i(m_playerInputs.x, m_playerInputs.z));
         playerComp.set_look_axis(vec2i(0, -1));
     }

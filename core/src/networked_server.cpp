@@ -26,7 +26,7 @@ void NetworkedServer::on_update(double m_delta_time) {
 
     m_tickTime += m_delta_time;
     if (m_server->GetNumConnectedClients() > 0) {
-        handle_recieved_packets();
+        handle_recieved_packets(m_delta_time);
         send_message();
     } else {
         seq.fill(0);
@@ -59,7 +59,7 @@ bool NetworkedServer::send_message() {
     }
     return true;
 }
-bool NetworkedServer::handle_recieved_packets() {
+bool NetworkedServer::handle_recieved_packets(double m_delta_time) {
     if (!m_server->IsRunning()) {
         return false;
     }
@@ -123,7 +123,14 @@ bool NetworkedServer::handle_recieved_packets() {
                     }
 
                     vec3 normInp = glm::normalize(playerInputs);
-                    const vec3 directionForce = (0.1f) * 100.0f * 1000.0f * vec3(normInp.x, 0, normInp.z);
+                    float baseMulti = 1000000.0f;
+                    float speedMulti = 0.6f;
+                    float boost = 1.0f;
+                    if (playerComp.get_jumping_pressed()) {
+                        boost = 2.0f;
+                    }
+                    const vec3 directionForce =
+                        (float)(m_delta_time * baseMulti * speedMulti * boost) * vec3(normInp.x, 0, normInp.z);
 
                     rigidController.add_force(directionForce);
                 }
