@@ -43,11 +43,11 @@ void CameraRotation::on_awake() {
 }
 
 void CameraRotation::on_update(double m_delta_time) {
-    //= CHECK VALID INPUT ==
-    // m_inputManager = m_engine.get_window_module().lock()->get_input_manager();
+    using namespace components;
 
+    //= CHECK VALID INPUT ==
     vec2d currentMousePos = m_inputManager->get_absolute_position();
-    if (isinf(currentMousePos.x) || isinf(currentMousePos.y)) {
+    if (glm::isinf(currentMousePos.x) || glm::isinf(currentMousePos.y)) {
         return;
     }
     m_mouseDelta = (currentMousePos - m_lastMousePosition);
@@ -55,7 +55,6 @@ void CameraRotation::on_update(double m_delta_time) {
     //= 'E' TOGGLE MOUSE HIDDEN ==
     camera_key_input();
 
-    using namespace components;
     auto sceneOpt = Scene::get_active_scene();
     if (!sceneOpt) {
         return;
@@ -81,17 +80,17 @@ void CameraRotation::on_update(double m_delta_time) {
 
         //= CAMERA ROTATION
         m_roll = 0.0f;
-        m_pitch += ((float)m_mouseDelta.y * (float)m_mouseSensitivity.y) * (float)m_delta_time;
-        m_yaw += ((float)-m_mouseDelta.x * (float)m_mouseSensitivity.x) * (float)m_delta_time;
+        m_pitch -= ((float)m_mouseDelta.y * (float)m_mouseSensitivity.y) * (float)m_delta_time;
+        m_yaw -= ((float)-m_mouseDelta.x * (float)m_mouseSensitivity.x) * (float)m_delta_time;
 
         m_pitch = clamp(m_pitch, -89.f, 89.f);
         transform.set_rotation_euler(vec3(m_pitch, m_yaw, m_roll));
 
         //= CALCULATE FORWARD VECTOR == // TODO STORE / CALC THESE IN TRANSFORM
         vec3 look;
-        look.x = sinf(radians(m_yaw));
-        look.y = cosf(radians(m_pitch));
-        look.z = sinf(radians(m_pitch)) + cosf(radians(m_yaw));
+        look.x = cosf(radians(m_yaw)) * cosf(radians(m_pitch));
+        look.y = sinf(radians(m_pitch));
+        look.z = sinf(radians(m_yaw)) * cosf(radians(m_pitch));
 
         m_forward = normalize(look);
 
