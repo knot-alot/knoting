@@ -5,7 +5,7 @@ namespace components {
 
 void Material::on_awake() {
     // TODO pass in shader
-    m_shader.load_shader("bump", "vs_bump.bin", "fs_bump.bin");
+    m_shader.load_shader("standardLit", "vs_standard_lit.bin", "fs_standard_lit.bin");
     // end TODO
 
     // TODO When working update data to tightly packed variables -> 4 floats into 1 vec4
