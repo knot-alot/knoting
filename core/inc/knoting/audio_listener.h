@@ -4,26 +4,31 @@
 #include <knoting/types.h>
 #include <fmod.hpp>
 
-namespace knot {
-namespace components {
+namespace knot::components {
 
 class AudioListener {
    public:
-    explicit AudioListener(float range);
+    AudioListener() = default;
     ~AudioListener() = default;
+    AudioListener(const AudioListener& other) = default;
+    //    //=For ECS========
+    //    void on_awake() {}
+    //    void on_destroy() {}
+    //    //================
 
     FMOD_VECTOR* get_position();
     quat get_rotation();
-    void update_velocity();
-    FMOD_VECTOR get_velocity();
     FMOD_VECTOR* get_forward();
     FMOD_VECTOR* get_up();
 
-   private:
-    float m_range;
-    FMOD_VECTOR m_last_pos;
-    FMOD_VECTOR m_velocity;
+    template <class Archive>
+    void save(Archive& archive) const {}
+
+    template <class Archive>
+    void load(Archive& archive) {}
+
+   protected:
+    bool working = true;
 };
 
-}  // namespace components
-}  // namespace knot
+}  // namespace knot::components

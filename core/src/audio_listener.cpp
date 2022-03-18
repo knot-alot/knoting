@@ -3,10 +3,6 @@
 #include <glm/vec3.hpp>
 namespace knot::components {
 
-AudioListener::AudioListener(float range) {
-    m_range = range;
-}
-
 FMOD_VECTOR* AudioListener::get_position() {
     auto sceneOpt = Scene::get_active_scene();
     if (sceneOpt) {
@@ -32,19 +28,7 @@ quat AudioListener::get_rotation() {
         }
     }
 }
-void AudioListener::update_velocity() {
-    // TODO needs to be changed to (pos-last_pos) / time_taken_since_last_frame_in_seconds to make doppler effect work
-    FMOD_VECTOR vel;
-    vel.x = (get_position()->x - m_last_pos.x);
-    vel.y = (get_position()->y - m_last_pos.y);
-    vel.z = (get_position()->z - m_last_pos.z);
-    m_last_pos = *get_position();
-    m_velocity = vel;
-}
 
-FMOD_VECTOR AudioListener::get_velocity() {
-    return m_velocity;
-}
 FMOD_VECTOR* AudioListener::get_forward() {
     auto sceneOpt = Scene::get_active_scene();
     if (sceneOpt) {
@@ -62,6 +46,7 @@ FMOD_VECTOR* AudioListener::get_forward() {
         return &forward;
     }
 }
+
 FMOD_VECTOR* AudioListener::get_up() {
     auto sceneOpt = Scene::get_active_scene();
     if (sceneOpt) {

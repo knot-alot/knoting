@@ -39,7 +39,7 @@ Untie::Untie() {
         auto editorCamera = scene.create_game_object("camera");
         auto& cam = editorCamera.add_component<components::EditorCamera>();
         editorCamera.get_component<components::Transform>().set_position(glm::vec3(-10.0f, 15.0f, -30.0f));
-        auto& listen = editorCamera.add_component<components::AudioListener>(1000000);
+        editorCamera.add_component<components::AudioListener>();
     }
     {
         auto cubeObj = scene.create_game_object("skybox");

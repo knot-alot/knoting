@@ -32,9 +32,11 @@ FMOD_VECTOR* AudioSource::get_position() const {
         }
     }
 }
+
 void AudioSource::on_destroy() {
     m_sound->release();
 }
+
 void AudioSource::generate_default_asset() {}
 
 }  // namespace knot::components

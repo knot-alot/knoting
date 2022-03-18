@@ -128,7 +128,7 @@ void AudioSubsystem::update() {
 void AudioSubsystem::set_loop(components::AudioSource& source, bool loops) {
     source.m_loops = loops;
 
-    m_result = source.get_sound()->setMode(source.get_loop() ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+    m_result = source.get_sound()->setMode(source.get_loops() ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
     ErrorCheck(m_result);
 }
 
@@ -140,7 +140,7 @@ void AudioSubsystem::add_sound(components::AudioSource& source) {
 
     m_result = source.get_sound()->set3DMinMaxDistance(0.0f, 50000.0f);
     ErrorCheck(m_result);
-    set_loop(source, source.get_loop());
+    set_loop(source, source.get_loops());
     source.get_sound()->setDefaults(12000, 128);
 }
 
@@ -194,11 +194,11 @@ void AudioSubsystem::update_listener(components::AudioListener& listener) {
     FMOD_VECTOR forward = {listener.get_forward()->x, listener.get_forward()->y, listener.get_forward()->z};
     FMOD_VECTOR up = {listener.get_up()->x, listener.get_up()->y, listener.get_up()->z};
 
-    FMOD_VECTOR* listener_pos = listener.get_position();
+    FMOD_VECTOR* listenerPos = listener.get_position();
 
     FMOD_VECTOR vel = {0, 0, 0};
 
-    m_result = m_system->set3DListenerAttributes(0, listener_pos, &vel, &forward, &up);
+    m_result = m_system->set3DListenerAttributes(0, listenerPos, &vel, &forward, &up);
     ErrorCheck(m_result);
     update();
 }
