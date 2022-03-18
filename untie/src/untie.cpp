@@ -21,8 +21,13 @@
 #include <iostream>
 
 namespace knot {
+
 Scene scene;
 Scene loadedScene;
+
+std::optional<GameObject> cubeOne;
+std::optional<GameObject> cubeTwo;
+
 Untie::Untie() {
     Scene::set_active_scene(scene);
     log::Logger::setup();
@@ -92,6 +97,9 @@ Untie::Untie() {
         vec3 halfsize = vec3(15.0, 1.0f, 15.0);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
 
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.add_aggregate("floor", 10, false);
+
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
         auto material = components::Material();
@@ -115,6 +123,9 @@ Untie::Untie() {
         vec3 halfsize = vec3(1.0f, 1.0f, 1.0f);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
 
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.find_aggregate("floor");
+
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
         rigidbody.create_actor(true, 5.0f);
@@ -126,21 +137,22 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
-    }
 
+        cubeOne = cubeObj;
+    }
     {
         auto cubeObj = scene.create_game_object("cube_2");
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(1.0f, 7.0f, 1.0f));
         cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
-        auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+        // auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
-        auto& shape = cubeObj.add_component<components::Shape>();
-        vec3 halfsize = vec3(1.0f);
-        shape.set_geometry(shape.create_cube_geometry(halfsize));
+        // auto& shape = cubeObj.add_component<components::Shape>();
+        // vec3 halfsize = vec3(1.0f);
+        // shape.set_geometry(shape.create_cube_geometry(halfsize));
 
-        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
-        rigidbody.create_actor(true, 5.0f);
+        // auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+        // rigidbody.create_actor(true, 5.0f);
 
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
@@ -149,7 +161,16 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
+
+        // components::Hierarchy& cubeHierarchy = cubeOne.value().get_component<components::Hierarchy>();
+        // cubeHierarchy.add_child(cubeObj);
+
+        components::Hierarchy& cubeTwoHierarchy = cubeObj.get_component<components::Hierarchy>();
+        cubeTwoHierarchy.set_parent(cubeOne.value());
+
+        cubeTwo = cubeObj;
     }
+
     {
         auto cubeObj = scene.create_game_object("stanford_dragon_1");
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5.0f + 5, 5.0f, -10.0f - 5));
@@ -162,6 +183,9 @@ Untie::Untie() {
         auto& shape = cubeObj.add_component<components::Shape>();
         vec3 halfsize = vec3(1.5f);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.find_aggregate("default");
 
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
@@ -184,7 +208,7 @@ Untie::Untie() {
         cubeObj.add_component<components::PostProcessing>();
     }
 
-    //    std::string filename("rnasdd135586.json");
+    //    std::string filename("post_process.json");
     //    std::filesystem::path path = AssetManager::get_resources_path().append(filename);
     //    std::fstream serializedSceneStream(path);
     //
@@ -200,11 +224,12 @@ Untie::Untie() {
     //    }
     //    serializedSceneStream.close();
 }
+
 void Untie::run() {
     while (m_engine->is_open()) {
         m_engine->update_modules();
         auto im = m_engine->get_window_module().lock()->get_input_manager();
-        if (im.key_pressed(KeyCode::Escape)) {
+        if (im->key_pressed(KeyCode::Escape)) {
             m_engine->get_window_module().lock()->close();
         }
     }
