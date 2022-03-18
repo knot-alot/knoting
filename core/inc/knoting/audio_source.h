@@ -33,7 +33,7 @@ class AudioSource : public Asset {
 
     bool get_loops() { return m_loops; }
 
-    void set_loops(bool loops) { m_loops=loops; }
+    void set_loops(bool loops) { m_loops = loops; }
 
     FMOD_VECTOR* get_position() const;
 
