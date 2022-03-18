@@ -40,9 +40,9 @@ class CameraRotation : public Subsystem {
     vec3 m_minMovementMultiplier = vec3(1);
     vec3 m_moveSpeed = vec3(10);
 
-    double m_roll = 0;   // roll = x
-    double m_pitch = 0;  // pitch = y
-    double m_yaw = 0;    // yaw = z
+    float m_roll = 0;   // roll = x
+    float m_pitch = 0;  // pitch = y
+    float m_yaw = 0;    // yaw = z
 
     vec3 m_right = vec3(1, 0, 0);
     vec3 m_up = vec3(0, 1, 0);

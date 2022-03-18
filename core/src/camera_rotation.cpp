@@ -36,16 +36,18 @@ void CameraRotation::on_awake() {
 
         auto rotation = transform.get_rotation_euler();
 
-        m_roll = rotation.x;
-        m_pitch = rotation.y;
-        m_yaw = rotation.z;
+        m_pitch = rotation.x;
+        m_yaw = rotation.y;
+        m_roll = rotation.z;
     }
 }
 
 void CameraRotation::on_update(double m_delta_time) {
     //= CHECK VALID INPUT ==
+    // m_inputManager = m_engine.get_window_module().lock()->get_input_manager();
+
     vec2d currentMousePos = m_inputManager->get_absolute_position();
-    if (glm::isinf(currentMousePos.x) || glm::isinf(currentMousePos.y)) {
+    if (isinf(currentMousePos.x) || isinf(currentMousePos.y)) {
         return;
     }
     m_mouseDelta = (currentMousePos - m_lastMousePosition);
@@ -79,24 +81,23 @@ void CameraRotation::on_update(double m_delta_time) {
 
         //= CAMERA ROTATION
         m_roll = 0.0f;
-        m_pitch += ((float)-m_mouseDelta.y * (float)m_mouseSensitivity.y) * (float)m_delta_time;
+        m_pitch += ((float)m_mouseDelta.y * (float)m_mouseSensitivity.y) * (float)m_delta_time;
         m_yaw += ((float)-m_mouseDelta.x * (float)m_mouseSensitivity.x) * (float)m_delta_time;
 
-        m_pitch = clamp(m_pitch, m_pitchClamp.x, m_pitchClamp.y);
-
-        transform.set_rotation_euler(vec3(m_roll, m_pitch, m_yaw));
-        auto eulerRotation = transform.get_rotation_euler();
+        m_pitch = clamp(m_pitch, -89.f, 89.f);
+        transform.set_rotation_euler(vec3(m_pitch, m_yaw, m_roll));
 
         //= CALCULATE FORWARD VECTOR == // TODO STORE / CALC THESE IN TRANSFORM
-        glm::vec3 look;
-        look.x = cosf(radians(eulerRotation.y)) * sinf(radians(eulerRotation.z));
-        look.y = sinf(radians(eulerRotation.y));
-        look.z = cosf(radians(eulerRotation.y)) * cosf(radians(eulerRotation.z));
-        m_forward = glm::normalize(look);
+        vec3 look;
+        look.x = sinf(radians(m_yaw));
+        look.y = cosf(radians(m_pitch));
+        look.z = sinf(radians(m_pitch)) + cosf(radians(m_yaw));
+
+        m_forward = normalize(look);
 
         //= CALCULATE LOCAL RIGHT AND UP == // TODO STORE / CALC THESE IN TRANSFORM
-        m_right = glm::normalize(glm::cross(m_forward, vec3(0, 1, 0)));
-        m_up = glm::normalize(glm::cross(m_right, m_forward));
+        m_right = normalize(cross(m_forward, vec3(0, 1, 0)));
+        m_up = normalize(cross(m_right, m_forward));
 
         //= CAMERA MOVEMENT
         vec3 position = transform.get_position();
@@ -114,7 +115,7 @@ void CameraRotation::on_late_update() {}
 void CameraRotation::on_destroy() {}
 
 void CameraRotation::camera_key_input() {
-    if (m_inputManager->key_on_release(KeyCode::E)) {
+    if (m_inputManager->key_pressed(KeyCode::E)) {
         if (m_ePressed) {
             m_lockState = !m_lockState;
             m_engine.get_window_module().lock()->set_cursor_hide(m_lockState);
@@ -128,27 +129,27 @@ void CameraRotation::camera_key_input() {
 
     vec3 movementDirectionXYZ = vec3(0);
 
-    if (m_inputManager->key_on_release(KeyCode::W)) {
+    if (m_inputManager->key_pressed(KeyCode::W)) {
         movementDirectionXYZ += m_forward;
     }
-    if (m_inputManager->key_on_release(KeyCode::S)) {
+    if (m_inputManager->key_pressed(KeyCode::S)) {
         movementDirectionXYZ += -m_forward;
     }
-    if (m_inputManager->key_on_release(KeyCode::A)) {
+    if (m_inputManager->key_pressed(KeyCode::A)) {
         movementDirectionXYZ += -m_right;
     }
-    if (m_inputManager->key_on_release(KeyCode::D)) {
+    if (m_inputManager->key_pressed(KeyCode::D)) {
         movementDirectionXYZ += m_right;
     }
-    if (m_inputManager->key_on_release(KeyCode::R)) {
+    if (m_inputManager->key_pressed(KeyCode::R)) {
         movementDirectionXYZ += m_up;
     }
-    if (m_inputManager->key_on_release(KeyCode::F)) {
+    if (m_inputManager->key_pressed(KeyCode::F)) {
         movementDirectionXYZ += -m_up;
     }
 
     vec3 speedTarget;
-    if (m_inputManager->key_on_release(KeyCode::LeftShift)) {
+    if (m_inputManager->key_pressed(KeyCode::LeftShift)) {
         speedTarget = m_maxMovementMultiplier;
     } else {
         speedTarget = m_minMovementMultiplier;

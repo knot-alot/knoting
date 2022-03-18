@@ -46,6 +46,8 @@ Window::Window(int width, int height, std::string title, Engine& engine)
     bgfx::renderFrame();
     bgfx::Init init;
 
+    init.type = bgfx::RendererType::Vulkan;
+
 #if BX_PLATFORM_WINDOWS
     init.platformData.nwh = glfwGetWin32Window(m_window);
 #elif BX_PLATFORM_LINUX || BX_PLATFORM_BSD
