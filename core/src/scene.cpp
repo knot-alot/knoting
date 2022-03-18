@@ -175,8 +175,6 @@ void Scene::load_scene_from_stream(std::istream& serialized) {
         go.get_component<components::RigidController>().on_load();
     }
 
-
-
     log::debug("Scene: Load Finished");
 }
 
