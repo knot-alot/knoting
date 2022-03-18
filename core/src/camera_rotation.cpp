@@ -8,7 +8,9 @@
 #include <string_view>
 
 namespace knot {
-CameraRotation::CameraRotation(Engine& engine) : m_engine(engine) {}
+CameraRotation::CameraRotation(Engine& engine) : m_engine(engine) {
+    m_inputManager = m_engine.get_window_module().lock()->get_input_manager();
+}
 
 void CameraRotation::on_awake() {
     m_engine.get_window_module().lock()->set_cursor_hide(m_lockState);
@@ -42,9 +44,7 @@ void CameraRotation::on_awake() {
 
 void CameraRotation::on_update(double m_delta_time) {
     //= CHECK VALID INPUT ==
-    InputManager m_inputManager = m_engine.get_window_module().lock()->get_input_manager();
-
-    vec2d currentMousePos = m_inputManager.get_absolute_position();
+    vec2d currentMousePos = m_inputManager->get_absolute_position();
     if (glm::isinf(currentMousePos.x) || glm::isinf(currentMousePos.y)) {
         return;
     }
@@ -114,9 +114,7 @@ void CameraRotation::on_late_update() {}
 void CameraRotation::on_destroy() {}
 
 void CameraRotation::camera_key_input() {
-    InputManager m_inputManager = m_engine.get_window_module().lock()->get_input_manager();
-
-    if (m_inputManager.key_on_release(KeyCode::E)) {
+    if (m_inputManager->key_on_release(KeyCode::E)) {
         if (m_ePressed) {
             m_lockState = !m_lockState;
             m_engine.get_window_module().lock()->set_cursor_hide(m_lockState);
@@ -130,27 +128,27 @@ void CameraRotation::camera_key_input() {
 
     vec3 movementDirectionXYZ = vec3(0);
 
-    if (m_inputManager.key_on_release(KeyCode::W)) {
+    if (m_inputManager->key_on_release(KeyCode::W)) {
         movementDirectionXYZ += m_forward;
     }
-    if (m_inputManager.key_on_release(KeyCode::S)) {
+    if (m_inputManager->key_on_release(KeyCode::S)) {
         movementDirectionXYZ += -m_forward;
     }
-    if (m_inputManager.key_on_release(KeyCode::A)) {
+    if (m_inputManager->key_on_release(KeyCode::A)) {
         movementDirectionXYZ += -m_right;
     }
-    if (m_inputManager.key_on_release(KeyCode::D)) {
+    if (m_inputManager->key_on_release(KeyCode::D)) {
         movementDirectionXYZ += m_right;
     }
-    if (m_inputManager.key_on_release(KeyCode::R)) {
+    if (m_inputManager->key_on_release(KeyCode::R)) {
         movementDirectionXYZ += m_up;
     }
-    if (m_inputManager.key_on_release(KeyCode::F)) {
+    if (m_inputManager->key_on_release(KeyCode::F)) {
         movementDirectionXYZ += -m_up;
     }
 
     vec3 speedTarget;
-    if (m_inputManager.key_on_release(KeyCode::LeftShift)) {
+    if (m_inputManager->key_on_release(KeyCode::LeftShift)) {
         speedTarget = m_maxMovementMultiplier;
     } else {
         speedTarget = m_minMovementMultiplier;

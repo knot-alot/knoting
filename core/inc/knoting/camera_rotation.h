@@ -26,6 +26,7 @@ class CameraRotation : public Subsystem {
 
    private:
     Engine& m_engine;
+    std::shared_ptr<InputManager> m_inputManager;
 
     vec2d m_lastMousePosition = vec2d(0.0);
     vec2d m_mouseSensitivity = vec2d(1.0);
