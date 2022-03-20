@@ -1,6 +1,7 @@
 #pragma once
 
 #include <PxPhysicsAPI.h>
+#include <knoting/px_variables_wrapper.h>
 #include <knoting/types.h>
 #include <string>
 #include <vector>
@@ -45,17 +46,23 @@ class Event_Callback : public PxSimulationEventCallback {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    void search_by_actor(PxActor* actor);
+    void search_by_dynamic(std::shared_ptr<PxDynamic_ptr_wrapper> actor);
+    void search_by_static(std::shared_ptr<PxStatic_ptr_wrapper> actor);
     void search_by_name(std::string name);
 
-    PxActor* get_search_actor() { return m_search_actor; }
     std::vector<contact_data> get_contact_data() { return m_contact_data; }
+    void clear_data() { m_contact_data.clear(); }
 
    private:
-    PxActor* m_search_actor;
+    void push_data(const PxContactPairHeader& pairHeader, const PxContactPair& cp);
+
+    std::shared_ptr<PxDynamic_ptr_wrapper> m_search_dynamic;
+    std::shared_ptr<PxStatic_ptr_wrapper> m_search_static;
+
     std::string m_search_name;
 
     std::vector<contact_data> m_contact_data;
     bool m_is_search_by_actor;
+    bool m_is_dynamic;
 };
 }  // namespace knot

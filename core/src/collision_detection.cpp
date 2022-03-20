@@ -6,7 +6,7 @@ namespace components {
 Collision_Detction::Collision_Detction() : m_event_callback(nullptr) {}
 Collision_Detction::~Collision_Detction() {}
 
-void Collision_Detction::on_awake(){
+void Collision_Detction::on_awake() {
     auto engineOpt = Engine::get_active_engine();
     if (engineOpt) {
         Engine& engine = engineOpt.value();
@@ -14,24 +14,18 @@ void Collision_Detction::on_awake(){
     }
 }
 void Collision_Detction::on_destroy() {}
-/*
-void Collision_Detction::search_by_actor(PxActor* actor) {
-    m_event_callback->get()->search_by_actor(actor);
+
+void Collision_Detction::search_by_dynamic(std::shared_ptr<PxDynamic_ptr_wrapper> actor) {
+    m_event_callback->search_by_dynamic(actor);
 }
 
-void Collision_Detction::search_by_name(std::string name) {
-    m_event_callback->get()->search_by_name(name);
-}
-*/
-void Collision_Detction::search_by_actor(PxActor* actor) {
-    m_event_callback->search_by_actor(actor);
+void Collision_Detction::search_by_static(std::shared_ptr<PxStatic_ptr_wrapper> actor) {
+    m_event_callback->search_by_static(actor);
 }
 
 void Collision_Detction::search_by_name(std::string name) {
     m_event_callback->search_by_name(name);
 }
-
-
 
 }  // namespace components
 }  // namespace knot

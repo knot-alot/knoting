@@ -208,7 +208,6 @@ class PxActor_ptr_wrapper {
     ~PxActor_ptr_wrapper() { clean(); }
 
     void set(PxActor* actor) {
-        clean();
         m_actor = actor;
     }
 

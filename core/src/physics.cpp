@@ -5,6 +5,29 @@
 PxDefaultAllocator g_Allocator;
 PxDefaultErrorCallback g_ErrorCallback;
 
+PxFilterFlags SampleFilterShader(PxFilterObjectAttributes attributes0,
+                                          PxFilterData filterData0,
+                                          PxFilterObjectAttributes attributes1,
+                                          PxFilterData filterData1,
+                                          PxPairFlags& pairFlags,
+                                          const void* constantBlock,
+                                          PxU32 constantBlockSize) {
+    // let triggers through
+    if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1)) {
+        pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
+        return PxFilterFlag::eDEFAULT;
+    }
+    // generate contacts for all that were not filtered above
+    pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+
+    // trigger the contact callback for pairs (A,B) where
+    // the filtermask of A contains the ID of B and vice versa.
+    if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+        pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_CONTACT_POINTS;
+
+    return PxFilterFlag::eDEFAULT;
+}
+
 namespace knot {
 Physics::Physics(Engine& engine)
     : m_engine(engine),
@@ -30,7 +53,8 @@ void Physics::on_awake() {
     sceneDesc.gravity = PxVec3(0, defalut_gravity, 0);
     m_dispatcher = std::make_shared<PxDispatcher_ptr_wrapper>(PxDefaultCpuDispatcherCreate(2));
     sceneDesc.cpuDispatcher = m_dispatcher->get();
-    sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+    sceneDesc.filterShader = SampleFilterShader;
+    sceneDesc.simulationEventCallback = m_event_callback;
     m_scene = std::make_shared<PxScene_ptr_wrapper>(m_physics->get()->createScene(sceneDesc));
 
     PxAggregate* aggregate = m_physics->get()->createAggregate(128, false);
@@ -41,14 +65,14 @@ void Physics::on_awake() {
     m_scene->get()->addAggregate(*ag->get_aggregate());
 
     // m_scene->get()->setSimulationEventCallback(m_event_callback->get());
-    m_scene->get()->setSimulationEventCallback(m_event_callback);
 }
 
 void Physics::on_update(double m_deltatime) {}
 
 void Physics::on_fixed_update() {
+    m_event_callback->clear_data();
+
     constexpr float timestep = 1.0 / 120.0f;
-    m_event_callback->get_contact_data().clear();
     m_scene->get()->simulate(timestep);
     m_scene->get()->fetchResults(true);
     update_info_to_transform();
@@ -93,13 +117,16 @@ void Physics::update_info_to_transform() {
 
     }
     */
+
     if (!m_event_callback->get_contact_data().empty()) {
         log::error(m_event_callback->get_contact_data().at(0).m_contact_point.x);
     }
+
 }
 
 void Physics::set_gravity(PxVec3 gravity) {
     gravity = gravity;
     m_scene->get()->setGravity(gravity);
 }
+
 }  // namespace knot

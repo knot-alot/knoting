@@ -138,8 +138,8 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
 
-        auto& cd = components::Collision_Detction();
-        cd.search_by_actor(rigidbody.get_dynamic().lock()->get());
+        auto& cd = cubeObj.add_component<components::Collision_Detction>();
+        cd.search_by_dynamic(rigidbody.get_dynamic().lock());
 
         cubeOne = cubeObj;
     }

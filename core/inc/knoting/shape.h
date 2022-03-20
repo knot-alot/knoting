@@ -6,6 +6,9 @@
 
 namespace knot {
 namespace components {
+struct FilterGroup {
+    enum Enum { eAll = (1 << 0) };
+};
 
 class Shape {
    public:
