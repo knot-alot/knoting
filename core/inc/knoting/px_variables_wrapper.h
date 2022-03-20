@@ -207,9 +207,7 @@ class PxActor_ptr_wrapper {
     PxActor_ptr_wrapper(PxActor* actor = nullptr) : m_actor(actor) {}
     ~PxActor_ptr_wrapper() { clean(); }
 
-    void set(PxActor* actor) {
-        m_actor = actor;
-    }
+    void set(PxActor* actor) { m_actor = actor; }
 
     PxActor* get() { return m_actor; }
 
