@@ -36,7 +36,7 @@ Untie::Untie() {
     {
         auto editorCamera = scene.create_game_object("camera");
         auto& cam = editorCamera.add_component<components::EditorCamera>();
-        editorCamera.get_component<components::Transform>().set_position(glm::vec3(-10.0f, 15.0f, -30.0f));
+        editorCamera.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 50.0f, 0.0f));
     }
     {
         auto cubeObj = scene.create_game_object("skybox");
@@ -56,45 +56,45 @@ Untie::Untie() {
         auto light = scene.create_game_object("light_0");
         auto& spotLight = light.add_component<components::SpotLight>();
         spotLight.set_color(vec3(1.0f, 0.7f, 0.2f));
-        spotLight.set_outer_radius(17.0f);
+        spotLight.set_outer_radius(30.0f);
         spotLight.set_inner_radius(0.5f);
-        light.get_component<components::Transform>().set_position(glm::vec3(2.3897731, 14.570069, -10));
+        light.get_component<components::Transform>().set_position(glm::vec3(-10, 15, 10));
     }
     {
         auto light = scene.create_game_object("light_1");
         auto& spotLight = light.add_component<components::SpotLight>();
         spotLight.set_color(vec3(0.7f, 0.2f, 1.0f));
-        spotLight.set_outer_radius(17.0f);
+        spotLight.set_outer_radius(30.0f);
         spotLight.set_inner_radius(0.5f);
-        light.get_component<components::Transform>().set_position(glm::vec3(10.351221, -13.538474, -10));
+        light.get_component<components::Transform>().set_position(glm::vec3(10, 15, -10));
     }
     {
         auto light = scene.create_game_object("light_2");
         auto& spotLight = light.add_component<components::SpotLight>();
         spotLight.set_color(vec3(0.2f, 1.0f, 0.7f));
-        spotLight.set_outer_radius(17.0f);
+        spotLight.set_outer_radius(30.0f);
         spotLight.set_inner_radius(0.5f);
-        light.get_component<components::Transform>().set_position(glm::vec3(-14.905335, 6.3970194, -10));
+        light.get_component<components::Transform>().set_position(glm::vec3(-10, 15, -10));
     }
     {
         auto light = scene.create_game_object("light_3");
         auto& spotLight = light.add_component<components::SpotLight>();
         spotLight.set_color(vec3(1.0f, 0.4f, 0.2f));
-        spotLight.set_outer_radius(17.0f);
+        spotLight.set_outer_radius(30.0f);
         spotLight.set_inner_radius(0.5f);
-        light.get_component<components::Transform>().set_position(glm::vec3(7.6706734, 3.631392, -10));
+        light.get_component<components::Transform>().set_position(glm::vec3(10, 15, 10));
     }
     {
         auto cubeObj = scene.create_game_object("floor");
-        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5.0f, 0.0f, -10.0f));
-        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(15, 1, 15));
-        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 45, 0));
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 0.0f, -0.0f));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(25, 1, 25));
+        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 0, 0));
         cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
         auto& shape = cubeObj.add_component<components::Shape>();
-        vec3 halfsize = vec3(15.0, 1.0f, 15.0);
+        vec3 halfsize = vec3(25.0, 1.0f, 25.0);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
 
         auto& aggregate = cubeObj.add_component<components::Aggregate>();
@@ -112,68 +112,10 @@ Untie::Untie() {
 
         rigidbody.create_actor(false);
     }
-
-    {
-        auto cubeObj = scene.create_game_object("cube_1");
-        cubeObj.get_component<components::Transform>().set_position(glm::vec3(0.0f, 3.0f, 0.0f));
-        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
-        auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
-
-        auto& shape = cubeObj.add_component<components::Shape>();
-        vec3 halfsize = vec3(1.0f, 1.0f, 1.0f);
-        shape.set_geometry(shape.create_cube_geometry(halfsize));
-
-        auto& aggregate = cubeObj.add_component<components::Aggregate>();
-        aggregate.find_aggregate("floor");
-
-        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
-
-        rigidbody.create_actor(true, 5.0f);
-
-        auto material = components::Material();
-        material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
-        material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
-        cubeObj.add_component<components::Material>(material);
-
-        cubeOne = cubeObj;
-    }
-    {
-        auto cubeObj = scene.create_game_object("cube_2");
-        cubeObj.get_component<components::Transform>().set_position(glm::vec3(1.0f, 7.0f, 1.0f));
-        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
-
-        // auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
-
-        // auto& shape = cubeObj.add_component<components::Shape>();
-        // vec3 halfsize = vec3(1.0f);
-        // shape.set_geometry(shape.create_cube_geometry(halfsize));
-
-        // auto& rigidbody = cubeObj.add_component<components::RigidBody>();
-        // rigidbody.create_actor(true, 5.0f);
-
-        auto material = components::Material();
-        material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
-        material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
-        cubeObj.add_component<components::Material>(material);
-
-        // components::Hierarchy& cubeHierarchy = cubeOne.value().get_component<components::Hierarchy>();
-        // cubeHierarchy.add_child(cubeObj);
-
-        components::Hierarchy& cubeTwoHierarchy = cubeObj.get_component<components::Hierarchy>();
-        cubeTwoHierarchy.set_parent(cubeOne.value());
-
-        cubeTwo = cubeObj;
-    }
-
+    // PLAYER 1
     {
         auto cubeObj = scene.create_game_object("stanford_dragon_1");
-        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-5.0f + 5, 5.0f, -10.0f - 5));
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-20, 5.0f, -20));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 240, 0));
         cubeObj.add_component<components::InstanceMesh>("dragon.obj");
@@ -185,11 +127,16 @@ Untie::Untie() {
         shape.set_geometry(shape.create_cube_geometry(halfsize));
 
         auto& aggregate = cubeObj.add_component<components::Aggregate>();
-        aggregate.find_aggregate("default");
+        aggregate.add_aggregate("player1", 10, false);
 
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
         rigidbody.create_actor(true, 4.0f);
+
+        auto& rigidController = cubeObj.add_component<components::RigidController>();
+        rigidController.lockRotations(true, false, true);
+        rigidController.set_linear_damping(1.0f);
+        rigidController.set_angular_damping(1.0f);
 
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
@@ -198,8 +145,195 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
-    }
 
+        auto& client = cubeObj.add_component<components::ClientPlayer>();
+        client.m_clientNum = 0;
+    }
+    // PLAYER 2
+    {
+        auto cubeObj = scene.create_game_object("stanford_dragon_2");
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(20, 5.0f, 20));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
+        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 10, 0));
+        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+
+        auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+
+        auto& shape = cubeObj.add_component<components::Shape>();
+        vec3 halfsize = vec3(1.5f);
+        shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.add_aggregate("player2", 10, false);
+
+        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+        rigidbody.create_actor(true, 4.0f);
+
+        auto& rigidController = cubeObj.add_component<components::RigidController>();
+        rigidController.lockRotations(true, false, true);
+        rigidController.set_linear_damping(1.0f);
+        rigidController.set_angular_damping(1.0f);
+
+        auto material = components::Material();
+        material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
+        material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        cubeObj.add_component<components::Material>(material);
+
+        auto& client = cubeObj.add_component<components::ClientPlayer>();
+        client.m_clientNum = (1);
+    }
+    // PLAYER 3
+    {
+        auto cubeObj = scene.create_game_object("stanford_dragon_3");
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(-20, 5.0f, 20));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
+        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 10, 0));
+        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+
+        auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+
+        auto& shape = cubeObj.add_component<components::Shape>();
+        vec3 halfsize = vec3(1.5f);
+        shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.add_aggregate("player3", 10, false);
+
+        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+        rigidbody.create_actor(true, 4.0f);
+
+        auto& rigidController = cubeObj.add_component<components::RigidController>();
+        rigidController.lockRotations(true, false, true);
+        rigidController.set_linear_damping(1.0f);
+        rigidController.set_angular_damping(1.0f);
+
+        auto material = components::Material();
+        material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
+        material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        cubeObj.add_component<components::Material>(material);
+
+        auto& client = cubeObj.add_component<components::ClientPlayer>();
+        client.m_clientNum = (2);
+    }
+    // PLAYER 4
+    {
+        auto cubeObj = scene.create_game_object("stanford_dragon_4");
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(20, 5.0f, -20));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
+        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 10, 0));
+        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+
+        auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+
+        auto& shape = cubeObj.add_component<components::Shape>();
+        vec3 halfsize = vec3(1.5f);
+        shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.add_aggregate("player4", 10, false);
+
+        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+        rigidbody.create_actor(true, 4.0f);
+
+        auto& rigidController = cubeObj.add_component<components::RigidController>();
+        rigidController.lockRotations(true, false, true);
+        rigidController.set_linear_damping(1.0f);
+        rigidController.set_angular_damping(1.0f);
+
+        auto material = components::Material();
+        material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
+        material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        cubeObj.add_component<components::Material>(material);
+
+        auto& client = cubeObj.add_component<components::ClientPlayer>();
+        client.m_clientNum = (3);
+    }
+    // PLAYER 5
+    {
+        auto cubeObj = scene.create_game_object("stanford_dragon_5");
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(0, 5.0f, 20));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
+        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 10, 0));
+        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+
+        auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+
+        auto& shape = cubeObj.add_component<components::Shape>();
+        vec3 halfsize = vec3(1.5f);
+        shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.add_aggregate("player5", 10, false);
+
+        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+        rigidbody.create_actor(true, 4.0f);
+
+        auto& rigidController = cubeObj.add_component<components::RigidController>();
+        rigidController.lockRotations(true, false, true);
+        rigidController.set_linear_damping(1.0f);
+        rigidController.set_angular_damping(1.0f);
+
+        auto material = components::Material();
+        material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
+        material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        cubeObj.add_component<components::Material>(material);
+
+        auto& client = cubeObj.add_component<components::ClientPlayer>();
+        client.m_clientNum = (4);
+    }
+    // PLAYER 6
+    {
+        auto cubeObj = scene.create_game_object("stanford_dragon_6");
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(0, 5.0f, -20));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
+        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 10, 0));
+        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+
+        auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+
+        auto& shape = cubeObj.add_component<components::Shape>();
+        vec3 halfsize = vec3(1.5f);
+        shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.add_aggregate("player6", 10, false);
+
+        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+        rigidbody.create_actor(true, 4.0f);
+
+        auto& rigidController = cubeObj.add_component<components::RigidController>();
+        rigidController.lockRotations(true, false, true);
+        rigidController.set_linear_damping(1.0f);
+        rigidController.set_angular_damping(1.0f);
+
+        auto material = components::Material();
+        material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
+        material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        cubeObj.add_component<components::Material>(material);
+
+        auto& client = cubeObj.add_component<components::ClientPlayer>();
+        client.m_clientNum = (5);
+    }
     {
         auto cubeObj = scene.create_game_object("post processing");
         cubeObj.get_component<components::Transform>().set_position(vec3(0));
@@ -226,6 +360,8 @@ Untie::Untie() {
 }
 
 void Untie::run() {
+    auto cliMod = m_engine->get_client_module().lock();
+    cliMod->attempt_connection();
     while (m_engine->is_open()) {
         m_engine->update_modules();
         auto im = m_engine->get_window_module().lock()->get_input_manager();
