@@ -7,11 +7,19 @@ PxDefaultErrorCallback g_ErrorCallback;
 
 namespace knot {
 Physics::Physics(Engine& engine)
-    : m_engine(engine), m_physics(nullptr), m_scene(nullptr), m_foundation(nullptr), m_dispatcher(nullptr) {}
+    : m_engine(engine),
+      m_physics(nullptr),
+      m_scene(nullptr),
+      m_foundation(nullptr),
+      m_dispatcher(nullptr),
+      m_event_callback(nullptr) {}
 
 Physics::~Physics() {}
 
 void Physics::on_awake() {
+    // m_event_callback = std::make_shared<event_callback_ptr_wrapper>();
+    m_event_callback = new Event_Callback();
+
     m_foundation = std::make_shared<PxFoundation_ptr_wrapper>(
         PxCreateFoundation(PX_PHYSICS_VERSION, g_Allocator, g_ErrorCallback));
 
@@ -31,12 +39,16 @@ void Physics::on_awake() {
     ags.push_back(ag);
     m_aggregates = std::make_shared<std::vector<std::shared_ptr<PxAggregate_ptr_wrapper>>>(ags);
     m_scene->get()->addAggregate(*ag->get_aggregate());
+
+    // m_scene->get()->setSimulationEventCallback(m_event_callback->get());
+    m_scene->get()->setSimulationEventCallback(m_event_callback);
 }
 
 void Physics::on_update(double m_deltatime) {}
 
 void Physics::on_fixed_update() {
     constexpr float timestep = 1.0 / 120.0f;
+    m_event_callback->get_contact_data().clear();
     m_scene->get()->simulate(timestep);
     m_scene->get()->fetchResults(true);
     update_info_to_transform();
@@ -74,6 +86,15 @@ void Physics::update_info_to_transform() {
         transform.set_position(rigidbody.get_position());
 
         transform.set_rotation(rigidbody.get_rotation());
+    }
+    /*
+    if (!m_event_callback->get()->get_contact_data().empty()) {
+        log::error(m_event_callback->get()->get_contact_data().at(0).m_contact_point.x);
+
+    }
+    */
+    if (!m_event_callback->get_contact_data().empty()) {
+        log::error(m_event_callback->get_contact_data().at(0).m_contact_point.x);
     }
 }
 

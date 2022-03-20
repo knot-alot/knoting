@@ -98,7 +98,7 @@ Untie::Untie() {
         shape.set_geometry(shape.create_cube_geometry(halfsize));
 
         auto& aggregate = cubeObj.add_component<components::Aggregate>();
-        aggregate.add_aggregate("floor", 10, false);
+        aggregate.add_aggregate("floor", 10, true);
 
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
@@ -137,6 +137,9 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
+
+        auto& cd = components::Collision_Detction();
+        cd.search_by_actor(rigidbody.get_dynamic().lock()->get());
 
         cubeOne = cubeObj;
     }

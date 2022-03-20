@@ -41,6 +41,15 @@ void Shape::set_local_rotation(quat rotation) {
     }
 }
 
+void Shape::set_flag(PxShapeFlag::Enum flag) {
+    m_shape->get()->setFlag(flag,true);
+}
+
+void Shape::remove_flag(PxShapeFlag::Enum flag) {
+    m_shape->get()->setFlag(flag, false);
+}
+
+
 PxBoxGeometry Shape::create_cube_geometry(const vec3& halfsize) {
     return PxBoxGeometry(RigidBody::vec3_to_PxVec3(halfsize));
 }

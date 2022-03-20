@@ -34,13 +34,14 @@ class Raycast {
     void set_max_distance(const float& maxDistance);
     void set_raycast(const vec3& origin, const vec3& unitDir, const float& maxDistance);
 
-    PxVec3 get_position_from_transform();
-
     template <class Archive>
     void save(Archive& archive) const;
 
     template <class Archive>
     void load(Archive& archive);
+
+   private:
+    PxVec3 get_position_from_transform();
 
    protected:
     std::shared_ptr<PxScene_ptr_wrapper> m_scene;

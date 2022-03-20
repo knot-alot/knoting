@@ -5,6 +5,7 @@
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/rigidbody.h>
 #include <knoting/subsystem.h>
+#include <knoting/event_callback.h>
 #include <iostream>
 
 namespace knot {
@@ -32,11 +33,15 @@ class Physics : public Subsystem {
     std::weak_ptr<PxPhysics_ptr_wrapper> get_physics() { return m_physics; }
     PxVec3 get_gravity() { return m_gravity; }
     std::weak_ptr<std::vector<std::shared_ptr<PxAggregate_ptr_wrapper>>> get_aggregates() { return m_aggregates; }
+    //std::weak_ptr<event_callback_ptr_wrapper> get_event_callback() { return m_event_callback; }
+    Event_Callback* get_event_callback() { return m_event_callback; }
 
     void set_gravity(PxVec3 gravity);
 
    private:
     Engine& m_engine;
+    //std::shared_ptr<event_callback_ptr_wrapper> m_event_callback;
+    Event_Callback* m_event_callback;
     std::shared_ptr<PxFoundation_ptr_wrapper> m_foundation;
     std::shared_ptr<PxPhysics_ptr_wrapper> m_physics;
     std::shared_ptr<PxDispatcher_ptr_wrapper> m_dispatcher;

@@ -97,6 +97,23 @@ void RigidBody::set_name(const std::string& name) {
     }
 }
 
+void RigidBody::set_flag(PxActorFlag::Enum flag) {
+    if (m_dynamic) {
+        m_dynamic->get()->setActorFlag(flag,true);
+    } else{
+        m_static->get()->setActorFlag(flag,true);
+    }
+
+}
+
+void RigidBody::remove_flag(PxActorFlag::Enum flag) {
+    if (m_dynamic) {
+        m_dynamic->get()->setActorFlag(flag, false);
+    } else {
+        m_static->get()->setActorFlag(flag, false);
+    }
+}
+
 void RigidBody::set_shape(std::shared_ptr<PxShape_ptr_wrapper> shape) {
     if (m_dynamic) {
         if (m_shape) {
@@ -149,6 +166,14 @@ void RigidBody::create_actor(bool isDynamic, const float& mass) {
             PxTransform(get_position_from_transform(), get_rotation_from_transform())));
         m_static->get()->attachShape(*m_shape->get());
         m_aggregate->get_aggregate()->addActor(*m_static->get());
+    }
+}
+
+PxActorFlags RigidBody::get_flags() {
+    if (m_dynamic) {
+        return m_dynamic->get()->getActorFlags();
+    } else {
+        return m_static->get()->getActorFlags();
     }
 }
 
