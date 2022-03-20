@@ -99,11 +99,10 @@ void RigidBody::set_name(const std::string& name) {
 
 void RigidBody::set_flag(PxActorFlag::Enum flag) {
     if (m_dynamic) {
-        m_dynamic->get()->setActorFlag(flag,true);
-    } else{
-        m_static->get()->setActorFlag(flag,true);
+        m_dynamic->get()->setActorFlag(flag, true);
+    } else {
+        m_static->get()->setActorFlag(flag, true);
     }
-
 }
 
 void RigidBody::remove_flag(PxActorFlag::Enum flag) {

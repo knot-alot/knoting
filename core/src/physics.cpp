@@ -6,12 +6,12 @@ PxDefaultAllocator g_Allocator;
 PxDefaultErrorCallback g_ErrorCallback;
 
 PxFilterFlags SampleFilterShader(PxFilterObjectAttributes attributes0,
-                                          PxFilterData filterData0,
-                                          PxFilterObjectAttributes attributes1,
-                                          PxFilterData filterData1,
-                                          PxPairFlags& pairFlags,
-                                          const void* constantBlock,
-                                          PxU32 constantBlockSize) {
+                                 PxFilterData filterData0,
+                                 PxFilterObjectAttributes attributes1,
+                                 PxFilterData filterData1,
+                                 PxPairFlags& pairFlags,
+                                 const void* constantBlock,
+                                 PxU32 constantBlockSize) {
     // let triggers through
     if (PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1)) {
         pairFlags = PxPairFlag::eTRIGGER_DEFAULT;
@@ -121,7 +121,6 @@ void Physics::update_info_to_transform() {
     if (!m_event_callback->get_contact_data().empty()) {
         log::error(m_event_callback->get_contact_data().at(0).m_contact_point.x);
     }
-
 }
 
 void Physics::set_gravity(PxVec3 gravity) {
