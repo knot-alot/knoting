@@ -2,9 +2,11 @@
 #include <PxPhysicsAPI.h>
 #include <knoting/components.h>
 #include <knoting/px_variables_wrapper.h>
+#include <knoting/rigidbody.h>
 
 namespace knot {
 namespace components {
+
 class Shape {
    public:
     Shape();
@@ -12,6 +14,7 @@ class Shape {
 
     void on_awake();
     void on_destroy();
+    void on_load();
 
     std::weak_ptr<PxMaterial_ptr_wrapper> get_material() { return m_material; }
     std::weak_ptr<PxShape_ptr_wrapper> get_shape() { return m_shape; }
@@ -26,10 +29,18 @@ class Shape {
 
     std::shared_ptr<PxMaterial_ptr_wrapper> get_PxMaterial_from_pxmaterial();
 
+    template <class Archive>
+    void save(Archive& archive) const;
+
+    template <class Archive>
+    void load(Archive& archive);
+
    protected:
     std::shared_ptr<PxPhysics_ptr_wrapper> m_physics;
     std::shared_ptr<PxShape_ptr_wrapper> m_shape;
     std::shared_ptr<PxMaterial_ptr_wrapper> m_material;
+    vec3 m_shapeSize;
+    PxGeometryType::Enum m_shapeType;
 };
 }  // namespace components
 }  // namespace knot

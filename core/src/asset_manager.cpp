@@ -34,15 +34,24 @@ void AssetManager::load_assets_manual() {
         ->generate_solid_color_texture(vec4(1), white_tex);
 
     //=Gen Meshes=====
-    const std::string fb_msh = "fallbackMesh";
-    m_assets.insert({fb_msh, std::make_shared<components::Mesh>()});
-    std::static_pointer_cast<components::Texture>(m_assets[fb_msh])->generate_default_asset();
+
+    const std::string fallbackMesh = "fallbackMesh";
+    m_assets.insert({fallbackMesh, std::make_shared<components::Mesh>()});
+    std::static_pointer_cast<components::Mesh>(m_assets[fallbackMesh])->generate_default_asset();
+
+    const std::string primitivePlane = "postProcessPlane";
+    m_assets.insert({primitivePlane, std::make_shared<components::Mesh>()});
+    std::static_pointer_cast<components::Mesh>(m_assets[primitivePlane])->generate_post_process_plane();
 
     //=From File======
     AssetManager::load_asset<components::Texture>("UV_Grid_test.png");
     AssetManager::load_asset<components::Texture>("normal_tiles_1k.png");
     AssetManager::load_asset<components::Texture>("particles.png");
+    AssetManager::load_asset<components::Texture>("skybox/cmft_skybox.hdr");
+    AssetManager::load_asset<components::Texture>("skybox/cmtr_radiance.hdr");
+    AssetManager::load_asset<components::Texture>("skybox/cmtr_irradiance.hdr");
 
+    AssetManager::load_asset<components::Mesh>("primitive_plane.obj");
     AssetManager::load_asset<components::Mesh>("uv_cube.obj");
     AssetManager::load_asset<components::Mesh>("dragon.obj");
 }

@@ -12,8 +12,8 @@
 namespace knot {
 
 class Engine;
+}  // namespace knot
 
-}
 namespace knot {
 
 class ForwardRenderer : public Subsystem {
@@ -21,20 +21,26 @@ class ForwardRenderer : public Subsystem {
     ForwardRenderer(Engine& engine);
     ~ForwardRenderer();
 
-    void on_render();
-    void on_post_render();
-
     void on_awake() override;
     void on_update(double m_delta_time) override;
     void on_late_update() override;
     void on_destroy() override;
 
-    void recreate_framebuffer(uint16_t width, uint16_t height, uint16_t id = 0);
-    void clear_framebuffer(uint16_t id = 0);
-
    private:
-    int get_window_width();
-    int get_window_height();
+    // 1) SYSTEM : Shadow pass
+    // 2) SYSTEM : Update Active Camera (Runtime / Editor)
+    // 3) SYSTEM : Depth Pass (No Transparent Objects)
+    // 4) SYSTEM : Color Render Pass
+    // 5) SYSTEM : Skybox Render
+    // 6) SYSTEM : Sorted Transparent Render Pass
+    // 7) SYSTEM : Post Processing Stack
+
+    void shadow_pass(uint16_t idx);
+    void depth_pass(uint16_t idx);
+    void color_pass(uint16_t idx);
+    void gui_pass(uint16_t idx);
+    void transparent_pass(uint16_t idx);
+    void post_process_pass(uint16_t idx);
 
     Engine& m_engine;
     LightData m_lightData;

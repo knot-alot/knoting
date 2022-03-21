@@ -6,30 +6,63 @@ namespace knot {
 
 namespace components {
 
-Hierarchy::Hierarchy() : m_parent(std::nullopt), m_children({}) {}
-Hierarchy::Hierarchy(GameObject parent) : m_parent(parent), m_children({}) {}
-Hierarchy::Hierarchy(GameObject parent, const std::vector<GameObject>& children)
-    : m_parent(parent), m_children(children) {}
-Hierarchy::Hierarchy(const std::vector<GameObject>& children) : m_parent(std::nullopt), m_children(children) {}
+Hierarchy::Hierarchy() : m_parent(), m_children({}) {}
+Hierarchy::Hierarchy(GameObject parent) : m_parent(parent.get_id()), m_children({}) {}
+Hierarchy::Hierarchy(GameObject parent, const std::vector<GameObject>& children) : m_parent(parent.get_id()) {
+    for (GameObject gObj : children)
+        m_children.push_back(gObj.get_id());
+}
+Hierarchy::Hierarchy(const std::vector<GameObject>& children) : m_parent() {
+    for (GameObject gObj : children)
+        m_children.push_back(gObj.get_id());
+}
 
-std::optional<GameObject> Hierarchy::get_parent() const {
+std::optional<uuid> Hierarchy::get_parent() const {
     return m_parent;
+}
+
+void Hierarchy::set_parent(GameObject parent) {
+    std::optional<GameObject> goOpt = GameObject::get_game_object_from_component(*this);
+    KNOTING_ASSERT_MESSAGE(goOpt.has_value(), "Just used Hierarchy is not valid");
+
+    m_parent = parent.get_id();
+    Hierarchy& parentHierarchy = parent.get_component<Hierarchy>();
+    if (parentHierarchy.has_child(goOpt.value().get_id()))
+        return;
+
+    parentHierarchy.m_children.push_back(goOpt.value().get_id());
+}
+
+bool Hierarchy::has_parent() const {
+    return !m_parent.is_nil();
 }
 
 bool Hierarchy::has_children() const {
     return !m_children.empty();
 }
 
-std::vector<GameObject> Hierarchy::get_children() const {
+std::vector<uuid> Hierarchy::get_children() const {
     return m_children;
 }
 
 void Hierarchy::add_child(GameObject child) {
-    m_children.push_back(child);
+    std::optional<GameObject> goOpt = GameObject::get_game_object_from_component(*this);
+    KNOTING_ASSERT_MESSAGE(goOpt.has_value(), "Just used Hierarchy is not valid");
+
+    m_children.push_back(child.get_id());
+    Hierarchy& childHierarchy = child.get_component<Hierarchy>();
+    childHierarchy.m_parent = goOpt.value().get_id();
 }
 
 void Hierarchy::remove_child(GameObject child) {
-    m_children.erase(std::remove(m_children.begin(), m_children.end(), child), m_children.end());
+    Hierarchy& childHierarchy = child.get_component<Hierarchy>();
+    childHierarchy.m_parent = uuid();
+    m_children.erase(std::remove(m_children.begin(), m_children.end(), child.get_id()), m_children.end());
+}
+
+bool Hierarchy::has_child(uuid id) const {
+    auto it = std::find(m_children.begin(), m_children.end(), id);
+    return it != m_children.end();
 }
 
 Tag::Tag(const std::string& tag) : m_id(0) {
@@ -111,11 +144,12 @@ uuid UUIDGenerator::generate() {
     return (*m_uuidGenerator)();
 }
 
-GameObject::GameObject(entt::entity handle, Scene& scene)
-    : m_handle(handle), m_scene(scene), m_id(s_uuidGenerator.generate()) {}
+GameObject::GameObject(entt::entity handle, Scene& scene) : m_handle(handle), m_scene(scene) {
+    this->try_add_component<uuid>(s_uuidGenerator.generate());
+}
 
 const uuid GameObject::get_id() const {
-    return m_id;
+    return this->get_component<uuid>();
 }
 
 bool GameObject::has_no_components() const {

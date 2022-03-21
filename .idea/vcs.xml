@@ -18,8 +18,12 @@
     <mapping directory="$PROJECT_DIR$/third/physx" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/portable-file-dialogs" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/rapidjson" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/rapidjson/thirdparty/gtest" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/spdlog" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/stb" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/third/stduuid" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/yojimbo" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/yojimbo/netcode.io" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/third/yojimbo/reliable.io" vcs="Git" />
   </component>
 </project>

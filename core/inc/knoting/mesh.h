@@ -4,6 +4,7 @@
 #include <bx/pixelformat.h>
 #include <knoting/asset.h>
 #include <knoting/types.h>
+#include <cereal/cereal.hpp>
 #include <string>
 #include <vector>
 
@@ -32,12 +33,19 @@ class Mesh : public Asset {
     void on_destroy() override;
     //=For Asset=======
     void generate_default_asset() override;
+    void generate_post_process_plane();
     //=================
 
     void create_cube();
 
     bgfx::VertexBufferHandle get_vertex_buffer() { return m_vbh; }
     bgfx::IndexBufferHandle get_index_buffer() { return m_ibh; }
+
+    template <class Archive>
+    void serialize(Archive& archive) {
+        archive(CEREAL_NVP(m_assetType), CEREAL_NVP(m_fallbackName), CEREAL_NVP(m_fullPath), CEREAL_NVP(m_assetName),
+                CEREAL_NVP(m_vertexLayout), CEREAL_NVP(m_indexBuffer), CEREAL_NVP(m_splitResult));
+    }
 
    private:
     bool internal_load_obj(const std::string& path);
@@ -58,6 +66,11 @@ class IndexBuffer {
     void set_index_buffer(const std::vector<unsigned int>& in_indices) { m_indices = in_indices; }
     size_t get_memory_size() { return sizeof(m_indices[0]) * m_indices.size(); }
     unsigned int& get_index_start() { return m_indices[0]; }
+
+    template <class Archive>
+    void serialize(Archive& archive) {
+        archive(cereal::make_nvp("indices", m_indices));
+    }
 
    private:
     std::vector<unsigned int> m_indices;
@@ -99,6 +112,13 @@ class VertexLayout {
         //.add(bgfx::Attrib::Weight, 1, bgfx::AttribType::Float)
         //.add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
         // end TODO
+    }
+
+    template <class Archive>
+    void serialize(Archive& archive) {
+        archive(cereal::make_nvp("x", m_x), cereal::make_nvp("y", m_y), cereal::make_nvp("z", m_z),
+                cereal::make_nvp("normal", m_normal), cereal::make_nvp("tangent", m_tangent),
+                cereal::make_nvp("u", m_u), cereal::make_nvp("v", m_u));
     }
 
     inline static bgfx::VertexLayout s_meshVertexLayout;

@@ -4,6 +4,9 @@
 #include <knoting/scene.h>
 #include <knoting/transform.h>
 #include <knoting/types.h>
+#include <cereal/cereal.hpp>
+#include <cereal/types/optional.hpp>
+#include <cereal/types/vector.hpp>
 #include <entt/entt.hpp>
 #include <random>
 
@@ -62,8 +65,8 @@ class GameObject {
    public:
     GameObject(entt::entity handle, Scene& scene);
 
-    inline bool operator==(const GameObject& other) const { return m_id == other.m_id; }
-    inline bool operator!=(const GameObject& other) const { return m_id != other.m_id; }
+    inline bool operator==(const GameObject& other) const { return this->get_id() == other.get_id(); }
+    inline bool operator!=(const GameObject& other) const { return this->get_id() != other.get_id(); }
 
     const uuid get_id() const;
     const entt::entity get_handle() const;
@@ -111,12 +114,30 @@ class GameObject {
     }
 
     template <typename T>
+    static std::optional<GameObject> get_game_object_from_component(T& component) {
+        auto sceneOpt = Scene::get_active_scene();
+        if (!sceneOpt) {
+            return std::nullopt;
+        }
+
+        Scene& scene = sceneOpt.value();
+        entt::registry& registry = scene.m_registry;
+        entt::entity handle = entt::to_entity(registry, component);
+        return scene.get_game_object_from_handle(handle);
+    }
+
+    template <typename T>
     void remove_component() {
         KNOTING_ASSERT_MESSAGE(has_component<T>(), "GameObject does not have component");
 
         T& t = get_component<T>();
         call_on_destroy(t);
         m_scene.get().m_registry.remove<T>(m_handle);
+    }
+
+    template <class Archive>
+    void serialize(Archive& archive) {
+        archive(CEREAL_NVP(this->get_id()));
     }
 
    protected:
@@ -146,8 +167,8 @@ class GameObject {
     template <typename T>
     typename enable_if<!HasOnDestroy<T>::value>::type call_on_destroy(T&) {}
 
-    uuid m_id;
     entt::entity m_handle;
+
     std::reference_wrapper<Scene> m_scene;
 
     inline static UUIDGenerator s_uuidGenerator;
@@ -162,16 +183,24 @@ class Hierarchy {
     Hierarchy(GameObject parent, const std::vector<GameObject>& children);
     Hierarchy(const std::vector<GameObject>& children);
 
-    std::optional<GameObject> get_parent() const;
+    std::optional<uuid> get_parent() const;
+    bool has_parent() const;
+    void set_parent(GameObject parent);
 
     bool has_children() const;
-    std::vector<GameObject> get_children() const;
+    bool has_child(uuid id) const;
+    std::vector<uuid> get_children() const;
     void add_child(GameObject child);
     void remove_child(GameObject child);
 
+    template <class Archive>
+    void serialize(Archive& archive) {
+        archive(CEREAL_NVP(m_parent), CEREAL_NVP(m_children));
+    }
+
    protected:
-    std::optional<GameObject> m_parent;
-    std::vector<GameObject> m_children;
+    uuid m_parent;
+    std::vector<uuid> m_children;
 };
 
 class Name {
@@ -183,6 +212,11 @@ class Name {
 
     inline bool operator==(const Name& other) const { return name == other.name; }
     inline bool operator!=(const Name& other) const { return name != other.name; }
+
+    template <class Archive>
+    void serialize(Archive& archive) {
+        archive(CEREAL_NVP(name));
+    }
 
    private:
     friend class knot::Scene;
@@ -203,6 +237,11 @@ class Tag {
     static void register_tag(const std::string& tag);
     static void unregister_tag(const std::string& tag);
     static std::vector<std::string> get_registered_tags();
+
+    template <class Archive>
+    void serialize(Archive& archive) {
+        archive(this->get_registered_tags());
+    }
 
    protected:
     uint16_t m_id;
