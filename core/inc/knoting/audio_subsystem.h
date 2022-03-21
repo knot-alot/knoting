@@ -34,7 +34,7 @@ class AudioSubsystem : public Subsystem {
     void update_listener(components::AudioListener& listener);
     void set_loop(components::AudioSource& source, bool loops);
 
-    static FMOD_VECTOR vec3_to_FMOD_VEC(vec3 v) { return {v.x, v.y, v.z}; }
+    inline static FMOD_VECTOR vec3_to_FMOD_VEC(const vec3& v) { return {v.x, v.y, v.z}; }
 
    protected:
     FMOD::System* m_system = nullptr;
