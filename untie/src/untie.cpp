@@ -88,6 +88,7 @@ Untie::Untie() {
         spotLight.set_inner_radius(0.5f);
         light.get_component<components::Transform>().set_position(glm::vec3(10, 15, 10));
     }
+
     {
         auto cubeObj = scene.create_game_object("floor");
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 0.0f, -0.0f));
@@ -348,6 +349,11 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(7, 7, 7));
         cubeObj.add_component<components::InstanceMesh>("postProcessPlane");
         cubeObj.add_component<components::PostProcessing>();
+    }
+    {
+        auto psObj = scene.create_game_object("ps1");
+        psObj.get_component<components::Transform>().set_position(glm::vec3(-9.0f, 1.0f, -20.0f));
+        psObj.add_component<components::Particles>();
     }
 
     //    std::string filename("post_process.json");
