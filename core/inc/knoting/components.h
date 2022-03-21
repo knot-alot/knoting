@@ -2,7 +2,9 @@
 
 #include <knoting/audio_listener.h>
 #include <knoting/audio_source.h>
+#include <knoting/aggregate.h>
 #include <knoting/camera.h>
+#include <knoting/client_player.h>
 #include <knoting/game_object.h>
 #include <knoting/instance_mesh.h>
 #include <knoting/material.h>

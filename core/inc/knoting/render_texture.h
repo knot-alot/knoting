@@ -19,6 +19,8 @@ class RenderTexture {
     void destroy();
     bool is_using_window_size() { return m_useWindowSize; };
     void clear_framebuffer();
+    uint32_t get_clear_color() { return m_clearColor; };
+    void set_clear_color(uint32_t color) { m_clearColor = color; };
 
     bgfx::FrameBufferHandle get_framebuffer() { return m_framebufferHandle; };
     std::vector<bgfx::TextureHandle> get_texture_attachments() { return m_renderTextureHandle; };
@@ -34,7 +36,7 @@ class RenderTexture {
     bgfx::FrameBufferHandle m_framebufferHandle;
     std::vector<bgfx::TextureHandle> m_renderTextureHandle;
 
-    static constexpr uint32_t m_clearColor = 0x303030ff;
+    uint32_t m_clearColor = 0x00000000;
 };
 
 }  // namespace knot

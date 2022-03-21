@@ -4,20 +4,32 @@
 namespace knot {
 
 Engine::Engine() {
+    InitializeYojimbo();
+
     m_framebufferManager = std::make_shared<knot::FramebufferManager>(*this);
     m_windowModule = std::make_shared<knot::Window>(m_windowWidth, m_windowHeight, m_windowTitle, *this);
     m_forwardRenderModule = std::make_shared<knot::ForwardRenderer>(*this);
     m_physicsModule = std::make_shared<knot::Physics>(*this);
+    m_cameraRotationModule = std::make_shared<knot::CameraRotation>(*this);
     m_assetManager = std::make_shared<knot::AssetManager>();
     m_audioModule = std::make_shared<knot::AudioSubsystem>();
+    if (!isClient) {
+        m_serverModule = std::make_shared<knot::NetworkedServer>(*this);
+    }
+    m_clientModule = std::make_shared<knot::NetworkedClient>(*this);
 
-    // order dependent
+    //  order dependent
     m_engineModules.emplace_back(m_framebufferManager);
     m_engineModules.emplace_back(m_windowModule);
     m_engineModules.emplace_back(m_assetManager);
+    m_engineModules.emplace_back(m_cameraRotationModule);
     m_engineModules.emplace_back(m_forwardRenderModule);
     m_engineModules.emplace_back(m_physicsModule);
     m_engineModules.emplace_back(m_audioModule);
+    if (!isClient) {
+        m_engineModules.emplace_back(m_serverModule);
+    }
+    m_engineModules.emplace_back(m_clientModule);
 
     for (auto& module : m_engineModules) {
         module->on_awake();
@@ -26,11 +38,12 @@ Engine::Engine() {
 }
 
 void Engine::update_modules() {
+    m_windowModule->calculate_delta_time();
+    auto deltaTime = m_windowModule->get_delta_time();
     for (auto& module : m_engineModules) {
-        module->on_update(m_windowModule->get_delta_time());
+        module->on_update(deltaTime);
         module->on_fixed_update();
     }
-
     // TODO move into functions when functionality exists
 
     // CORE SYSTEM ORDER
@@ -61,6 +74,7 @@ Engine::~Engine() {
     for (auto& module : m_engineModules) {
         module->on_destroy();
     }
+    ShutdownYojimbo();
 }
 
 bool Engine::is_open() {

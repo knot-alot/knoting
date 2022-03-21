@@ -28,6 +28,7 @@ class Window : public Subsystem {
 
     void calculate_delta_time();
     double get_delta_time();
+    double get_current_time();
 
     bool is_open();
     void close();
@@ -43,6 +44,7 @@ class Window : public Subsystem {
     void set_mouse_change_y(float yOffset) { m_mouseWheel = yOffset; };
     void add_mouse_change_x(float xOffset) { m_mouseWheelH += xOffset; };
     void add_mouse_change_y(float yOffset) { m_mouseWheel += yOffset; };
+    void set_cursor_hide(bool state);
 
     void recreate_framebuffer(int width, int height);
 
@@ -70,7 +72,8 @@ class Window : public Subsystem {
     std::string m_title;
 
     double m_deltaTime = 0;
-    double m_lastFrame = 0;
+    double m_lastTime = 0;
+    double m_currentTime = 0;
 
     static constexpr double PHYSICS_TIMESTEP = 0.2;
     double m_fixedDeltaTime = PHYSICS_TIMESTEP;
