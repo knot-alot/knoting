@@ -627,6 +627,7 @@ declare module knoting {
 
 class InputManager {
         constructor();
+
     // KeyBoard Methods
     key_pressed(key:KeyCode): boolean;
     key_held_down(key:KeyCode): boolean;
@@ -641,54 +642,41 @@ class InputManager {
     get_pad_axis(pad:PadCode, joy_stick:JoyStickCode): number;
     pad_present(pad: PadCode): boolean;
 
-//     bool pad_button_pressed(PadCode pad, PadButtonCode button);
-//     bool pad_button_held_down(PadCode pad, PadButtonCode button);
-//     bool pad_button_triggered(PadCode pad, PadButtonCode button);
-//     bool pad_button_released(PadCode pad, PadButtonCode button);
-//     float get_pad_axis(PadCode pad, JoyStickCode joy_stick);
-//     bool pad_present(PadCode pad);
+    // Mouse Methods
+    mouse_button_pressed(button: MouseButtonCode):boolean;
+    mouse_button_held_down(button: MouseButtonCode):boolean;
+    mouse_button_triggered(button: MouseButtonCode): boolean;
+    mouse_button_released(button: MouseButtonCode): boolean;
+    mouse_double_clicked(button:MouseButtonCode):boolean;
+    wheel_moved():boolean;
+    //friend Window;
+
+    // update_pads(glfwWindow:GLFWwindow*)
+    update_relative_positions():void;
+
+    // Events
+    scroll_event(offset:Array<number>):void;
+    key_event(key:number, pressed:boolean):void;
+    mouse_button_event(button: number, pressed:boolean):void;
+    mouse_event(x:number, y:number): void:
+    update_holds():void;
+
+//  std::array<bool, static_cast<size_t>(KeyCode::Last)> m_keyBinding;
+//  std::array<bool, static_cast<size_t>(KeyCode::Last)> m_holdKeyBindings;
 //
-//     /// Mouse Methods
-//     bool mouse_button_pressed(MouseButtonCode button);
-//     bool mouse_button_held_down(MouseButtonCode button);
-//     bool mouse_button_triggered(MouseButtonCode button);
-//     bool mouse_button_released(MouseButtonCode button);
-//     bool mouse_double_clicked(MouseButtonCode button);
-//     bool wheel_moved();
-//     vec2 get_relative_position();
-//     vec2 get_absolute_position();
-//     vec2 get_wheel_movement();
-//     void set_mouse_sensitivity(float sensitivity);
-//     void set_double_click_limit(float ms);
-//     friend Window;
+//  std::array<bool, static_cast<size_t>(KeyCode::Last)> m_mouseBindings;
+//  std::array<bool, static_cast<size_t>(KeyCode::Last)> m_holdMouseBindings;
 //
-//     void update_pads(GLFWwindow* glfwWindow);
-//     void update_relative_positions();
+//  std::array<std::array<bool, static_cast<size_t>(KeyCode::Last)>, static_cast<size_t>(PadCode::Last)> m_padBindings;
+//  std::array<std::array<bool, static_cast<size_t>(KeyCode::Last)>, static_cast<size_t>(PadCode::Last)>
+//  m_holdPadBindings;
 //
-//     /// Events
-//     void scroll_event(vec2 offset);
-//     void key_event(int key, bool pressed);
-//     void mouse_button_event(int button, bool pressed);
-//     void mouse_event(double x, double y);
-//     void update_holds();
-//
-//     std::array<bool, static_cast<size_t>(KeyCode::Last)> m_keyBinding;
-//     std::array<bool, static_cast<size_t>(KeyCode::Last)> m_holdKeyBindings;
-//
-//     std::array<bool, static_cast<size_t>(KeyCode::Last)> m_mouseBindings;
-//     std::array<bool, static_cast<size_t>(KeyCode::Last)> m_holdMouseBindings;
-//
-//     std::array<std::array<bool, static_cast<size_t>(KeyCode::Last)>, static_cast<size_t>(PadCode::Last)> m_padBindings;
-//     std::array<std::array<bool, static_cast<size_t>(KeyCode::Last)>, static_cast<size_t>(PadCode::Last)>
-//     m_holdPadBindings;
-//
-//     std::array<bool, static_cast<size_t>(JoyStickCode::Last)> m_joyStickBindings[static_cast<size_t>(PadCode::Last)];
-//
-//     vec2 m_lastScroll;
-//     vec2d m_mousePosition;
-//     vec2d m_lastMousePosition;
-//     vec2d m_relativeMousePosition;
-//     float m_sensitivity;
-// };
-}
+//  std::array<bool, static_cast<size_t>(JoyStickCode::Last)> m_joyStickBindings[static_cast<size_t>(PadCode::Last)];
+
+    m_lastScroll:Array<number>;
+    m_mousePosition:Array<number>;
+    m_lastMousePosition:Array<number>;
+    m_relativeMousePosition:Array<number>;
+    m_sensitivity:number;
+    }
 }
