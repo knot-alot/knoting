@@ -144,6 +144,62 @@ declare module knoting {
         get_look_target: Array<number>
     }
 
+    class ClientPlayer{
+        constructor();
+
+        //void on_awake();
+        //void on_destroy();
+
+        //serialize?
+
+        m_thisClientNum:number;
+        m_clientNum:number
+
+        m_lookAxis: Array<number>;
+        m_moveAxis: Array<number>;
+
+        m_jumpPressed: boolean;
+        m_isShooting:boolean;
+    }
+
+    class CameraRotation{
+        //CameraRotation(Engine& engine);
+
+        on_update(m_delta_time: number):void;
+        on_late_update():void ;
+        //void on_awake() override;
+        //void on_destroy() override;
+
+        //Engine& m_engine;
+        //std::shared_ptr<InputManager> m_inputManager;
+
+        m_lastMousePosition: Array<number>;
+        m_mouseSensitivity:Array<number>;
+        m_pitchClamp: Array<number>;
+        m_currentMousePos: Array<number>;
+        m_mouseDelta: Array<number>;
+
+        m_keyboardDirection: Array<number>;
+        m_movementMultiplier: Array<number>;
+        m_maxMovementMultiplier: Array<number>;
+        m_minMovementMultiplier: Array<number>;
+        m_moveSpeed: Array<number>;
+
+        m_pitch:number;
+        m_yaw: number;
+        m_roll: number;
+
+        m_right: Array<number>;
+        m_up: Array<number>;
+        m_forward: Array<number>;
+
+        m_ePressed: boolean;
+        m_lockState: boolean;
+
+    }
+
+
+
     enum MouseButtonCode {
         Left ,
         Right,
