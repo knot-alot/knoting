@@ -2,62 +2,74 @@ declare module knoting {
     class Transform {
         position: Array<number>;    //vec3
         rotation: Array<number>;    //vec3
-            scale: Array<number>;   //quaternion
+        scale: Array<number>;   //quaternion
 
         constructor(position: Array<number>, scale: Array<number>, rotation: Array<number>);
-        }
+    }
 
-        class RigidBody {
+    class RigidBody {
         get_velocity(): number;
-        set_velocity(velocity:number): void;
-        }
 
-        class UUIDGenerator{
+        set_velocity(velocity: number): void;
+    }
+
+    class UUIDGenerator {
         constructor();
-        generate(): string;
-            //std::unique_ptr<uuids::uuid_random_generator> m_uuidGenerator;
-            // std::mt19937 m_randomGenerator;
-        }
 
-        class HasOnAwake{
+        generate(): string;
+
+        //std::unique_ptr<uuids::uuid_random_generator> m_uuidGenerator;
+        // std::mt19937 m_randomGenerator;
+    }
+
+    class HasOnAwake {
         one: string;
         two: string;
 
         //enum { value = sizeof(test<T>(0)) == sizeof(char) };
-        }
+    }
 
-        class HasOnDestroy{
-            one: string;
-            two: string;
+    class HasOnDestroy {
+        one: string;
+        two: string;
 
-            //enum { value = sizeof(test<T>(0)) == sizeof(char) };
-        }
+        //enum { value = sizeof(test<T>(0)) == sizeof(char) };
+    }
 
-        class GameObject{
-            GameObject(handle:number, scene :Scene);
-            // inline bool operator==(const GameObject& other) const { return this->get_id() == other.get_id(); }
-            // inline bool operator!=(const GameObject& other) const { return this->get_id() != other.get_id(); }
-            get_id(): string;
-            get_handle(): number;
-            has_no_components(): boolean;
+    class GameObject {
+        GameObject(handle: number, scene: Scene);
 
-            has_component(component: string): boolean;
-            get_component(component: string): any;
+        // inline bool operator==(const GameObject& other) const { return this->get_id() == other.get_id(); }
+        // inline bool operator!=(const GameObject& other) const { return this->get_id() != other.get_id(); }
+        get_id(): string;
 
-            has_any_of(component: Array<string>): boolean;
-            add_component(component: string, ...Args): any;
-            //try_add_component(component: string, ...Args): any;
-            get_component(component: string): any;
-            get_game_object_from_component(any):GameObject;
-            remove_component(): void;
-            //serialize?
+        get_handle(): number;
 
-            m_handle: number;
-            m_scene: Scene;
-            //UUIDGenerator: inline static
-        }
+        has_no_components(): boolean;
 
-    class Hierarchy{
+        has_component(component: string): boolean;
+
+        get_component(component: string): any;
+
+        has_any_of(component: Array<string>): boolean;
+
+        add_component(component: string, ...Args): any;
+
+        //try_add_component(component: string, ...Args): any;
+        get_component(component: string): any;
+
+        get_game_object_from_component(any): GameObject;
+
+        remove_component(): void;
+
+        //serialize?
+
+        m_handle: number;
+        m_scene: Scene;
+        //UUIDGenerator: inline static
+    }
+
+    class Hierarchy {
         constructor();
         constructor(parent: GameObject, children: Array<number>);
         constructor(parent: GameObject);
@@ -65,21 +77,28 @@ declare module knoting {
 
         get_parent: string;
         has_parent: boolean;
+
         set_parent(parent: GameObject): void;
 
         has_children: boolean;
+
         has_child(string): boolean;
-        get_children(): Array <string>;
+
+        get_children(): Array<string>;
+
         add_child(child: GameObject): void;
+
         remove_child(child: GameObject): void;
+
         //serialize?
 
         m_parent: string;
-        m_children: Array <string>;
+        m_children: Array<string>;
     }
 
-    class name{
+    class name {
         name: string;
+
         constructor(name: string);
         constructor();
 
@@ -89,16 +108,20 @@ declare module knoting {
         //serialize?
     }
 
-    class tag{
+    class tag {
         constructor(tag: string);
+
         get_id(): number;
+
         get_tag(): string;
 
         //inline bool operator==(const Tag& other) const { return m_id == other.m_id; }
         //inline bool operator!=(const Tag& other) const { return m_id != other.m_id; }
 
         register_tag(tag: string): void;
+
         unregister_tag(tag: string): void;
+
         get_registered_tags(): Array<string>;
 
         //serialize?
@@ -111,22 +134,27 @@ declare module knoting {
         instantiate(name: string, transform: Transform): GameObject;
     }
 
-    class AudioListener{
+    class AudioListener {
         get_position(): Array<number>;
+
         get_rotation(): Array<number>;
+
         get_forward(): Array<number>;
+
         get_up(): Array<number>;
 
         working: boolean;
     }
 
-    class AudioSource{
+    class AudioSource {
         AudioSource(path: string, loops: boolean);
+
         //on_awake(): void;
         //on_destroy(): void;
         //generate_default_asset(): void;
 
         get_position(): Array<number>;
+
         //get_sound(): m_sound;??
         //Channel m_channel ??
 
@@ -139,13 +167,32 @@ declare module knoting {
 
     }
 
-    class EditorCamera{
+    class EditorCamera {
         constructor();
-        get_look_target: Array<number>
+
+        get_look_target: Array<number>;
+        get_fov(m_fov: number): number;
+        get_z_near(m_zNear: number): number;
+        get_z_far(m_zFar: number): number;
+
+        get_up(): Array<number>;
+
+        set_look_target(target: Array<number>): void;
+        set_fov(fov: number): void;
+        set_z_near(zNear: number):void;
+        set_z_far(zFar:number): void;
+
+        m_lookTarget: Array<number>;
+        m_fov: number;
+        m_zNear: number;
+        m_zFar: number;
+        m_moveSpeed: number;
+        m_moveSpeedMultiplier: number;
+
     }
 
     enum MouseButtonCode {
-        Left ,
+        Left,
         Right,
         Middle,
         Button3,
@@ -155,8 +202,10 @@ declare module knoting {
         Button7,
         Button8,
         Last,
-    };
-    enum  JoyStickCode { LeftX, LeftY, RightX, RightY, LeftBumper, RightBumper, Last };
+    }
+
+    enum JoyStickCode { LeftX, LeftY, RightX, RightY, LeftBumper, RightBumper, Last }
+
     enum PadCode {
         Pad0,
         Pad1,
@@ -175,7 +224,8 @@ declare module knoting {
         Pad14,
         Pad15,
         Last
-    };
+    }
+
     enum PadButtonCode {
         A,
         B,
@@ -193,7 +243,8 @@ declare module knoting {
         DPadDown,
         DPadLeft,
         Last
-    };
+    }
+
     enum KeyCode {
         Unknown,
         Space,
@@ -247,7 +298,7 @@ declare module knoting {
         World1,
         World2,
         Escape,
-        Enter ,
+        Enter,
         Tab,
         Backspace,
         Insert,
@@ -317,21 +368,24 @@ declare module knoting {
         RightSuper,
         Menu,
         Last
-    };
+    }
 
-// class InputManager {
-//     keyState: Array<boolean>;
-//     /// KeyBoard Methods
-//     declare function key_pressed(b: boolean):KeyCode ;
-//     // {
-//     //     return this.keyState[key];
-//     //
-//     // }
-//     bool key_held_down(key: KeyCode);
-//     bool key_on_trigger(KeyCode key);
-//     bool key_on_release(KeyCode key);
-//
-//     /// Pad Methods
+class InputManager {
+        constructor();
+    // KeyBoard Methods
+    key_pressed(key:KeyCode): boolean;
+    key_held_down(key:KeyCode): boolean;
+    key_on_trigger(key:KeyCode):boolean;
+    key_on_release(key:KeyCode):boolean;
+
+    // Pad Methods
+    pad_button_pressed(pad:PadCode, button:PadButtonCode): boolean;
+    pad_button_held_down(pad:PadCode, button:PadButtonCode): boolean;
+    pad_button_triggered(pad:PadCode, button:PadButtonCode): boolean;
+    pad_button_released(pad:PadCode, button:PadButtonCode): boolean;
+    get_pad_axis(pad:PadCode, joy_stick:JoyStickCode): number;
+    pad_present(pad: PadCode): boolean;
+
 //     bool pad_button_pressed(PadCode pad, PadButtonCode button);
 //     bool pad_button_held_down(PadCode pad, PadButtonCode button);
 //     bool pad_button_triggered(PadCode pad, PadButtonCode button);
