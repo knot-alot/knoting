@@ -10,7 +10,7 @@ void NetworkedServer::on_awake() {
     std::array<uint8_t, KeyBytes> privateKey = {0};
     char* serverAddress = std::getenv("KNOTING_SERVER");
     std::string serAddress = "127.0.0.1";
-    if (!serverAddress) {
+    if (serverAddress) {
         serAddress = serverAddress;
     } else {
         log::info("environment variable KNOTING_SERVER not set");
