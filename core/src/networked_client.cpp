@@ -97,9 +97,7 @@ bool NetworkedClient::handle_recieved_packets() {
         auto serMess = (ServerMessage*)mess;
         serverSeq = serMess->m_sequence;
         serverAck = serMess->m_recentAck;
-        if (!cliNumSet) {
-            m_clientNum = serMess->m_clientNum;
-        }
+
         for (auto playerHandle : players) {
             auto playerOpt = scene.get_game_object_from_handle(playerHandle);
             if (!playerOpt) {
@@ -109,6 +107,11 @@ bool NetworkedClient::handle_recieved_packets() {
             auto& playerComp = playerGO.get_component<components::ClientPlayer>();
             auto& transform = playerGO.get_component<components::Transform>();
             auto& rigidBody = playerGO.get_component<components::RigidBody>();
+
+            if (!cliNumSet) {
+                playerComp.m_thisClientNum = serMess->m_clientNum;
+                cliNumSet = true;
+            }
 
             uint16_t playerNum = playerComp.m_clientNum;
             transform.set_position(serMess->playerPos[playerNum]);
@@ -155,7 +158,7 @@ Message* NetworkedClient::generate_message() {
         auto playerGO = playerOpt.value();
         auto& playerComp = playerGO.get_component<components::ClientPlayer>();
 
-        if (playerComp.m_clientNum != m_clientNum) {
+        if (playerComp.m_clientNum != playerComp.m_thisClientNum) {
             continue;
         }
         auto* mess = (ClientMessage*)m_client->CreateMessage(static_cast<size_t>(NetworkMessageTypes::ClientMessage));
@@ -188,7 +191,7 @@ void NetworkedClient::test_player_input() {
         auto playerGO = playerOpt.value();
         auto& playerComp = playerGO.get_component<components::ClientPlayer>();
 
-        if (playerComp.m_clientNum != m_clientNum) {
+        if (playerComp.m_clientNum != playerComp.m_thisClientNum) {
             continue;
         }
 

@@ -21,6 +21,7 @@ class ClientPlayer {
         archive(CEREAL_NVP(m_clientNum));
     }
 
+    uint16_t m_thisClientNum = 0;
     uint16_t m_clientNum = 0;
 
     vec2i m_lookAxis = vec2i(0);
