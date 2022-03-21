@@ -58,10 +58,11 @@ bool NetworkedClient::attempt_connection() {
     std::array<uint8_t, yojimbo::KeyBytes> privateNetworkingKey = {0};
 
     char* serverAddress = std::getenv("KNOTING_SERVER");
-    std::string serAddress = serverAddress;
-    if (!serverAddress) {
+    std::string serAddress = "127.0.0.1";
+    if (serverAddress) {
+        serAddress = serverAddress;
+    } else{
         log::info("environment variable KNOTING_SERVER not set");
-        serAddress = "127.0.0.1";
     }
     m_serverAddress = Address(serAddress.c_str(), SERVER_PORT);
 
