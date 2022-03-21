@@ -41,7 +41,6 @@ Untie::Untie() {
         auto& cam = editorCamera.add_component<components::EditorCamera>();
         editorCamera.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 50.0f, 0.0f));
         editorCamera.add_component<components::AudioListener>();
-
     }
     {
         auto cubeObj = scene.create_game_object("skybox");
@@ -208,7 +207,6 @@ Untie::Untie() {
         auto& shape = cubeObj.add_component<components::Shape>();
         vec3 halfsize = vec3(1.5f);
         shape.set_geometry(shape.create_cube_geometry(halfsize));
-
 
         auto& aggregate = cubeObj.add_component<components::Aggregate>();
         aggregate.add_aggregate("player3", 10, false);

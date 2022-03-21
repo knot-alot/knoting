@@ -131,8 +131,8 @@ void Scene::save_scene_to_stream(std::ostream& serialized) {
         .component<uuid, components::Name, components::Tag, components::Transform, components::Hierarchy,
                    components::Material, components::SkyBox, components::InstanceMesh, components::SpotLight,
                    components::EditorCamera, components::PhysicsMaterial, components::Shape, components::RigidBody,
-                   components::RigidController, components::Raycast, components::AudioSource,
-                   components::AudioListener, components::PostProcessing>(archive);
+                   components::RigidController, components::Raycast, components::AudioSource, components::AudioListener,
+                   components::PostProcessing>(archive);
 
     log::debug("Scene: Save Finished");
 }
@@ -154,7 +154,6 @@ void Scene::load_scene_from_stream(std::istream& serialized) {
                           components::EditorCamera, components::PhysicsMaterial, components::Shape,
                           components::RigidBody, components::RigidController, components::Raycast,
                           components::AudioSource, components::AudioListener, components::PostProcessing>(archive);
-
 
     // I know this is horrible but it's already full jank time. Can go back and be rewritten using the meta system
     auto ents = m_registry.view<components::Shape, components::RigidBody>();
