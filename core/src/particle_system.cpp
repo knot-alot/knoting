@@ -514,7 +514,7 @@ struct ParticleSystem {
                 bgfx::setIndexBuffer(&tib);
                 bgfx::setTexture(0, s_texColor, m_texture);
 
-                bgfx::submit(0, m_particleProgram);
+                bgfx::submit(_view, m_particleProgram);
             }
         }
     }

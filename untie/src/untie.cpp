@@ -352,10 +352,14 @@ Untie::Untie() {
     }
     {
         auto psObj = scene.create_game_object("ps1");
-        psObj.get_component<components::Transform>().set_position(glm::vec3(-9.0f, 1.0f, -20.0f));
+        psObj.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 10.0f, 0.0f));
         psObj.add_component<components::Particles>();
     }
-
+    {
+        auto psObj = scene.create_game_object("ps2");
+        psObj.get_component<components::Transform>().set_position(glm::vec3(-10.0f, 10.0f, 10.0f));
+        psObj.add_component<components::Particles>();
+    }
     //    std::string filename("post_process.json");
     //    std::filesystem::path path = AssetManager::get_resources_path().append(filename);
     //    std::fstream serializedSceneStream(path);
