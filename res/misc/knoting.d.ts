@@ -167,6 +167,35 @@ declare module knoting {
 
     }
 
+    class AudioSubsystem {
+        //on_awake(): void;
+        //on_destroy(): void;
+
+        play(source: AudioSource): void;
+
+        toggle(source: AudioSource): void;
+
+        stop(source: AudioSource): void;
+        stop(): void;
+
+        update(): void;
+
+        add_sound(sound: AudioSource): void;
+
+        update_source(source: AudioSource): void;
+
+        update_listener(source: AudioListener): void;
+
+        set_loops(source: AudioSource, loops: boolean): void;
+
+        //m_system:System
+        m_frequency: number;
+        m_priority: number;
+        m_minDis: number;
+        m_maxDis: number;
+        //m_result:FMOD_RESULT;
+    }
+
     class EditorCamera {
         constructor();
 
