@@ -132,6 +132,28 @@ declare module knoting {
 
     class Scene {
         instantiate(name: string, transform: Transform): GameObject;
+
+        constructor();
+
+        create_game_object(name: string): GameObject;
+
+        add_game_object(handle: number): GameObject;
+
+        remove_game_object(game_object: GameObject): void;
+
+        get_game_object_from_id(id: string): GameObject;
+
+        get_game_object_from_id(handle: number): GameObject;
+
+        // entt::registry& get_registry();
+        // static std::optional<std::reference_wrapper<Scene>> get_active_scene();
+
+        set_active_scene(scene: Scene): void;
+
+        //entt::registry m_registry;
+        //std::map<uuid, GameObject> m_uuidGameObjectMap;
+        //std::map<entt::entity, GameObject> m_entityGameObjectMap;
+        //inline static std::optional<std::reference_wrapper<Scene>> s_activeScene = std::nullopt;
     }
 
     class AudioListener {
