@@ -47,7 +47,7 @@ class NetworkedClient : public Subsystem {
     uint16_t serverAck = 0;
 
     uint64_t m_clientId = 0;
-//    uint16_t m_clientNum = 10;
+    //    uint16_t m_clientNum = 10;
     bool cliNumSet = false;
     bool connected = false;
 

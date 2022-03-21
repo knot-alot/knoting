@@ -1,5 +1,7 @@
 declare module knoting {
     class Transform {
+        constructor(position: Array<number>, scale: Array<number>, rotation: Array<number>);
+
         position: Array<number>;    //vec3
         rotation: Array<number>;    //vec3
         scale: Array<number>;   //quaternion
@@ -9,6 +11,78 @@ declare module knoting {
 
     class RigidBody {
         get_velocity(): number;
+        get_rotation_euler: Array<number>;
+
+        set_position(position: Array<number>): void;
+        set_scale(scale: Array<number>):void;
+        set_rotation(rotation: Array<number>):void;
+        set_rotation_euler(get_rotation_euler: Array<number>):void;
+
+        get_model_matrix: Array<number>;
+        get_parent_model_matrix: Array<number>;
+
+        //serialize?
+
+         forward:Array<number>;
+         up:Array<number>;
+         right:Array<number>;
+
+        get_model_matrix_internal:Array<number>;
+
+        m_position:Array<number>;
+        m_scale:Array<number>;
+        m_rotation:Array<number>;
+
+        m_isDirty:boolean;
+        m_modelMatrix: Array<number>;
+        m_parentModelMatrix:Array<number>;
+
+        constructor();
+
+        on_load():void;
+        get_velocity(): number;
+        set_velocity(velocity:number): void;
+
+        get_position:Array<number>;
+        get_rotation:Array<number>;
+
+            //std::weak_ptr<PxDynamic_ptr_wrapper> get_dynamic();
+            // std::weak_ptr<PxStatic_ptr_wrapper> get_static();
+
+
+         set_transform(get_position:Array<number>,get_rotation:Array<number>):void;
+         set_position(get_position:Array<number>):void;
+         set_rotation(get_rotation:Array<number>):void;
+         set_name(name:string):void;
+
+         create_actor(isDynamic:boolean, mass:number):void;
+
+            //void set_shape(std::shared_ptr<PxShape_ptr_wrapper> shape);
+            //void set_aggregate(std::shared_ptr<PxAggregate_ptr_wrapper> aggragate);
+
+         get_name:string;
+         get_position_from_transform:Array<number>;
+         get_rotation_from_transform:Array<number>;
+
+         PxVec3_to_vec3(v:Array<number>):Array<number>;
+         PxQuat(v:Array<number>):Array<number>;
+         PxQuat_to_quat(q:Array<number>):Array<number>;
+         PxQuat(q:Array<number>):Array<number>;
+
+            //std::shared_ptr<PxPhysics_ptr_wrapper> m_physics;
+            //std::shared_ptr<PxScene_ptr_wrapper> m_scene;
+            //std::shared_ptr<PxDynamic_ptr_wrapper> m_dynamic;
+            //std::shared_ptr<PxStatic_ptr_wrapper> m_static;
+            //std::shared_ptr<PxShape_ptr_wrapper> m_shape;
+            //std::shared_ptr<PxAggregate_ptr_wrapper> m_aggregate;
+
+         m_mass:number;
+         m_isDynamic:boolean;
+         m_name:string;
+            //void set_shape(std::shared_ptr<PxShape_ptr_wrapper> shape);
+            //void set_aggregate(std::shared_ptr<PxAggregate_ptr_wrapper> aggragate);
+            //std::shared_ptr<PxShape_ptr_wrapper> get_shape_from_shape();
+            //std::shared_ptr<PxAggregate_ptr_wrapper> get_aggregate_from_aggregate();
 
         set_velocity(velocity: number): void;
     }
@@ -132,6 +206,28 @@ declare module knoting {
 
     class Scene {
         instantiate(name: string, transform: Transform): GameObject;
+
+        constructor();
+
+        create_game_object(name: string): GameObject;
+
+        add_game_object(handle: number): GameObject;
+
+        remove_game_object(game_object: GameObject): void;
+
+        get_game_object_from_id(id: string): GameObject;
+
+        get_game_object_from_id(handle: number): GameObject;
+
+        // entt::registry& get_registry();
+        // static std::optional<std::reference_wrapper<Scene>> get_active_scene();
+
+        set_active_scene(scene: Scene): void;
+
+        //entt::registry m_registry;
+        //std::map<uuid, GameObject> m_uuidGameObjectMap;
+        //std::map<entt::entity, GameObject> m_entityGameObjectMap;
+        //inline static std::optional<std::reference_wrapper<Scene>> s_activeScene = std::nullopt;
     }
 
     class AudioListener {
@@ -188,8 +284,167 @@ declare module knoting {
         m_zFar: number;
         m_moveSpeed: number;
         m_moveSpeedMultiplier: number;
+    }
+
+    class AudioSubsystem {
+        //on_awake(): void;
+        //on_destroy(): void;
+
+        play(source: AudioSource): void;
+
+        toggle(source: AudioSource): void;
+
+        stop(source: AudioSource): void;
+        stop(): void;
+
+        update(): void;
+
+        add_sound(sound: AudioSource): void;
+
+        update_source(source: AudioSource): void;
+
+        update_listener(source: AudioListener): void;
+
+        set_loops(source: AudioSource, loops: boolean): void;
+
+        //m_system:System
+        m_frequency: number;
+        m_priority: number;
+        m_minDis: number;
+        m_maxDis: number;
+        //m_result:FMOD_RESULT;
+    }
+
+    class Raycast {
+        constructor();
+
+        //on_awake(): void;
+        //on_destroy(): void;
+        raycast(): void;
+
+        get_origin(): Array<number>;
+
+        get_unitDir(): Array<number>;
+
+        get_maxDistance(): number;
+
+        get_is_hit(): boolean;
+
+        get_hit_position(): Array<number>;
+
+        get_hit_normal(): Array<number>;
+
+        get_hit_distance(): number;
+
+        //std::weak_ptr<PxShape_ptr_wrapper> get_hit_shape();
+
+        set_origin(origin: Array<number>): void;
+
+        set_unit_dir(unitDir: Array<number>): void;
+
+        set_max_distance(maxDistance: number): void;
+
+        set_raycast(origin: Array<number>, unitDir: Array<number>, maxDistance: number): void;
+
+        get_position_from_transform(): Array<number>;
+
+        m_origin: Array<number>;
+        m_unitDir: Array<number>;
+        m_maxDistance: number;
+        m_isHit: boolean;
+        //PxRaycastBuffer m_hit;
 
     }
+
+    class Shape {
+        constructor();
+
+        //on_awake(): void;
+        //on_destroy(): void;
+        //on_load(): void;
+
+        // std::weak_ptr<PxMaterial_ptr_wrapper> get_material() { return m_material; }
+        // std::weak_ptr<PxShape_ptr_wrapper> get_shape() { return m_shape; }
+
+        set_material(material: any): void;
+
+        set_geometry(geometry: Array<number>): void;
+
+        set_local_rotation(rotation: Array<number>): void;
+
+        create_cube_geometry(halfsize: Array<number>): Array<number>;
+
+        create_sphere_geometry(halfsize: number): Array<number>;
+
+        create_capsule_geometry(rasius: number, halfsize: number): Array<number>;
+
+        //    std::shared_ptr<PxMaterial_ptr_wrapper> get_PxMaterial_from_pxmaterial();
+
+        // std::shared_ptr<PxPhysics_ptr_wrapper> m_physics;
+        // std::shared_ptr<PxShape_ptr_wrapper> m_shape;
+        // std::shared_ptr<PxMaterial_ptr_wrapper> m_material;
+
+        m_shapeSize: Array<number>;
+        //    PxGeometryType::Enum m_shapeType;
+
+    }
+
+    class ClientPlayer {
+        constructor();
+
+        //void on_awake();
+        //void on_destroy();
+
+        //serialize?
+
+        m_thisClientNum: number;
+        m_clientNum: number
+
+        m_lookAxis: Array<number>;
+        m_moveAxis: Array<number>;
+
+        m_jumpPressed: boolean;
+        m_isShooting: boolean;
+    }
+
+    class CameraRotation {
+        //CameraRotation(Engine& engine);
+
+        on_update(m_delta_time: number): void;
+
+        on_late_update(): void ;
+
+        //void on_awake() override;
+        //void on_destroy() override;
+
+        //Engine& m_engine;
+        //std::shared_ptr<InputManager> m_inputManager;
+
+        m_lastMousePosition: Array<number>;
+        m_mouseSensitivity: Array<number>;
+        m_pitchClamp: Array<number>;
+        m_currentMousePos: Array<number>;
+        m_mouseDelta: Array<number>;
+
+        m_keyboardDirection: Array<number>;
+        m_movementMultiplier: Array<number>;
+        m_maxMovementMultiplier: Array<number>;
+        m_minMovementMultiplier: Array<number>;
+        m_moveSpeed: Array<number>;
+
+        m_pitch: number;
+        m_yaw: number;
+        m_roll: number;
+
+        m_right: Array<number>;
+        m_up: Array<number>;
+        m_forward: Array<number>;
+
+        m_ePressed: boolean;
+        m_lockState: boolean;
+
+    }
+
 
     enum MouseButtonCode {
         Left,
@@ -436,4 +691,4 @@ class InputManager {
 //     float m_sensitivity;
 // };
 }
-
+}
