@@ -26,7 +26,7 @@ void AudioSource::on_awake() {
     weakAudio.lock()->add_sound(*this);
 }
 
-FMOD_VECTOR* AudioSource::get_position() const {
+vec3 AudioSource::get_position() const {
     auto sceneOpt = Scene::get_active_scene();
     if (sceneOpt) {
         Scene& scene = sceneOpt.value();
@@ -34,8 +34,7 @@ FMOD_VECTOR* AudioSource::get_position() const {
         auto goOpt = scene.get_game_object_from_handle(handle);
         if (goOpt) {
             vec3 position = goOpt->get_component<components::Transform>().get_position();
-            FMOD_VECTOR pos = {position.x, position.y, position.z};
-            return &pos;
+            return position;
         }
     }
 }

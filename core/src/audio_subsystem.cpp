@@ -160,11 +160,11 @@ void AudioSubsystem::on_update(double m_delta_time) {
 }
 
 void AudioSubsystem::update_source(components::AudioSource& source) {
-    FMOD_VECTOR* pos = source.get_position();
+    FMOD_VECTOR pos = vec3_to_FMOD_VEC(source.get_position());
     FMOD_VECTOR vel = {0, 0, 0};
 
     if (source.m_channel) {
-        m_result = source.m_channel->set3DAttributes(pos, &vel);
+        m_result = source.m_channel->set3DAttributes(&pos, &vel);
     }
 
     update();

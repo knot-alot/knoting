@@ -26,7 +26,7 @@ class AudioSource : public Asset {
     void generate_default_asset() override {}
     //=================
 
-    FMOD_VECTOR* get_position() const;
+    vec3 get_position() const;
 
     FMOD::Sound*& get_sound() { return m_sound; }
 
