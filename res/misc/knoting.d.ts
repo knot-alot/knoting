@@ -1,15 +1,86 @@
 declare module knoting {
     class Transform {
+        constructor(position: Array<number>, scale: Array<number>, rotation: Array<number>);
+
         position: Array<number>;    //vec3
         rotation: Array<number>;    //vec3
-            scale: Array<number>;   //quaternion
+        scale: Array<number>;   //quaternion
+        get_rotation_euler: Array<number>;
 
-        constructor(position: Array<number>, scale: Array<number>, rotation: Array<number>);
+        set_position(position: Array<number>): void;
+        set_scale(scale: Array<number>):void;
+        set_rotation(rotation: Array<number>):void;
+        set_rotation_euler(get_rotation_euler: Array<number>):void;
+
+        get_model_matrix: Array<number>;
+        get_parent_model_matrix: Array<number>;
+
+        //serialize?
+
+         forward:Array<number>;
+         up:Array<number>;
+         right:Array<number>;
+
+        get_model_matrix_internal:Array<number>;
+
+        m_position:Array<number>;
+        m_scale:Array<number>;
+        m_rotation:Array<number>;
+
+        m_isDirty:boolean;
+        m_modelMatrix: Array<number>;
+        m_parentModelMatrix:Array<number>;
         }
 
         class RigidBody {
+        constructor();
+
+        on_load():void;
         get_velocity(): number;
         set_velocity(velocity:number): void;
+
+        get_position:Array<number>;
+        get_rotation:Array<number>;
+
+            //std::weak_ptr<PxDynamic_ptr_wrapper> get_dynamic();
+            // std::weak_ptr<PxStatic_ptr_wrapper> get_static();
+
+
+         set_transform(get_position:Array<number>,get_rotation:Array<number>):void;
+         set_position(get_position:Array<number>):void;
+         set_rotation(get_rotation:Array<number>):void;
+         set_name(name:string):void;
+
+         create_actor(isDynamic:boolean, mass:number):void;
+
+            //void set_shape(std::shared_ptr<PxShape_ptr_wrapper> shape);
+            //void set_aggregate(std::shared_ptr<PxAggregate_ptr_wrapper> aggragate);
+
+         get_name:string;
+         get_position_from_transform:Array<number>;
+         get_rotation_from_transform:Array<number>;
+
+         PxVec3_to_vec3(v:Array<number>):Array<number>;
+         PxQuat(v:Array<number>):Array<number>;
+         PxQuat_to_quat(q:Array<number>):Array<number>;
+         PxQuat(q:Array<number>):Array<number>;
+
+            //std::shared_ptr<PxPhysics_ptr_wrapper> m_physics;
+            //std::shared_ptr<PxScene_ptr_wrapper> m_scene;
+            //std::shared_ptr<PxDynamic_ptr_wrapper> m_dynamic;
+            //std::shared_ptr<PxStatic_ptr_wrapper> m_static;
+            //std::shared_ptr<PxShape_ptr_wrapper> m_shape;
+            //std::shared_ptr<PxAggregate_ptr_wrapper> m_aggregate;
+
+         m_mass:number;
+         m_isDynamic:boolean;
+         m_name:string;
+            //void set_shape(std::shared_ptr<PxShape_ptr_wrapper> shape);
+            //void set_aggregate(std::shared_ptr<PxAggregate_ptr_wrapper> aggragate);
+            //std::shared_ptr<PxShape_ptr_wrapper> get_shape_from_shape();
+            //std::shared_ptr<PxAggregate_ptr_wrapper> get_aggregate_from_aggregate();
+
+
         }
 
         class UUIDGenerator{
