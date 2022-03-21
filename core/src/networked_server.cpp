@@ -9,10 +9,11 @@ NetworkedServer::NetworkedServer(Engine& engine) : m_engine(engine), m_server(nu
 void NetworkedServer::on_awake() {
     std::array<uint8_t, KeyBytes> privateKey = {0};
     char* serverAddress = std::getenv("KNOTING_SERVER");
-    std::string serAddress = serverAddress;
-    if (!serverAddress) {
+    std::string serAddress = "127.0.0.1";
+    if (serverAddress) {
+        serAddress = serverAddress;
+    } else {
         log::info("environment variable KNOTING_SERVER not set");
-        serAddress = "127.0.0.1";
     }
     m_server = std::make_shared<Server>(GetDefaultAllocator(), privateKey.data(),
                                         Address(serAddress.c_str(), SERVER_PORT), m_config, gameAdapter, get_time());
