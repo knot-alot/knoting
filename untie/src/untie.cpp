@@ -9,6 +9,9 @@
 #include <knoting/scene.h>
 #include <knoting/texture.h>
 
+#include <knoting/audio_listener.h>
+#include <knoting/audio_source.h>
+#include <knoting/audio_subsystem.h>
 #include <knoting/components.h>
 #include <knoting/scene.h>
 #include <knoting/skybox.h>
@@ -37,6 +40,7 @@ Untie::Untie() {
         auto editorCamera = scene.create_game_object("camera");
         auto& cam = editorCamera.add_component<components::EditorCamera>();
         editorCamera.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 50.0f, 0.0f));
+        editorCamera.add_component<components::AudioListener>();
     }
     {
         auto cubeObj = scene.create_game_object("skybox");
@@ -182,6 +186,10 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
+
+        auto& source = cubeObj.add_component<components::AudioSource>("drumloop.wav", true);
+
+        m_engine->get_audio_module().lock()->play(source);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
         client.m_clientNum = (1);
@@ -365,6 +373,29 @@ void Untie::run() {
     while (m_engine->is_open()) {
         m_engine->update_modules();
         auto im = m_engine->get_window_module().lock()->get_input_manager();
+
+        if (im->key_on_trigger(KeyCode::P)) {
+            if (cubeOne) {
+                components::AudioSource& source = cubeOne->get_component<components::AudioSource>();
+                auto weakAudioModule = m_engine->get_audio_module();
+                if (!weakAudioModule.expired()) {
+                    auto audioModule = weakAudioModule.lock();
+                    audioModule->toggle(source);
+                }
+            }
+        }
+
+        if (im->key_on_trigger(KeyCode::Y)) {
+            if (cubeOne) {
+                components::AudioSource& source = cubeTwo->get_component<components::AudioSource>();
+                auto weakAudioModule = m_engine->get_audio_module();
+                if (!weakAudioModule.expired()) {
+                    auto audioModule = weakAudioModule.lock();
+                    audioModule->play(source);
+                }
+            }
+        }
+
         if (im->key_pressed(KeyCode::Escape)) {
             m_engine->get_window_module().lock()->close();
         }
