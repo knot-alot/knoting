@@ -61,7 +61,7 @@ bool NetworkedClient::attempt_connection() {
     std::string serAddress = "127.0.0.1";
     if (serverAddress) {
         serAddress = serverAddress;
-    } else{
+    } else {
         log::info("environment variable KNOTING_SERVER not set");
     }
     m_serverAddress = Address(serAddress.c_str(), SERVER_PORT);
