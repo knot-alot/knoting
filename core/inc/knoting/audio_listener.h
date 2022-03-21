@@ -8,18 +8,10 @@ namespace knot::components {
 
 class AudioListener {
    public:
-    AudioListener() = default;
-    ~AudioListener() = default;
-    AudioListener(const AudioListener& other) = default;
-    //    //=For ECS========
-    //    void on_awake() {}
-    //    void on_destroy() {}
-    //    //================
-
-    FMOD_VECTOR* get_position();
+    vec3 get_position();
     quat get_rotation();
-    FMOD_VECTOR* get_forward();
-    FMOD_VECTOR* get_up();
+    vec3 get_forward();
+    vec3 get_up();
 
     template <class Archive>
     void save(Archive& archive) const {}

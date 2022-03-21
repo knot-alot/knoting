@@ -17,39 +17,18 @@ namespace knot::components {
 
 class AudioSource : public Asset {
    public:
-    AudioSource(const std::filesystem::path& path = {}, bool loops = false);
-    ~AudioSource();
+    AudioSource(const std::string& path = {}, bool loops = false);
 
     //=For ECS========
     void on_awake() override;
     void on_destroy() override;
     //=For Asset=======
-    void generate_default_asset() override;
+    void generate_default_asset() override {}
     //=================
-
-    void set_path(const std::filesystem::path& path) { m_path = path; }
-
-    const std::filesystem::path& get_path() { return m_path; }
-
-    bool get_loops() { return m_loops; }
-
-    void set_loops(bool loops) { m_loops = loops; }
 
     FMOD_VECTOR* get_position() const;
 
-    bool& get_playing() { return m_isPlaying; }
-
-    void set_playing(bool isPlaying) { m_isPlaying = isPlaying; }
-
-    bool& get_paused() { return m_isPaused; }
-
-    void set_paused(bool isPaused) { m_isPaused = isPaused; }
-
     FMOD::Sound*& get_sound() { return m_sound; }
-
-    FMOD::Channel*& get_channel() { return m_channel; }
-
-    void set_channel(FMOD::Channel* channel) { m_channel = channel; }
 
     template <class Archive>
     void save(Archive& archive) const {
@@ -65,16 +44,17 @@ class AudioSource : public Asset {
         on_awake();
     }
 
+    FMOD::Channel* m_channel = nullptr;
+    bool m_isPaused = false;
+    bool m_isPlaying = false;
+    std::filesystem::path m_path;
+    std::filesystem::path m_fullPath;
+    bool m_loops = true;
+
    protected:
     friend class AudioSubsystem;
 
     FMOD::Sound* m_sound;
-    FMOD::Channel* m_channel = nullptr;
-    std::filesystem::path m_path;
-
-    bool m_isPaused = false;
-    bool m_loops = true;
-    bool m_isPlaying = false;
 };
 
 }  // namespace knot::components

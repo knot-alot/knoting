@@ -132,13 +132,7 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
 
-        std::filesystem::path path = AssetManager::get_resources_path();
-        path.append("misc").append("drumloop.wav");
-        if (!std::filesystem::exists(path))
-            log::critical("drumloop not found!");
-        else
-            log::critical("drumloop was found!");
-        auto& source = cubeObj.add_component<components::AudioSource>(path, true);
+        auto& source = cubeObj.add_component<components::AudioSource>("drumloop.wav", true);
 
         m_engine->get_audio_module().lock()->play(source);
         cubeOne = cubeObj;
@@ -166,13 +160,7 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
 
-        std::filesystem::path path = AssetManager::get_resources_path();
-        path.append("misc").append("jaguar.wav");
-        if (!std::filesystem::exists(path))
-            log::critical("jaguar not found!");
-        else
-            log::critical("jaguar was found!");
-        auto& source = cubeObj.add_component<components::AudioSource>(path, false);
+        auto& source = cubeObj.add_component<components::AudioSource>("jaguar.wav", false);
 
         cubeTwo = cubeObj;
     }

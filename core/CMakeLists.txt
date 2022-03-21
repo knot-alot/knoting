@@ -32,7 +32,7 @@ set(PRIVATE_LIBS
 find_package(NoesisGUI REQUIRED)
 find_package(FMod REQUIRED)
 
-add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS} src/audio_subsystem.cpp src/audio_subsystem.cpp inc/knoting/audio_subsystem.h src/audio_source.cpp inc/knoting/audio_source.h src/audio_subsystem.cpp inc/knoting/audio_subsystem.h src/audio_listener.cpp inc/knoting/audio_listener.h)
+add_library(knoting ${KNOTING_SOURCES} ${KNOTING_SHADERS})
 
 set_target_properties(knoting PROPERTIES
         CXX_STANDARD 17

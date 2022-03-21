@@ -20,15 +20,10 @@ class AudioListener;
 namespace knot {
 class AudioSubsystem : public Subsystem {
    public:
-    AudioSubsystem();
-    ~AudioSubsystem() = default;
-
     void on_awake() override;
     void on_destroy() override;
-    static int ErrorCheck(FMOD_RESULT result) {
-        KNOTING_ASSERT(result == FMOD_OK);
-        return 0;
-    };
+    void on_update(double m_delta_time) override;
+
     void play(components::AudioSource& source);
     void toggle(components::AudioSource& source);
     void stop(components::AudioSource& source);
@@ -39,10 +34,14 @@ class AudioSubsystem : public Subsystem {
     void update_listener(components::AudioListener& listener);
     void set_loop(components::AudioSource& source, bool loops);
 
-    void on_update(double m_delta_time) override;
+    static FMOD_VECTOR vec3_to_FMOD_VEC(vec3 v) { return {v.x, v.y, v.z}; }
 
    protected:
     FMOD::System* m_system = nullptr;
+    static constexpr int m_frequency = 12000;
+    static constexpr int m_priority = 128;
+    static constexpr float m_minDis = 0.0f;
+    static constexpr float m_maxDis = 50000.0f;
 
     FMOD_RESULT m_result;
 };

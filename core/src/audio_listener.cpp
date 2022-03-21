@@ -3,65 +3,69 @@
 #include <glm/vec3.hpp>
 namespace knot::components {
 
-FMOD_VECTOR* AudioListener::get_position() {
+vec3 AudioListener::get_position() {
     auto sceneOpt = Scene::get_active_scene();
-    if (sceneOpt) {
-        Scene& scene = sceneOpt.value();
-        entt::entity handle = entt::to_entity(scene.get_registry(), *this);
-        auto goOpt = scene.get_game_object_from_handle(handle);
-        if (goOpt) {
-            vec3 position = goOpt->get_component<components::Transform>().get_position();
-            FMOD_VECTOR pos = {position.x, position.y, position.z};
-            return &pos;
-        }
+
+    if (!sceneOpt) {
+        return {0, 0, 0};
+    }
+    Scene& scene = sceneOpt.value();
+    entt::entity handle = entt::to_entity(scene.get_registry(), *this);
+    auto goOpt = scene.get_game_object_from_handle(handle);
+    if (goOpt) {
+        vec3 position = goOpt->get_component<components::Transform>().get_position();
+        return position;
     }
 }
 
 quat AudioListener::get_rotation() {
     auto sceneOpt = Scene::get_active_scene();
-    if (sceneOpt) {
-        Scene& scene = sceneOpt.value();
-        entt::entity handle = entt::to_entity(scene.get_registry(), *this);
-        auto goOpt = scene.get_game_object_from_handle(handle);
-        if (goOpt) {
-            return goOpt->get_component<components::Transform>().get_rotation();
-        }
+
+    if (!sceneOpt) {
+        return {1, 0, 0, 0};
+    }
+
+    Scene& scene = sceneOpt.value();
+    entt::entity handle = entt::to_entity(scene.get_registry(), *this);
+    auto goOpt = scene.get_game_object_from_handle(handle);
+    if (goOpt) {
+        return goOpt->get_component<components::Transform>().get_rotation();
     }
 }
 
-FMOD_VECTOR* AudioListener::get_forward() {
+vec3 AudioListener::get_forward() {
     auto sceneOpt = Scene::get_active_scene();
-    if (sceneOpt) {
-        Scene& scene = sceneOpt.value();
-        entt::entity handle = entt::to_entity(scene.get_registry(), *this);
-        auto goOpt = scene.get_game_object_from_handle(handle);
-        if (!goOpt) {
-            return nullptr;
-        }
-        auto& transform = goOpt->get_component<components::Transform>();
-
-        auto forwardUnit = vec3(transform.forward()) / length(transform.forward());
-
-        FMOD_VECTOR forward = {forwardUnit.x, forwardUnit.y, forwardUnit.z};
-        return &forward;
+    if (!sceneOpt) {
+        return {0, 0, 0};
     }
+
+    Scene& scene = sceneOpt.value();
+    entt::entity handle = entt::to_entity(scene.get_registry(), *this);
+    auto goOpt = scene.get_game_object_from_handle(handle);
+    if (!goOpt) {
+        return {0, 0, 0};
+    }
+    auto& transform = goOpt->get_component<components::Transform>();
+
+    return transform.forward();
 }
 
-FMOD_VECTOR* AudioListener::get_up() {
+vec3 AudioListener::get_up() {
     auto sceneOpt = Scene::get_active_scene();
-    if (sceneOpt) {
-        Scene& scene = sceneOpt.value();
-        entt::entity handle = entt::to_entity(scene.get_registry(), *this);
-        auto goOpt = scene.get_game_object_from_handle(handle);
-        if (!goOpt) {
-            return nullptr;
-        }
-        auto& transform = goOpt->get_component<components::Transform>();
-        auto upUnit = vec3(transform.up()) / length(transform.up());
 
-        FMOD_VECTOR up = {upUnit.x, upUnit.y, upUnit.z};
-        return &up;
+    if (!sceneOpt) {
+        return {0, 0, 0};
     }
+
+    Scene& scene = sceneOpt.value();
+    entt::entity handle = entt::to_entity(scene.get_registry(), *this);
+    auto goOpt = scene.get_game_object_from_handle(handle);
+    if (!goOpt) {
+        return {0, 0, 0};
+    }
+    auto& transform = goOpt->get_component<components::Transform>();
+
+    return transform.up();
 }
 
 }  // namespace knot::components
