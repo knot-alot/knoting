@@ -5,7 +5,7 @@ namespace components {
 
 void Material::on_awake() {
     // TODO pass in shader
-    m_shader.load_shader("bump", "vs_bump.bin", "fs_bump.bin");
+    m_shader.load_shader("paint", "vs_paint.bin", "fs_paint.bin");
     // end TODO
 
     // TODO When working update data to tightly packed variables -> 4 floats into 1 vec4
@@ -28,18 +28,24 @@ void Material::on_awake() {
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Metallic]  = bgfx::createUniform("m_metallic",  bgfx::UniformType::Sampler);
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Roughness] = bgfx::createUniform("m_roughness", bgfx::UniformType::Sampler);
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Occlusion] = bgfx::createUniform("m_occlusion", bgfx::UniformType::Sampler);
+    m_uniformSamplerHandle[(size_t)UniformSamplerHandle::RedNormal] = bgfx::createUniform("m_redNormal", bgfx::UniformType::Sampler);
+    m_uniformSamplerHandle[(size_t)UniformSamplerHandle::BlueNormal] = bgfx::createUniform("m_blueNormal", bgfx::UniformType::Sampler);
 
     m_albedo    = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Albedo]).lock();
     m_normal    = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Normal]).lock();
     m_metallic  = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Metallic]).lock();
     m_roughness = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Roughness]).lock();
     m_occlusion = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Occlusion]).lock();
+    m_redNormal = AssetManager::load_asset<components::Texture>("water_normal.png").lock();
+    m_blueNormal = AssetManager::load_asset<components::Texture>("water_normal.png").lock();
 
     m_textureHandles[(size_t)TextureHandle::Albedo]    = m_albedo->get_texture_handle();
     m_textureHandles[(size_t)TextureHandle::Normal]    = m_normal->get_texture_handle();
     m_textureHandles[(size_t)TextureHandle::Metallic]  = m_metallic->get_texture_handle();
     m_textureHandles[(size_t)TextureHandle::Roughness] = m_roughness->get_texture_handle();
     m_textureHandles[(size_t)TextureHandle::Occlusion] = m_occlusion->get_texture_handle();
+    m_textureHandles[(size_t)TextureHandle::RedNormal] = m_redNormal->get_texture_handle();
+    m_textureHandles[(size_t)TextureHandle::BlueNormal] = m_blueNormal->get_texture_handle();
 
     // clang-format on
 }
@@ -63,12 +69,16 @@ void Material::on_destroy() {
     bgfx::destroy(m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Metallic]);
     bgfx::destroy(m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Roughness]);
     bgfx::destroy(m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Occlusion]);
+    bgfx::destroy(m_uniformSamplerHandle[(size_t)UniformSamplerHandle::RedNormal]);
+    bgfx::destroy(m_uniformSamplerHandle[(size_t)UniformSamplerHandle::BlueNormal]);
 
     bgfx::destroy(m_textureHandles[(size_t)TextureHandle::Albedo]);
     bgfx::destroy(m_textureHandles[(size_t)TextureHandle::Normal]);
     bgfx::destroy(m_textureHandles[(size_t)TextureHandle::Metallic]);
     bgfx::destroy(m_textureHandles[(size_t)TextureHandle::Roughness]);
     bgfx::destroy(m_textureHandles[(size_t)TextureHandle::Occlusion]);
+    bgfx::destroy(m_textureHandles[(size_t)TextureHandle::RedNormal]);
+    bgfx::destroy(m_textureHandles[(size_t)TextureHandle::BlueNormal]);
 }
 
 Material::Material() {
@@ -90,7 +100,7 @@ Material::~Material() {}
 void Material::set_uniforms() {
     // clang-format off
 
-    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::AlbedoColor],        &m_albedoColor);
+    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::AlbedoColor],        &m_albedoColor[0]);
     bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::TextureTiling],      &m_textureTiling);
     bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::AlbedoScalar],       &m_albedoScalar);
     bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::NormalScalar],       &m_normalScalar);
@@ -108,6 +118,8 @@ void Material::set_uniforms() {
     bgfx::setTexture(2, m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Metallic], m_textureHandles[(size_t)TextureHandle::Metallic]);
     bgfx::setTexture(3, m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Roughness],m_textureHandles[(size_t)TextureHandle::Roughness]);
     bgfx::setTexture(4, m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Occlusion],m_textureHandles[(size_t)TextureHandle::Occlusion]);
+    bgfx::setTexture(5, m_uniformSamplerHandle[(size_t)UniformSamplerHandle::RedNormal],m_textureHandles[(size_t)TextureHandle::RedNormal]);
+    bgfx::setTexture(6, m_uniformSamplerHandle[(size_t)UniformSamplerHandle::BlueNormal],m_textureHandles[(size_t)TextureHandle::BlueNormal]);
 
     // clang-format off
 }

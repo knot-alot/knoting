@@ -109,9 +109,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
         material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "test_mask.png");
+        material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
         cubeObj.add_component<components::Material>(material);
 
         rigidbody.create_actor(false);
@@ -185,11 +185,12 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_albedo_mix_color(vec4(1, 0, 1, 1));
         cubeObj.add_component<components::Material>(material);
 
-        auto& source = cubeObj.add_component<components::AudioSource>("drumloop.wav", true);
+        auto& source = cubeObj.add_component<components::AudioSource>("drumloop.wav", false);
 
-        m_engine->get_audio_module().lock()->play(source);
+        // m_engine->get_audio_module().lock()->play(source);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
         client.m_clientNum = (1);
@@ -226,6 +227,8 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_albedo_mix_color(vec4(0, 1, 1, 1));
+
         cubeObj.add_component<components::Material>(material);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
@@ -263,6 +266,8 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_albedo_mix_color(vec4(0, 0, 1, 1));
+
         cubeObj.add_component<components::Material>(material);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();

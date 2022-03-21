@@ -118,7 +118,7 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
     textureFlags = BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT;
 
     if (usingAnisotropicFiltering)
-        textureFlags |= BGFX_SAMPLER_MAG_ANISOTROPIC;
+        textureFlags |= BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
     if (usingMipMaps)
         textureFlags |= BGFX_CAPS_FORMAT_TEXTURE_MIP_AUTOGEN;
 
