@@ -87,7 +87,7 @@ void Texture::load_texture_hdri(const std::string& path) {
     m_textureHandle = textureHandle;
 }
 
-class Pixel{
+class Pixel {
    public:
     uint8 data[4];
 };
@@ -122,30 +122,6 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
     // clang-format off
     bgfx::TextureHandle textureHandle;
     constexpr int rgba = 4;
-    size_t maxStride = imageSize.x * imageSize.y * rgba;
-
-    Pixel* imageData = static_cast<Pixel*>(data);
-    for (int i = 0; i < imageSize.x - 1; ++i) {
-        for (int j = 0; j < imageSize.y - 1; ++j) {
-            size_t currentStride = (imageSize.x * i) + j;
-            imageData[currentStride].data[0] = 0xff;
-            imageData[currentStride].data[1] = 0x00;
-            imageData[currentStride].data[2] = 0x00;
-            imageData[currentStride].data[3] = 0xff;
-        }
-    }
-
-//    bgfx::destroy(m_textureHandle);
-
-//    m_textureHandle = bgfx::createTexture2D(
-//        x,
-//        y,
-//        mips,
-//        layers,
-//        bgfx::TextureFormat::RGBA8,
-//        textureFlags,
-//        bgfx::copy(imageData, x * y * rgba)
-//    );
 
     textureHandle =
         bgfx::createTexture2D(
@@ -245,35 +221,38 @@ void Texture::generate_solid_color_texture(const vec4& color, const std::string&
     m_assetState = AssetState::Finished;
 }
 
-
-
-void Texture::set_pixel(int x, int y, vec4 color) {
-    //    void* texData;
-    //    auto tex = bgfx::readTexture(m_textureHandle, texData, 0);
-    constexpr int xx = 2;
-    constexpr int yy = 2;
+void Texture::set_pixel(vec2i position, vec4 color, float radius) {
+    float brushSize = radius;
     constexpr int rgba = 4;
+
     constexpr int layers = 1;
     constexpr bool mips = false;
 
-    Pixel pixel;
-    uint8_t r = (uint8_t)(color.r * 255);
-    uint8_t g = (uint8_t)(color.g * 255);
-    uint8_t b = (uint8_t)(color.b * 255);
-    uint8_t a = (uint8_t)(color.a * 255);
+    size_t maxStride = imageSize.x * imageSize.y * rgba;
 
-//    bgfx::createTexture2D(
-//        imageSize.x,
-//        imageSize.y,
-//        usingMipMaps,
-//        numberOfLayers,
-//        bgfx::TextureFormat::RGBA8,
-//        textureFlags,
-//        bgfx::copy(data, imageSize.x * imageSize.y * channels));
+    Pixel* imageData = static_cast<Pixel*>(data);
+    int xx = position.x;
+    int yy = position.y;
 
+    float brushSq = brushSize * brushSize;
+    for (int x = -brushSize; x < brushSize; ++x) {
+        for (int y = -brushSize; y < brushSize; ++y) {
+            vec2 pos = vec2(static_cast<float>(x), static_cast<float>(y));
+            float lenSq = pos.x * pos.x + pos.y * pos.y;
+            if (lenSq < brushSq) {
+                size_t currentStride = (imageSize.x * (yy + y)) + (xx + x);
+                imageData[currentStride].data[0] = (uint8)color.r * 255;
+                imageData[currentStride].data[1] = (uint8)color.g * 255;
+                imageData[currentStride].data[2] = (uint8)color.b * 255;
+                imageData[currentStride].data[3] = (uint8)color.a * 255;
+            }
+        }
+    }
 
+    bgfx::destroy(m_textureHandle);
 
-    //bgfx::updateTexture2D(m_textureHandle, layers, mips, 0, 0, 0, 0, bgfx::copy(imageData, imageSize.x * imageSize.y * channels));
+    m_textureHandle = bgfx::createTexture2D(imageSize.x, imageSize.y, false, numberOfLayers, bgfx::TextureFormat::RGBA8,
+                                            textureFlags, bgfx::copy(data, imageSize.x * imageSize.y * channels));
 }
 
 }  // namespace components

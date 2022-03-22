@@ -109,7 +109,7 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
         material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Metallic, "test_mask.png");
+        material.set_texture_slot_path(TextureType::Metallic, "mask.png");
         material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
         material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
         cubeObj.add_component<components::Material>(material);

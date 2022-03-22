@@ -36,7 +36,8 @@ void Material::on_awake() {
 
     m_metallic  = std::make_shared<components::Texture>("mask.png");
     m_metallic->on_awake();
-    m_metallic->set_pixel(512,512, vec4(1,0,0,1));
+
+
 
     m_roughness = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Roughness]).lock();
     m_occlusion = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Occlusion]).lock();
@@ -103,6 +104,11 @@ Material::~Material() {}
 
 void Material::set_uniforms() {
     // clang-format off
+
+    m_metallic->set_pixel(vec2i(300,300), vec4(1,0,0,1), 100);
+    m_metallic->set_pixel(vec2i(600,600), vec4(1,0,0,1), 45);
+
+    m_textureHandles[(size_t)TextureHandle::Metallic]  = m_metallic->get_texture_handle();
 
     bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::AlbedoColor],        &m_albedoColor[0]);
     bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::TextureTiling],      &m_textureTiling);
