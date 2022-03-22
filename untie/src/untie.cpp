@@ -1,5 +1,6 @@
 #include "untie.h"
 #include "knoting/demo_widget.h"
+#include "knoting/Menu.h"
 #include <knoting/components.h>
 #include <knoting/game_object.h>
 #include <knoting/instance_mesh.h>
@@ -366,8 +367,13 @@ Untie::Untie() {
     //        log::debug("file not found");
     //    }
     //    serializedSceneStream.close();
-    auto demoWidget = std::make_shared<DemoWidget>("demo");
-    m_engine->get_Widget().lock()->add_widget(demoWidget);
+   // auto demoWidget = std::make_shared<DemoWidget>("demo");
+   // m_engine->get_Widget().lock()->add_widget(demoWidget);
+    auto menu = std::make_shared<Menu>("menu");
+
+    menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),m_engine->get_window_module().lock()->get_window_height());
+   // menu->setFont("../res/textures/droidsans.ttf");
+    m_engine->get_Widget().lock()->add_widget(menu);
 
 }
 
