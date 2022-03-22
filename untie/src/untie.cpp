@@ -115,7 +115,7 @@ Untie::Untie() {
 
     {
         auto cubeObj = scene.create_game_object("cube_1");
-        cubeObj.get_component<components::Transform>().set_position(glm::vec3(0.0f, 3.0f, 0.0f));
+        cubeObj.get_component<components::Transform>().set_position(glm::vec3(0.0f, 10.0f, 0.0f));
         cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
@@ -138,8 +138,8 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
 
-        auto& cd = cubeObj.add_component<components::Collision_Detction>();
-        cd.search_by_dynamic(rigidbody.get_dynamic().lock());
+        auto& cd = cubeObj.add_component<components::Collision_Detection>();
+        cd.add_search_actor(rigidbody.get_dynamic().lock());
 
         cubeOne = cubeObj;
     }

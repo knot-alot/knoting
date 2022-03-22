@@ -23,7 +23,8 @@ PxFilterFlags SampleFilterShader(PxFilterObjectAttributes attributes0,
     // trigger the contact callback for pairs (A,B) where
     // the filtermask of A contains the ID of B and vice versa.
     if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
-        pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_CONTACT_POINTS;
+        pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_LOST |
+                     PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_CONTACT_POINTS;
 
     return PxFilterFlag::eDEFAULT;
 }
@@ -70,8 +71,6 @@ void Physics::on_awake() {
 void Physics::on_update(double m_deltatime) {}
 
 void Physics::on_fixed_update() {
-    m_event_callback->clear_data();
-
     constexpr float timestep = 1.0 / 120.0f;
     m_scene->get()->simulate(timestep);
     m_scene->get()->fetchResults(true);
@@ -111,16 +110,26 @@ void Physics::update_info_to_transform() {
 
         transform.set_rotation(rigidbody.get_rotation());
     }
+    // could for dubug
     /*
-    if (!m_event_callback->get()->get_contact_data().empty()) {
-        log::error(m_event_callback->get()->get_contact_data().at(0).m_contact_point.x);
+    auto collision = registry.view<components::Collision_Detection>();
+    for (auto& cd : collision) {
+        auto goOpt = scene.get_game_object_from_handle(cd);
 
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        components::Collision_Detection& collision_detection =
+            registry.get<components::Collision_Detection>(go.get_handle());
+        if (!collision_detection.get_actor_contact_data().empty()) {
+            if (!collision_detection.get_actor_contact_data().at(0).m_contact_data.empty()) {
+                log::error(collision_detection.get_actor_contact_data().at(0).m_contact_data.at(0).m_contact_point.x);
+            }
+        }
     }
     */
-
-    if (!m_event_callback->get_contact_data().empty()) {
-        log::error(m_event_callback->get_contact_data().at(0).m_contact_point.x);
-    }
 }
 
 void Physics::set_gravity(PxVec3 gravity) {
