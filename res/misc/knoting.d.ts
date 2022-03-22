@@ -22,6 +22,7 @@ declare module "knoting" {
 
         getRotationEuler(): Vec3;
 
+
         getForward(): Vec3;
 
         getUp(): Vec3;
@@ -482,4 +483,5 @@ declare module "knoting" {
 
     const input: InputManager;
     const scene: Scene;
+
 }
