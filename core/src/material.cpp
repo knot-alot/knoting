@@ -33,7 +33,11 @@ void Material::on_awake() {
 
     m_albedo    = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Albedo]).lock();
     m_normal    = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Normal]).lock();
-    m_metallic  = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Metallic]).lock();
+
+    m_metallic  = std::make_shared<components::Texture>("mask.png");
+    m_metallic->on_awake();
+    m_metallic->set_pixel(512,512, vec4(1,0,0,1));
+
     m_roughness = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Roughness]).lock();
     m_occlusion = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Occlusion]).lock();
     m_redNormal = AssetManager::load_asset<components::Texture>("water_normal.png").lock();
