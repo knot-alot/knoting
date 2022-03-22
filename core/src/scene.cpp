@@ -3,6 +3,7 @@
 #include <knoting/instance_mesh.h>
 #include <knoting/log.h>
 #include <knoting/scene.h>
+#include <knoting/shape.h>
 #include <knoting/skybox.h>
 #include <knoting/spot_light.h>
 #include <knoting/transform.h>
@@ -179,6 +180,7 @@ GameObject Scene::create_cube(const std::string& name,
     auto& shape = cubeObj.add_component<components::Shape>();
     vec3 halfsize = vec3(scale);
     shape.set_geometry(shape.create_cube_geometry(halfsize));
+    shape.set_filter_data(filter_group::eParticle, filter_group::eAll);
 
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 

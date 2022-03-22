@@ -77,8 +77,8 @@ void CameraRotation::on_update(double m_delta_time) {
         Name& name = go.get_component<Name>();
 
         m_roll = 0.0f;
-        m_pitch += ((float)-m_mouseDelta.y * (float)m_mouseSensitivity.y) * (float)m_delta_time;
-        m_yaw += ((float)-m_mouseDelta.x * (float)m_mouseSensitivity.x) * (float)m_delta_time;
+        m_pitch += ((float)-m_mouseDelta.y * (float)m_mouseSensitivity.y) * 3 * (float)m_delta_time;
+        m_yaw += ((float)-m_mouseDelta.x * (float)m_mouseSensitivity.x) * (float)m_delta_time * 0.5;
 
         m_pitch = clamp(m_pitch, m_pitchClamp.x, m_pitchClamp.y);
 

@@ -18,7 +18,7 @@ void Shape::on_awake() {
     } else {
         constexpr PxReal default_staticFriction = 0.3f;
         constexpr PxReal default_dynamicFriction = 0.3f;
-        constexpr PxReal default_restitution = 0.0f;
+        constexpr PxReal default_restitution = 0.6f;
         m_material = std::make_shared<PxMaterial_ptr_wrapper>(
             m_physics->get()->createMaterial(default_staticFriction, default_dynamicFriction, default_restitution));
     }
@@ -29,6 +29,7 @@ void Shape::on_destroy() {}
 void Shape::set_geometry(const PxGeometry& geometry) {
     if (!m_shape) {
         m_shape = std::make_shared<PxShape_ptr_wrapper>(m_physics->get()->createShape(geometry, *m_material->get()));
+        set_filter_data(filter_group::eAll, filter_group::eAll | filter_group::eParticle);
 
     } else {
         m_shape->get()->setGeometry(geometry);
@@ -39,6 +40,13 @@ void Shape::set_local_rotation(quat rotation) {
     if (m_shape) {
         m_shape->get()->setLocalPose(PxTransform(RigidBody::quat_to_PxQuat(rotation)));
     }
+}
+
+void Shape::set_filter_data(PxU32 group, PxU32 mask) {
+    PxFilterData data;
+    data.word0 = group;
+    data.word1 = mask;
+    m_shape->get()->setSimulationFilterData(data);
 }
 
 PxBoxGeometry Shape::create_cube_geometry(const vec3& halfsize) {

@@ -5,6 +5,13 @@
 #include <knoting/rigidbody.h>
 
 namespace knot {
+
+struct filter_group {
+    enum Enum {
+        eAll = (1 << 0),
+        eParticle = (1 << 1),
+    };
+};
 namespace components {
 
 class Shape {
@@ -22,6 +29,7 @@ class Shape {
     void set_material(std::shared_ptr<PxMaterial_ptr_wrapper> material) { m_material = material; }
     void set_geometry(const PxGeometry& geometry);
     void set_local_rotation(quat rotation);
+    void set_filter_data(PxU32 group, PxU32 mask);
 
     PxBoxGeometry create_cube_geometry(const vec3& halfsize);
     PxSphereGeometry create_sphere_geometry(const float& radius);

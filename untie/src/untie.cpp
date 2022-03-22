@@ -110,6 +110,8 @@ GameObject Untie::create_floor(const std::string& name, vec3 position, float wid
     cubeObj.get_component<components::Transform>().set_scale(glm::vec3(width, 0.5f, depth));
     cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 0, 0));
     cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
+    auto& agg = cubeObj.add_component<components::Aggregate>();
+    agg.add_aggregate("floor", 30, false);
 
     auto& shape = cubeObj.add_component<components::Shape>();
     vec3 halfsize = vec3(vec3(width, 0.5f, depth));
@@ -137,6 +139,8 @@ GameObject Untie::create_wall(const std::string& name, vec3 position, vec3 rotat
     cubeObj.get_component<components::Transform>().set_scale(scale);
     cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
     auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+    auto& agg = cubeObj.add_component<components::Aggregate>();
+    agg.find_aggregate("floor");
 
     auto& shape = cubeObj.add_component<components::Shape>();
     vec3 halfsize = vec3(scale);
@@ -164,6 +168,8 @@ GameObject Untie::create_eg_wall(const std::string& name, vec3 position, vec3 ro
     cubeObj.get_component<components::Transform>().set_scale(scale);
     cubeObj.add_component<components::InstanceMesh>("EG_wall_main.obj");
     auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+    auto& agg = cubeObj.add_component<components::Aggregate>();
+    agg.find_aggregate("floor");
 
     auto& shape = cubeObj.add_component<components::Shape>();
     vec3 halfsize = vec3(scale);
@@ -262,6 +268,8 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
     auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
+    auto& agg = cubeObj.add_component<components::Aggregate>();
+    agg.add_aggregate("player", 128, false);
 
     auto& shape = cubeObj.add_component<components::Shape>();
     vec3 halfsize = vec3(playerScale);

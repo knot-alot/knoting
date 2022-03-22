@@ -13,6 +13,7 @@
 #include <fstream>
 #include <string_view>
 #include <vector>
+#include <knoting/Font.h>
 
 namespace knot {
 
