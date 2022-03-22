@@ -1,4 +1,5 @@
 #include "untie.h"
+#include "knoting/demo_widget.h"
 #include <knoting/components.h>
 #include <knoting/game_object.h>
 #include <knoting/instance_mesh.h>
@@ -20,6 +21,7 @@
 #include <iostream>
 
 #include <cereal/archives/json.hpp>
+#include <knoting/widget_subsystem.h>
 
 #include <iostream>
 
@@ -349,7 +351,6 @@ Untie::Untie() {
         cubeObj.add_component<components::InstanceMesh>("postProcessPlane");
         cubeObj.add_component<components::PostProcessing>();
     }
-
     //    std::string filename("post_process.json");
     //    std::filesystem::path path = AssetManager::get_resources_path().append(filename);
     //    std::fstream serializedSceneStream(path);
@@ -365,6 +366,9 @@ Untie::Untie() {
     //        log::debug("file not found");
     //    }
     //    serializedSceneStream.close();
+    auto demoWidget = std::make_shared<DemoWidget>("demo");
+    m_engine->get_Widget().lock()->add_widget(demoWidget);
+
 }
 
 void Untie::run() {

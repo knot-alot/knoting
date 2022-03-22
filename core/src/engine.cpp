@@ -13,6 +13,7 @@ Engine::Engine() {
     m_cameraRotationModule = std::make_shared<knot::CameraRotation>(*this);
     m_assetManager = std::make_shared<knot::AssetManager>();
     m_audioModule = std::make_shared<knot::AudioSubsystem>();
+    m_WidgetSubsystem = std::make_shared<knot::WidgetSubsystem>(*this);
     if (!isClient) {
         m_serverModule = std::make_shared<knot::NetworkedServer>(*this);
     }
@@ -26,6 +27,7 @@ Engine::Engine() {
     m_engineModules.emplace_back(m_forwardRenderModule);
     m_engineModules.emplace_back(m_physicsModule);
     m_engineModules.emplace_back(m_audioModule);
+    m_engineModules.emplace_back(m_WidgetSubsystem);
     if (!isClient) {
         m_engineModules.emplace_back(m_serverModule);
     }
@@ -43,6 +45,7 @@ void Engine::update_modules() {
     for (auto& module : m_engineModules) {
         module->on_update(deltaTime);
         module->on_fixed_update();
+        module->on_late_update();
     }
     // TODO move into functions when functionality exists
 
