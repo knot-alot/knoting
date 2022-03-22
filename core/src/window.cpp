@@ -41,7 +41,9 @@ Window::Window(int width, int height, std::string title, Engine& engine)
 
     glfwSetWindowUserPointer(m_window, this);
     setup_callbacks();
-
+    vec2d mousePos;
+    glfwGetCursorPos(m_window,&mousePos.x,&mousePos.y);
+    m_input->mouse_event(mousePos.x,mousePos.y);
     // To avoid creating a render thread we need to call renderFrame() manually
     bgfx::renderFrame();
     bgfx::Init init;

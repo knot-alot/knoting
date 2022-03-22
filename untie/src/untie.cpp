@@ -30,7 +30,7 @@ Scene loadedScene;
 
 std::optional<GameObject> cubeOne;
 std::optional<GameObject> cubeTwo;
-
+components::Particles* partSystem;
 Untie::Untie() {
     Scene::set_active_scene(scene);
     log::Logger::setup();
@@ -353,7 +353,11 @@ Untie::Untie() {
     {
         auto psObj = scene.create_game_object("ps1");
         psObj.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 10.0f, 0.0f));
-        psObj.add_component<components::Particles>();
+        partSystem = &psObj.add_component<components::Particles>();
+        partSystem->set_max_particles_start_scale(0.5f);
+        partSystem->set_max_particles_end_scale(0.01f);
+        partSystem->set_particles_per_second(10);
+
     }
     {
         auto psObj = scene.create_game_object("ps2");
