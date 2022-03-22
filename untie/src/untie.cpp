@@ -302,6 +302,12 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
 
     hier.add_child(editorCamera);
 
+    auto particle = m_scene->create_game_object("particle");
+    particle.get_component<components::Transform>().set_position(glm::vec3(0, 0.7f, playerScale.z));
+    auto& p = particle.add_component<components::Particles>();
+
+    hier.add_child(particle);
+
     return cubeObj;
 }
 

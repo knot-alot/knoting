@@ -25,6 +25,7 @@ void ForwardRenderer::on_awake() {}
 
 void ForwardRenderer::on_update(double m_delta_time) {
     m_timePassed += (float)m_delta_time;
+    m_dt = m_delta_time;
     bgfx::touch(0);
 
     shadow_pass();
@@ -106,6 +107,53 @@ void ForwardRenderer::color_pass() {
             invProj = inverse(proj);
             bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
         }
+
+        //=PARTICLES SYSTEM=======================
+        auto particles = registry.view<Particles>();
+
+
+
+        for (auto& e : particles) {
+            auto gooOpt = scene.get_game_object_from_handle(e);
+            if (!gooOpt) {
+                continue;
+            }
+
+            GameObject goo = gooOpt.value();
+            Particles& ps = goo.get_component<Particles>();
+            auto& hierarchy = goo.get_component<Hierarchy>();
+
+            vec3 parentPos = vec3(0);
+
+            if (hierarchy.has_parent()) {
+                auto parentOpt = scene.get_game_object_from_id(hierarchy.get_parent().value());
+
+                if (parentOpt) {
+                    auto& parentTransform = parentOpt.value().get_component<Transform>();
+                    parentPos = parentTransform.get_position();
+                    vec3 lookTarget = editorCamera.get_look_target();
+                    editorCamera.set_look_target(lookTarget);
+
+                    vec3 diffCameraPosLookTager = lookTarget - cameraPos;
+
+                    cameraPos = parentTransform.get_model_matrix() * vec4(cameraPos, 1.0f);
+
+                    diffCameraPosLookTager =
+                        toMat4(parentTransform.get_rotation()) * vec4(diffCameraPosLookTager, 1.0f);
+                    editorCamera.set_look_target(cameraPos + diffCameraPosLookTager);
+                }
+            }
+            const bx::Vec3 eye =
+                bx::Vec3(transform.get_position().x, transform.get_position().y, transform.get_position().z);
+            float viewMtx[16];
+
+            bx::mtxLookAt(viewMtx, bx::load<bx::Vec3>(&eye.x), bx::load<bx::Vec3>(&lookTarget.x),
+                          bx::load<bx::Vec3>(&up.x));
+
+            ps.update(m_dt * 0.1);
+            ps.render(idx, viewMtx, eye);
+        }
+
     }
 
     //=SPOT LIGHTS======================

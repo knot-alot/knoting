@@ -65,11 +65,15 @@ void Particles::set_gravity_scale(float gravity) {
 }
 
 void Particles::set_shape(EmitterShape::Enum shape) {
+    constexpr uint32_t default_max_particles = 1024;
     m_shape = shape;
+    m_handle = psCreateEmitter(m_shape, m_direction_type, default_max_particles);
 }
 
 void Particles::set_direction_type(EmitterDirection::Enum directionType) {
+    constexpr uint32_t default_max_particles = 1024;
     m_direction_type = directionType;
+    m_handle = psCreateEmitter(m_shape, m_direction_type, default_max_particles);
 }
 
 void Particles::set_particles_per_second(uint32_t particlesPerSecond) {
