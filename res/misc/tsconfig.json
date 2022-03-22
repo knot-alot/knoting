@@ -1,0 +1,17 @@
+{
+  "display": "Knoting",
+  "compilerOptions": {
+    "module": "es6",
+    "target": "es6",
+
+    "strict": true,
+    "esModuleInterop": true,
+    "checkJs": true,
+    "allowJs": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "outDir": "out/"
+  },
+  "baseUrl": "."
+}
