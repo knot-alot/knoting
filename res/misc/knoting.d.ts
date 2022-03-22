@@ -1,373 +1,485 @@
 declare module "knoting" {
-  type Vec2 = Array<number>;
-  type Vec3 = Array<number>;
-  type Vec4 = Array<number>;
-  type Quat = Array<number>;
-  type UUID = string;
+    type Vec2 = Array<number>;
+    type Vec3 = Array<number>;
+    type Vec4 = Array<number>;
+    type Quat = Array<number>;
+    type UUID = string;
 
-  class Transform {
-    setPosition(position: Vec3): void;
-    setScale(scale: Vec3): void;
-    setRotation(rotation: Quat): void;
-    setRotationEuler(euler: Vec3): void;
+    class Transform {
+        setPosition(position: Vec3): void;
 
-    getPosition(position: Vec3): void;
-    getScale(scale: Vec3): void;
-    getRotation(rotation: Quat): void;
-    getRotationEuler(rotation: Vec3): void;
+        setScale(scale: Vec3): void;
 
-    getForward(): Vec3;
-    getUp(): Vec3;
-    getRight(): Vec3;
-  }
+        setRotation(rotation: Quat): void;
 
-  class RigidBody {
-    getPosition(): Vec3;
-    getRotation(): Vec3;
-    getRotationEuler(): Vec3;
-    setPosition(position: Vec3): void;
-    setRotation(rotation: Quat): void;
-    setRotationEuler(rotation: Vec3): void;
+        setRotationEuler(euler: Vec3): void;
 
-    getName(): string;
-    setName(name: string): void;
+        getPosition(): Vec3;
 
-    addForce(force: Vec3): void;
-    getMass(): number;
-    isDynamic(): boolean;
-    isKinematic(): boolean;
-    getAngularDamping(): number;
-    getLinearDamping(): number;
-    getAngularVelocity(): Vec3;
-    getLinearVelocity(): Vec3;
+        getScale(): Vec3;
 
-    setKinematic(toggle: boolean): void;
-    setMass(mass: number): void;
-    setAngularDamping(damping: number): void;
-    setLinearDamping(damping: number): void;
-    setAngularVelocity(velocity: number): void;
-    setLinearVelocity(velocity: number): void;
-    addForce(force: Vec3): void;
-    addTorque(torque: Vec3): void;
-    clearForce(): void;
-    clearTorque(): void;
-  }
+        getRotation(): Quat;
 
-  class GameObject {
-    getID(): UUID;
-    getHandle(): number;
+        getRotationEuler(): Vec3;
 
-    hasNoComponents(): boolean;
-    hasComponent(component: string): boolean;
-    getComponent(component: string): any;
+        getForward(): Vec3;
 
-    addComponent(component: string, ...args: any): any;
-    getComponent(component: string): any;
-    removeComponent(component: string): void;
-  }
+        getUp(): Vec3;
 
-  class Hierarchy {
-    getParent(): UUID;
-    hasParent(): boolean;
+        getRight(): Vec3;
+    }
 
-    setParent(parent: UUID): void;
+    class RigidBody {
+        getPosition(): Vec3;
 
-    hasChildren(): boolean;
-    hasChild(child: UUID): boolean;
+        getRotation(): Vec3;
 
-    getChildren(): Array<UUID>;
+        getRotationEuler(): Vec3;
 
-    addChild(child: UUID): void;
-    removeChild(child: UUID): void;
-  }
+        setPosition(position: Vec3): void;
 
-  class Name {
-    getName(): string;
-    setName(name: string): void;
-  }
+        setRotation(rotation: Quat): void;
 
-  class Tag {
-    getTag(): string;
-    setTag(tag: string): void;
-    registerTag(tag: string): void;
-    unregisterTag(tag: string): void;
-    getRegisteredTags(): Array<string>;
-  }
+        setRotationEuler(rotation: Vec3): void;
 
-  class Scene {
-    createGameObject(name: string): GameObject;
-    removeGameObject(object: UUID): void;
+        getName(): string;
 
-    getGameObjectFromID(id: UUID): GameObject;
-    findGameObject(name: string): UUID;
+        setName(name: string): void;
 
-    loadScene(path: string): void;
-  }
+        addForce(force: Vec3): void;
 
-  class AudioListener {
-    getPosition(): Vec3;
-    getRotation(): Quat;
-    getForward(): Vec3;
-    getUP(): Vec3;
-  }
+        getMass(): number;
 
-  class AudioSource {
-    getPosition(): Vec3;
-    isPlaying(): boolean;
-    isPaused(): boolean;
+        isDynamic(): boolean;
 
-    setLoops(loops: boolean): void;
-    getLoops(): boolean;
+        isKinematic(): boolean;
 
-    pause(): void;
-    stop(): void;
-    play(): void;
-  }
+        getAngularDamping(): number;
 
-  class EditorCamera {
-    setRotationEuler(rotation: Vec3): void;
-    getRotationEuler(): Vec3;
+        getLinearDamping(): number;
 
-    getUP(): Vec3;
-    getRight(): Vec3;
+        getAngularVelocity(): Vec3;
 
-    setLookTarget(target: Vec3): void;
-    setFov(fov: number): void;
-    setZNear(zNear: number): void;
-    setZFar(zFar: number): void;
+        getLinearVelocity(): Vec3;
 
-    getLookTarget(target: Vec3): void;
-    getFov(fov: number): void;
-    getZNear(zNear: number): void;
-    getZFar(zFar: number): void;
+        setKinematic(toggle: boolean): void;
 
-    setMoveSpeed(speed: number): void;
-    getMoveSpeed(): number;
-  }
+        setMass(mass: number): void;
 
-  class Raycast {
-    getOrigin(): Vec3;
-    getUnitDir(): Vec3;
-    getMaxDistance(): number;
-    isHit(): boolean;
-    getHitPosition(): Vec3;
-    getHitNormal(): Vec3;
-    getHitDistance(): number;
+        setAngularDamping(damping: number): void;
 
-    setOrigin(origin: Vec3): void;
-    setUnitDir(unitDir: Vec3): void;
-    setMaxDistance(maxDistance: number): void;
-  }
+        setLinearDamping(damping: number): void;
 
-  enum MouseButtonCode {
-    Left,
-    Right,
-    Middle,
-    Button3,
-    Button4,
-    Button5,
-    Button6,
-    Button7,
-    Button8,
-    Last,
-  }
+        setAngularVelocity(velocity: number): void;
 
-  enum JoyStickCode {
-    LeftX,
-    LeftY,
-    RightX,
-    RightY,
-    LeftBumper,
-    RightBumper,
-    Last,
-  }
+        setLinearVelocity(velocity: number): void;
 
-  enum PadCode {
-    Pad0,
-    Pad1,
-    Pad2,
-    Pad3,
-    Pad4,
-    Pad5,
-    Pad6,
-    Pad7,
-    Pad8,
-    Pad9,
-    Pad10,
-    Pad11,
-    Pad12,
-    Pad13,
-    Pad14,
-    Pad15,
-    Last,
-  }
+        addForce(force: Vec3): void;
 
-  enum PadButtonCode {
-    A,
-    B,
-    X,
-    Y,
-    LeftBumper,
-    RightBumper,
-    Back,
-    Start,
-    Guide,
-    LeftThumb,
-    RightThumb,
-    DPadUp,
-    DPadRight,
-    DPadDown,
-    DPadLeft,
-    Last,
-  }
+        addTorque(torque: Vec3): void;
 
-  enum KeyCode {
-    Unknown,
-    Space,
-    Apostrophe,
-    Comma,
-    Minus,
-    Period,
-    Slash,
-    N0,
-    N1,
-    N2,
-    N3,
-    N4,
-    N5,
-    N6,
-    N7,
-    N8,
-    N9,
-    Semicolon,
-    Equal1,
-    A,
-    B,
-    C,
-    D,
-    E,
-    F,
-    G,
-    H,
-    I,
-    J,
-    K,
-    L,
-    M,
-    N,
-    O,
-    P,
-    Q,
-    R,
-    S,
-    T,
-    U,
-    V,
-    W,
-    X,
-    Y,
-    Z,
-    LeftBracket,
-    Backslash,
-    RightBracket,
-    GraveAccent,
-    World1,
-    World2,
-    Escape,
-    Enter,
-    Tab,
-    Backspace,
-    Insert,
-    Delete,
-    Right,
-    Left,
-    Down,
-    Up,
-    PageUp,
-    PageDown,
-    Home,
-    End,
-    CapsLock,
-    ScrollLock,
-    NumLock,
-    PrintScreen,
-    Pause,
-    F1,
-    F2,
-    F3,
-    F4,
-    F5,
-    F6,
-    F7,
-    F8,
-    F9,
-    F10,
-    F11,
-    F12,
-    F13,
-    F14,
-    F15,
-    F16,
-    F17,
-    F18,
-    F19,
-    F20,
-    F21,
-    F22,
-    F23,
-    F24,
-    F25,
-    KP0,
-    KP1,
-    KP2,
-    KP3,
-    KP4,
-    KP5,
-    KP6,
-    KP7,
-    KP8,
-    KP9,
-    KPDecimal,
-    KPDivide,
-    KPMultiply,
-    KPSubtract,
-    KPAdd,
-    KPEnter,
-    KPEqual,
-    LeftShift,
-    LeftControl,
-    LeftAlt,
-    LeftSuper,
-    RightShift,
-    RightControl,
-    RightAlt,
-    RightSuper,
-    Menu,
-    Last,
-  }
+        clearForce(): void;
 
-  class InputManager {
-    constructor();
+        clearTorque(): void;
+    }
 
-    // KeyBoard Methods
-    keyPressed(key: KeyCode): boolean;
-    keyHeldDown(key: KeyCode): boolean;
-    keyOnTrigger(key: KeyCode): boolean;
-    keyOnRelease(key: KeyCode): boolean;
+    class GameObject {
+        getID(): UUID;
 
-    // Pad Methods
-    padButtonPressed(pad: PadCode, button: PadButtonCode): boolean;
-    padButtonHeldDown(pad: PadCode, button: PadButtonCode): boolean;
-    padButtonTriggered(pad: PadCode, button: PadButtonCode): boolean;
-    padButtonReleased(pad: PadCode, button: PadButtonCode): boolean;
-    getPadAxis(pad: PadCode, joy_stick: JoyStickCode): number;
-    padPresent(pad: PadCode): boolean;
+        getHandle(): number;
 
-    // Mouse Methods
-    mouseButtonPressed(button: MouseButtonCode): boolean;
-    mouseButtonHeldDown(button: MouseButtonCode): boolean;
-    mouseButtonTriggered(button: MouseButtonCode): boolean;
-    mouseButtonReleased(button: MouseButtonCode): boolean;
-    wheelMoved(): boolean;
-  }
+        hasNoComponents(): boolean;
+
+        hasComponent(component: string): boolean;
+
+        getComponent(component: string): any;
+
+        addComponent(component: string, ...args: any): any;
+
+        getComponent(component: string): any;
+
+        removeComponent(component: string): void;
+    }
+
+    class Hierarchy {
+        getParent(): UUID;
+
+        hasParent(): boolean;
+
+        setParent(parent: UUID): void;
+
+        hasChildren(): boolean;
+
+        hasChild(child: UUID): boolean;
+
+        getChildren(): Array<UUID>;
+
+        addChild(child: UUID): void;
+
+        removeChild(child: UUID): void;
+    }
+
+    class Name {
+        getName(): string;
+
+        setName(name: string): void;
+    }
+
+    class Tag {
+        getTag(): string;
+
+        setTag(tag: string): void;
+
+        registerTag(tag: string): void;
+
+        unregisterTag(tag: string): void;
+
+        getRegisteredTags(): Array<string>;
+    }
+
+    class Scene {
+        createGameObject(name: string): GameObject;
+
+        removeGameObject(object: UUID): void;
+
+        getGameObjectFromID(id: UUID): GameObject;
+
+        findGameObject(name: string): UUID;
+
+        loadScene(path: string): void;
+    }
+
+    class AudioListener {
+        getPosition(): Vec3;
+
+        getRotation(): Quat;
+
+        getForward(): Vec3;
+
+        getUP(): Vec3;
+    }
+
+    class AudioSource {
+        getPosition(): Vec3;
+
+        isPlaying(): boolean;
+
+        isPaused(): boolean;
+
+        setLoops(loops: boolean): void;
+
+        getLoops(): boolean;
+
+        pause(): void;
+
+        stop(): void;
+
+        play(): void;
+    }
+
+    class EditorCamera {
+        setRotationEuler(rotation: Vec3): void;
+
+        getRotationEuler(): Vec3;
+
+        getUP(): Vec3;
+
+        getRight(): Vec3;
+
+        setLookTarget(target: Vec3): void;
+
+        setFov(fov: number): void;
+
+        setZNear(zNear: number): void;
+
+        setZFar(zFar: number): void;
+
+        getLookTarget(target: Vec3): void;
+
+        getFov(fov: number): void;
+
+        getZNear(zNear: number): void;
+
+        getZFar(zFar: number): void;
+
+        setMoveSpeed(speed: number): void;
+
+        getMoveSpeed(): number;
+    }
+
+    class Raycast {
+        getOrigin(): Vec3;
+
+        getUnitDir(): Vec3;
+
+        getMaxDistance(): number;
+
+        isHit(): boolean;
+
+        getHitPosition(): Vec3;
+
+        getHitNormal(): Vec3;
+
+        getHitDistance(): number;
+
+        setOrigin(origin: Vec3): void;
+
+        setUnitDir(unitDir: Vec3): void;
+
+        setMaxDistance(maxDistance: number): void;
+    }
+
+    enum MouseButtonCode {
+        Left,
+        Right,
+        Middle,
+        Button3,
+        Button4,
+        Button5,
+        Button6,
+        Button7,
+        Button8,
+        Last,
+    }
+
+    enum JoyStickCode {
+        LeftX,
+        LeftY,
+        RightX,
+        RightY,
+        LeftBumper,
+        RightBumper,
+        Last,
+    }
+
+    enum PadCode {
+        Pad0,
+        Pad1,
+        Pad2,
+        Pad3,
+        Pad4,
+        Pad5,
+        Pad6,
+        Pad7,
+        Pad8,
+        Pad9,
+        Pad10,
+        Pad11,
+        Pad12,
+        Pad13,
+        Pad14,
+        Pad15,
+        Last,
+    }
+
+    enum PadButtonCode {
+        A,
+        B,
+        X,
+        Y,
+        LeftBumper,
+        RightBumper,
+        Back,
+        Start,
+        Guide,
+        LeftThumb,
+        RightThumb,
+        DPadUp,
+        DPadRight,
+        DPadDown,
+        DPadLeft,
+        Last,
+    }
+
+    enum KeyCode {
+        Unknown,
+        Space,
+        Apostrophe,
+        Comma,
+        Minus,
+        Period,
+        Slash,
+        N0,
+        N1,
+        N2,
+        N3,
+        N4,
+        N5,
+        N6,
+        N7,
+        N8,
+        N9,
+        Semicolon,
+        Equal1,
+        A,
+        B,
+        C,
+        D,
+        E,
+        F,
+        G,
+        H,
+        I,
+        J,
+        K,
+        L,
+        M,
+        N,
+        O,
+        P,
+        Q,
+        R,
+        S,
+        T,
+        U,
+        V,
+        W,
+        X,
+        Y,
+        Z,
+        LeftBracket,
+        Backslash,
+        RightBracket,
+        GraveAccent,
+        World1,
+        World2,
+        Escape,
+        Enter,
+        Tab,
+        Backspace,
+        Insert,
+        Delete,
+        Right,
+        Left,
+        Down,
+        Up,
+        PageUp,
+        PageDown,
+        Home,
+        End,
+        CapsLock,
+        ScrollLock,
+        NumLock,
+        PrintScreen,
+        Pause,
+        F1,
+        F2,
+        F3,
+        F4,
+        F5,
+        F6,
+        F7,
+        F8,
+        F9,
+        F10,
+        F11,
+        F12,
+        F13,
+        F14,
+        F15,
+        F16,
+        F17,
+        F18,
+        F19,
+        F20,
+        F21,
+        F22,
+        F23,
+        F24,
+        F25,
+        KP0,
+        KP1,
+        KP2,
+        KP3,
+        KP4,
+        KP5,
+        KP6,
+        KP7,
+        KP8,
+        KP9,
+        KPDecimal,
+        KPDivide,
+        KPMultiply,
+        KPSubtract,
+        KPAdd,
+        KPEnter,
+        KPEqual,
+        LeftShift,
+        LeftControl,
+        LeftAlt,
+        LeftSuper,
+        RightShift,
+        RightControl,
+        RightAlt,
+        RightSuper,
+        Menu,
+        Last,
+    }
+
+    class InputManager {
+        constructor();
+
+        // KeyBoard Methods
+        keyPressed(key: KeyCode): boolean;
+
+        keyHeldDown(key: KeyCode): boolean;
+
+        keyOnTrigger(key: KeyCode): boolean;
+
+        keyOnRelease(key: KeyCode): boolean;
+
+        // Pad Methods
+        padButtonPressed(pad: PadCode, button: PadButtonCode): boolean;
+
+        padButtonHeldDown(pad: PadCode, button: PadButtonCode): boolean;
+
+        padButtonTriggered(pad: PadCode, button: PadButtonCode): boolean;
+
+        padButtonReleased(pad: PadCode, button: PadButtonCode): boolean;
+
+        getPadAxis(pad: PadCode, joy_stick: JoyStickCode): number;
+
+        padPresent(pad: PadCode): boolean;
+
+        // Mouse Methods
+        mouseButtonPressed(button: MouseButtonCode): boolean;
+
+        mouseButtonHeldDown(button: MouseButtonCode): boolean;
+
+        mouseButtonTriggered(button: MouseButtonCode): boolean;
+
+        mouseButtonReleased(button: MouseButtonCode): boolean;
+
+        GetRelativePosition(): Vec2;
+
+        GetAbsolutePosition(): Vec2;
+
+        SetRelativePosition(relativePosition: Vec2): void;
+
+        SetAbsolutePosition(absolutePosition: Vec2): void;
+
+        wheelMoved(): boolean;
+    }
+
+    class ClientPlayer {
+        GetLookAxis(): Vec2;
+
+        GetMoveAxis(): Vec2;
+
+        GetJumpPressed(): boolean;
+
+        GetIsShooting(): boolean;
+
+
+        SetLookAxis(lookAxis: Vec2): void;
+
+        SetMoveAxis(moveAxis: Vec2): void;
+
+        SetJumpPressed(jumpingPressed: boolean): boolean;
+
+        SetIsShooting(isShooting: boolean): boolean;
+    }
+
+    const input: InputManager;
+    const scene: Scene;
 }

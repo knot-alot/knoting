@@ -194,7 +194,7 @@ void NetworkedClient::test_player_input() {
         if (playerComp.m_clientNum != playerComp.m_thisClientNum) {
             continue;
         }
-
+        
         vec3 m_playerInputs = vec3();
         if (m_inManager->key_pressed(KeyCode::A)) {
             m_playerInputs.x -= 1;

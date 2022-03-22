@@ -137,7 +137,7 @@ bool NetworkedServer::handle_recieved_packets(double m_delta_time) {
                     (float)(m_delta_time * baseMulti * speedMulti * boost) * vec3(normInp.x, 0, normInp.z);
 
                 rigidController.add_force(directionForce);
-            }
+            }  //
 
             m_server->ReleaseMessage(i, mess);
         }
