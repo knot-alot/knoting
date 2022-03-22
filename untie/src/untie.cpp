@@ -357,7 +357,6 @@ Untie::Untie() {
         partSystem->set_max_particles_start_scale(0.5f);
         partSystem->set_max_particles_end_scale(0.01f);
         partSystem->set_particles_per_second(10);
-
     }
     {
         auto psObj = scene.create_game_object("ps2");
