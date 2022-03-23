@@ -41,12 +41,12 @@ Window::Window(int width, int height, std::string title, Engine& engine)
 
     glfwSetWindowUserPointer(m_window, this);
     setup_callbacks();
-
+    vec2d mousePos;
+    glfwGetCursorPos(m_window, &mousePos.x, &mousePos.y);
+    m_input->mouse_event(mousePos.x, mousePos.y);
     // To avoid creating a render thread we need to call renderFrame() manually
     bgfx::renderFrame();
     bgfx::Init init;
-
-    init.type = bgfx::RendererType::Vulkan;
 
 #if BX_PLATFORM_WINDOWS
     init.platformData.nwh = glfwGetWin32Window(m_window);
@@ -136,8 +136,11 @@ void Window::close() {
 void Window::on_awake() {}
 
 void Window::on_update(double m_delta_time) {
+    m_input->update_holds();
     glfwPollEvents();
-    //    calculate_delta_time();
+    m_input->update_pads(m_window);
+    m_input->update_relative_positions();
+    calculate_delta_time();
 }
 
 void Window::on_late_update() {
@@ -162,6 +165,9 @@ void Window::set_window_size(vec2i size) {
 
 std::shared_ptr<InputManager> Window::get_input_manager() {
     return m_input;
+}
+double Window::get_current_time() {
+    return glfwGetTime();
 }
 
 void Window::set_cursor_hide(bool state) {

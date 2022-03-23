@@ -107,7 +107,7 @@ void RigidController::put_to_sleep() {
     m_dynamic->get()->putToSleep();
 }
 
-void RigidController::wakeUp() {
+void RigidController::wake_up() {
     m_dynamic->get()->wakeUp();
 }
 void RigidController::on_load() {
@@ -116,6 +116,19 @@ void RigidController::on_load() {
     on_awake();
     m_isAwake = isAwake;
     m_isKinematic = isKinematic;
+}
+void RigidController::lockRotations(bool x, bool y, bool z) {
+    PxFlags<PxRigidDynamicLockFlag::Enum, PxU8> flags;
+    if (x) {
+        flags = (flags | PxRigidDynamicLockFlag::eLOCK_ANGULAR_X);
+    }
+    if (y) {
+        flags = (flags | PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y);
+    }
+    if (z) {
+        flags = (flags | PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z);
+    }
+    m_dynamic->get()->setRigidDynamicLockFlags(flags);
 }
 
 }  // namespace components

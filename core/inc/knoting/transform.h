@@ -36,6 +36,10 @@ class Transform {
         archive(CEREAL_NVP(m_position), CEREAL_NVP(m_scale), CEREAL_NVP(m_rotation));
     }
 
+    vec3 forward() const;
+    vec3 up() const;
+    vec3 right() const;
+
    protected:
     mat4 get_model_matrix_internal() const;
 
