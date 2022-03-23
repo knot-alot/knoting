@@ -23,7 +23,7 @@ void Particles::on_awake() {
 
     m_uniforms.m_handle = sprite;
 
-    m_uniforms.m_particlesPerSecond = 100;
+    m_uniforms.m_particlesPerSecond = 0;
 
     auto sceneOpt = Scene::get_active_scene();
     if (sceneOpt) {

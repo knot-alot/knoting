@@ -9,6 +9,9 @@ Shooting::Shooting(Engine& engine) : m_engine(engine), m_inManager(nullptr) {}
 
 void Shooting::on_awake() {
     m_inManager = m_engine.get_window_module().lock()->get_input_manager();
+    constexpr float fire_rate = 0.1;
+    m_firing_rate = fire_rate;
+    m_timepassed = 0;
 }
 
 void Shooting::on_update(double m_delta_time) {
@@ -19,11 +22,21 @@ void Shooting::on_update(double m_delta_time) {
     Scene& scene = sceneOpt.value();
     entt::registry& registry = scene.get_registry();
 
-    if (bullSize > 100) {
-        auto go = bullets.front();
-        scene.remove_game_object(go);
-        bullets.pop_front();
-        bullSize--;
+    for (int i = 0; i < bullets.size(); i++) {
+        auto it = bullets.at(i);
+        auto& rigidBody = it.get_component<components::RigidBody>();
+        auto& collision_detection = it.get_component<components::Collision_Detection>();
+        if (!collision_detection.get_contact_data_by_actor(rigidBody.get_dynamic().lock()).empty()) {
+            // paint here
+            //
+            //
+            // damage here
+            //
+            //
+            collision_detection.remove_search_actor(rigidBody.get_dynamic().lock());
+            scene.remove_game_object(it);
+            bullets.erase(bullets.begin() + i);
+        }
     }
 
     auto players = registry.view<components::Transform, components::Health, components::Tag>();
@@ -44,13 +57,7 @@ void Shooting::on_update(double m_delta_time) {
 
         // shooting
         if (m_inManager->mouse_button_pressed(MouseButtonCode::Left)) {
-            health.set_health(health.get_health() - 1);
-
             vec3 spawnPos = transform.get_position() + transform.forward();
-            auto bullet = scene.create_cube("bullet", spawnPos, vec3(0), vec3(0.2f), true, 1.0f);
-            bullets.emplace_back(bullet);
-            bullSize++;
-            auto bulController = bullet.get_component<components::RigidController>();
 
             vec3 shootDir;
             auto& hier = go.get_component<components::Hierarchy>();
@@ -93,14 +100,52 @@ void Shooting::on_update(double m_delta_time) {
                         continue;
                     }
                     auto& ps = obj.get_component<components::Particles>();
-                    ps.set_lookat(shootDir * 5.0f);
+                    ps.set_lookat(shootDir * 4.0f);
+                    ps.set_particles_per_second(50);
                 }
             }
 
-            bulController.add_force(shootDir * 100.0f);
+            if (m_timepassed >= m_firing_rate) {
+                health.set_health(health.get_health() - 1);
+                auto bullet = scene.create_cube("bullet", spawnPos, vec3(0), vec3(0.2f), true, 1.0f);
+                bullets.emplace_back(bullet);
+                bullSize++;
+                auto bulController = bullet.get_component<components::RigidController>();
+
+                bulController.add_force(shootDir * 100.0f);
+                m_timepassed = 0;
+            }
 
             if (health.get_health() < 0) {
                 health.set_health(0);
+            }
+        } else {
+            auto& hier = go.get_component<components::Hierarchy>();
+            auto children = hier.get_children();
+            for (auto& id : children) {
+                auto camOpt = scene.get_game_object_from_id(id);
+                if (!camOpt) {
+                    continue;
+                }
+                auto cam = camOpt.value();
+
+                if (!cam.has_component<components::EditorCamera>()) {
+                    continue;
+                }
+                auto& cam_hier = cam.get_component<components::Hierarchy>();
+                auto cam_children = cam_hier.get_children();
+                for (auto& i : cam_children) {
+                    auto psOpt = scene.get_game_object_from_id(i);
+                    if (!psOpt) {
+                        continue;
+                    }
+                    auto obj = psOpt.value();
+                    if (!obj.has_component<components::Particles>()) {
+                        continue;
+                    }
+                    auto& ps = obj.get_component<components::Particles>();
+                    ps.set_particles_per_second(0);
+                }
             }
         }
         // refill paint
@@ -112,6 +157,7 @@ void Shooting::on_update(double m_delta_time) {
             }
         }
     }
+    m_timepassed += m_delta_time;
 }
 
 void Shooting::on_destroy() {}

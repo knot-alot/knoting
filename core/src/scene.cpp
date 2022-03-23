@@ -188,6 +188,8 @@ GameObject Scene::create_cube(const std::string& name,
     rigidbody.create_actor(isDynamic, mass);
 
     auto& controller = cubeObj.add_component<components::RigidController>();
+    auto& collision_detection = cubeObj.add_component<components::Collision_Detection>();
+    collision_detection.add_search_actor(rigidbody.get_dynamic().lock());
 
     auto material = components::Material();
     material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");

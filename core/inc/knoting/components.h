@@ -2,6 +2,7 @@
 
 #include <knoting/aggregate.h>
 #include <knoting/camera.h>
+#include <knoting/collision_detection.h>
 #include <knoting/game_object.h>
 #include <knoting/health.h>
 #include <knoting/instance_mesh.h>

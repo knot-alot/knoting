@@ -296,9 +296,9 @@ struct Emitter {
             const float ttBlend = bx::clamp(easeBlend(particle.life), 0.0f, 1.0f);
             const float ttRgba = bx::clamp(easeRgba(particle.life), 0.0f, 1.0f);
 
-            const bx::Vec3 pos = bx::lerp(particle.start, particle.end[1], ttPos);
-            //const bx::Vec3 p1 = bx::lerp(particle.end[0], particle.end[1], ttPos);
-            //const bx::Vec3 pos = bx::lerp(p0, p1, ttPos);
+            const bx::Vec3 p0 = bx::lerp(particle.start, particle.end[0], ttPos);
+            const bx::Vec3 p1 = bx::lerp(particle.end[0], particle.end[1], ttPos);
+            const bx::Vec3 pos = bx::lerp(p0, p1, ttPos);
 
             ParticleSort& sort = _outSort[current];
             const bx::Vec3 tmp0 = bx::sub(_eye, pos);

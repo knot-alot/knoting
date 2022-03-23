@@ -29,6 +29,7 @@ void Shape::on_destroy() {}
 void Shape::set_geometry(const PxGeometry& geometry) {
     if (!m_shape) {
         m_shape = std::make_shared<PxShape_ptr_wrapper>(m_physics->get()->createShape(geometry, *m_material->get()));
+        PxFilterData data;
         set_filter_data(filter_group::eAll, filter_group::eAll | filter_group::eParticle_A | filter_group::eParticle_B |
                                                 filter_group::ePlayer_A | filter_group::ePlayer_B);
 
@@ -43,6 +44,14 @@ void Shape::set_local_rotation(quat rotation) {
     if (m_shape) {
         m_shape->get()->setLocalPose(PxTransform(RigidBody::quat_to_PxQuat(rotation)));
     }
+}
+
+void Shape::set_flag(PxShapeFlag::Enum flag) {
+    m_shape->get()->setFlag(flag, true);
+}
+
+void Shape::remove_flag(PxShapeFlag::Enum flag) {
+    m_shape->get()->setFlag(flag, false);
 }
 
 void Shape::set_filter_data(PxU32 group, PxU32 mask) {

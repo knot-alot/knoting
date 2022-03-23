@@ -304,14 +304,14 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     hier.add_child(editorCamera);
 
     auto particle = m_scene->create_game_object("particle");
-    particle.get_component<components::Transform>().set_position(glm::vec3(0, 0.7f, playerScale.z));
+    particle.get_component<components::Transform>().set_position(glm::vec3(0, 0, playerScale.z));
     auto& p = particle.add_component<components::Particles>();
     p.set_direction_type(EmitterDirection::Up);
-    p.set_min_end_offset(20.0f);
-    p.set_max_end_offset(20.1f);
+    p.set_min_end_offset(10.0f);
+    p.set_max_end_offset(10.1f);
     p.set_gravity_scale(1.0f);
-    p.set_min_life_span(0.5f);
-    p.set_max_life_span(0.6f);
+    p.set_min_life_span(1.5f);
+    p.set_max_life_span(1.6f);
     p.set_min_particles_start_scale(0.5f);
     p.set_max_particles_start_scale(0.6f);
     p.set_min_particles_end_scale(0.5f);

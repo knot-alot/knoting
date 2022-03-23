@@ -22,7 +22,9 @@ class Shooting : public Subsystem {
     Engine& m_engine;
     std::shared_ptr<InputManager> m_inManager;
 
-    std::deque<GameObject> bullets;
+    std::vector<GameObject> bullets;
+    float m_timepassed;
+    float m_firing_rate;
     uint16_t bullSize = 0;
 };
 

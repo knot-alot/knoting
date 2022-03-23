@@ -131,6 +131,7 @@ void ForwardRenderer::color_pass() {
                     auto& pTransform = parentOpt.value().get_component<Transform>();
                     pPos = pTransform.get_position();
                     particlePos = pTransform.get_model_matrix() * vec4(particlePos, 1.0f);
+                    particlePos.y -= 1.4f;
                     ps.set_position(particlePos);
                 }
             }
@@ -141,7 +142,7 @@ void ForwardRenderer::color_pass() {
             bx::mtxLookAt(viewMtx, bx::load<bx::Vec3>(&eye.x), bx::load<bx::Vec3>(&lookTarget.x),
                           bx::load<bx::Vec3>(&up.x));
 
-            ps.update(m_dt * 0.1);
+            ps.update(m_dt);
             ps.render(idx, viewMtx, eye);
         }
     }
