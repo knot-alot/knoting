@@ -60,7 +60,6 @@ class Texture : public Asset {
     int numberOfLayers = 1;
     uint32_t textureFlags{0};
 
-
     //  PNG 1/2/4/8/16-bit-per-channel
     //  JPEG baseline & progressive (12 bpc/arithmetic not supported, same as stock IJG lib)
     //  TGA (not sure what subset, if a subset)
