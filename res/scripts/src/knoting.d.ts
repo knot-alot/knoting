@@ -1,4 +1,5 @@
 declare module "knoting" {
+    type float = number;
     type Vec2 = Array<number>;
     type Vec3 = Array<number>;
     type Quat = Array<number>;
@@ -474,6 +475,20 @@ declare module "knoting" {
         setJumpPressed(jumpingPressed: boolean): boolean;
 
         setIsShooting(isShooting: boolean): boolean;
+    }
+
+    class Particle {
+        setParticlesPerSecond(rate: float): void;
+
+        setPosition(position: Vec3): void;
+
+        setLookat(lookat: Vec3): void;
+
+        getParticlesPerSecond(): float;
+
+        getPosition(): Vec3;
+
+        getLookat(): Vec3;
     }
 
     const input: InputManager;

@@ -1407,6 +1407,170 @@ class JSClientPlayer : public JSObjectBase {
     }
 };
 
+class JSParticles : public JSObjectBase {
+   public:
+    std::optional<std::reference_wrapper<components::Particles>> get_particles() {
+        auto gameObjectOpt = retrieve_game_object();
+        if (!gameObjectOpt)
+            return std::nullopt;
+
+        return gameObjectOpt.value().get_component<components::Particles>();
+    }
+    vec3 get_position() {
+        auto particlesOpt = get_particles();
+        if (!particlesOpt)
+            return vec3(0, 0, 0);
+        auto& particles = particlesOpt.value().get();
+        return particles.get_position();
+    }
+    vec3 get_lookat() {
+        auto particlesOpt = get_particles();
+        if (!particlesOpt)
+            return vec3(0, 0, 0);
+        auto& particles = particlesOpt.value().get();
+        return particles.get_lookat();
+    }
+    float get_paticles_per_second() {
+        auto particlesOpt = get_particles();
+        if (!particlesOpt)
+            return 0;
+        auto& particles = particlesOpt.value().get();
+        particles.get_particles_per_second();
+    };
+    void set_position(vec3 position) {
+        auto particlesOpt = get_particles();
+        if (!particlesOpt)
+            return;
+        auto& particles = particlesOpt.value().get();
+        particles.set_position(position);
+    }
+    void set_lookat(vec3 lookat) {
+        auto particlesOpt = get_particles();
+        if (!particlesOpt)
+            return;
+        auto& particles = particlesOpt.value().get();
+        particles.set_lookat(lookat);
+    }
+    void set_particles_per_second(float rate) {
+        auto particlesOpt = get_particles();
+        if (!particlesOpt)
+            return;
+        auto& particles = particlesOpt.value().get();
+        particles.set_particles_per_second(rate);
+    }
+};
+
+class JSConllisionDetection : public JSObjectBase {
+   public:
+    std::optional<std::reference_wrapper<components::Collision_Detection>> get_CollisionDetection() {
+        auto gameObjectOpt = retrieve_game_object();
+        if (!gameObjectOpt)
+            return std::nullopt;
+
+        return gameObjectOpt.value().get_component<components::Collision_Detection>();
+    }
+    std::vector<actor_contact_data> get_actor_contact_data() {
+        auto detectionOpt = get_CollisionDetection();
+        if (!detectionOpt) {
+            std::vector<actor_contact_data> acd;
+            return acd;
+        }
+        auto& detection = detectionOpt.value().get();
+        return detection.get_actor_contact_data();
+    }
+    std::vector<name_contact_data> get_name_contact_data() {
+        auto detectionOpt = get_CollisionDetection();
+        if (!detectionOpt) {
+            std::vector<name_contact_data> ncd;
+            return ncd;
+        }
+        auto& detection = detectionOpt.value().get();
+        return detection.get_name_contact_data();
+    }
+    std::vector<contact_data> get_contact_data_by_actor(std::shared_ptr<PxDynamic_ptr_wrapper> actor) {
+        auto detectionOpt = get_CollisionDetection();
+        if (!detectionOpt) {
+            std::vector<contact_data> cd;
+            return cd;
+        }
+        auto& detection = detectionOpt.value().get();
+        return detection.get_contact_data_by_actor(actor);
+    }
+    std::vector<contact_data> get_contact_data_by_actor(std::shared_ptr<PxStatic_ptr_wrapper> actor) {
+        auto detectionOpt = get_CollisionDetection();
+        if (!detectionOpt) {
+            std::vector<contact_data> cd;
+            return cd;
+        }
+        auto& detection = detectionOpt.value().get();
+        return detection.get_contact_data_by_actor(actor);
+    }
+    std::vector<contact_data> get_contact_data_by_name(std::string name) {
+        auto detectionOpt = get_CollisionDetection();
+        if (!detectionOpt) {
+            std::vector<contact_data> cd;
+            return cd;
+        }
+        auto& detection = detectionOpt.value().get();
+        return detection.get_contact_data_by_name(name);
+    }
+
+    void add_search_actor(std::shared_ptr<PxDynamic_ptr_wrapper> actor) {
+        auto detectionOpt = get_CollisionDetection();
+        if (!detectionOpt) {
+            std::vector<contact_data> cd;
+            return;
+        }
+        auto& detection = detectionOpt.value().get();
+        detection.add_search_actor(actor);
+    }
+    void add_search_actor(std::shared_ptr<PxStatic_ptr_wrapper> actor) {
+        auto detectionOpt = get_CollisionDetection();
+        if (!detectionOpt) {
+            std::vector<contact_data> cd;
+            return;
+        }
+        auto& detection = detectionOpt.value().get();
+        detection.add_search_actor(actor);
+    }
+    void add_search_name(std::string name) {
+        auto detectionOpt = get_CollisionDetection();
+        if (!detectionOpt) {
+            std::vector<contact_data> cd;
+            return;
+        }
+        auto& detection = detectionOpt.value().get();
+        detection.add_search_name(name);
+    }
+    void remove_search_actor(std::shared_ptr<PxDynamic_ptr_wrapper> actor) {
+        auto detectionOpt = get_CollisionDetection();
+        if (!detectionOpt) {
+            std::vector<contact_data> cd;
+            return;
+        }
+        auto& detection = detectionOpt.value().get();
+        detection.remove_search_actor(actor);
+    }
+    void remove_search_actor(std::shared_ptr<PxStatic_ptr_wrapper> actor) {
+        auto detectionOpt = get_CollisionDetection();
+        if (!detectionOpt) {
+            std::vector<contact_data> cd;
+            return;
+        }
+        auto& detection = detectionOpt.value().get();
+        detection.remove_search_actor(actor);
+    }
+    void remove_search_name(std::string name) {
+        auto detectionOpt = get_CollisionDetection();
+        if (!detectionOpt) {
+            std::vector<contact_data> cd;
+            return;
+        }
+        auto& detection = detectionOpt.value().get();
+        detection.remove_search_name(name);
+    }
+};
+
 void script_storage_store(std::string key, qjs::Value value) {
     auto engineOpt = Engine::get_active_engine();
     if (!engineOpt)
@@ -1519,6 +1683,10 @@ JSValue JSGameObject::add_component(const std::string& name) {
         if (!gameObject.has_component<components::Hierarchy>()) {
             gameObject.add_component<components::Hierarchy>();
         }
+    } else if (name == "collisionDetction") {
+        if (gameObject.has_component<components::Collision_Detection>()) {
+            gameObject.add_component<components::Collision_Detection>();
+        }
     }
 
     return get_component(name);
@@ -1599,6 +1767,10 @@ void JSGameObject::remove_component(const std::string& name) {
         if (gameObject.has_component<components::Hierarchy>()) {
             gameObject.remove_component<components::Hierarchy>();
         }
+    } else if (name == "collisionDetction") {
+        if (gameObject.has_component<components::Collision_Detection>()) {
+            gameObject.remove_component<components::Collision_Detection>();
+        }
     }
 }
 
@@ -1663,6 +1835,8 @@ JSValue JSGameObject::get_component(const std::string& name) {
         toFindExport = "Tag";
     } else if (name == "hierarchy") {
         toFindExport = "Hierarchy";
+    } else if (name == "collisionDetection") {
+        toFindExport = "CollisionDetection";
     }
 
     JSValue obj = create_js_object_from_name(toFindExport);
@@ -1683,6 +1857,8 @@ JSValue JSGameObject::get_component(const std::string& name) {
     } else if (name == "instanceScript" || name == "script") {
     } else if (name == "material") {
     } else if (name == "particles") {
+        opaque = static_cast<std::shared_ptr<JSObjectBase>*>(
+            JS_GetOpaque(obj, qjs::js_traits<std::shared_ptr<JSParticles>>::QJSClassId));
     } else if (name == "raycast" || name == "rayCast") {
         opaque = static_cast<std::shared_ptr<JSObjectBase>*>(
             JS_GetOpaque(obj, qjs::js_traits<std::shared_ptr<JSRaycast>>::QJSClassId));
@@ -1703,6 +1879,9 @@ JSValue JSGameObject::get_component(const std::string& name) {
     } else if (name == "hierarchy") {
         opaque = static_cast<std::shared_ptr<JSObjectBase>*>(
             JS_GetOpaque(obj, qjs::js_traits<std::shared_ptr<JSHierarchy>>::QJSClassId));
+    } else if (name == "conllisionDetection") {
+        opaque = static_cast<std::shared_ptr<JSObjectBase>*>(
+            JS_GetOpaque(obj, qjs::js_traits<std::shared_ptr<JSConllisionDetection>>::QJSClassId));
     }
 
     if (!opaque) {
@@ -1902,6 +2081,29 @@ void Scripting::add_knoting_module() {
         .fun<&JSClientPlayer::get_is_shooting>("getIsShooting")
         .fun<&JSClientPlayer::JSClientPlayer::get_jump_pressed>("getJumpPressed");
 
+    knoting.class_<JSParticles>("Particles")
+        .constructor()
+        .fun<&JSParticles::set_particles_per_second>("setParticlesPerSecond")
+        .fun<&JSParticles::set_position>("setPosition")
+        .fun<&JSParticles::set_lookat>("setLookat")
+        .fun<&JSParticles::get_paticles_per_second>("getParticlesPerSecond")
+        .fun<&JSParticles::get_position>("getPosition")
+        .fun<&JSParticles::get_lookat>("getLookat");
+/*
+    knoting.class_<JSConllisionDetection>("ConllisionDetection")
+        .constructor()
+        .fun<&JSConllisionDetection::get_name_contact_data>("getNameContactData")
+        .fun<&JSConllisionDetection::get_contact_data_by_actor>("getContactDataByActor")
+        .fun<&JSConllisionDetection::get_contact_data_by_actor>("getContactDataByActor")
+        .fun<&JSConllisionDetection::get_contact_data_by_name>("getContactDataByName")
+        .fun<&JSConllisionDetection::get_actor_contact_data>("getActorContactData")
+        .fun<&JSConllisionDetection::add_search_actor>("addSearchActor")
+        .fun<&JSConllisionDetection::add_search_actor>("addSearchActor")
+        .fun<&JSConllisionDetection::add_search_name>("addSearchName")
+        .fun<&JSConllisionDetection::remove_search_actor>("removeSearchActor")
+        .fun<&JSConllisionDetection::remove_search_actor>("removeSearchActor")
+        .fun<&JSConllisionDetection::remove_search_name>("removeSearchActor");
+*/
     auto storage = m_context->newObject();
     storage.add("store", script_storage_store);
     storage.add("retrieve", script_storage_retrieve);
