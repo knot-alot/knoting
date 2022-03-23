@@ -103,7 +103,7 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
     // load image with stb_image
     glm::ivec2 imageSize;
     int channels;
-    stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(false);
 
     stbi_uc* data = stbi_load(fsPath.string().c_str(), &imageSize.x, &imageSize.y, &channels, 0);
     int numberOfLayers = 1;
