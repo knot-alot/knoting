@@ -15,6 +15,8 @@
 #include <string_view>
 #include <vector>
 
+#include <bx/math.h>
+
 namespace knot {
 
 ForwardRenderer::~ForwardRenderer() {}
@@ -25,6 +27,7 @@ void ForwardRenderer::on_awake() {}
 
 void ForwardRenderer::on_update(double m_delta_time) {
     m_timePassed += (float)m_delta_time;
+    m_dt = m_delta_time;
     m_engine.get_framebuffer_manager_module().lock()->clear_all_framebuffers();
     auto framebufferManager = m_engine.get_framebuffer_manager_module().lock();
 
@@ -164,6 +167,28 @@ void ForwardRenderer::color_pass(uint16_t idx) {
             invProj = inverse(proj);
             bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
         }
+
+        //=PARTICLES SYSTEM=======================
+        auto particles = registry.view<Particles>();
+
+        for (auto& e : particles) {
+            auto gooOpt = scene.get_game_object_from_handle(e);
+            if (!gooOpt) {
+                continue;
+            }
+
+            GameObject goo = gooOpt.value();
+            Particles& ps = goo.get_component<Particles>();
+            const bx::Vec3 eye =
+                bx::Vec3(transform.get_position().x, transform.get_position().y, transform.get_position().z);
+            float viewMtx[16];
+
+            bx::mtxLookAt(viewMtx, bx::load<bx::Vec3>(&eye.x), bx::load<bx::Vec3>(&lookTarget.x),
+                          bx::load<bx::Vec3>(&up.x));
+
+            ps.update(m_dt * 0.1);
+            ps.render(idx, viewMtx, eye);
+        }
     }
 
     //=SPOT LIGHTS======================
@@ -261,13 +286,11 @@ void ForwardRenderer::gui_pass(uint16_t idx) {
     auto windowSize = m_engine.get_window_module().lock()->get_window_size();
     //=CAMERA===========================
     auto cameras = registry.view<Transform, EditorCamera, Name>();
-
     for (auto& cam : cameras) {
         auto goOpt = scene.get_game_object_from_handle(cam);
         if (!goOpt) {
             continue;
         }
-
         GameObject go = goOpt.value();
         Transform& transform = go.get_component<Transform>();
         EditorCamera& editorCamera = go.get_component<EditorCamera>();

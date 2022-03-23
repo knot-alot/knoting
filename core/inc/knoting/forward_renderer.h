@@ -48,6 +48,7 @@ class ForwardRenderer : public Subsystem {
    private:
     static constexpr uint32_t m_clearColor = 0x303030ff;
     float m_timePassed = 0.01f;
+    double m_dt = 0;
 };
 
 }  // namespace knot
