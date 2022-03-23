@@ -21,8 +21,8 @@ class Untie {
     GameObject create_post_processing();
 
     GameObject create_level_bottom();
-    GameObject create_floor(const std::string& name = "", vec3 position = vec3(), float width = 0, float depth = 0);
-    GameObject create_grass(const std::string& name = "", vec3 position = vec3(), float width = 0, float depth = 0);
+    GameObject create_floor(const std::string& name = "", vec3 position = vec3(), vec3 scale = vec3());
+    GameObject create_grass(const std::string& name = "", vec3 position = vec3(), vec3 scale = vec3());
     GameObject create_wall(const std::string& name = "", vec3 position = vec3(0), vec3 rotation = vec3(0),
                               vec3 scale = vec3(1));
     GameObject create_ramp(const std::string& name = "", vec3 position = vec3(), vec3 rotation = vec3(), vec3 scale = vec3());
