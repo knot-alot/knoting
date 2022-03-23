@@ -14,6 +14,10 @@
 #include <fstream>
 #include <string_view>
 #include <vector>
+#include <type_traits>
+#include <utility>
+#include <array>
+#include <memory>
 
 namespace knot {
 
@@ -238,7 +242,13 @@ void ForwardRenderer::color_pass(uint16_t idx) {
         m_lightData.set_spotlight_uniforms();
         // Bind Uniforms & textures.
 
-        material.set_mask_data(mesh.get_paint_data(), mesh.get_start(), mesh.get_end());
+        auto paintQueue = mesh.get_paint_data();
+        int i = 0;
+        for( auto it = paintQueue.begin(); it != paintQueue.end(); ++it){
+            paintData[i] = *it;
+            i++;
+        }
+        material.set_mask_data(paintData.data());
         material.set_uniforms();
 
         bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |

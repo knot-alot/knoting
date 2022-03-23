@@ -81,14 +81,11 @@ void main()
 	vec4 paintCol = vec4_splat(0.0);
 	
 	vec3 paintPos = v_wpos.xyz;
-	int pointi = 0;
-	for(int pointj = 1; pointj < 2; ++pointj){
-		int maxPointi = pointi + 50;
-		for (pointi; pointi < maxPointi; ++pointi) {
+	for (int pointi = 0; pointi < 50; ++pointi) {
 			if(m_paintData0[pointi].w == 0.0){
 				continue;
 			}
-			float radius = 3.0;
+			float radius = 1.05;
 			float radiusSq = radius * radius;
 			vec3 pointPos = m_paintData0[pointi].xyz;
 			vec3 relativePos = pointPos - paintPos;
@@ -101,10 +98,28 @@ void main()
 			} else{
 				paintCol = (vec4(0.0,0.0,1.0,1.0));
 			}
-		}
-		pointi += 50;
 	}
 
+	for (int pointj = 50; pointj < 100; ++pointj) {
+			if(m_paintData0[pointj].w == 0.0){
+				continue;
+			}
+			float radius = 1.05;
+			float radiusSq = radius * radius;
+			vec3 pointPos = m_paintData0[pointj].xyz;
+			vec3 relativePos = pointPos - paintPos;
+			float distanceSq= relativePos.x * relativePos.x + relativePos.y* relativePos.y + relativePos.z * relativePos.z;
+			if(distanceSq > radiusSq){
+				continue;
+			}
+			if(m_paintData0[pointj].w == 1.0){
+				paintCol = (vec4(1.0,0.0,0.0,1.0));
+			} else{
+				paintCol = (vec4(0.0,0.0,1.0,1.0));
+			}
+	}
+
+	
 
 	vec4 maskColor = paintCol;
 	

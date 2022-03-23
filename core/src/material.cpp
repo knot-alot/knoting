@@ -106,11 +106,8 @@ Material::Material() {
 
 Material::~Material() {}
 
-void Material::set_mask_data(const std::array<vec4, 100>& data, int start, int end) {
-    vec4 startEnd = vec4(start,end,0,0);
-
+void Material::set_mask_data(const vec4 data[100]) {
     bgfx::setUniform(m_paintData0, &data[0], 100);
-    bgfx::setUniform(m_paintData1, &startEnd[0]);
 }
 
 void Material::set_uniforms() {
