@@ -1,5 +1,5 @@
 $input a_position, a_normal, a_tangent, a_texcoord0
-$output v_wpos, v_view, v_normal, v_tangent, v_bitangent, v_texcoord0
+$output v_wpos, v_view, v_normal, v_tangent, v_bitangent, v_texcoord0, v_localPos
 
 #include <bgfx_shader.sh>
 #include <common.sh>
@@ -15,6 +15,8 @@ mat3 mtx3FromCols(vec3 c0, vec3 c1, vec3 c2)
 
 void main()
 {
+	v_localPos = vec4(a_position,1.0);
+	
 	vec3 wpos = mul(u_model[0], vec4(a_position, 1.0) ).xyz;
 	v_wpos = wpos;
 

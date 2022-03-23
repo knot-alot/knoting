@@ -237,6 +237,8 @@ void ForwardRenderer::color_pass(uint16_t idx) {
         // Bind spotlight uniforms
         m_lightData.set_spotlight_uniforms();
         // Bind Uniforms & textures.
+
+        material.set_mask_data(mesh.get_paint_data());
         material.set_uniforms();
 
         bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
@@ -319,6 +321,7 @@ void ForwardRenderer::gui_pass(uint16_t idx) {
 
         bgfx::submit(idx, material.get_program());
     }
+
 }
 
 void ForwardRenderer::transparent_pass(uint16_t idx) {}

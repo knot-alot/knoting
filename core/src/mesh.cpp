@@ -19,7 +19,7 @@ void Mesh::on_awake() {
         m_assetState = AssetState::Loading;
         internal_load_obj(m_fullPath);
     }
-    randomPointsOnMesh.fill(vec3(0));
+    m_randomPointsOnMesh.fill(vec3(0));
 }
 
 void Mesh::on_destroy() {
@@ -281,18 +281,20 @@ bool Mesh::internal_load_obj(const std::string& path) {
 }
 void Mesh::generate_random_points() {
     uint numVertices = 0;
+
     if (m_indexBuffer) {
         numVertices = m_indexBuffer->get_indices_size();
     } else {
         numVertices = m_vertexLayout.size();
     }
+
     uint numTriangles = numVertices / 3;
 
     uint pointCount = 0;
 
-    if (numRandomPoints >= numTriangles) {
-        uint pointsPerTriangle = std::floor(static_cast<float>(numRandomPoints) / static_cast<float>(numTriangles));
-        uint remainingPoints = numRandomPoints - (numTriangles * pointsPerTriangle);
+    if (NUM_RANDOM_POINTS >= numTriangles) {
+        uint pointsPerTriangle = std::floor(static_cast<float>(NUM_RANDOM_POINTS) / static_cast<float>(numTriangles));
+        uint remainingPoints = NUM_RANDOM_POINTS - (numTriangles * pointsPerTriangle);
 
         for (int i = 0; i < numTriangles; ++i) {
             int index1 = ((i * 3) + 0);
@@ -304,6 +306,7 @@ void Mesh::generate_random_points() {
                 index2 = m_indexBuffer->get_mesh_index_at_index(index2);
                 index3 = m_indexBuffer->get_mesh_index_at_index(index3);
             }
+
             auto& vert1 = m_vertexLayout[index1];
             auto& vert2 = m_vertexLayout[index2];
             auto& vert3 = m_vertexLayout[index3];
@@ -313,18 +316,19 @@ void Mesh::generate_random_points() {
             vec3 pos3 = vec3(vert3.m_x, vert3.m_y, vert3.m_z);
 
             for (int j = 0; j < pointsPerTriangle; ++j) {
-                randomPointsOnMesh[pointCount] = generate_point_on_triangle(pos1, pos2, pos3);
+                m_randomPointsOnMesh[pointCount] = generate_point_on_triangle(pos1, pos2, pos3);
                 pointCount++;
             }
+
             if (remainingPoints > 0) {
                 remainingPoints--;
-                randomPointsOnMesh[pointCount] = generate_point_on_triangle(pos1, pos2, pos3);
+                m_randomPointsOnMesh[pointCount] = generate_point_on_triangle(pos1, pos2, pos3);
                 pointCount++;
             }
         }
     } else {
-        uint TrianglesPerPoint = std::floor(static_cast<float>(numTriangles) / static_cast<float>(numRandomPoints));
-        uint remainingTriangles = numTriangles - (TrianglesPerPoint * numRandomPoints);
+        uint TrianglesPerPoint = std::floor(static_cast<float>(numTriangles) / static_cast<float>(NUM_RANDOM_POINTS));
+        uint remainingTriangles = numTriangles - (TrianglesPerPoint * NUM_RANDOM_POINTS);
         uint numTriToFill = numTriangles - remainingTriangles;
         for (int i = 0; i < numTriToFill; i += TrianglesPerPoint) {
             int index1 = ((i * 3) + 0);
@@ -344,7 +348,7 @@ void Mesh::generate_random_points() {
             vec3 pos2 = vec3(vert2.m_x, vert2.m_y, vert2.m_z);
             vec3 pos3 = vec3(vert3.m_x, vert3.m_y, vert3.m_z);
 
-            randomPointsOnMesh[pointCount] = generate_point_on_triangle(pos1, pos2, pos3);
+            m_randomPointsOnMesh[pointCount] = generate_point_on_triangle(pos1, pos2, pos3);
             pointCount++;
         }
     }

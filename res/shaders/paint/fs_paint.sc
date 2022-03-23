@@ -1,4 +1,4 @@
-$input v_wpos, v_view, v_normal, v_tangent, v_bitangent, v_texcoord0// in...
+$input v_wpos, v_view, v_normal, v_tangent, v_bitangent, v_texcoord0, v_localPos// in...
 
 
 #include <bgfx_shader.sh>
@@ -11,6 +11,8 @@ SAMPLER2D(m_red, 3);
 SAMPLER2D(m_blue, 4);
 SAMPLER2D(m_redNormal, 5);
 SAMPLER2D(m_blueNormal, 6);
+
+uniform vec4 m_paintData0[100];
 
 uniform vec4 u_lightPosRadius[30];
 uniform vec4 u_lightRgbInnerR[30];
@@ -72,7 +74,38 @@ void main()
 {
 	mat3 tbn = mtx3FromCols(v_tangent, v_bitangent, v_normal);
 	
-	vec4 maskColor = toLinear(texture2D(m_mask, v_texcoord0));
+	vec4 paintCol = vec4_splat(0.0);
+	
+	vec3 paintPos = v_wpos.xyz;
+	int pointi = 0;
+	for(int pointj = 1; pointj < 2; ++pointj){
+		int maxPointi = pointi + 50;
+		for (pointi; pointi < maxPointi; ++pointi) {
+			if(m_paintData0[pointi].w == 0.0){
+				continue;
+			}
+			float radius =10.0;
+			if(m_paintData0[pointi].w == 1.0){
+				radius = 15.0;
+			}
+			float radiusSq = radius * radius;
+			vec3 pointPos = m_paintData0[pointi].xyz;
+			vec3 relativePos = pointPos - paintPos;
+			float distanceSq= relativePos.x * relativePos.x + relativePos.y* relativePos.y + relativePos.z * relativePos.z;
+			if(distanceSq > radiusSq){
+				continue;
+			}
+			if(m_paintData0[pointi].w == 1.0){
+				paintCol = (vec4(1.0,0.0,0.0,1.0));
+			} else{
+				paintCol = (vec4(0.0,0.0,1.0,1.0));
+			}
+		}
+		pointi += 50;
+	}
+
+
+	vec4 maskColor = paintCol;
 	
 	float mixTargetAmount = 0.1;
 	float mixMinAmount = 0.8;

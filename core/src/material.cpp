@@ -23,6 +23,8 @@ void Material::on_awake() {
     m_uniformHandles[(size_t)UniformHandle::AlphaCutoffEnabled] = bgfx::createUniform("m_alphaCutoffEnabled", bgfx::UniformType::Vec4);
     m_uniformHandles[(size_t)UniformHandle::AlphaCutoffAmount]  = bgfx::createUniform("m_alphaCutoffAmount",  bgfx::UniformType::Vec4);
 
+    m_paintData0 = bgfx::createUniform("m_paintData0", bgfx::UniformType::Vec4,100);
+
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Albedo]    = bgfx::createUniform("m_albedo",    bgfx::UniformType::Sampler);
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Normal]    = bgfx::createUniform("m_normal",    bgfx::UniformType::Sampler);
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Metallic]  = bgfx::createUniform("m_metallic",  bgfx::UniformType::Sampler);
@@ -30,6 +32,7 @@ void Material::on_awake() {
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Occlusion] = bgfx::createUniform("m_occlusion", bgfx::UniformType::Sampler);
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::RedNormal] = bgfx::createUniform("m_redNormal", bgfx::UniformType::Sampler);
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::BlueNormal] = bgfx::createUniform("m_blueNormal", bgfx::UniformType::Sampler);
+
 
     m_albedo    = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Albedo]).lock();
     m_normal    = AssetManager::load_asset<components::Texture>(m_textureSlotPath[(int)TextureHandle::Normal]).lock();
@@ -102,26 +105,31 @@ Material::Material() {
 
 Material::~Material() {}
 
+void Material::set_mask_data(std::array<vec4, 100> data) {
+    bgfx::setUniform(m_paintData0, &data[0], 100);
+}
+
 void Material::set_uniforms() {
     // clang-format off
 
-    m_metallic->set_pixel(vec2i(300,300), vec4(1,0,0,1), 100);
-    m_metallic->set_pixel(vec2i(600,600), vec4(1,0,0,1), 45);
+//    m_metallic->set_pixel(vec2i(300,300), vec4(1,0,0,1), 100);
+//    m_metallic->set_pixel(vec2i(600,600), vec4(1,0,0,1), 45);
 
     m_textureHandles[(size_t)TextureHandle::Metallic]  = m_metallic->get_texture_handle();
 
     bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::AlbedoColor],        &m_albedoColor[0]);
-    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::TextureTiling],      &m_textureTiling);
-    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::AlbedoScalar],       &m_albedoScalar);
-    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::NormalScalar],       &m_normalScalar);
-    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::MetallicScalar],     &m_metallicScalar);
-    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::RoughnessScalar],    &m_roughnessScalar);
-    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::OcclusionScalar],    &m_occlusionScalar);
-    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::SkyboxScalar],       &m_skyboxScalar);
-    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::CastShadows],        &m_castShadows);
-    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::ReceivesShadows],    &m_receivesShadows);
-    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::AlphaCutoffEnabled], &m_alphaCutoffEnabled);
-    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::AlphaCutoffAmount],  &m_alphaCutoffAmount);
+    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::TextureTiling],      &m_textureTiling[0]);
+
+//    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::AlbedoScalar],       &m_albedoScalar);
+//    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::NormalScalar],       &m_normalScalar);
+//    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::MetallicScalar],     &m_metallicScalar);
+//    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::RoughnessScalar],    &m_roughnessScalar);
+//    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::OcclusionScalar],    &m_occlusionScalar);
+//    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::SkyboxScalar],       &m_skyboxScalar);
+//    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::CastShadows],        &m_castShadows);
+//    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::ReceivesShadows],    &m_receivesShadows);
+//    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::AlphaCutoffEnabled], &m_alphaCutoffEnabled);
+//    bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::AlphaCutoffAmount],  &m_alphaCutoffAmount);
 
     bgfx::setTexture(0, m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Albedo],   m_textureHandles[(size_t)TextureHandle::Albedo]);
     bgfx::setTexture(1, m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Normal],   m_textureHandles[(size_t)TextureHandle::Normal]);
@@ -141,6 +149,7 @@ void Material::set_texture_slot_path(const TextureType slot, const std::string& 
     }
     m_textureSlotPath[(int)slot] = path;
 }
+
 
 }  // namespace components
 }  // namespace knot

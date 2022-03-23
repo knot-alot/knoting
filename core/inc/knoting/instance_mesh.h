@@ -34,9 +34,11 @@ class InstanceMesh {
         on_awake();
     }
 
+    std::array<vec4,Mesh::NUM_RANDOM_POINTS> get_paint_data(){return m_paintData;}
    private:
     std::shared_ptr<components::Mesh> m_mesh;
     std::string m_path;
+    std::array<vec4,Mesh::NUM_RANDOM_POINTS> m_paintData;
 };
 }  // namespace components
 

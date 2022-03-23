@@ -62,6 +62,9 @@ class Material {
     void set_texture_slot_path(const TextureType slot, const std::string& path);
     void set_albedo_mix_color(const vec4& color){m_albedoColor = color;};
     void set_uniforms();
+
+    void set_mask_data(std::array<vec4, 100> data);
+
     bgfx::ProgramHandle get_program() { return m_shader.get_program(); };
 
     template <class Archive>
@@ -83,6 +86,11 @@ class Material {
     std::array<bgfx::UniformHandle, (size_t)UniformHandle::LAST> m_uniformHandles;
     std::array<bgfx::UniformHandle, (size_t)UniformSamplerHandle::LAST> m_uniformSamplerHandle;
     std::array<bgfx::TextureHandle, (size_t)TextureHandle::LAST> m_textureHandles;
+
+    bgfx::UniformHandle m_paintData0;
+    bgfx::UniformHandle m_paintData1;
+    bgfx::UniformHandle m_paintData2;
+    bgfx::UniformHandle m_paintData3;
 
    private:
     std::shared_ptr<Texture> m_albedo;

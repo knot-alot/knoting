@@ -37,8 +37,11 @@ class Mesh : public Asset {
     //=================
 
     void create_cube();
+
+    static constexpr int NUM_RANDOM_POINTS = 100;
     void generate_random_points();
     static vec3 generate_point_on_triangle(vec3 pos1, vec3 pos2, vec3 pos3);
+    std::array<vec3,Mesh::NUM_RANDOM_POINTS>& get_random_points(){return m_randomPointsOnMesh;}
 
     bgfx::VertexBufferHandle get_vertex_buffer() { return m_vbh; }
     bgfx::IndexBufferHandle get_index_buffer() { return m_ibh; }
@@ -57,9 +60,7 @@ class Mesh : public Asset {
     std::vector<VertexLayout> m_vertexLayout;
     std::shared_ptr<IndexBuffer> m_indexBuffer;
     std::vector<std::string> m_splitResult;
-
-    static constexpr int numRandomPoints = 100;
-    std::array<vec3, numRandomPoints> randomPointsOnMesh;
+    std::array<vec3, Mesh::NUM_RANDOM_POINTS> m_randomPointsOnMesh;
 
    private:
     bgfx::VertexBufferHandle m_vbh;
