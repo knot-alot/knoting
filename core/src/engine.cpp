@@ -2,6 +2,7 @@
 #include <knoting/engine.h>
 
 
+
 namespace knot {
 
 Engine::Engine() {
@@ -42,11 +43,29 @@ Engine::Engine() {
 
 void Engine::update_modules() {
     m_windowModule->calculate_delta_time();
+    m_bgfxTimes = 0;
+    m_PhyTimes = 0;
+    m_GuiTimes = 0;
     auto deltaTime = m_windowModule->get_delta_time();
     for (auto& module : m_engineModules) {
+        auto start = std::chrono::steady_clock::now();
         module->on_update(deltaTime);
+        auto end = std::chrono::steady_clock::now();
+        std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+        m_bgfxTimes = time_span.count() * 1000.0;
+
+       auto  phy_start = std::chrono::steady_clock::now();
         module->on_fixed_update();
+       auto phy_end = std::chrono::steady_clock::now();
+       std::chrono::duration<double> phy_time_span = std::chrono::duration_cast<std::chrono::duration<double>>(phy_end - phy_start);
+        m_PhyTimes = phy_time_span.count() * 1000000.0;
+
+        start = std::chrono::steady_clock::now();
         module->on_late_update();
+        end = std::chrono::steady_clock::now();
+        time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
+        m_GuiTimes = time_span.count() * 1000000.0;
+
     }
     // TODO move into functions when functionality exists
 

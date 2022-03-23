@@ -21,8 +21,19 @@ class Debug_gui : public Widget {
    void setOpen(bool open){
       Open = open;
    }
-
+   void set_bgfx_Time(double time){
+       bgfx_time_cost = time;
+   }
+   void set_Phy_Time(double time){
+       Phy_time_cost = time;
+   }
+   void set_Gui_Time(double time){
+       GUI_time_cost = time;
+   }
    private:
+    double bgfx_time_cost;
+    double Phy_time_cost;
+    double GUI_time_cost;
     bool Open = false;
     double Frame ;
     ImFont* font;

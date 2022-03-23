@@ -10,12 +10,13 @@ void knot::Debug_gui::on_widget_render() {
     if(Open){
         ImGui::SetNextWindowPos(
 
-        ImVec2(0, 0)
+        ImVec2(0, 0),
+            ImGuiCond_FirstUseEver
 
     );
     ImGui::SetNextWindowSize(
-        ImVec2( 150,  150)
-
+        ImVec2( 300,  150),
+                ImGuiCond_FirstUseEver
     );
     ImGui::Begin("Menu"
                  , NULL
@@ -23,8 +24,9 @@ void knot::Debug_gui::on_widget_render() {
     );
 
     ImGui::Text("FPS : ");ImGui::SameLine();ImGui::Text("% 7.3f[fps]", Frame);
-
-
+    ImGui::Text("Update bgfx time:");ImGui::SameLine();ImGui::Text("% 7.3f[ms]", bgfx_time_cost);
+    ImGui::Text("Update Physic time:");ImGui::SameLine();ImGui::Text("% 7.3f[microsecond]", Phy_time_cost);
+    ImGui::Text("Update Gui time:");ImGui::SameLine();ImGui::Text("% 7.3f[microsecond]", GUI_time_cost);
     ImGui::End();
 }
 }

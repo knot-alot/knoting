@@ -24,7 +24,8 @@
 #include <cereal/archives/json.hpp>
 #include <knoting/widget_subsystem.h>
 #include <bx/timer.h>
-
+#include <cstdio>
+#include <ctime>
 #include <iostream>
 
 namespace knot {
@@ -382,6 +383,9 @@ void Untie::run() {
     auto cliMod = m_engine->get_client_module().lock();
     cliMod->attempt_connection();
     while (m_engine->is_open()) {
+        m_debug->set_bgfx_Time(m_engine->get_bgfx_Time_cost());
+        m_debug->set_Phy_Time(m_engine->get_Phy_Time_cost());
+        m_debug->set_Gui_Time(m_engine->get_Gui_Time_cost());
         m_engine->update_modules();
         auto im = m_engine->get_window_module().lock()->get_input_manager();
 

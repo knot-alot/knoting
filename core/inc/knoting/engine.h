@@ -46,6 +46,15 @@ class Engine {
     static void set_active_engine(std::optional<std::reference_wrapper<Engine>> engine);
 
     void add_subsystem(std::shared_ptr<Subsystem> subsystem);
+    double get_bgfx_Time_cost(){
+        return m_bgfxTimes;
+    }
+    double get_Phy_Time_cost(){
+        return m_PhyTimes;
+    }
+    double get_Gui_Time_cost(){
+        return m_GuiTimes;
+    }
 
     inline static bool isClient = true;
 
@@ -58,7 +67,12 @@ class Engine {
     int m_windowHeight = 768;
     std::string m_windowTitle = "hello knotting!";
 
+    double m_bgfxTimes;
+    double m_PhyTimes;
+    double m_GuiTimes;
    private:
+
+
     std::vector<std::shared_ptr<Subsystem>> m_engineModules;
 
     std::shared_ptr<Window> m_windowModule;
