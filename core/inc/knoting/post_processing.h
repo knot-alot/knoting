@@ -8,7 +8,7 @@
 namespace knot {
 namespace components {
 
-class PostProcessing {
+class PostProcessing : public Component<PostProcessing> {
    public:
     PostProcessing();
     ~PostProcessing();

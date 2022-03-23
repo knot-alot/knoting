@@ -19,8 +19,6 @@ void Raycast::on_awake() {
     m_origin = get_position_from_transform();
 }
 
-void Raycast::on_destroy() {}
-
 void Raycast::raycast() {
     m_scene->get()->raycast(m_origin, m_unitDir, m_maxDistance, m_hit);
 }

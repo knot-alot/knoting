@@ -11,6 +11,7 @@ void Logger::setup() {
     log::set_level(spdlog::level::debug);
 #endif
 
+    log::debug("asd {}", 10);
     log::default_logger()->sinks().clear();
     log::default_logger()->sinks().push_back(std::make_shared<log::sinks::stdout_color_sink_st>());
 

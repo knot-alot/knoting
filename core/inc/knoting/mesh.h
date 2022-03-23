@@ -3,6 +3,7 @@
 #include <bgfx/bgfx.h>
 #include <bx/pixelformat.h>
 #include <knoting/asset.h>
+#include <knoting/component.h>
 #include <knoting/types.h>
 #include <cereal/cereal.hpp>
 #include <string>
@@ -22,19 +23,17 @@ class VertexLayout;
 namespace knot {
 namespace components {
 
-class Mesh : public Asset {
+class Mesh : public Asset, public Component<Mesh> {
    public:
     Mesh();
     Mesh(const std::string& path);
     ~Mesh();
 
-    //=For ECS========
     void on_awake() override;
     void on_destroy() override;
-    //=For Asset=======
+
     void generate_default_asset() override;
     void generate_post_process_plane();
-    //=================
 
     void create_cube();
 

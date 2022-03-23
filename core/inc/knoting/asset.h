@@ -6,12 +6,15 @@
 
 static constexpr std::string_view PATH_TEXTURE = "textures/";
 static constexpr std::string_view PATH_MODELS = "misc/";
+static constexpr std::string_view PATH_AUDIO = "audio/";
+static constexpr std::string_view PATH_SCRIPTS = "scripts/";
 static constexpr std::string_view PATH_SHADER = "shaders/";
 
 static constexpr std::string_view fallbackTextureName = "fallbackTexture";
 static constexpr std::string_view fallbackMeshName = "fallbackMesh";
 static constexpr std::string_view fallbackShaderName = "fallbackShader";
 static constexpr std::string_view fallbackCubeMapName = "fallbackCubeMap";
+static constexpr std::string_view fallbackScriptName = "fallbackScript";
 
 namespace knot {
 using namespace asset;

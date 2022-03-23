@@ -1,5 +1,6 @@
 #pragma once
 
+#include <knoting/component.h>
 #include <knoting/log.h>
 #include <knoting/types.h>
 #include <cereal/cereal.hpp>
@@ -12,11 +13,6 @@ class Transform {
     Transform(const vec3& position = vec3(0.0f),
               const vec3& scale = vec3(1.0f),
               const quat& rotation = quat(1.0f, 0.0f, 0.0f, 0.0f));
-
-    //=For ECS========
-    void on_awake();
-    void on_destroy();
-    //================
 
     vec3 get_position() const;
     vec3 get_scale() const;

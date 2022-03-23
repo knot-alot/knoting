@@ -9,7 +9,5 @@ void InstanceMesh::on_awake() {
     m_mesh = AssetManager::load_asset<components::Mesh>(m_path).lock();
 }
 
-void InstanceMesh::on_destroy() {}
-
 }  // namespace components
 }  // namespace knot

@@ -43,7 +43,7 @@ class ForwardRenderer : public Subsystem {
     void post_process_pass(uint16_t idx);
 
     Engine& m_engine;
-    LightData m_lightData;
+    std::unique_ptr<LightData> m_lightData;
 
    private:
     static constexpr uint32_t m_clearColor = 0x303030ff;

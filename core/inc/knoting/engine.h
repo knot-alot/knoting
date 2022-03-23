@@ -15,6 +15,7 @@
 #include <knoting/networked_server.h>
 
 #include <knoting/physics.h>
+#include <knoting/scripting.h>
 #include <knoting/subsystem.h>
 #include <knoting/window.h>
 
@@ -31,6 +32,7 @@ class Engine {
     std::weak_ptr<Window> get_window_module() { return m_windowModule; }
     std::weak_ptr<ForwardRenderer> get_forward_render_module() { return m_forwardRenderModule; }
     std::weak_ptr<Physics> get_physics_module() { return m_physicsModule; }
+    std::weak_ptr<Scripting> get_scripting_module() { return m_scriptingModule; }
 
     std::weak_ptr<NetworkedClient> get_client_module() { return m_clientModule; }
     std::weak_ptr<NetworkedServer> get_server_module() { return m_serverModule; }
@@ -59,6 +61,7 @@ class Engine {
     std::vector<std::shared_ptr<Subsystem>> m_engineModules;
 
     std::shared_ptr<Window> m_windowModule;
+    std::shared_ptr<Scripting> m_scriptingModule;
     std::shared_ptr<ForwardRenderer> m_forwardRenderModule;
     std::shared_ptr<Physics> m_physicsModule;
 

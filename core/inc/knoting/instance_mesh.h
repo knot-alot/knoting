@@ -1,6 +1,7 @@
 #pragma once
 #include <knoting/asset.h>
 #include <knoting/asset_manager.h>
+#include <knoting/component.h>
 #include <knoting/mesh.h>
 #include <knoting/types.h>
 #include <cereal/cereal.hpp>
@@ -10,15 +11,12 @@
 
 namespace knot {
 namespace components {
-class InstanceMesh {
+class InstanceMesh : public Component<InstanceMesh> {
    public:
     InstanceMesh();
     InstanceMesh(const std::string& path);
 
-    //=For ECS========
-    void on_awake();
-    void on_destroy();
-    //================
+    void on_awake() override;
 
     bgfx::VertexBufferHandle get_vertex_buffer() { return m_mesh->get_vertex_buffer(); }
     bgfx::IndexBufferHandle get_index_buffer() { return m_mesh->get_index_buffer(); }

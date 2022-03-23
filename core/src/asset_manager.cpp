@@ -19,6 +19,7 @@ void AssetManager::on_destroy() {
     for (auto it = m_assets.begin(); it != m_assets.end(); ++it) {
         it->second->on_destroy();
     }
+    m_assets.clear();
     log::info("AssetManager destroyed");
 }
 

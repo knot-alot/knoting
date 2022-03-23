@@ -21,7 +21,9 @@ namespace knot {
 
 ForwardRenderer::~ForwardRenderer() {}
 
-ForwardRenderer::ForwardRenderer(Engine& engine) : m_engine(engine) {}
+ForwardRenderer::ForwardRenderer(Engine& engine) : m_engine(engine), m_lightData(nullptr) {
+    m_lightData = std::make_unique<LightData>();
+}
 
 void ForwardRenderer::on_awake() {}
 
@@ -194,8 +196,8 @@ void ForwardRenderer::color_pass(uint16_t idx) {
     // TODO consider writing a system to skip this system if light data has not changed between frames
     // TODO consider writing 2 systems 1 for static lights where this data is set 'on_awake'
     auto lights = registry.view<Transform, SpotLight>();
-    m_lightData.set_spotlight_count(lights.size_hint());
-    m_lightData.clear_spotlight();
+    m_lightData->set_spotlight_count(lights.size_hint());
+    m_lightData->clear_spotlight();
     for (auto& e : lights) {
         auto goOpt = scene.get_game_object_from_handle(e);
         if (!goOpt) {
@@ -206,8 +208,8 @@ void ForwardRenderer::color_pass(uint16_t idx) {
         SpotLight& spotLight = go.get_component<SpotLight>();
 
         // Packed uniform data
-        m_lightData.push_spotlight_pos_outer_rad(vec4(transform.get_position(), spotLight.get_outer_radius()));
-        m_lightData.push_spotlight_color_inner_rad(vec4(spotLight.get_color(), spotLight.get_inner_radius()));
+        m_lightData->push_spotlight_pos_outer_rad(vec4(transform.get_position(), spotLight.get_outer_radius()));
+        m_lightData->push_spotlight_color_inner_rad(vec4(spotLight.get_color(), spotLight.get_inner_radius()));
     }
 
     //=SKYBOX=================================
@@ -260,7 +262,7 @@ void ForwardRenderer::color_pass(uint16_t idx) {
         }
 
         // Bind spotlight uniforms
-        m_lightData.set_spotlight_uniforms();
+        m_lightData->set_spotlight_uniforms();
         // Bind Uniforms & textures.
         material.set_uniforms();
 
@@ -432,6 +434,9 @@ void ForwardRenderer::post_process_pass(uint16_t idx) {
 }
 
 void ForwardRenderer::on_late_update() {}
-void ForwardRenderer::on_destroy() {}
+
+void ForwardRenderer::on_destroy() {
+    m_lightData.reset();
+}
 
 }  // namespace knot

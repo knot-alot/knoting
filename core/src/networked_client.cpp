@@ -30,7 +30,7 @@ void NetworkedClient::on_update(double m_delta_time) {
             log::debug("Client {} connected to server", m_clientId);
         }
         handle_recieved_packets();
-        test_player_input();
+        // test_player_input();
         send_message();
     }
     reset_tick(m_delta_time);

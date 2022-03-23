@@ -5,6 +5,7 @@
 #include <knoting/log.h>
 #include <knoting/mesh.h>
 #include <knoting/post_processing.h>
+#include <knoting/instance_script.h>
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/scene.h>
 #include <knoting/texture.h>
@@ -31,6 +32,7 @@ Scene loadedScene;
 std::optional<GameObject> cubeOne;
 std::optional<GameObject> cubeTwo;
 components::Particles* partSystem;
+
 Untie::Untie() {
     Scene::set_active_scene(scene);
     log::Logger::setup();
@@ -153,6 +155,8 @@ Untie::Untie() {
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
         client.m_clientNum = 0;
+
+        cubeObj.add_component<components::InstanceScript>("playerMovement.js");
     }
     // PLAYER 2
     {

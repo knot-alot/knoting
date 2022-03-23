@@ -7,7 +7,8 @@
 
 namespace knot {
 namespace components {
-class Particles {
+
+class Particles : public Component<Particles> {
    public:
     Particles();
     ~Particles();

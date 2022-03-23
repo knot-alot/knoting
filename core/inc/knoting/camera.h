@@ -1,5 +1,6 @@
 #pragma once
 
+#include <knoting/component.h>
 #include <knoting/types.h>
 #include <cereal/cereal.hpp>
 
@@ -10,15 +11,11 @@ class EditorCamera {
     EditorCamera();
     ~EditorCamera();
 
-    //=For ECS========
-    void on_awake();
-    void on_destroy();
-    //================
-
     vec3 get_look_target() { return m_lookTarget; };
     float get_fov() { return radians(m_fov); };
     float get_z_near() { return m_zNear; };
     float get_z_far() { return m_zFar; };
+    float get_move_speed() { return m_moveSpeed; };
 
     vec3 get_up();
 
@@ -26,6 +23,7 @@ class EditorCamera {
     void set_fov(float fov) { m_fov = fov; };
     void set_z_near(float zNear) { m_zNear = zNear; };
     void set_z_far(float zFar) { m_zFar = zFar; };
+    void set_move_speed(float speed) { m_moveSpeed = speed; };
 
     template <class Archive>
     void serialize(Archive& archive) {

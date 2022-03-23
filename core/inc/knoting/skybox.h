@@ -1,5 +1,6 @@
 #pragma once
 #include <knoting/asset_manager.h>
+#include <knoting/component.h>
 #include <knoting/shader_program.h>
 #include <knoting/texture.h>
 #include <knoting/types.h>
@@ -9,15 +10,13 @@
 namespace knot {
 namespace components {
 
-class SkyBox {
+class SkyBox : public Component<SkyBox> {
    public:
     SkyBox();
     ~SkyBox();
 
-    //=For ECS========
-    void on_awake();
-    void on_destroy();
-    //================
+    void on_awake() override;
+    void on_destroy() override;
 
    public:
     template <class Archive>

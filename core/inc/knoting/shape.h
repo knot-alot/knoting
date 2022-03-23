@@ -1,5 +1,7 @@
 #pragma once
+
 #include <PxPhysicsAPI.h>
+#include <knoting/component.h>
 #include <knoting/components.h>
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/rigidbody.h>
@@ -7,13 +9,13 @@
 namespace knot {
 namespace components {
 
-class Shape {
+class Shape : public Component<Shape> {
    public:
     Shape();
     ~Shape();
 
-    void on_awake();
-    void on_destroy();
+    void on_awake() override;
+
     void on_load();
 
     std::weak_ptr<PxMaterial_ptr_wrapper> get_material() { return m_material; }

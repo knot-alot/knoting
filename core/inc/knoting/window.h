@@ -5,6 +5,7 @@
 #include <inttypes.h>
 #include <knoting/input_manager.h>
 #include <knoting/subsystem.h>
+#include <knoting/types.h>
 
 namespace knot {
 

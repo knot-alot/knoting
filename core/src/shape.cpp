@@ -4,6 +4,7 @@
 
 namespace knot {
 namespace components {
+
 Shape::Shape() : m_material(nullptr), m_shape(nullptr) {}
 Shape::~Shape() {}
 
@@ -23,8 +24,6 @@ void Shape::on_awake() {
             m_physics->get()->createMaterial(default_staticFriction, default_dynamicFriction, default_restitution));
     }
 }
-
-void Shape::on_destroy() {}
 
 void Shape::set_geometry(const PxGeometry& geometry) {
     if (!m_shape) {
