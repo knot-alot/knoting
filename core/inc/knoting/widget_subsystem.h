@@ -9,9 +9,9 @@
 #include "knoting/subsystem.h"
 #include "knoting/widget.h"
 
-#if BX_PLATFORM_LINUX
+#ifdef __linux__
 #define GLFW_EXPOSE_NATIVE_X11
-#elif defined(_WINDOWS)
+#elif defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 #define GLFW_EXPOSE_NATIVE_WIN32
 #elif BX_PLATFORM_OSX
 #define GLFW_EXPOSE_NATIVE_COCOA
