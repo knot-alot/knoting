@@ -10,6 +10,10 @@
 
 namespace knot {
 namespace components {
+enum class Team{
+    RED = 1,
+    BLUE = 2
+};
 class InstanceMesh {
    public:
     InstanceMesh();
@@ -35,10 +39,17 @@ class InstanceMesh {
     }
 
     std::array<vec4,Mesh::NUM_RANDOM_POINTS> get_paint_data(){return m_paintData;}
+
+    int get_start() {return m_start;}
+    int get_end() {return m_end;}
+    void addContactPoint(vec3 position, Team team);
    private:
     std::shared_ptr<components::Mesh> m_mesh;
     std::string m_path;
     std::array<vec4,Mesh::NUM_RANDOM_POINTS> m_paintData;
+    int m_start;
+    int m_end;
+    int m_size;
 };
 }  // namespace components
 

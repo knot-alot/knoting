@@ -145,9 +145,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "mask.png");
+        material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
         cubeObj.add_component<components::Material>(material);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
@@ -182,9 +182,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "mask.png");
+        material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
         material.set_albedo_mix_color(vec4(1, 0, 1, 1));
         cubeObj.add_component<components::Material>(material);
 
@@ -224,9 +224,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "mask.png");
+        material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
         material.set_albedo_mix_color(vec4(0, 1, 1, 1));
 
         cubeObj.add_component<components::Material>(material);
@@ -263,9 +263,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "mask.png");
+        material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
         material.set_albedo_mix_color(vec4(0, 0, 1, 1));
 
         cubeObj.add_component<components::Material>(material);
@@ -302,9 +302,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "mask.png");
+        material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
         cubeObj.add_component<components::Material>(material);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
@@ -339,9 +339,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "mask.png");
+        material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
         cubeObj.add_component<components::Material>(material);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();

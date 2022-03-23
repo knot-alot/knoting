@@ -63,7 +63,7 @@ class Material {
     void set_albedo_mix_color(const vec4& color){m_albedoColor = color;};
     void set_uniforms();
 
-    void set_mask_data(std::array<vec4, 100> data);
+    void set_mask_data(const std::array<vec4, 100>& data, int start, int end);
 
     bgfx::ProgramHandle get_program() { return m_shader.get_program(); };
 

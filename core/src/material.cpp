@@ -24,6 +24,7 @@ void Material::on_awake() {
     m_uniformHandles[(size_t)UniformHandle::AlphaCutoffAmount]  = bgfx::createUniform("m_alphaCutoffAmount",  bgfx::UniformType::Vec4);
 
     m_paintData0 = bgfx::createUniform("m_paintData0", bgfx::UniformType::Vec4,100);
+    m_paintData1 = bgfx::createUniform("m_paintData1", bgfx::UniformType::Vec4);
 
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Albedo]    = bgfx::createUniform("m_albedo",    bgfx::UniformType::Sampler);
     m_uniformSamplerHandle[(size_t)UniformSamplerHandle::Normal]    = bgfx::createUniform("m_normal",    bgfx::UniformType::Sampler);
@@ -105,8 +106,11 @@ Material::Material() {
 
 Material::~Material() {}
 
-void Material::set_mask_data(std::array<vec4, 100> data) {
+void Material::set_mask_data(const std::array<vec4, 100>& data, int start, int end) {
+    vec4 startEnd = vec4(start,end,0,0);
+
     bgfx::setUniform(m_paintData0, &data[0], 100);
+    bgfx::setUniform(m_paintData1, &startEnd[0]);
 }
 
 void Material::set_uniforms() {

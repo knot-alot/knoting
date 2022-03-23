@@ -257,7 +257,7 @@ bool Mesh::internal_load_obj(const std::string& path) {
             );
         }
 
-    generate_random_points();
+    //generate_random_points();
     }
 
     m_ibh = BGFX_INVALID_HANDLE;

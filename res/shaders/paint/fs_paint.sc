@@ -13,6 +13,10 @@ SAMPLER2D(m_redNormal, 5);
 SAMPLER2D(m_blueNormal, 6);
 
 uniform vec4 m_paintData0[100];
+uniform vec4 m_paintData1;
+
+#define paintStart m_paintData1.x
+#define paintEnd m_paintData1.y
 
 uniform vec4 u_lightPosRadius[30];
 uniform vec4 u_lightRgbInnerR[30];
@@ -84,10 +88,7 @@ void main()
 			if(m_paintData0[pointi].w == 0.0){
 				continue;
 			}
-			float radius =10.0;
-			if(m_paintData0[pointi].w == 1.0){
-				radius = 15.0;
-			}
+			float radius = 3.0;
 			float radiusSq = radius * radius;
 			vec3 pointPos = m_paintData0[pointi].xyz;
 			vec3 relativePos = pointPos - paintPos;
