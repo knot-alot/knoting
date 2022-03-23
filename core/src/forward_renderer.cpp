@@ -62,6 +62,7 @@ void ForwardRenderer::depth_pass(uint16_t idx) {
     mat4 invProj;
     glm::mat4 view;
     auto windowSize = m_engine.get_window_module().lock()->get_window_size();
+
     //=CAMERA===========================
     auto cameras = registry.view<Transform, EditorCamera, Name>();
 

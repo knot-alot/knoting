@@ -1,4 +1,6 @@
 #include "untie.h"
+#include "knoting/demo_widget.h"
+#include "knoting/Menu.h"
 #include <knoting/components.h>
 #include <knoting/game_object.h>
 #include <knoting/instance_mesh.h>
@@ -20,7 +22,10 @@
 #include <iostream>
 
 #include <cereal/archives/json.hpp>
-
+#include <knoting/widget_subsystem.h>
+#include <bx/timer.h>
+#include <cstdio>
+#include <ctime>
 #include <iostream>
 
 namespace knot {
@@ -350,19 +355,7 @@ Untie::Untie() {
         cubeObj.add_component<components::InstanceMesh>("postProcessPlane");
         cubeObj.add_component<components::PostProcessing>();
     }
-    {
-        auto psObj = scene.create_game_object("ps1");
-        psObj.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 10.0f, 0.0f));
-        partSystem = &psObj.add_component<components::Particles>();
-        partSystem->set_max_particles_start_scale(0.5f);
-        partSystem->set_max_particles_end_scale(0.01f);
-        partSystem->set_particles_per_second(10);
-    }
-    {
-        auto psObj = scene.create_game_object("ps2");
-        psObj.get_component<components::Transform>().set_position(glm::vec3(-10.0f, 10.0f, 10.0f));
-        psObj.add_component<components::Particles>();
-    }
+
     //    std::string filename("post_process.json");
     //    std::filesystem::path path = AssetManager::get_resources_path().append(filename);
     //    std::fstream serializedSceneStream(path);
@@ -378,12 +371,23 @@ Untie::Untie() {
     //        log::debug("file not found");
     //    }
     //    serializedSceneStream.close();
+   // auto demoWidget = std::make_shared<DemoWidget>("demo");
+   //m_engine->get_Widget().lock()->add_widget(demoWidget);
+   //  m_menu = std::make_shared<Menu>("menu");
+   //  m_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),m_engine->get_window_module().lock()->get_window_height());
+    // m_engine->get_Widget().lock()->add_widget(m_menu);
+     m_debug = std::make_shared<Debug_gui>("Debug");
+     m_engine->get_Widget().lock()->add_widget(m_debug);
+
 }
 
 void Untie::run() {
     auto cliMod = m_engine->get_client_module().lock();
     cliMod->attempt_connection();
     while (m_engine->is_open()) {
+        m_debug->set_bgfx_Time(m_engine->get_bgfx_Time_cost());
+        m_debug->set_Phy_Time(m_engine->get_Phy_Time_cost());
+        m_debug->set_Gui_Time(m_engine->get_Gui_Time_cost());
         m_engine->update_modules();
         auto im = m_engine->get_window_module().lock()->get_input_manager();
 
@@ -412,6 +416,24 @@ void Untie::run() {
         if (im->key_pressed(KeyCode::Escape)) {
             m_engine->get_window_module().lock()->close();
         }
+        if(im->key_on_trigger(KeyCode::GraveAccent)) {
+            if (open) {
+                m_debug->setOpen(open);
+            }
+            if (!open) {
+                m_debug->setOpen(open);
+            }
+            open = !open;
+
+        }
+        int64_t now = bx::getHPCounter();
+        static int64_t last = now;
+        const int64_t frameTime = now - last;
+        last = now;
+        const double freq = double(bx::getHPFrequency() );
+        const double toMs = 1000.0/freq;
+        m_debug->setFrame(1000/(double(frameTime)*toMs));
+
     }
 }
 
