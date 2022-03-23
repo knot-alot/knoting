@@ -1,0 +1,22 @@
+# Blender 3.1.0 MTL File: 'None'
+# www.blender.org
+
+newmtl inner_sanctum_max_walls_and_floor:phong3
+Ns 200.000000
+Ka 0.500000 0.500000 0.500000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+
+newmtl inner_sanctum_max_walls_and_floor:phong4
+Ns 200.000000
+Ka 0.500000 0.500000 0.500000
+Kd 0.500000 0.500000 0.500000
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
