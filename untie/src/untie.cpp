@@ -23,6 +23,7 @@
 
 #include <cereal/archives/json.hpp>
 #include <knoting/widget_subsystem.h>
+#include <bx/timer.h>
 
 #include <iostream>
 
@@ -368,12 +369,12 @@ Untie::Untie() {
     //    }
     //    serializedSceneStream.close();
    // auto demoWidget = std::make_shared<DemoWidget>("demo");
-   // m_engine->get_Widget().lock()->add_widget(demoWidget);
-    auto menu = std::make_shared<Menu>("menu");
-
-    menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),m_engine->get_window_module().lock()->get_window_height());
-   // menu->setFont("../res/textures/droidsans.ttf");
-    m_engine->get_Widget().lock()->add_widget(menu);
+   //m_engine->get_Widget().lock()->add_widget(demoWidget);
+   //  m_menu = std::make_shared<Menu>("menu");
+   //  m_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),m_engine->get_window_module().lock()->get_window_height());
+    // m_engine->get_Widget().lock()->add_widget(m_menu);
+     m_debug = std::make_shared<Debug_gui>("Debug");
+     m_engine->get_Widget().lock()->add_widget(m_debug);
 
 }
 
@@ -409,6 +410,24 @@ void Untie::run() {
         if (im->key_pressed(KeyCode::Escape)) {
             m_engine->get_window_module().lock()->close();
         }
+        if(im->key_on_trigger(KeyCode::GraveAccent)) {
+            if (open) {
+                m_debug->setOpen(open);
+            }
+            if (!open) {
+                m_debug->setOpen(open);
+            }
+            open = !open;
+
+        }
+        int64_t now = bx::getHPCounter();
+        static int64_t last = now;
+        const int64_t frameTime = now - last;
+        last = now;
+        const double freq = double(bx::getHPFrequency() );
+        const double toMs = 1000.0/freq;
+        m_debug->setFrame(1000/(double(frameTime)*toMs));
+
     }
 }
 

@@ -78,22 +78,81 @@ void Window::window_size_callback(GLFWwindow* window, int width, int height) {
 
 void Window::window_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
-    if (action != GLFW_REPEAT)
+    if (action != GLFW_REPEAT) {
         self->m_input->key_event(key, action != GLFW_RELEASE);
+    }
+
+    // TODO FIX ALL IMGUI GLFW KEYBINDING ONLY BACKSPACE IS WORKING CURRENTLY
+    ImGuiIO& io = ImGui::GetIO();
+    if (key >= 0 && key < IM_ARRAYSIZE(io.KeysDown)) {
+        if (action == GLFW_PRESS) {
+            io.KeysDown[key] = true;
+        } else if (action == GLFW_RELEASE) {
+            io.KeysDown[key] = false;
+        }
+    }
+
+    io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
+    io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
+    io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
+    io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
+
+    io.KeyMap[ImGuiKey_Tab] = GLFW_KEY_TAB;
+    io.KeyMap[ImGuiKey_LeftArrow] = GLFW_KEY_LEFT;
+    io.KeyMap[ImGuiKey_RightArrow] = GLFW_KEY_RIGHT;
+    io.KeyMap[ImGuiKey_UpArrow] = GLFW_KEY_UP;
+    io.KeyMap[ImGuiKey_DownArrow] = GLFW_KEY_DOWN;
+    io.KeyMap[ImGuiKey_PageUp] = GLFW_KEY_PAGE_UP;
+    io.KeyMap[ImGuiKey_PageDown] = GLFW_KEY_PAGE_DOWN;
+    io.KeyMap[ImGuiKey_Home] = GLFW_KEY_HOME;
+    io.KeyMap[ImGuiKey_End] = GLFW_KEY_END;
+    io.KeyMap[ImGuiKey_Insert] = GLFW_KEY_INSERT;
+    io.KeyMap[ImGuiKey_Delete] = GLFW_KEY_DELETE;
+    io.KeyMap[ImGuiKey_Backspace] = GLFW_KEY_BACKSPACE;
+    io.KeyMap[ImGuiKey_Space] = GLFW_KEY_SPACE;
+    io.KeyMap[ImGuiKey_Enter] = GLFW_KEY_ENTER;
+    io.KeyMap[ImGuiKey_Escape] = GLFW_KEY_ESCAPE;
+    io.KeyMap[ImGuiKey_A] = GLFW_KEY_A;
+    io.KeyMap[ImGuiKey_C] = GLFW_KEY_C;
+    io.KeyMap[ImGuiKey_V] = GLFW_KEY_V;
+    io.KeyMap[ImGuiKey_X] = GLFW_KEY_X;
+    io.KeyMap[ImGuiKey_Y] = GLFW_KEY_Y;
+    io.KeyMap[ImGuiKey_Z] = GLFW_KEY_Z;
 }
 
-void Window::window_char_callback(GLFWwindow* window, unsigned int) {
+void Window::window_char_callback(GLFWwindow* window, unsigned int codepoint) {
     Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    ImGuiIO& io = ImGui::GetIO();
+    io.AddInputCharacter(codepoint);
 }
 
 void Window::window_mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
     Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
     self->m_input->mouse_button_event(button, action != GLFW_RELEASE);
+
+    ImGuiIO& io = ImGui::GetIO();
+    if (button >= 0 && button < IM_ARRAYSIZE(io.MouseDown)) {
+        if (action == GLFW_PRESS) {
+            io.MouseDown[button] = true;
+        } else if (action == GLFW_RELEASE) {
+            io.MouseDown[button] = false;
+        }
+    }
 }
 
 void Window::window_scroll_event(GLFWwindow* window, double xoffset, double yoffset) {
     Window* self = static_cast<Window*>(glfwGetWindowUserPointer(window));
     self->m_input->scroll_event({xoffset, yoffset});
+
+    ImGuiIO& io = ImGui::GetIO();
+    io.MouseWheelH += (float)xoffset;
+    io.MouseWheel += (float)yoffset;
+
+    if (!io.WantCaptureMouse) {
+        Window* widow = (Window*)glfwGetWindowUserPointer(window);
+        widow->add_mouse_change_x((float)xoffset);
+        widow->add_mouse_change_y((float)yoffset);
+    }
 }
 
 void Window::window_mouse_event_callback(GLFWwindow* window, double x, double y) {

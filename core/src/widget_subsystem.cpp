@@ -17,7 +17,7 @@ namespace knot {
 void WidgetSubsystem::on_awake() {
     auto window = m_engine.get_window_module().lock();
     imgui_init(window.get()->get_glfw_window());
-    set_glfw_editor_callbacks(window.get()->get_glfw_window());
+//    set_glfw_editor_callbacks(window.get()->get_glfw_window());
 }
 
 void WidgetSubsystem::on_update(double deltaTime) {
@@ -81,8 +81,8 @@ void WidgetSubsystem::imgui_init(GLFWwindow* window) {
     bgfx::ShaderHandle fs = bgfx::createShader(bgfx::makeRef(fs_ocornut_imgui(), fs_ocornut_imgui_len()));
     imguiProgram = bgfx::createProgram(vs, fs, true);
 
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+//    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+//    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
     // Setup back-end capabilities flags
     io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
@@ -248,47 +248,47 @@ void WidgetSubsystem::imgui_shutdown() {
 }
 
 void WidgetSubsystem::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    ImGuiIO& io = ImGui::GetIO();
-    if (key >= 0 && key < IM_ARRAYSIZE(io.KeysDown)) {
-        if (action == GLFW_PRESS) {
-            io.KeysDown[key] = true;
-        } else if (action == GLFW_RELEASE) {
-            io.KeysDown[key] = false;
-        }
-    }
-
-    io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
-    io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
-    io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
-    io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
+//    ImGuiIO& io = ImGui::GetIO();
+//    if (key >= 0 && key < IM_ARRAYSIZE(io.KeysDown)) {
+//        if (action == GLFW_PRESS) {
+//            io.KeysDown[key] = true;
+//        } else if (action == GLFW_RELEASE) {
+//            io.KeysDown[key] = false;
+//        }
+//    }
+//
+//    io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
+//    io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
+//    io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
+//    io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
 }
 
 void WidgetSubsystem::charCallback(GLFWwindow* window, unsigned int codepoint) {
-    ImGuiIO& io = ImGui::GetIO();
-    io.AddInputCharacter(codepoint);
+//    ImGuiIO& io = ImGui::GetIO();
+//    io.AddInputCharacter(codepoint);
 }
 
 void WidgetSubsystem::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-    ImGuiIO& io = ImGui::GetIO();
-    if (button >= 0 && button < IM_ARRAYSIZE(io.MouseDown)) {
-        if (action == GLFW_PRESS) {
-            io.MouseDown[button] = true;
-        } else if (action == GLFW_RELEASE) {
-            io.MouseDown[button] = false;
-        }
-    }
+//    ImGuiIO& io = ImGui::GetIO();
+//    if (button >= 0 && button < IM_ARRAYSIZE(io.MouseDown)) {
+//        if (action == GLFW_PRESS) {
+//            io.MouseDown[button] = true;
+//        } else if (action == GLFW_RELEASE) {
+//            io.MouseDown[button] = false;
+//        }
+//    }
 }
 
 void WidgetSubsystem::scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
-    ImGuiIO& io = ImGui::GetIO();
-    io.MouseWheelH += (float)xoffset;
-    io.MouseWheel += (float)yoffset;
-
-    if (!io.WantCaptureMouse) {
-        Window* widow = (Window*)glfwGetWindowUserPointer(window);
-        widow->add_mouse_change_x((float)xoffset);
-        widow->add_mouse_change_y((float)yoffset);
-    }
+//    ImGuiIO& io = ImGui::GetIO();
+//    io.MouseWheelH += (float)xoffset;
+//    io.MouseWheel += (float)yoffset;
+//
+//    if (!io.WantCaptureMouse) {
+//        Window* widow = (Window*)glfwGetWindowUserPointer(window);
+//        widow->add_mouse_change_x((float)xoffset);
+//        widow->add_mouse_change_y((float)yoffset);
+//    }
 }
 void WidgetSubsystem::charModsCallback(GLFWwindow* window, unsigned int codepoint, int mods) {}
 void WidgetSubsystem::cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {}
@@ -296,21 +296,21 @@ void WidgetSubsystem::cursorEnterCallback(GLFWwindow* window, int entered) {}
 void WidgetSubsystem::dropCallback(GLFWwindow* window, int count, const char** paths) {}
 
 void WidgetSubsystem::windowSizeCallback(GLFWwindow* window, int width, int height) {
-    Window* win = (Window*)glfwGetWindowUserPointer(window);
-    win->set_window_size(vec2i(width, height));
-    win->set_window_resize_flag(true);
+//    Window* win = (Window*)glfwGetWindowUserPointer(window);
+//    win->set_window_size(vec2i(width, height));
+//    win->set_window_resize_flag(true);
 }
 
 void WidgetSubsystem::set_glfw_editor_callbacks(GLFWwindow* window) {
-    glfwSetKeyCallback(window, keyCallback);
-    glfwSetCharCallback(window, charCallback);
-    glfwSetCharModsCallback(window, charModsCallback);
-    glfwSetMouseButtonCallback(window, mouseButtonCallback);
-    glfwSetCursorPosCallback(window, cursorPosCallback);
-    glfwSetCursorEnterCallback(window, cursorEnterCallback);
-    glfwSetScrollCallback(window, scrollCallback);
-    glfwSetDropCallback(window, dropCallback);
-    glfwSetWindowSizeCallback(window, windowSizeCallback);
+//    glfwSetKeyCallback(window, keyCallback);
+//    glfwSetCharCallback(window, charCallback);
+//    glfwSetCharModsCallback(window, charModsCallback);
+//    glfwSetMouseButtonCallback(window, mouseButtonCallback);
+//    glfwSetCursorPosCallback(window, cursorPosCallback);
+//    glfwSetCursorEnterCallback(window, cursorEnterCallback);
+//    glfwSetScrollCallback(window, scrollCallback);
+//    glfwSetDropCallback(window, dropCallback);
+//    glfwSetWindowSizeCallback(window, windowSizeCallback);
 }
 
 }  // namespace knot

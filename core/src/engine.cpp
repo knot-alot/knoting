@@ -1,19 +1,20 @@
 #include <bx/math.h>
 #include <knoting/engine.h>
 
+
 namespace knot {
 
 Engine::Engine() {
     InitializeYojimbo();
 
     m_framebufferManager = std::make_shared<knot::FramebufferManager>(*this);
+    m_WidgetSubsystem = std::make_shared<knot::WidgetSubsystem>(*this);
     m_windowModule = std::make_shared<knot::Window>(m_windowWidth, m_windowHeight, m_windowTitle, *this);
     m_forwardRenderModule = std::make_shared<knot::ForwardRenderer>(*this);
     m_physicsModule = std::make_shared<knot::Physics>(*this);
     m_cameraRotationModule = std::make_shared<knot::CameraRotation>(*this);
     m_assetManager = std::make_shared<knot::AssetManager>();
     m_audioModule = std::make_shared<knot::AudioSubsystem>();
-    m_WidgetSubsystem = std::make_shared<knot::WidgetSubsystem>(*this);
     if (!isClient) {
         m_serverModule = std::make_shared<knot::NetworkedServer>(*this);
     }
