@@ -9,6 +9,7 @@ import {
     Vec2,
     Vec3,
     Quat,
+    EditorCamera,
     storage,
 } from "knoting";
 
@@ -27,30 +28,26 @@ export default class Player_movement extends GameObject {
 
     update(deltaTime: number) {
         this.playerInputs();
-        storage.store("asd", this);
     }
 
     lateUpdate() {
         this.playerMovement();
-        let asd: Player_movement = storage.retrieve("asd");
-        let id = asd.getID();
-        console.log(`id: ${id}`);
     }
 
     playerInputs() {
         let player_inputs: Vec2 = [0, 0];
 
         if (input.keyPressed(KeyCode.A)) {
-            player_inputs = math.add(player_inputs, [-1, 0]);
+            player_inputs = math.add([-1, 0], player_inputs);
         }
         if (input.keyPressed(KeyCode.D)) {
-            player_inputs = math.add(player_inputs, [1, 0]);
+            player_inputs = math.add([1, 0], player_inputs);
         }
         if (input.keyPressed(KeyCode.W)) {
-            player_inputs = math.add(player_inputs, [0, -1]);
+            player_inputs = math.add(player_inputs, [0, 1]);
         }
         if (input.keyPressed(KeyCode.S)) {
-            player_inputs = math.add(player_inputs, [0, 1]);
+            player_inputs = math.add(player_inputs, [0, -1]);
         }
         this.clientPlayer?.setMoveAxis(player_inputs);
 
@@ -89,33 +86,41 @@ export default class Player_movement extends GameObject {
 
         let playerRot: Quat = this.transform!.getRotation();
         let newRot: Vec3 = math.multiplyQuat(rotDeg, playerRot);
-        this.transform!.setRotation(newRot);
-        this.rigidBody!.setRotation(this.transform!.getRotation());
+        //this.transform!.setRotation(newRot);
+        //this.rigidBody!.setRotation(this.transform!.getRotation());
 
         let moveAxis: Vec2 = this.clientPlayer!.getMoveAxis();
+        // console.log(`moveAxis: ${moveAxis}`);
         let playerForward: Vec3 = this.transform!.getForward();
-        playerForward = math.multiply(
-            [moveAxis[1], moveAxis[1], moveAxis[1]],
-            playerForward
-        );
+        // console.log(`playerForward: ${playerForward}`);
+        //playerForward = math.multiply(
+        //     [moveAxis[1], moveAxis[1], moveAxis[1]],
+        //     playerForward
+        // );
+
 
         let playerRight: Vec3 = this.transform!.getRight();
-        playerRight = math.multiply(
-            [moveAxis[0], moveAxis[0], moveAxis[0]],
-            playerRight
-        );
+        // console.log(`playerRight: ${playerRight}`);
+        // playerRight = math.multiply(
+        //     [moveAxis[0], moveAxis[0], moveAxis[0]],
+        //     playerRight
+        // );
 
         let playerDir: Vec3 = math.add(playerForward, playerRight);
 
-        playerDir = math.normalize(playerDir);
+        playerDir = math.normalize(moveAxis);
 
         let baseMulti: number = 1000;
         let moveMulti: number = 2;
 
         baseMulti = baseMulti * moveMulti;
 
-        let force = math.multiply([baseMulti, baseMulti, baseMulti], playerDir);
+        //let force = math.multiply([baseMulti, baseMulti, baseMulti], playerDir);
+        let force = [1000 * moveAxis[0], 0, 1000 * moveAxis[1]];
 
-        if (math.notNaN(force)) this.rigidBody?.addForce(force);
+        if (math.notNaN(force)) {
+            console.log(`force: ${force}`);
+            this.rigidBody?.addForce(force);
+        }
     }
 }
