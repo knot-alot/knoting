@@ -128,24 +128,24 @@ void CameraRotation::camera_key_input() {
 
     vec3 movementDirectionXYZ = vec3(0);
 
-    if (m_inputManager->key_pressed(KeyCode::W)) {
-        movementDirectionXYZ += m_forward;
-    }
-    if (m_inputManager->key_pressed(KeyCode::S)) {
-        movementDirectionXYZ += -m_forward;
-    }
-    if (m_inputManager->key_pressed(KeyCode::A)) {
-        movementDirectionXYZ += -m_right;
-    }
-    if (m_inputManager->key_pressed(KeyCode::D)) {
-        movementDirectionXYZ += m_right;
-    }
-    if (m_inputManager->key_pressed(KeyCode::R)) {
-        movementDirectionXYZ += m_up;
-    }
-    if (m_inputManager->key_pressed(KeyCode::F)) {
-        movementDirectionXYZ += -m_up;
-    }
+    //    if (m_inputManager->key_pressed(KeyCode::W)) {
+    //        movementDirectionXYZ += m_forward;
+    //    }
+    //    if (m_inputManager->key_pressed(KeyCode::S)) {
+    //        movementDirectionXYZ += -m_forward;
+    //    }
+    //    if (m_inputManager->key_pressed(KeyCode::A)) {
+    //        movementDirectionXYZ += -m_right;
+    //    }
+    //    if (m_inputManager->key_pressed(KeyCode::D)) {
+    //        movementDirectionXYZ += m_right;
+    //    }
+    //    if (m_inputManager->key_pressed(KeyCode::R)) {
+    //        movementDirectionXYZ += m_up;
+    //    }
+    //    if (m_inputManager->key_pressed(KeyCode::F)) {
+    //        movementDirectionXYZ += -m_up;
+    //    }
 
     vec3 speedTarget;
     if (m_inputManager->key_pressed(KeyCode::LeftShift)) {

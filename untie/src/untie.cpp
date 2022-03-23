@@ -2,10 +2,10 @@
 #include <knoting/components.h>
 #include <knoting/game_object.h>
 #include <knoting/instance_mesh.h>
+#include <knoting/instance_script.h>
 #include <knoting/log.h>
 #include <knoting/mesh.h>
 #include <knoting/post_processing.h>
-#include <knoting/instance_script.h>
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/scene.h>
 #include <knoting/texture.h>
@@ -39,12 +39,8 @@ Untie::Untie() {
     m_engine = std::make_unique<knot::Engine>();
     Engine::set_active_engine(*m_engine);
     {
-        auto editorCamera = scene.create_game_object("camera");
-        auto& cam = editorCamera.add_component<components::EditorCamera>();
-        editorCamera.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 50.0f, 0.0f));
-        editorCamera.add_component<components::AudioListener>();
-    }
-    {
+
+    } {
         auto cubeObj = scene.create_game_object("skybox");
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(0, 8, 0));
         cubeObj.add_component<components::InstanceMesh>("postProcessPlane");
@@ -141,7 +137,7 @@ Untie::Untie() {
         rigidbody.create_actor(true, 4.0f);
 
         auto& rigidController = cubeObj.add_component<components::RigidController>();
-        rigidController.lockRotations(true, false, true);
+        // rigidController.lockRotations(true, false, true);
         rigidController.set_linear_damping(1.0f);
         rigidController.set_angular_damping(1.0f);
 
@@ -155,6 +151,16 @@ Untie::Untie() {
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
         client.m_clientNum = 0;
+
+        auto editorCamera = scene.create_game_object("camera");
+        auto& cam = editorCamera.add_component<components::EditorCamera>();
+        auto& transform = cubeObj.get_component<components::Transform>();
+        editorCamera.get_component<components::Transform>().set_position({0, 10.f, transform.get_scale().z});
+
+        editorCamera.add_component<components::AudioListener>();
+
+        auto& hier = cubeObj.get_component<components::Hierarchy>();
+        hier.add_child(editorCamera);
 
         cubeObj.add_component<components::InstanceScript>("playerMovement.js");
     }

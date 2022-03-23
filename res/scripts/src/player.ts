@@ -1,4 +1,4 @@
-import {GameObject, input, KeyCode, MouseButtonCode} from "knoting";
+import {EditorCamera, GameObject, input, KeyCode, MouseButtonCode} from "knoting";
 
 export default class Player extends GameObject {
     maxHealth: number = 1000;
@@ -6,6 +6,7 @@ export default class Player extends GameObject {
 
     awake() {
         this.currentHealth = this.maxHealth;
+
     }
 
     update() {

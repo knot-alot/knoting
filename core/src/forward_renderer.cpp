@@ -78,14 +78,31 @@ void ForwardRenderer::depth_pass(uint16_t idx) {
         EditorCamera& editorCamera = go.get_component<EditorCamera>();
         Name& name = go.get_component<Name>();
 
-        const glm::vec3 pos = transform.get_position();
-        const glm::vec3 lookTarget = editorCamera.get_look_target();
-        const glm::vec3 up = editorCamera.get_up();
+         vec3 pos = transform.get_position();
+         vec3 lookTarget = editorCamera.get_look_target();
+         vec3 up = editorCamera.get_up();
 
-        const float fovY = editorCamera.get_fov();
-        const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
-        const float zNear = editorCamera.get_z_near();
-        const float zFar = editorCamera.get_z_far();
+         float fovY = editorCamera.get_fov();
+         float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
+         float zNear = editorCamera.get_z_near();
+         float zFar = editorCamera.get_z_far();
+
+        Hierarchy& hierarchy = go.get_component<Hierarchy>();
+        auto parentIDOpt = hierarchy.get_parent();
+
+        if(parentIDOpt){
+            auto parentOpt = scene.get_game_object_from_id(parentIDOpt.value());
+            if(parentOpt){
+                auto transform = parentOpt.value().get_component<Transform>();
+                transform.set_rotation_euler({0,0,0});
+
+                auto modelMatrix = transform.get_model_matrix();
+                pos = modelMatrix*vec4{pos,1.0f};
+
+            }
+        }
+
+
 
         // Set view and projection matrix for view 0.
         {
