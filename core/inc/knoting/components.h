@@ -5,6 +5,7 @@
 #include <knoting/audio_source.h>
 #include <knoting/camera.h>
 #include <knoting/client_player.h>
+#include <knoting/collision_detection.h>
 #include <knoting/game_object.h>
 #include <knoting/instance_mesh.h>
 #include <knoting/instance_script.h>

@@ -152,7 +152,7 @@ void ForwardRenderer::color_pass(uint16_t idx) {
         EditorCamera& editorCamera = go.get_component<EditorCamera>();
         Name& name = go.get_component<Name>();
 
-        const glm::vec3 pos = transform.get_position();
+        glm::vec3 cameraPos = transform.get_position();
         const glm::vec3 lookTarget = editorCamera.get_look_target();
         const glm::vec3 up = editorCamera.get_up();
 
@@ -163,7 +163,7 @@ void ForwardRenderer::color_pass(uint16_t idx) {
 
         // Set view and projection matrix for view 0.
         {
-            view = glm::lookAt(pos, lookTarget, up);
+            view = glm::lookAt(cameraPos, lookTarget, up);
             glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
             invProj = inverse(proj);
             bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
@@ -179,7 +179,22 @@ void ForwardRenderer::color_pass(uint16_t idx) {
             }
 
             GameObject goo = gooOpt.value();
+            Transform& psTransform = go.get_component<Transform>();
             Particles& ps = goo.get_component<Particles>();
+            auto& hi = goo.get_component<Hierarchy>();
+            vec3 particlePos = psTransform.get_position();
+            vec3 pPos = vec3(0);
+
+            if (hi.has_parent()) {
+                auto parentOpt = scene.get_game_object_from_id(hi.get_parent().value());
+
+                if (parentOpt) {
+                    auto& pTransform = parentOpt.value().get_component<Transform>();
+                    particlePos = pTransform.get_model_matrix() * vec4(particlePos, 1.0f);
+                    ps.set_position(particlePos);
+                }
+            }
+
             const bx::Vec3 eye =
                 bx::Vec3(transform.get_position().x, transform.get_position().y, transform.get_position().z);
             float viewMtx[16];
@@ -187,7 +202,7 @@ void ForwardRenderer::color_pass(uint16_t idx) {
             bx::mtxLookAt(viewMtx, bx::load<bx::Vec3>(&eye.x), bx::load<bx::Vec3>(&lookTarget.x),
                           bx::load<bx::Vec3>(&up.x));
 
-            ps.update(m_dt * 0.1);
+            ps.update(m_dt);
             ps.render(idx, viewMtx, eye);
         }
     }

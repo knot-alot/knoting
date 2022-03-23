@@ -2,10 +2,10 @@
 #include <knoting/components.h>
 #include <knoting/game_object.h>
 #include <knoting/instance_mesh.h>
+#include <knoting/instance_script.h>
 #include <knoting/log.h>
 #include <knoting/mesh.h>
 #include <knoting/post_processing.h>
-#include <knoting/instance_script.h>
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/scene.h>
 #include <knoting/texture.h>
@@ -43,6 +43,7 @@ Untie::Untie() {
         auto& cam = editorCamera.add_component<components::EditorCamera>();
         editorCamera.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 50.0f, 0.0f));
         editorCamera.add_component<components::AudioListener>();
+
     }
     {
         auto cubeObj = scene.create_game_object("skybox");
@@ -152,6 +153,12 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
+/*
+        auto& hi = cubeObj.get_component<components::Hierarchy>();
+        auto psObj = scene.create_game_object("ps2");
+        auto& ps = psObj.add_component<components::Particles>();
+        ps.set_particles_per_second(50);
+        hi.add_child(psObj);*/
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
         client.m_clientNum = 0;
@@ -354,19 +361,7 @@ Untie::Untie() {
         cubeObj.add_component<components::InstanceMesh>("postProcessPlane");
         cubeObj.add_component<components::PostProcessing>();
     }
-    {
-        auto psObj = scene.create_game_object("ps1");
-        psObj.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 10.0f, 0.0f));
-        partSystem = &psObj.add_component<components::Particles>();
-        partSystem->set_max_particles_start_scale(0.5f);
-        partSystem->set_max_particles_end_scale(0.01f);
-        partSystem->set_particles_per_second(10);
-    }
-    {
-        auto psObj = scene.create_game_object("ps2");
-        psObj.get_component<components::Transform>().set_position(glm::vec3(-10.0f, 10.0f, 10.0f));
-        psObj.add_component<components::Particles>();
-    }
+
     //    std::string filename("post_process.json");
     //    std::filesystem::path path = AssetManager::get_resources_path().append(filename);
     //    std::fstream serializedSceneStream(path);

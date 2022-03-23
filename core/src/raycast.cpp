@@ -82,7 +82,7 @@ PxVec3 Raycast::get_position_from_transform() {
         Scene& scene = sceneOpt.value();
         entt::entity handle = entt::to_entity(scene.get_registry(), *this);
         auto goOpt = scene.get_game_object_from_handle(handle);
-        ;
+
         if (goOpt) {
             PxVec3 position = RigidBody::vec3_to_PxVec3(goOpt->get_component<components::Transform>().get_position());
 
@@ -111,6 +111,5 @@ void Raycast::load(Archive& archive) {
 
 template void Raycast::save<cereal::JSONOutputArchive>(cereal::JSONOutputArchive&) const;
 template void Raycast::load<cereal::JSONInputArchive>(cereal::JSONInputArchive&);
-
 }  // namespace components
 }  // namespace knot
