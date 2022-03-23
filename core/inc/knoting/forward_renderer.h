@@ -48,7 +48,7 @@ class ForwardRenderer : public Subsystem {
    private:
     static constexpr uint32_t m_clearColor = 0x303030ff;
     float m_timePassed = 0.01f;
-    std::array<vec4,100> paintData;
+    std::array<vec4, 100> paintData;
 };
 
 }  // namespace knot

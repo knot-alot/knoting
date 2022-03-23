@@ -10,10 +10,7 @@
 
 namespace knot {
 namespace components {
-enum class Team{
-    RED = 1,
-    BLUE = 2
-};
+enum class Team { RED = 1, BLUE = 2 };
 class InstanceMesh {
    public:
     InstanceMesh();
@@ -38,14 +35,14 @@ class InstanceMesh {
         on_awake();
     }
 
-    std::deque<vec4> get_paint_data(){return m_paintData;}
+    std::deque<vec4> get_paint_data() { return m_paintData; }
 
     void addContactPoint(vec3 position, Team team);
+
    private:
     std::shared_ptr<components::Mesh> m_mesh;
     std::string m_path;
     std::deque<vec4> m_paintData;
-
 };
 }  // namespace components
 

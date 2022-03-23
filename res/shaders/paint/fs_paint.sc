@@ -80,12 +80,12 @@ void main()
 	
 	vec4 paintCol = vec4_splat(0.0);
 	
+	float radius = 2.0;
 	vec3 paintPos = v_wpos.xyz;
 	for (int pointi = 0; pointi < 50; ++pointi) {
 			if(m_paintData0[pointi].w == 0.0){
 				continue;
 			}
-			float radius = 1.05;
 			float radiusSq = radius * radius;
 			vec3 pointPos = m_paintData0[pointi].xyz;
 			vec3 relativePos = pointPos - paintPos;
@@ -104,7 +104,6 @@ void main()
 			if(m_paintData0[pointj].w == 0.0){
 				continue;
 			}
-			float radius = 1.05;
 			float radiusSq = radius * radius;
 			vec3 pointPos = m_paintData0[pointj].xyz;
 			vec3 relativePos = pointPos - paintPos;

@@ -113,9 +113,6 @@ void Material::set_mask_data(const vec4 data[100]) {
 void Material::set_uniforms() {
     // clang-format off
 
-//    m_metallic->set_pixel(vec2i(300,300), vec4(1,0,0,1), 100);
-//    m_metallic->set_pixel(vec2i(600,600), vec4(1,0,0,1), 45);
-
     m_textureHandles[(size_t)TextureHandle::Metallic]  = m_metallic->get_texture_handle();
 
     bgfx::setUniform(m_uniformHandles[(size_t)UniformHandle::AlbedoColor],        &m_albedoColor[0]);

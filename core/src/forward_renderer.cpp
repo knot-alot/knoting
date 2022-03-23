@@ -11,13 +11,13 @@
 #include <knoting/post_processing.h>
 #include <knoting/scene.h>
 #include <stb_image.h>
+#include <array>
 #include <fstream>
+#include <memory>
 #include <string_view>
-#include <vector>
 #include <type_traits>
 #include <utility>
-#include <array>
-#include <memory>
+#include <vector>
 
 namespace knot {
 
@@ -242,9 +242,13 @@ void ForwardRenderer::color_pass(uint16_t idx) {
         m_lightData.set_spotlight_uniforms();
         // Bind Uniforms & textures.
 
+        //        vec3 scale = transform.get_scale();
+        //        vec3 pos = transform.get_position() +vec3(rand()% (int)scale.x * 2 - (int)scale.x, 0.5,
+        //        rand()%(int)scale.x *2 - (int)scale.x); mesh.addContactPoint(pos,Team::BLUE);
+
         auto paintQueue = mesh.get_paint_data();
         int i = 0;
-        for( auto it = paintQueue.begin(); it != paintQueue.end(); ++it){
+        for (auto it = paintQueue.begin(); it != paintQueue.end(); ++it) {
             paintData[i] = *it;
             i++;
         }
@@ -331,7 +335,6 @@ void ForwardRenderer::gui_pass(uint16_t idx) {
 
         bgfx::submit(idx, material.get_program());
     }
-
 }
 
 void ForwardRenderer::transparent_pass(uint16_t idx) {}

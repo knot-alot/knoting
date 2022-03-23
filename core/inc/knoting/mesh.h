@@ -41,7 +41,7 @@ class Mesh : public Asset {
     static constexpr int NUM_RANDOM_POINTS = 100;
     void generate_random_points();
     static vec3 generate_point_on_triangle(vec3 pos1, vec3 pos2, vec3 pos3);
-    std::array<vec3,Mesh::NUM_RANDOM_POINTS>& get_random_points(){return m_randomPointsOnMesh;}
+    std::array<vec3, Mesh::NUM_RANDOM_POINTS>& get_random_points() { return m_randomPointsOnMesh; }
 
     bgfx::VertexBufferHandle get_vertex_buffer() { return m_vbh; }
     bgfx::IndexBufferHandle get_index_buffer() { return m_ibh; }
