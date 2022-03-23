@@ -1,6 +1,6 @@
-import {GameObject} from "knoting";
+import {GameObject, Name, scene, storage} from "knoting";
 
-export class Destructible extends GameObject {
+export class Reservoir extends GameObject {
     maxHealth: number = 1000;
     currentHealth: number = 0;
 
@@ -20,7 +20,13 @@ export class Destructible extends GameObject {
     }
 
     death() {
-        //destroy object
+        scene.removeGameObject(this.getID());
+
+        if (this.getComponent("Name").getName() == "orange") storage.store("winner", "blue");
+        else storage.store("winner", "orange");
+
+        storage.store("gameOver", true);
+
     }
 
 }

@@ -17,12 +17,13 @@ void Raycast::on_awake() {
     }
     m_isHit = false;
     m_origin = get_position_from_transform();
+    m_flags = PxHitFlag::ePOSITION | PxHitFlag::eNORMAL;
 }
 
 void Raycast::on_destroy() {}
 
 void Raycast::raycast() {
-    m_scene->get()->raycast(m_origin, m_unitDir, m_maxDistance, m_hit);
+    m_isHit = m_scene->get()->raycast(m_origin, m_unitDir, m_maxDistance, m_hit);
 }
 
 vec3 Raycast::get_origin() {
@@ -59,6 +60,13 @@ std::weak_ptr<PxShape_ptr_wrapper> Raycast::get_hit_shape() {
         return std::make_shared<PxShape_ptr_wrapper>(m_hit.block.shape);
     }
     return std::make_shared<PxShape_ptr_wrapper>();
+}
+
+PxActor* Raycast::get_hit_actor() {
+    if (m_isHit) {
+        return m_hit.block.actor;
+    }
+    return nullptr;
 }
 
 void Raycast::set_origin(const vec3& origin) {

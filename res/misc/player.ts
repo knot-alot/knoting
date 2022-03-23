@@ -1,4 +1,4 @@
-import {GameObject, input, KeyCode, MouseButtonCode} from "knoting";
+import {GameObject, input, KeyCode, MouseButtonCode, scene, Raycast} from "knoting";
 
 export default class Player extends GameObject {
     maxHealth: number = 1000;
@@ -9,12 +9,16 @@ export default class Player extends GameObject {
     }
 
     update() {
+
+        let hit: Raycast;
+        hit.setRaycast(this.getComponent("Transform").getPosition(), this.getComponent("Transform").getForward(), 10);
+        
         if (input.mouseButtonPressed(MouseButtonCode.Left)) {
             this.removeHealth(1);
             //shoot
         }
 
-        if (input.keyPressed(KeyCode.Enter)) { //AND looking at paint reservoir
+        if (input.keyPressed(KeyCode.E) && hit.getHitActor().getComponent("Tag").getTag() == "reservoir") {
             this.addHealth(1);
         }
 
@@ -34,6 +38,7 @@ export default class Player extends GameObject {
     }
 
     death() {
+        scene.removeGameObject(this.getID());
         //respawn stuff
     }
 

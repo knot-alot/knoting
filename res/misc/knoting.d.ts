@@ -5,6 +5,12 @@ declare module "knoting" {
     type Quat = Array<number>;
     type UUID = string;
 
+    class Storage {
+        store(key: string, obj: any): void;
+
+        retrieve(key: string): any;
+    }
+
     class Transform {
         setPosition(position: Vec3): void;
 
@@ -228,6 +234,10 @@ declare module "knoting" {
         setUnitDir(unitDir: Vec3): void;
 
         setMaxDistance(maxDistance: number): void;
+
+        getHitActor(): GameObject;
+
+        setRaycast(origin: Vec3, unitDir: Vec3, maxDis: number): void;
     }
 
     enum MouseButtonCode {
@@ -483,5 +493,6 @@ declare module "knoting" {
 
     const input: InputManager;
     const scene: Scene;
+    const storage: Storage;
 
 }
