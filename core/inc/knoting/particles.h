@@ -18,7 +18,7 @@ class Particles {
     //=======
 
     void set_position(vec3 position);
-    void set_rotation_euler(vec3 rotation);
+    void set_lookat(vec3 rotation);
     void set_max_particles(float maxParticles);
     void set_gravity_scale(float gravity);
     void set_shape(EmitterShape::Enum shape);
@@ -49,7 +49,7 @@ class Particles {
     void set_texture(const std::string& path);
 
     vec3 get_position();
-    vec3 get_rotation_euler();
+    vec3 get_lookat();
     float get_max_particles();
     float get_gravity_scale();
     EmitterShape::Enum get_shape();

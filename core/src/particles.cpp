@@ -33,7 +33,6 @@ void Particles::on_awake() {
         ;
         if (goOpt) {
             set_position(goOpt->get_component<components::Transform>().get_position());
-            set_rotation_euler(goOpt->get_component<components::Transform>().get_rotation_euler());
         }
     }
 
@@ -50,10 +49,10 @@ void Particles::set_position(vec3 position) {
     m_uniforms.m_position[2] = position.z;
 }
 
-void Particles::set_rotation_euler(vec3 rotation) {
-    m_uniforms.m_angle[0] = rotation.x;
-    m_uniforms.m_angle[1] = rotation.y;
-    m_uniforms.m_angle[2] = rotation.z;
+void Particles::set_lookat(vec3 rotation) {
+    m_uniforms.m_lookat[0] = rotation.x;
+    m_uniforms.m_lookat[1] = rotation.y;
+    m_uniforms.m_lookat[2] = rotation.z;
 }
 
 void Particles::set_max_particles(float maxParticles) {
@@ -155,8 +154,8 @@ void Particles::set_rgba4(uint32_t rgba) {
 vec3 Particles::get_position() {
     return vec3(m_uniforms.m_position[0], m_uniforms.m_position[1], m_uniforms.m_position[2]);
 }
-vec3 Particles::get_rotation_euler() {
-    return vec3(m_uniforms.m_angle[0], m_uniforms.m_angle[1], m_uniforms.m_angle[2]);
+vec3 Particles::get_lookat() {
+    return vec3(m_uniforms.m_lookat[0], m_uniforms.m_lookat[1], m_uniforms.m_lookat[2]);
 }
 float Particles::get_max_particles() {
     return m_uniforms.m_maxParticles;

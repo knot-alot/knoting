@@ -75,6 +75,7 @@ void Physics::update_info_to_transform() {
 
         transform.set_rotation(rigidbody.get_rotation());
     }
+
 }
 
 void Physics::set_gravity(PxVec3 gravity) {

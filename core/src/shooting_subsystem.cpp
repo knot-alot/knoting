@@ -66,6 +66,8 @@ void Shooting::on_update(double m_delta_time) {
                     continue;
                 }
                 auto& edCam = cam.get_component<components::EditorCamera>();
+                auto& cam_hier = cam.get_component<components::Hierarchy>();
+                auto cam_children = cam_hier.get_children();
 
                 double pitch = edCam.get_PitchYawRoll().x;
 
@@ -80,9 +82,22 @@ void Shooting::on_update(double m_delta_time) {
                 b = shootDir = transform.get_rotation() * b;
                 //                shootDir.y = pitch;
                 //                shootDir = normalize(shootDir);
+
+                for (auto& i : cam_children) {
+                    auto psOpt = scene.get_game_object_from_id(i);
+                    if (!psOpt) {
+                        continue;
+                    }
+                    auto obj = psOpt.value();
+                    if (!obj.has_component<components::Particles>()) {
+                        continue;
+                    }
+                    auto& ps = obj.get_component<components::Particles>();
+                    ps.set_lookat(shootDir * 5.0f);
+                }
             }
 
-            bulController.add_force(shootDir * 500.0f);
+            bulController.add_force(shootDir * 100.0f);
 
             if (health.get_health() < 0) {
                 health.set_health(0);

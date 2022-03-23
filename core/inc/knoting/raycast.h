@@ -28,6 +28,7 @@ class Raycast {
     vec3 get_hit_normal();
     float get_hit_distance();
     std::weak_ptr<PxShape_ptr_wrapper> get_hit_shape();
+    PxActor* get_hit_actor();
 
     void set_origin(const vec3& origin);
     void set_unit_dir(const vec3& unitDir);

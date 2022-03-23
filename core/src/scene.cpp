@@ -178,9 +178,10 @@ GameObject Scene::create_cube(const std::string& name,
     auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
     auto& shape = cubeObj.add_component<components::Shape>();
-    vec3 halfsize = vec3(scale);
-    shape.set_geometry(shape.create_cube_geometry(halfsize));
-    shape.set_filter_data(filter_group::eParticle, filter_group::eAll);
+    //vec3 halfsize = vec3(scale);
+    float radius = scale.x;
+    shape.set_geometry(shape.create_sphere_geometry(radius));
+    shape.set_filter_data(filter_group::eParticle_A, filter_group::eAll | filter_group::ePlayer_B);
 
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 

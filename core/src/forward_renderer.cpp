@@ -6,6 +6,7 @@
 #include <knoting/spot_light.h>
 #include <knoting/texture.h>
 
+#include <knoting/Font.h>
 #include <knoting/components.h>
 #include <knoting/engine.h>
 #include <knoting/scene.h>
@@ -13,7 +14,6 @@
 #include <fstream>
 #include <string_view>
 #include <vector>
-#include <knoting/Font.h>
 
 namespace knot {
 
@@ -111,8 +111,6 @@ void ForwardRenderer::color_pass() {
         //=PARTICLES SYSTEM=======================
         auto particles = registry.view<Particles>();
 
-
-
         for (auto& e : particles) {
             auto gooOpt = scene.get_game_object_from_handle(e);
             if (!gooOpt) {
@@ -120,27 +118,20 @@ void ForwardRenderer::color_pass() {
             }
 
             GameObject goo = gooOpt.value();
+            Transform& psTransform = go.get_component<Transform>();
             Particles& ps = goo.get_component<Particles>();
-            auto& hierarchy = goo.get_component<Hierarchy>();
+            auto& hi = goo.get_component<Hierarchy>();
+            vec3 particlePos = psTransform.get_position();
+            vec3 pPos = vec3(0);
 
-            vec3 parentPos = vec3(0);
-
-            if (hierarchy.has_parent()) {
-                auto parentOpt = scene.get_game_object_from_id(hierarchy.get_parent().value());
+            if (hi.has_parent()) {
+                auto parentOpt = scene.get_game_object_from_id(hi.get_parent().value());
 
                 if (parentOpt) {
-                    auto& parentTransform = parentOpt.value().get_component<Transform>();
-                    parentPos = parentTransform.get_position();
-                    vec3 lookTarget = editorCamera.get_look_target();
-                    editorCamera.set_look_target(lookTarget);
-
-                    vec3 diffCameraPosLookTager = lookTarget - cameraPos;
-
-                    cameraPos = parentTransform.get_model_matrix() * vec4(cameraPos, 1.0f);
-
-                    diffCameraPosLookTager =
-                        toMat4(parentTransform.get_rotation()) * vec4(diffCameraPosLookTager, 1.0f);
-                    editorCamera.set_look_target(cameraPos + diffCameraPosLookTager);
+                    auto& pTransform = parentOpt.value().get_component<Transform>();
+                    pPos = pTransform.get_position();
+                    particlePos = pTransform.get_model_matrix() * vec4(particlePos, 1.0f);
+                    ps.set_position(particlePos);
                 }
             }
             const bx::Vec3 eye =
@@ -153,7 +144,6 @@ void ForwardRenderer::color_pass() {
             ps.update(m_dt * 0.1);
             ps.render(idx, viewMtx, eye);
         }
-
     }
 
     //=SPOT LIGHTS======================

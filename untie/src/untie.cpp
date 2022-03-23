@@ -274,6 +274,8 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     auto& shape = cubeObj.add_component<components::Shape>();
     vec3 halfsize = vec3(playerScale);
     shape.set_geometry(shape.create_cube_geometry(playerScale));
+    shape.set_filter_data(filter_group::ePlayer_A,
+                          filter_group::eAll | filter_group::eParticle_B | filter_group::ePlayer_B);
 
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
@@ -299,14 +301,24 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     editorCamera.get_component<components::Transform>().set_position(glm::vec3(0, 0.7f, playerScale.z));
 
     auto& hier = cubeObj.get_component<components::Hierarchy>();
-
     hier.add_child(editorCamera);
 
     auto particle = m_scene->create_game_object("particle");
     particle.get_component<components::Transform>().set_position(glm::vec3(0, 0.7f, playerScale.z));
     auto& p = particle.add_component<components::Particles>();
+    p.set_direction_type(EmitterDirection::Up);
+    p.set_min_end_offset(20.0f);
+    p.set_max_end_offset(20.1f);
+    p.set_gravity_scale(1.0f);
+    p.set_min_life_span(0.5f);
+    p.set_max_life_span(0.6f);
+    p.set_min_particles_start_scale(0.5f);
+    p.set_max_particles_start_scale(0.6f);
+    p.set_min_particles_end_scale(0.5f);
+    p.set_max_particles_end_scale(0.6f);
 
-    hier.add_child(particle);
+    auto& edCam_hier = editorCamera.get_component<components::Hierarchy>();
+    edCam_hier.add_child(particle);
 
     return cubeObj;
 }

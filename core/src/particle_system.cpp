@@ -46,6 +46,10 @@ void EmitterUniforms::reset() {
     m_angle[1] = 0.0f;
     m_angle[2] = 0.0f;
 
+    m_lookat[0] = 0.0f;
+    m_lookat[1] = 1.0f;
+    m_lookat[2] = 0.0f;
+
     m_particlesPerSecond = 0;
 
     m_offsetStart[0] = 0.0f;
@@ -188,7 +192,7 @@ struct Emitter {
         const uint32_t numParticles = uint32_t(m_dt / timePerParticle);
         m_dt -= numParticles * timePerParticle;
 
-        constexpr bx::Vec3 up = {0.0f, 1.0f, 0.0f};
+        bx::Vec3 up = bx::Vec3(m_uniforms.m_lookat[0], m_uniforms.m_lookat[1], m_uniforms.m_lookat[2]);
 
         float time = 0.0f;
         for (uint32_t ii = 0; ii < numParticles && m_num < m_max; ++ii) {
@@ -292,9 +296,9 @@ struct Emitter {
             const float ttBlend = bx::clamp(easeBlend(particle.life), 0.0f, 1.0f);
             const float ttRgba = bx::clamp(easeRgba(particle.life), 0.0f, 1.0f);
 
-            const bx::Vec3 p0 = bx::lerp(particle.start, particle.end[0], ttPos);
-            const bx::Vec3 p1 = bx::lerp(particle.end[0], particle.end[1], ttPos);
-            const bx::Vec3 pos = bx::lerp(p0, p1, ttPos);
+            const bx::Vec3 pos = bx::lerp(particle.start, particle.end[1], ttPos);
+            //const bx::Vec3 p1 = bx::lerp(particle.end[0], particle.end[1], ttPos);
+            //const bx::Vec3 pos = bx::lerp(p0, p1, ttPos);
 
             ParticleSort& sort = _outSort[current];
             const bx::Vec3 tmp0 = bx::sub(_eye, pos);
