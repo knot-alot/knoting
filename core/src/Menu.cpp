@@ -26,9 +26,14 @@ void knot::Menu::on_widget_render() {
     const char* text = "knoting game";
     ImGui::Text(text);
     ImGui::SetCursorPosY(m_y/3.5);
-    ImGui::Button("Start", ImVec2(150, 30)) ;
+    if( ImGui::Button("Start", ImVec2(150, 30))){
+        Pause_button_click = !Pause_button_click;
+    }
+
     ImGui::SetCursorPosY(m_y/3.5+30);
-    ImGui::Button("Quit", ImVec2(150, 30));
+    if( ImGui::Button("Quit", ImVec2(150, 30))){
+       Quit_button_click = true;
+    }
     ImGui::EndChild();
 
     ImGui::End();

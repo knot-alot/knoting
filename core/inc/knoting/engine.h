@@ -55,6 +55,9 @@ class Engine {
     double get_Gui_Time_cost(){
         return m_GuiTimes;
     }
+    void switch_paused(){
+        m_ispaused = !m_ispaused;
+    }
 
     inline static bool isClient = true;
 
@@ -63,6 +66,7 @@ class Engine {
     void reset_physics_module();
 
    private:
+    bool m_ispaused = false;
     int m_windowWidth = 1024;
     int m_windowHeight = 768;
     std::string m_windowTitle = "hello knotting!";

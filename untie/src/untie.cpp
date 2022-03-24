@@ -1,6 +1,4 @@
 #include "untie.h"
-#include "knoting/demo_widget.h"
-#include "knoting/Menu.h"
 #include <knoting/components.h>
 #include <knoting/game_object.h>
 #include <knoting/instance_mesh.h>
@@ -10,6 +8,8 @@
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/scene.h>
 #include <knoting/texture.h>
+#include "knoting/Menu.h"
+#include "knoting/demo_widget.h"
 
 #include <knoting/audio_listener.h>
 #include <knoting/audio_source.h>
@@ -21,9 +21,9 @@
 #include <fstream>
 #include <iostream>
 
-#include <cereal/archives/json.hpp>
-#include <knoting/widget_subsystem.h>
 #include <bx/timer.h>
+#include <knoting/widget_subsystem.h>
+#include <cereal/archives/json.hpp>
 #include <cstdio>
 #include <ctime>
 #include <iostream>
@@ -371,14 +371,13 @@ Untie::Untie() {
     //        log::debug("file not found");
     //    }
     //    serializedSceneStream.close();
-   // auto demoWidget = std::make_shared<DemoWidget>("demo");
-   //m_engine->get_Widget().lock()->add_widget(demoWidget);
-   //  m_menu = std::make_shared<Menu>("menu");
-   //  m_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),m_engine->get_window_module().lock()->get_window_height());
-    // m_engine->get_Widget().lock()->add_widget(m_menu);
-     m_debug = std::make_shared<Debug_gui>("Debug");
-     m_engine->get_Widget().lock()->add_widget(m_debug);
-
+    // auto demoWidget = std::make_shared<DemoWidget>("demo");
+    // m_engine->get_Widget().lock()->add_widget(demoWidget);
+      m_menu = std::make_shared<Menu>("menu");
+      m_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),m_engine->get_window_module().lock()->get_window_height());
+     m_engine->get_Widget().lock()->add_widget(m_menu);
+    m_debug = std::make_shared<Debug_gui>("Debug");
+    m_engine->get_Widget().lock()->add_widget(m_debug);
 }
 
 void Untie::run() {
@@ -416,7 +415,13 @@ void Untie::run() {
         if (im->key_pressed(KeyCode::Escape)) {
             m_engine->get_window_module().lock()->close();
         }
-        if(im->key_on_trigger(KeyCode::GraveAccent)) {
+        if(m_menu->get_quit_click()){
+            m_engine->get_window_module().lock()->close();
+        }
+        if(m_menu->get_Pause_click()){
+            m_engine->switch_paused();
+        }
+        if (im->key_on_trigger(KeyCode::GraveAccent)) {
             if (open) {
                 m_debug->setOpen(open);
             }
@@ -424,16 +429,14 @@ void Untie::run() {
                 m_debug->setOpen(open);
             }
             open = !open;
-
         }
         int64_t now = bx::getHPCounter();
         static int64_t last = now;
         const int64_t frameTime = now - last;
         last = now;
-        const double freq = double(bx::getHPFrequency() );
-        const double toMs = 1000.0/freq;
-        m_debug->setFrame(1000/(double(frameTime)*toMs));
-
+        const double freq = double(bx::getHPFrequency());
+        const double toMs = 1000.0 / freq;
+        m_debug->setFrame(1000 / (double(frameTime) * toMs));
     }
 }
 

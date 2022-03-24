@@ -17,7 +17,6 @@
 #define GLFW_EXPOSE_NATIVE_COCOA
 #endif
 
-
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 
@@ -26,10 +25,10 @@
 namespace knot {
 
 class Engine;
-namespace components{
-    class ShaderProgram;
+namespace components {
+class ShaderProgram;
 }
-}
+}  // namespace knot
 
 static bgfx::VertexLayout imguiVertexLayout;
 static bgfx::TextureHandle imguiFontTexture;
