@@ -103,7 +103,7 @@ Untie::Untie() {
         shape.set_geometry(shape.create_cube_geometry(halfsize));
 
         auto& aggregate = cubeObj.add_component<components::Aggregate>();
-        aggregate.add_aggregate("floor", 10, false);
+        aggregate.add_aggregate("floor", 10, true);
 
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
@@ -150,6 +150,8 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
         material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
         cubeObj.add_component<components::Material>(material);
+
+        cubeOne = cubeObj;
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
         client.m_clientNum = 0;
