@@ -32,7 +32,7 @@ void ForwardRenderer::on_awake() {}
 void ForwardRenderer::on_update(double m_delta_time) {
     auto windowSize = m_engine.get_window_module().lock()->get_window_size();
     const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
-    if(glm::isnan(aspectRatio)){
+    if (glm::isnan(aspectRatio)) {
         return;
     }
 
