@@ -33,6 +33,8 @@ enum class TextureHandle {
     Metallic,
     Roughness,
     Occlusion,
+    RedNormal,
+    BlueNormal,
     LAST
 };
 
@@ -42,6 +44,8 @@ enum class UniformSamplerHandle {
     Metallic,
     Roughness,
     Occlusion,
+    RedNormal,
+    BlueNormal,
     LAST
 };
 
@@ -56,11 +60,14 @@ class Material {
     //================
 
     void set_texture_slot_path(const TextureType slot, const std::string& path);
-
+    void set_albedo_mix_color(const vec4& color){m_albedoColor = color;};
     void set_uniforms();
+
+    void set_mask_data(const vec4 data[100]);
+
     bgfx::ProgramHandle get_program() { return m_shader.get_program(); };
 
-    void set_texture_scale(vec2 textureScale){m_textureTiling = textureScale;};
+    void set_texture_scale(vec2 textureScale);
 
     template <class Archive>
     void save(Archive &archive) const{
@@ -82,19 +89,26 @@ class Material {
     std::array<bgfx::UniformHandle, (size_t)UniformSamplerHandle::LAST> m_uniformSamplerHandle;
     std::array<bgfx::TextureHandle, (size_t)TextureHandle::LAST> m_textureHandles;
 
+    bgfx::UniformHandle m_paintData0;
+    bgfx::UniformHandle m_paintData1;
+    bgfx::UniformHandle m_paintData2;
+    bgfx::UniformHandle m_paintData3;
+
    private:
     std::shared_ptr<Texture> m_albedo;
     std::shared_ptr<Texture> m_normal;
     std::shared_ptr<Texture> m_metallic;
     std::shared_ptr<Texture> m_roughness;
     std::shared_ptr<Texture> m_occlusion;
+    std::shared_ptr<Texture> m_redNormal;
+    std::shared_ptr<Texture> m_blueNormal;
 
     std::string m_textureSlotPath[5] = {"", "", "", "", ""};
 
     ShaderProgram m_shader;
 
    private:
-    glm::vec4 m_albedoColor = glm::vec4(255.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f);
+    glm::vec4 m_albedoColor = glm::vec4(1,1,1,1);
     glm::vec2 m_textureTiling = glm::vec2(1);
 
     float m_albedoScalar = 1.0f;

@@ -27,6 +27,7 @@ namespace knot {
 
 std::optional<GameObject> cubeOne;
 std::optional<GameObject> cubeTwo;
+components::Particles* partSystem;
 
 Untie::Untie() {
     m_scene = std::make_unique<Scene>();
@@ -94,8 +95,38 @@ GameObject Untie::create_lower_floor(const std::string& name, vec3 position, vec
     material.set_texture_slot_path(TextureType::Albedo, "marble_floor.png");
     material.set_texture_slot_path(TextureType::Normal, "marble_floor_normal.png");
     material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-    material.set_texture_slot_path(TextureType::Roughness, "marble_floor_rough.png");
-    material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
+    material.set_texture_scale(vec2(8, 4));
+    cubeObj.add_component<components::Material>(material);
+
+    return cubeObj;
+}
+
+GameObject Untie::create_master_floor(const std::string& name, vec3 position, vec3 scale) {
+    auto cubeObj = m_scene->create_game_object(name);
+    cubeObj.get_component<components::Transform>().set_position(position);
+    cubeObj.get_component<components::Transform>().set_scale(glm::vec3(scale));
+    cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 0, 0));
+    cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
+
+    auto& shape = cubeObj.add_component<components::Shape>();
+    vec3 halfsize = vec3(vec3(scale));
+    shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+    auto& aggregate = cubeObj.add_component<components::Aggregate>();
+    aggregate.find_aggregate("level");
+
+    auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+    rigidbody.create_actor(false);
+
+    auto material = components::Material();
+    material.set_texture_slot_path(TextureType::Albedo, "concrete.png");
+    material.set_texture_slot_path(TextureType::Normal, "concrete_norm.png");
+    material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
     material.set_texture_scale(vec2(8, 4));
     cubeObj.add_component<components::Material>(material);
 
@@ -124,8 +155,8 @@ GameObject Untie::create_paint_tank_base(const std::string& name, vec3 position,
     material.set_texture_slot_path(TextureType::Albedo, "metal_base.png");
     material.set_texture_slot_path(TextureType::Normal, "marble_floor_normal.png");
     material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-    material.set_texture_slot_path(TextureType::Roughness, "marble_floor_rough.png");
-    material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
     material.set_texture_scale(vec2(8, 4));
     cubeObj.add_component<components::Material>(material);
 
@@ -154,8 +185,8 @@ GameObject Untie::create_paint_tank_glass_red(const std::string& name, vec3 posi
     material.set_texture_slot_path(TextureType::Albedo, "red_glass.png");
     material.set_texture_slot_path(TextureType::Normal, "glass_normal.png");
     material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-    material.set_texture_slot_path(TextureType::Roughness, "glass_rough.png");
-    material.set_texture_slot_path(TextureType::Occlusion, "glass_occlusion.png");
+    material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
     material.set_texture_scale(vec2(8, 4));
     cubeObj.add_component<components::Material>(material);
 
@@ -184,8 +215,8 @@ GameObject Untie::create_paint_tank_glass_blue(const std::string& name, vec3 pos
     material.set_texture_slot_path(TextureType::Albedo, "water.png");
     material.set_texture_slot_path(TextureType::Normal, "water_norm.png");
     material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-    material.set_texture_slot_path(TextureType::Roughness, "water_rough.png");
-    material.set_texture_slot_path(TextureType::Occlusion, "glass_occlusion.png");
+    material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
     material.set_texture_scale(vec2(8, 4));
     cubeObj.add_component<components::Material>(material);
 
@@ -214,8 +245,8 @@ GameObject Untie::create_slim_lower_floor(const std::string& name, vec3 position
     material.set_texture_slot_path(TextureType::Albedo, "marble_floor.png");
     material.set_texture_slot_path(TextureType::Normal, "marble_floor_normal.png");
     material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-    material.set_texture_slot_path(TextureType::Roughness, "marble_floor_rough.png");
-    material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
     material.set_texture_scale(vec2(1.5, 3));
     cubeObj.add_component<components::Material>(material);
 
@@ -244,8 +275,8 @@ GameObject Untie::create_upper_floor(const std::string& name, vec3 position, vec
     material.set_texture_slot_path(TextureType::Albedo, "wood_floor.png");
     material.set_texture_slot_path(TextureType::Normal, "wood_floor_normal.png");
     material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-    material.set_texture_slot_path(TextureType::Roughness, "wood_floor_rough.png");
-    material.set_texture_slot_path(TextureType::Occlusion, "wood_floor_occlusion.png");
+    material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
     material.set_texture_scale(vec2(3, 10));
     cubeObj.add_component<components::Material>(material);
 
@@ -274,8 +305,8 @@ GameObject Untie::create_slim_upper_floor(const std::string& name, vec3 position
     material.set_texture_slot_path(TextureType::Albedo, "wood_floor.png");
     material.set_texture_slot_path(TextureType::Normal, "wood_floor_normal.png");
     material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-    material.set_texture_slot_path(TextureType::Roughness, "wood_floor_rough.png");
-    material.set_texture_slot_path(TextureType::Occlusion, "wood_floor_occlusion");
+    material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
     material.set_texture_scale(vec2(4, 2.5));
     cubeObj.add_component<components::Material>(material);
 
@@ -304,9 +335,9 @@ GameObject Untie::create_grass(const std::string& name, vec3 position, vec3(scal
     material.set_texture_slot_path(TextureType::Albedo, "grass1-albedo3.png");
     material.set_texture_slot_path(TextureType::Normal, "grass1-normal1-ogl.png");
     material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-    material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-    material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
-    material.set_texture_scale(vec2(10, 6));
+    material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
+    material.set_texture_scale(vec2(4, 3));
     cubeObj.add_component<components::Material>(material);
 
     return cubeObj;
@@ -334,8 +365,8 @@ GameObject Untie::create_ramp(const std::string& name, vec3 position, vec3 rotat
     material.set_texture_slot_path(TextureType::Albedo, "plastic_floor.png");
     material.set_texture_slot_path(TextureType::Normal, "plastic_floor_normal.png");
     material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-    material.set_texture_slot_path(TextureType::Roughness, "plastic_floor_rough.png");
-    material.set_texture_slot_path(TextureType::Occlusion, "plastic_floor_occlusion.png");
+    material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
     material.set_texture_scale(vec2(1, 1));
     cubeObj.add_component<components::Material>(material);
 
@@ -364,8 +395,8 @@ GameObject Untie::create_wall(const std::string& name, vec3 position, vec3 rotat
     material.set_texture_slot_path(TextureType::Albedo, "wall_tex.png");
     material.set_texture_slot_path(TextureType::Normal, "wall_normal.png");
     material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-    material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-    material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
     cubeObj.add_component<components::Material>(material);
 
     return cubeObj;
@@ -393,8 +424,8 @@ GameObject Untie::create_brick_wall(const std::string& name, vec3 position, vec3
     material.set_texture_slot_path(TextureType::Albedo, "brick_wall.png");
     material.set_texture_slot_path(TextureType::Normal, "brick_wall_normal.png");
     material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-    material.set_texture_slot_path(TextureType::Roughness, "brick_wall_rough");
-    material.set_texture_slot_path(TextureType::Occlusion, "brick_wall_occlusion");
+    material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
     material.set_texture_scale(vec2(8, 1.5));
     cubeObj.add_component<components::Material>(material);
 
@@ -430,8 +461,8 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
     material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
     material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-    material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-    material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Roughness, "oldiron/OldIron01_1K_BaseColor.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "oldiron/OldIron01_1K_BaseColor.png");
     cubeObj.add_component<components::Material>(material);
 
     auto& client = cubeObj.add_component<components::ClientPlayer>();
@@ -477,10 +508,10 @@ GameObject Untie::create_skybox() {
 
     auto skybox = components::SkyBox();
 
-    skybox.set_texture_slot_path(SkyBoxTextureType::SkyBox, "skybox/cmft_skybox.hdr");
-    skybox.set_texture_slot_path(SkyBoxTextureType::Irradiance, "skybox/cmtr_irradiance.hdr");
-    skybox.set_texture_slot_path(SkyBoxTextureType::Radiance, "skybox/cmtr_radiance.hdr");
-    skybox.set_uniform_background_type(SkyBoxTextureType::Radiance);
+    skybox.set_texture_slot_path(SkyBoxTextureType::SkyBox, "skybox/output_skybox.tga");
+    skybox.set_texture_slot_path(SkyBoxTextureType::Irradiance, "skybox/output_rad.tga");
+    skybox.set_texture_slot_path(SkyBoxTextureType::Radiance, "skybox/output_irad.tga");
+    skybox.set_uniform_background_type(SkyBoxTextureType::Irradiance);
 
     cubeObj.add_component<components::SkyBox>(skybox);
 
@@ -504,10 +535,10 @@ void Untie::create_level() {
     }
 
     create_skybox();
-    create_point_light("main_light", vec3(0, 80, 0), 8, 0.5f, vec3(to_color(vec3(255, 255, 255))));
-    create_point_light("red_light_main", vec3(-26, 2, 45), 5, 0.2f, vec3(to_color(vec3(255, 0, 0))));
+    create_point_light("main_light", vec3(0, 80, 0), 8, 0.5f, vec3(to_color(vec3(192, 192, 192))));
+    create_point_light("red_light_main", vec3(-26, 2, 45), 2, 0.2f, vec3(to_color(vec3(255, 0, 0))));
     // create_point_light("red_light_secondary",vec3(27.0794125,2.00000024,48.2684784),5,0.2f,vec3(to_color(vec3(255,0,0))));
-    create_point_light("blue_light_main", vec3(25, 2, -45), 5, 0.2f, vec3(to_color(vec3(0, 0, 128))));
+    create_point_light("blue_light_main", vec3(25, 2, -45), 2, 0.2f, vec3(to_color(vec3(0, 0, 225))));
     // create_point_light("blue_light_secondary",vec3(-27,1.99999952,-48),5,0.2f,vec3(to_color(vec3(0,0,128))));
 
     create_level_bottom();
@@ -516,6 +547,8 @@ void Untie::create_level() {
 
     create_paint_tank_base("red_tank_base", vec3(-24.7299995, 1, 47.0099983), vec3(0, 0, 0), vec3(0.7, 0.7, 0.7));
     create_paint_tank_glass_red("red_tank_glass", vec3(-24.7299995, 1, 47.0099983), vec3(0, 0, 0), vec3(0.7, 0.7, 0.7));
+
+    create_master_floor("master_floor", vec3(0, -1, 0), vec3(80, 1, 80));
 
     create_lower_floor("lower_floor_top", vec3(0.229999542, 0, -28.25), vec3(30, 1, 22.86033));
     create_lower_floor("lower_floor_bottom", vec3(0.229999542, 0, 34.5), vec3(30, 1, 16.14291));
@@ -666,6 +699,25 @@ void Untie::create_level() {
     create_player("player_4", vec3(20, 5, 20), vec3(0), 3);
     create_player("player_5", vec3(0, 5, -20), vec3(0), 4);
     create_player("player_6", vec3(0, 5, 20), vec3(0), 5);
+
+    // CREATE PARTICLE SYSTEM
+
+    {
+        auto psObj = m_scene->create_game_object("ps1");
+        psObj.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 10.0f, 0.0f));
+        partSystem = &psObj.add_component<components::Particles>();
+        partSystem->set_max_particles_start_scale(0.5f);
+        partSystem->set_max_particles_end_scale(0.01f);
+        partSystem->set_particles_per_second(10);
+    }
+
+    {
+        auto psObj = m_scene->create_game_object("ps2");
+        psObj.get_component<components::Transform>().set_position(glm::vec3(-10.0f, 10.0f, 10.0f));
+        psObj.add_component<components::Particles>();
+    }
+
+    // END PARTICLE SYSTEM
 
     create_post_processing();
 }

@@ -36,6 +36,7 @@ class Untie {
                                            vec3 rotation = vec3(0),
                                            vec3 scale = vec3(1));
 
+    GameObject create_master_floor(const std::string& name = "", vec3 position = vec3(0), vec3 scale = vec3(1));
     GameObject create_lower_floor(const std::string& name = "", vec3 position = vec3(0), vec3 scale = vec3(1));
     GameObject create_upper_floor(const std::string& name = "", vec3 position = vec3(0), vec3 scale = vec3(1));
     GameObject create_slim_lower_floor(const std::string& name = "", vec3 position = vec3(0), vec3 scale = vec3(1));

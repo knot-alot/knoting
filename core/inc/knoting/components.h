@@ -4,11 +4,16 @@
 #include <knoting/audio_listener.h>
 #include <knoting/audio_source.h>
 #include <knoting/camera.h>
+
+#include <knoting/collision_detection.h>
+
 #include <knoting/client_player.h>
+
 #include <knoting/game_object.h>
 #include <knoting/instance_mesh.h>
 #include <knoting/material.h>
 #include <knoting/mesh.h>
+#include <knoting/particles.h>
 #include <knoting/px_material.h>
 #include <knoting/raycast.h>
 #include <knoting/rigid_controller.h>
