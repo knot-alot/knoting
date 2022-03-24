@@ -31,6 +31,7 @@ Engine::Engine() {
     if (!isClient) {
         m_engineModules.emplace_back(m_serverModule);
     }
+
     m_engineModules.emplace_back(m_scriptingModule);
     m_engineModules.emplace_back(m_clientModule);
 
