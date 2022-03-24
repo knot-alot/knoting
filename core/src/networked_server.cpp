@@ -115,6 +115,8 @@ bool NetworkedServer::handle_recieved_packets(double m_delta_time) {
                 playerComp.m_jumpPressed = (cliMess->jumpPressed);
                 playerComp.m_isShooting = (cliMess->isShooting);
 
+                log::debug("player #{} is moving in axis {}", playerNum, to_string(playerComp.m_moveAxis));
+
                 //                // here downwards will be removed and handled by scripts
                 //
                 //                vec2i inputs = playerComp.m_moveAxis;

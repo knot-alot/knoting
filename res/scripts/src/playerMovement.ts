@@ -44,18 +44,22 @@ export default class Player_movement extends GameObject {
     }
 
     update(deltaTime: number) {
-        if (!this.cameraChild)
+        if (!this.cameraChild) {
             this.getCameraChild();
+        }
 
-        this.playerInputs();
+        if (this.clientPlayer.getClientNumber() == network.getClientNumber()) {
+            this.playerInputs();
+        }
     }
 
     lateUpdate() {
-        if (this.clientPlayer.getClientNumber() != network.getClientNumber()) {
-            return;
-        }
+        // if (this.clientPlayer.getClientNumber() == network.getClientNumber()) {
+        // this.playerRotation();
+        // } else {
+        // this.playerServerRotation();
+        // }
 
-        this.playerRotation();
         this.playerMovement();
 
         if (input.keyOnTrigger(KeyCode.U)) {
@@ -88,34 +92,49 @@ export default class Player_movement extends GameObject {
 
         this.clientPlayer?.setJumpPressed(input.keyOnTrigger(KeyCode.Space));
         this.clientPlayer?.setIsShooting(
-            input.mouseButtonHeldDown(MouseButtonCode.Left)
+            input.mouseButtonPressed(MouseButtonCode.Left)
         );
 
-        let player_look: Vec2 = [0, 0];
-        let relMousePosition: Vec2 = input.getRelativePosition();
-        if (relMousePosition[0] > 0) {
-            player_look[0] = 1;
-        } else if (relMousePosition[0] < 0) {
-            player_look[0] = -1;
-        }
-        if (relMousePosition[1] > 0) {
-            player_look[1] = 1;
-        } else if (relMousePosition[1] < 0) {
-            player_look[1] = -1;
-        }
-        this.clientPlayer?.setLookAxis(player_look);
+        // let player_look: Vec2 = [0, 0];
+        // let relMousePosition: Vec2 = input.getRelativePosition();
+        // if (relMousePosition[0] > 0) {
+        //     player_look[0] = 1;
+        // } else if (relMousePosition[0] < 0) {
+        //     player_look[0] = -1;
+        // }
+        // if (relMousePosition[1] > 0) {
+        //     player_look[1] = 1;
+        // } else if (relMousePosition[1] < 0) {
+        //     player_look[1] = -1;
+        // }
+        // let childCamera: EditorCamera = this.cameraChild.getComponent("editorCamera");
+        // let rotation = childCamera.getRotationEuler();
+        //
+        // this.clientPlayer?.setLookAxis([-rotation[1] - 180.0, 0.0]);
     }
 
     playerRotation() {
-        let childCamera: EditorCamera = this.cameraChild.getComponent("editorCamera");
-        let rotation = childCamera.getRotationEuler();
-
-        rotation[0] = 0.0;
-        rotation[1] = -rotation[1] - 180.0;
-        rotation[2] = 0.0;
-        this.transform.setRotationEuler(rotation);
-        this.rigidBody.setRotationEuler(rotation);
+        let lookTarget: Vec2 = this.clientPlayer.getLookAxis();
+        this.transform.setRotationEuler([0, lookTarget[0], 0]);
+        this.rigidBody.setRotationEuler([0, lookTarget[0], 0]);
     }
+
+    // playerServerRotation() {
+    // let lookX: number = lookTarget[0];
+    //
+    // let rotDeg: Vec3 = [0, 0, 0]
+    // let lookMulti: number = 3
+    // if (lookX > 0) {
+    //     rotDeg[1] = -1 * lookMulti;
+    // } else if (lookX < 0) {
+    //     rotDeg[1] = 1 * lookMulti;
+    // }
+    //
+    // let playerRot: Quat = this.transform.getRotation();
+    // let newRot: Vec3 = math.multiplyQuat(rotDeg, playerRot);
+    // this.transform.setRotationEuler(newRot);
+    // this.rigidBody.setRotationEuler(newRot);
+    // }
 
     playerMovement() {
         let moveAxis: Vec2 = this.clientPlayer!.getMoveAxis();
