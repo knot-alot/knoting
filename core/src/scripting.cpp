@@ -1452,7 +1452,7 @@ class JSParticles : public JSObjectBase {
     }
 };
 
-class JSConllisionDetection : public JSObjectBase {
+class JSCollisionDetection : public JSObjectBase {
    public:
     std::optional<std::reference_wrapper<components::Collision_Detection>> get_CollisionDetection() {
         auto gameObjectOpt = retrieve_game_object();
@@ -1488,15 +1488,7 @@ class JSConllisionDetection : public JSObjectBase {
         auto& detection = detectionOpt.value().get();
         return detection.get_contact_data_by_actor(actor);
     }
-    std::vector<contact_data> get_contact_data_by_actor(std::shared_ptr<PxStatic_ptr_wrapper> actor) {
-        auto detectionOpt = get_CollisionDetection();
-        if (!detectionOpt) {
-            std::vector<contact_data> cd;
-            return cd;
-        }
-        auto& detection = detectionOpt.value().get();
-        return detection.get_contact_data_by_actor(actor);
-    }
+
     std::vector<contact_data> get_contact_data_by_name(std::string name) {
         auto detectionOpt = get_CollisionDetection();
         if (!detectionOpt) {
@@ -1516,15 +1508,7 @@ class JSConllisionDetection : public JSObjectBase {
         auto& detection = detectionOpt.value().get();
         detection.add_search_actor(actor);
     }
-    void add_search_actor(std::shared_ptr<PxStatic_ptr_wrapper> actor) {
-        auto detectionOpt = get_CollisionDetection();
-        if (!detectionOpt) {
-            std::vector<contact_data> cd;
-            return;
-        }
-        auto& detection = detectionOpt.value().get();
-        detection.add_search_actor(actor);
-    }
+
     void add_search_name(std::string name) {
         auto detectionOpt = get_CollisionDetection();
         if (!detectionOpt) {
@@ -1873,7 +1857,7 @@ JSValue JSGameObject::get_component(const std::string& name) {
             JS_GetOpaque(obj, qjs::js_traits<std::shared_ptr<JSHierarchy>>::QJSClassId));
     } else if (name == "conllisionDetection") {
         opaque = static_cast<std::shared_ptr<JSObjectBase>*>(
-            JS_GetOpaque(obj, qjs::js_traits<std::shared_ptr<JSConllisionDetection>>::QJSClassId));
+            JS_GetOpaque(obj, qjs::js_traits<std::shared_ptr<JSCollisionDetection>>::QJSClassId));
     }
 
     if (!opaque) {
@@ -2084,19 +2068,19 @@ void Scripting::add_knoting_module() {
         .fun<&JSParticles::get_position>("getPosition")
         .fun<&JSParticles::get_lookat>("getLookat");
 
-    knoting.class_<JSConllisionDetection>("ConllisionDetection")
+    knoting.class_<JSCollisionDetection>("ConllisionDetection")
         .constructor()
-        .fun<&JSConllisionDetection::get_name_contact_data>("getNameContactData")
-        .fun<&JSConllisionDetection::get_contact_data_by_actor>("getContactDataByActor")
-        .fun<&JSConllisionDetection::get_contact_data_by_actor>("getContactDataByActor")
-        .fun<&JSConllisionDetection::get_contact_data_by_name>("getContactDataByName")
-        .fun<&JSConllisionDetection::get_actor_contact_data>("getActorContactData")
-        .fun<&JSConllisionDetection::add_search_actor>("addSearchActor")
-        .fun<&JSConllisionDetection::add_search_actor>("addSearchActor")
-        .fun<&JSConllisionDetection::add_search_name>("addSearchName")
-        .fun<&JSConllisionDetection::remove_search_actor>("removeSearchActor")
-        .fun<&JSConllisionDetection::remove_search_actor>("removeSearchActor")
-        .fun<&JSConllisionDetection::remove_search_name>("removeSearchActor");
+        .fun<&JSCollisionDetection::get_name_contact_data>("getNameContactData")
+        .fun<&JSCollisionDetection::get_contact_data_by_actor>("getContactDataByActor")
+        .fun<&JSCollisionDetection::get_contact_data_by_actor>("getContactDataByActor")
+        .fun<&JSCollisionDetection::get_contact_data_by_name>("getContactDataByName")
+        .fun<&JSCollisionDetection::get_actor_contact_data>("getActorContactData")
+        .fun<&JSCollisionDetection::add_search_actor>("addSearchActor")
+        .fun<&JSCollisionDetection::add_search_actor>("addSearchActor")
+        .fun<&JSCollisionDetection::add_search_name>("addSearchName")
+        .fun<&JSCollisionDetection::remove_search_actor>("removeSearchActor")
+        .fun<&JSCollisionDetection::remove_search_actor>("removeSearchActor")
+        .fun<&JSCollisionDetection::remove_search_name>("removeSearchName");
 
     auto storage = m_context->newObject();
     storage.add("store", script_storage_store);

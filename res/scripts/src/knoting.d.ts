@@ -478,17 +478,44 @@ declare module "knoting" {
     }
 
     class Particle {
-        setParticlesPerSecond(rate: float): void;
+        setParticlesPerSecond(rate: float): void
 
-        setPosition(position: Vec3): void;
+        setPosition(position: Vec3): void
 
-        setLookat(lookat: Vec3): void;
+        setLookat(lookat: Vec3): void
 
-        getParticlesPerSecond(): float;
+        getParticlesPerSecond(): float
 
-        getPosition(): Vec3;
+        getPosition(): Vec3
 
-        getLookat(): Vec3;
+        getLookat(): Vec3
+    }
+
+    enum ContactType {
+        TouchFound,
+        TouchPersists,
+    }
+
+    class ContactData {
+        getContactPoint(): Vec3
+
+        getContactActor(): UUID
+
+        getContactType(): ContactType
+    }
+
+    class CollisionDetection {
+        getContactDataByActor(id: UUID): Array<ContactData>
+
+        getContactDataByName(name: string): Array<ContactData>
+
+        addSearchActor(id: UUID): void
+
+        addSearchName(name: string): void
+
+        removeSearchActor(id: UUID): void
+
+        removeSearchName(name: string): void
     }
 
     const input: InputManager;
