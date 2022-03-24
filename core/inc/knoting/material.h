@@ -60,6 +60,8 @@ class Material {
     void set_uniforms();
     bgfx::ProgramHandle get_program() { return m_shader.get_program(); };
 
+    void set_texture_scale(vec2 textureScale){m_textureTiling = textureScale;};
+
     template <class Archive>
     void save(Archive &archive) const{
         archive(CEREAL_NVP(m_textureSlotPath), CEREAL_NVP(m_shader),CEREAL_NVP(m_albedoColor),CEREAL_NVP(m_textureTiling),
