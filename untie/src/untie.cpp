@@ -511,11 +511,11 @@ void Untie::create_level() {
     // create_point_light("blue_light_secondary",vec3(-27,1.99999952,-48),5,0.2f,vec3(to_color(vec3(0,0,128))));
 
     create_level_bottom();
-    create_paint_tank_base("blue_tank_base", vec3(25.9200001,1,-47), vec3(0,0,0), vec3(0.7,0.7,0.7));
-    create_paint_tank_glass_blue("blue_tank_glass", vec3(25.9200001,1,-47), vec3(0,0,0), vec3(0.7,0.7,0.7));
+    create_paint_tank_base("blue_tank_base", vec3(25.9200001, 1, -47), vec3(0, 0, 0), vec3(0.7, 0.7, 0.7));
+    create_paint_tank_glass_blue("blue_tank_glass", vec3(25.9200001, 1, -47), vec3(0, 0, 0), vec3(0.7, 0.7, 0.7));
 
-    create_paint_tank_base("red_tank_base", vec3(-24.7299995,1,47.0099983),vec3(0,0,0), vec3(0.7,0.7,0.7));
-    create_paint_tank_glass_red("red_tank_glass", vec3(-24.7299995,1,47.0099983),vec3(0,0,0), vec3(0.7,0.7,0.7));
+    create_paint_tank_base("red_tank_base", vec3(-24.7299995, 1, 47.0099983), vec3(0, 0, 0), vec3(0.7, 0.7, 0.7));
+    create_paint_tank_glass_red("red_tank_glass", vec3(-24.7299995, 1, 47.0099983), vec3(0, 0, 0), vec3(0.7, 0.7, 0.7));
 
     create_lower_floor("lower_floor_top", vec3(0.229999542, 0, -28.25), vec3(30, 1, 22.86033));
     create_lower_floor("lower_floor_bottom", vec3(0.229999542, 0, 34.5), vec3(30, 1, 16.14291));
