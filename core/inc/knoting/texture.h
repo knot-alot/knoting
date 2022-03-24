@@ -75,9 +75,8 @@ class Texture : public Asset {
     static constexpr std::string_view FORMAT_PSD = ".psd";
     static constexpr std::string_view FORMAT_HDR = ".hdr";
 
-    std::vector<std::string_view> m_supported_texture_2d{FORMAT_PNG, FORMAT_JPG, FORMAT_JPEG,
-                                                         FORMAT_TGA, FORMAT_BMP, FORMAT_PSD};
-    std::vector<std::string_view> m_supported_skybox{FORMAT_HDR};
+    std::vector<std::string_view> m_supported_texture_2d{FORMAT_PNG, FORMAT_JPG, FORMAT_JPEG, FORMAT_BMP, FORMAT_PSD};
+    std::vector<std::string_view> m_supported_skybox{FORMAT_HDR, FORMAT_TGA};
     uint16_t m_width = 0;
     uint16_t m_height = 0;
 };

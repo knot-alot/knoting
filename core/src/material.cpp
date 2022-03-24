@@ -138,16 +138,27 @@ void Material::set_uniforms() {
     bgfx::setTexture(6, m_uniformSamplerHandle[(size_t)UniformSamplerHandle::BlueNormal],m_textureHandles[(size_t)TextureHandle::BlueNormal]);
 
     // clang-format off
+    // clang-format on
 }
 
-void Material::set_texture_slot_path(const TextureType slot, const std::string& path){
-    if ((size_t)slot >= (size_t)TextureType::LAST){
+void Material::set_texture_slot_path(const TextureType slot, const std::string& path) {
+    if ((size_t)slot >= (size_t)TextureType::LAST) {
         log::error("invalid material texture : {}", (size_t)slot);
         return;
     }
     m_textureSlotPath[(int)slot] = path;
 }
 
+void Material::set_texture_scale(vec2 textureScale) {
+    if (textureScale.x <= 0) {
+        textureScale.x = 0.01;
+    }
+    if (textureScale.y <= 0) {
+        textureScale.y = 0.01;
+    }
+
+    m_textureTiling = textureScale;
+}
 
 }  // namespace components
 }  // namespace knot

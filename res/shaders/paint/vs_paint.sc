@@ -4,6 +4,8 @@ $output v_wpos, v_view, v_normal, v_tangent, v_bitangent, v_texcoord0, v_localPo
 #include <bgfx_shader.sh>
 #include <common.sh>
 
+uniform vec4 m_textureTiling;
+
 mat3 mtx3FromCols(vec3 c0, vec3 c1, vec3 c2)
 {
 #ifdef BGFX_SHADER_LANGUAGE_GLSL
@@ -37,6 +39,6 @@ void main()
 	// eye position in world space
 	vec3 weyepos = mul(vec4(0.0, 0.0, 0.0, 1.0), u_view).xyz;	
 	// tangent space view dir
-	v_view = mul(weyepos - wpos, tbn);	
-	v_texcoord0 = a_texcoord0;
+	v_view = mul(weyepos - wpos, tbn);
+	v_texcoord0 = vec2(a_texcoord0.x * m_textureTiling.x, a_texcoord0.y * m_textureTiling.y);
 }

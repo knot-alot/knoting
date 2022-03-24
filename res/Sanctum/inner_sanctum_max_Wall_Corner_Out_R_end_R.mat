@@ -1,0 +1,16 @@
+MeshMat
+1
+2
+2
+inner_sanctum_max_walls_and_floor_phong4
+3
+Diffuse:/inner_sanctum_max_wall_low_C.tga
+Bump:/inner_sanctum_max_wall_low_N.tga
+Metallic:/inner_sanctum_max_wall_low_M.tga
+inner_sanctum_max_walls_and_floor_phong3
+3
+Diffuse:/inner_sanctum_max_wall_low_C.tga
+Bump:/inner_sanctum_max_wall_low_N.tga
+Metallic:/inner_sanctum_max_wall_low_M.tga
+0
+1
