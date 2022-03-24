@@ -18,6 +18,7 @@
 #include <knoting/scene.h>
 #include <knoting/skybox.h>
 #include <knoting/spot_light.h>
+#include <knoting/Font.h>
 #include <fstream>
 #include <iostream>
 
@@ -42,6 +43,8 @@ Untie::Untie() {
     m_engine = std::make_unique<knot::Engine>();
     Engine::set_active_engine(*m_engine);
     create_level();
+    auto fontObj = m_scene->create_game_object("font");
+    fontObj.add_component<components::Font>();
     // auto demoWidget = std::make_shared<DemoWidget>("demo");
     // m_engine->get_Widget().lock()->add_widget(demoWidget);
     m_Pause_menu = std::make_shared<PauseMenu>("Pausemenu");

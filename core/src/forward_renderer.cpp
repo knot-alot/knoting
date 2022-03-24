@@ -18,7 +18,7 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
-
+#include <knoting/Font.h>
 #include <bx/math.h>
 
 namespace knot {
@@ -294,6 +294,17 @@ void ForwardRenderer::color_pass(uint16_t idx) {
                        BGFX_STATE_DEPTH_TEST_LESS);
 
         bgfx::submit(idx, material.get_program());
+    }
+    auto f = registry.view<Font>();
+    for (auto& e : f) {
+        auto goOpt = scene.get_game_object_from_handle(e);
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        Font& font = go.get_component<Font>();
+        font.get_textBuffer()->submitTextBuffer(font.get_text(), 1);
     }
 }
 
