@@ -19,6 +19,7 @@ void Texture::on_awake() {
 }
 
 void Texture::on_destroy() {
+    stbi_image_free(data);
     bgfx::destroy(m_textureHandle);
     log::info("removed texture : {}", m_fullPath);
 }
@@ -49,11 +50,8 @@ void Texture::load_texture_hdri(const std::string& path) {
     }
 
     // load image with stb_image
-    glm::ivec2 img_size;
-    int channels;
     stbi_set_flip_vertically_on_load(true);
-    stbi_uc* data = stbi_load(fsPath.string().c_str(), &img_size.x, &img_size.y, &channels, 0);
-    int numberOfLayers = 1;
+    data = stbi_load(fsPath.string().c_str(), &imageSize.x, &imageSize.y, &channels, 0);
 
     if (!data) {
         log::error("Failed to load image: {}", fsPath.string());
@@ -61,7 +59,6 @@ void Texture::load_texture_hdri(const std::string& path) {
         return;
     }
 
-    uint32_t textureFlags{0};
     textureFlags = BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
 
     // clang-format off
@@ -69,13 +66,13 @@ void Texture::load_texture_hdri(const std::string& path) {
 
     textureHandle =
         bgfx::createTexture2D(
-        img_size.x,
-        img_size.y,
+        imageSize.x,
+        imageSize.y,
         false,
         numberOfLayers,
         bgfx::TextureFormat::RGBA8,
         textureFlags,
-        bgfx::copy(data, img_size.x * img_size.y * channels));
+        bgfx::copy(data, imageSize.x * imageSize.y * channels));
 
     // clang-format on
 
@@ -86,10 +83,14 @@ void Texture::load_texture_hdri(const std::string& path) {
     }
 
     stbi_set_flip_vertically_on_load(false);
-    stbi_image_free(data);
     m_assetState = AssetState::Finished;
     m_textureHandle = textureHandle;
 }
+
+class Pixel {
+   public:
+    uint8 data[4];
+};
 
 // TODO Return fail state for the template so that it can set the idX to the default fallback texture
 void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool usingAnisotropicFiltering) {
@@ -101,12 +102,9 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
     }
 
     // load image with stb_image
-    glm::ivec2 imageSize;
-    int channels;
     stbi_set_flip_vertically_on_load(true);
 
-    stbi_uc* data = stbi_load(fsPath.string().c_str(), &imageSize.x, &imageSize.y, &channels, 0);
-    int numberOfLayers = 1;
+    data = stbi_load(fsPath.string().c_str(), &imageSize.x, &imageSize.y, &channels, 0);
 
     if (!data) {
         log::error("Failed to load image: {}", fsPath.string());
@@ -114,16 +112,16 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
         return;
     }
 
-    uint32_t textureFlags{0};
     textureFlags = BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_W_CLAMP | BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT;
 
     if (usingAnisotropicFiltering)
-        textureFlags |= BGFX_SAMPLER_MAG_ANISOTROPIC;
+        textureFlags |= BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
     if (usingMipMaps)
         textureFlags |= BGFX_CAPS_FORMAT_TEXTURE_MIP_AUTOGEN;
 
     // clang-format off
     bgfx::TextureHandle textureHandle;
+    constexpr int rgba = 4;
 
     textureHandle =
         bgfx::createTexture2D(
@@ -145,7 +143,6 @@ void Texture::load_texture_2d(const std::string& path, bool usingMipMaps, bool u
 
     // free stbi image & reset global stbi state
     stbi_set_flip_vertically_on_load(false);
-    stbi_image_free(data);
     m_assetState = AssetState::Finished;
     m_textureHandle = textureHandle;
 }
@@ -178,6 +175,7 @@ bgfx::TextureHandle Texture::internal_generate_solid_texture(const vec4& color, 
     r, g, b, a,
     r, g, b, a
     };
+
 
     unsigned char* imageData = (unsigned char*)texData;
 
@@ -221,6 +219,40 @@ void Texture::generate_solid_color_texture(const vec4& color, const std::string&
 
     m_textureHandle = textureHandle;
     m_assetState = AssetState::Finished;
+}
+
+void Texture::set_pixel(vec2i position, vec4 color, float radius) {
+    float brushSize = radius;
+    constexpr int rgba = 4;
+
+    constexpr int layers = 1;
+    constexpr bool mips = false;
+
+    size_t maxStride = imageSize.x * imageSize.y * rgba;
+
+    Pixel* imageData = static_cast<Pixel*>(data);
+    int xx = position.x;
+    int yy = position.y;
+
+    float brushSq = brushSize * brushSize;
+    for (int x = -brushSize; x < brushSize; ++x) {
+        for (int y = -brushSize; y < brushSize; ++y) {
+            vec2 pos = vec2(static_cast<float>(x), static_cast<float>(y));
+            float lenSq = pos.x * pos.x + pos.y * pos.y;
+            if (lenSq < brushSq) {
+                size_t currentStride = (imageSize.x * (yy + y)) + (xx + x);
+                imageData[currentStride].data[0] = (uint8)color.r * 255;
+                imageData[currentStride].data[1] = (uint8)color.g * 255;
+                imageData[currentStride].data[2] = (uint8)color.b * 255;
+                imageData[currentStride].data[3] = (uint8)color.a * 255;
+            }
+        }
+    }
+
+    bgfx::destroy(m_textureHandle);
+
+    m_textureHandle = bgfx::createTexture2D(imageSize.x, imageSize.y, false, numberOfLayers, bgfx::TextureFormat::RGBA8,
+                                            textureFlags, bgfx::copy(data, imageSize.x * imageSize.y * channels));
 }
 
 }  // namespace components

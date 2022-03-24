@@ -97,7 +97,7 @@ Untie::Untie() {
     {
         auto cubeObj = scene.create_game_object("floor");
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 0.0f, -0.0f));
-        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(25, 1, 25));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(25, 2, 25));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 0, 0));
         cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
@@ -108,16 +108,16 @@ Untie::Untie() {
         shape.set_geometry(shape.create_cube_geometry(halfsize));
 
         auto& aggregate = cubeObj.add_component<components::Aggregate>();
-        aggregate.add_aggregate("floor", 10, false);
+        aggregate.add_aggregate("floor", 10, true);
 
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
         material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "mask.png");
+        material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
         cubeObj.add_component<components::Material>(material);
 
         rigidbody.create_actor(false);
@@ -128,7 +128,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-20, 5.0f, -20));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 240, 0));
-        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
@@ -151,10 +151,12 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "mask.png");
+        material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
         cubeObj.add_component<components::Material>(material);
+
+        cubeOne = cubeObj;
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
         client.m_clientNum = 0;
@@ -165,7 +167,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(20, 5.0f, 20));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 10, 0));
-        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
@@ -188,14 +190,15 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "mask.png");
+        material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
+        material.set_albedo_mix_color(vec4(1, 0, 1, 1));
         cubeObj.add_component<components::Material>(material);
 
-        auto& source = cubeObj.add_component<components::AudioSource>("drumloop.wav", true);
+        auto& source = cubeObj.add_component<components::AudioSource>("drumloop.wav", false);
 
-        m_engine->get_audio_module().lock()->play(source);
+        // m_engine->get_audio_module().lock()->play(source);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
         client.m_clientNum = (1);
@@ -206,7 +209,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-20, 5.0f, 20));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 10, 0));
-        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
@@ -229,9 +232,11 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "mask.png");
+        material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
+        material.set_albedo_mix_color(vec4(0, 1, 1, 1));
+
         cubeObj.add_component<components::Material>(material);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
@@ -243,7 +248,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(20, 5.0f, -20));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 10, 0));
-        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
@@ -266,9 +271,11 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "mask.png");
+        material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
+        material.set_albedo_mix_color(vec4(0, 0, 1, 1));
+
         cubeObj.add_component<components::Material>(material);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
@@ -280,7 +287,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(0, 5.0f, 20));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 10, 0));
-        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
@@ -303,9 +310,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "mask.png");
+        material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
         cubeObj.add_component<components::Material>(material);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
@@ -317,7 +324,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(0, 5.0f, -20));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 10, 0));
-        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
@@ -340,9 +347,9 @@ Untie::Untie() {
         auto material = components::Material();
         material.set_texture_slot_path(TextureType::Albedo, "oldiron/OldIron01_1K_BaseColor.png");
         material.set_texture_slot_path(TextureType::Normal, "oldiron/OldIron01_1K_Normal.png");
-        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
-        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Metallic, "mask.png");
+        material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+        material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
         cubeObj.add_component<components::Material>(material);
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();

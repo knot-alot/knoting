@@ -97,6 +97,22 @@ void RigidBody::set_name(const std::string& name) {
     }
 }
 
+void RigidBody::set_flag(PxActorFlag::Enum flag) {
+    if (m_dynamic) {
+        m_dynamic->get()->setActorFlag(flag, true);
+    } else {
+        m_static->get()->setActorFlag(flag, true);
+    }
+}
+
+void RigidBody::remove_flag(PxActorFlag::Enum flag) {
+    if (m_dynamic) {
+        m_dynamic->get()->setActorFlag(flag, false);
+    } else {
+        m_static->get()->setActorFlag(flag, false);
+    }
+}
+
 void RigidBody::set_shape(std::shared_ptr<PxShape_ptr_wrapper> shape) {
     if (m_dynamic) {
         if (m_shape) {
@@ -152,6 +168,14 @@ void RigidBody::create_actor(bool isDynamic, const float& mass) {
     }
 }
 
+PxActorFlags RigidBody::get_flags() {
+    if (m_dynamic) {
+        return m_dynamic->get()->getActorFlags();
+    } else {
+        return m_static->get()->getActorFlags();
+    }
+}
+
 PxVec3 RigidBody::get_position_from_transform() {
     auto sceneOpt = Scene::get_active_scene();
     if (sceneOpt) {
@@ -190,10 +214,11 @@ std::shared_ptr<PxShape_ptr_wrapper> RigidBody::get_shape_from_shape() {
     if (!goOpt) {
         return nullptr;
     }
-    if (goOpt->has_component<components::Shape>()) {
-        Shape& shape = goOpt->get_component<components::Shape>();
-        return shape.get_shape().lock();
+    if (!goOpt->has_component<components::Shape>()) {
+        return nullptr;
     }
+    Shape& shape = goOpt->get_component<components::Shape>();
+    return shape.get_shape().lock();
 }
 
 std::shared_ptr<PxAggregate_ptr_wrapper> RigidBody::get_aggregate_from_aggregate() {
@@ -207,10 +232,11 @@ std::shared_ptr<PxAggregate_ptr_wrapper> RigidBody::get_aggregate_from_aggregate
     if (!goOpt) {
         return nullptr;
     }
-    if (goOpt->has_component<components::Aggregate>()) {
-        Aggregate& aggregate = goOpt->get_component<components::Aggregate>();
-        return aggregate.get_aggregate().lock();
+    if (!goOpt->has_component<components::Aggregate>()) {
+        return nullptr;
     }
+    Aggregate& aggregate = goOpt->get_component<components::Aggregate>();
+    return aggregate.get_aggregate().lock();
 }
 
 vec3 RigidBody::PxVec3_to_vec3(PxVec3 v) {

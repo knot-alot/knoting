@@ -5,6 +5,7 @@ namespace knot {
 
 Engine::Engine() {
     InitializeYojimbo();
+    srand(time(0));
 
     m_framebufferManager = std::make_shared<knot::FramebufferManager>(*this);
     m_WidgetSubsystem = std::make_shared<knot::WidgetSubsystem>(*this);
