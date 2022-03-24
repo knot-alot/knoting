@@ -1426,7 +1426,7 @@ class JSClientPlayer : public JSObjectBase {
         return clientPlayer.m_clientNum;
     }
 
-    void set_look_axis(vec2 axis) {
+    void set_look_axis(vec3 axis) {
         auto clientPlayerOpt = get_client_player();
         if (!clientPlayerOpt)
             return;
@@ -1462,10 +1462,10 @@ class JSClientPlayer : public JSObjectBase {
         clientPlayer.m_isShooting = shooting;
     }
 
-    vec2 get_look_axis() {
+    vec3 get_look_axis() {
         auto clientPlayerOpt = get_client_player();
         if (!clientPlayerOpt)
-            return vec2(0.0f, 0.0f);
+            return vec3(0.0f);
 
         auto& clientPlayer = clientPlayerOpt.value().get();
         return clientPlayer.m_lookAxis;

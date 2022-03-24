@@ -1751,7 +1751,7 @@ struct js_traits<knot::vec2> {
         return ret;
     }
 
-    static JSValue wrap(JSContext* ctx, const knot::vec2& value) {
+    static JSValue wrap(JSContext* ctx, knot::vec2 value) {
         auto jsarray = Value{ctx, JS_NewArray(ctx)};
         jsarray[0] = value.x;
         jsarray[1] = value.y;
@@ -1781,7 +1781,7 @@ struct js_traits<knot::vec3> {
         return ret;
     }
 
-    static JSValue wrap(JSContext* ctx, const knot::vec3& value) {
+    static JSValue wrap(JSContext* ctx, knot::vec3 value) {
         auto jsarray = Value{ctx, JS_NewArray(ctx)};
         jsarray[0] = value.x;
         jsarray[1] = value.y;
@@ -1813,7 +1813,7 @@ struct js_traits<knot::vec4> {
         return ret;
     }
 
-    static JSValue wrap(JSContext* ctx, const knot::vec4& value) {
+    static JSValue wrap(JSContext* ctx, knot::vec4 value) {
         auto jsarray = Value{ctx, JS_NewArray(ctx)};
         jsarray[0] = value.x;
         jsarray[1] = value.y;
@@ -1846,7 +1846,7 @@ struct js_traits<knot::quat> {
         return ret;
     }
 
-    static JSValue wrap(JSContext* ctx, const knot::quat& value) {
+    static JSValue wrap(JSContext* ctx, knot::quat value) {
         auto jsarray = Value{ctx, JS_NewArray(ctx)};
         jsarray[0] = value.w;
         jsarray[1] = value.x;

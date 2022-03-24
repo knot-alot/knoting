@@ -461,7 +461,7 @@ declare module "knoting" {
     }
 
     class ClientPlayer {
-        getLookAxis(): Vec2;
+        getLookAxis(): Vec3;
 
         getMoveAxis(): Vec2;
 
@@ -469,7 +469,7 @@ declare module "knoting" {
 
         getIsShooting(): boolean;
 
-        setLookAxis(lookAxis: Vec2): void;
+        setLookAxis(lookAxis: Vec3): void;
 
         setMoveAxis(moveAxis: Vec2): void;
 

@@ -99,3 +99,13 @@ export function multiplyQuat(x: Vec3, q: Quat): Vec3 {
 
     return multiplyConst(add(x, add(multiplyConst(uv, q[0]), uuv)), 2.0);
 }
+
+export function minus(x: Vec3, y: Vec3) {
+    if (x.length != y.length) throw "Length of both vectors don't match";
+
+    for (let i = 0; i < x.length; i++) {
+        x[i] -= y[i];
+    }
+
+    return x;
+}
