@@ -9,7 +9,6 @@
 #include <knoting/scene.h>
 #include <knoting/texture.h>
 #include "knoting/Menu.h"
-#include "knoting/demo_widget.h"
 
 #include <knoting/Font.h>
 #include <knoting/audio_listener.h>
@@ -45,8 +44,11 @@ Untie::Untie() {
     create_level();
     auto fontObj = m_scene->create_game_object("font");
     fontObj.add_component<components::Font>();
-    // auto demoWidget = std::make_shared<DemoWidget>("demo");
-    // m_engine->get_Widget().lock()->add_widget(demoWidget);
+    m_demoWidget = std::make_shared<DemoWidget>("demo");
+    m_demoWidget->setWinow(m_engine->get_window_module().lock()->get_window_width(),
+                           m_engine->get_window_module().lock()->get_window_height());
+    m_engine->get_Widget().lock()->add_widget(m_demoWidget);
+
     m_debugPhysics = std::make_shared<DebugPhysics>("debugPhys");
     m_debugPhysics->setWindow(m_engine->get_window_module().lock()->get_window_width(),
                               m_engine->get_window_module().lock()->get_window_height());
@@ -122,9 +124,11 @@ void Untie::run() {
         m_debugPhysics->setWindow(m_engine->get_window_module().lock()->get_window_width(),
                                   m_engine->get_window_module().lock()->get_window_height());
         m_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),
-                          m_engine->get_window_module().lock()->get_window_height());
+                         m_engine->get_window_module().lock()->get_window_height());
         m_Pause_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),
-                                m_engine->get_window_module().lock()->get_window_height());
+                               m_engine->get_window_module().lock()->get_window_height());
+        m_demoWidget->setWinow(m_engine->get_window_module().lock()->get_window_width(),
+                               m_engine->get_window_module().lock()->get_window_height());
 
         m_debug->setFrame(1000 / (double(frameTime) * toMs));
     }
