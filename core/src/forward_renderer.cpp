@@ -30,6 +30,12 @@ ForwardRenderer::ForwardRenderer(Engine& engine) : m_engine(engine) {}
 void ForwardRenderer::on_awake() {}
 
 void ForwardRenderer::on_update(double m_delta_time) {
+    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
+    const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
+    if (glm::isnan(aspectRatio)) {
+        return;
+    }
+
     m_timePassed += (float)m_delta_time;
     m_dt = m_delta_time;
     m_engine.get_framebuffer_manager_module().lock()->clear_all_framebuffers();
@@ -87,12 +93,14 @@ void ForwardRenderer::depth_pass(uint16_t idx) {
 
         const float fovY = editorCamera.get_fov();
         const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
+
         const float zNear = editorCamera.get_z_near();
         const float zFar = editorCamera.get_z_far();
 
         // Set view and projection matrix for view 0.
         {
             view = glm::lookAt(pos, lookTarget, up);
+
             glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
             bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
         }
