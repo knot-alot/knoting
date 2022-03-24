@@ -58,7 +58,18 @@ class Engine {
     void switch_paused(){
         m_ispaused = !m_ispaused;
     }
-
+    void set_Pause(bool ispause){
+        m_ispaused = ispause;
+    }
+    bool get_pause(){
+        return m_ispaused;
+    }
+    bool get_is_pause_menu(){
+        return m_pause_menu;
+    }
+    void switch_pause_menu(){
+        m_pause_menu= !m_pause_menu;
+    }
     inline static bool isClient = true;
 
    private:
@@ -66,7 +77,8 @@ class Engine {
     void reset_physics_module();
 
    private:
-    bool m_ispaused = false;
+    bool m_pause_menu = false;
+    bool m_ispaused = true;
     int m_windowWidth = 1024;
     int m_windowHeight = 768;
     std::string m_windowTitle = "hello knotting!";

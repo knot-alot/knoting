@@ -4,10 +4,10 @@
 #include <knoting/widget.h>
 namespace knot {
 
-class Menu : public Widget {
+class PauseMenu : public Widget {
    public:
-    Menu(const std::string& name);
-    ~Menu();
+    PauseMenu(const std::string& name);
+    ~PauseMenu();
     void on_widget_render() override;
     void setWinow(int x, int y) {
         m_x = x;
@@ -19,7 +19,6 @@ class Menu : public Widget {
     };
 
    private:
-    bool Start = false;
     ImFont* font;
     int m_x;
     int m_y;
