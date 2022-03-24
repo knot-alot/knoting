@@ -173,27 +173,29 @@ declare module "knoting" {
 
         getRotationEuler(): Vec3;
 
-        getUP(): Vec3;
+        getUP(): Vec3; //
 
-        setLookTarget(target: Vec3): void;
+        setLookTarget(target: Vec3): void; //
 
-        setFov(fov: number): void;
+        setFov(fov: number): void; //
 
-        setZNear(zNear: number): void;
+        setZNear(zNear: number): void; //
 
-        setZFar(zFar: number): void;
+        setZFar(zFar: number): void; //
 
-        getLookTarget(target: Vec3): void;
+        getLookTarget(target: Vec3): void; //
 
-        getFov(fov: number): void;
+        getFov(fov: number): void; //
 
-        getZNear(zNear: number): void;
+        getZNear(zNear: number): void; //
 
-        getZFar(zFar: number): void;
+        getZFar(zFar: number): void; //
 
-        setMoveSpeed(speed: number): void;
+        setMoveSpeed(speed: number): void; //
 
-        getMoveSpeed(): number;
+        getMoveSpeed(): number; //
+
+        setAsActiveCamera(): void;
     }
 
     class Raycast {
@@ -474,9 +476,16 @@ declare module "knoting" {
         setJumpPressed(jumpingPressed: boolean): boolean;
 
         setIsShooting(isShooting: boolean): boolean;
+
+        getClientNumber(): number;
+    }
+
+    class Network {
+        getClientNumber(): number;
     }
 
     const input: InputManager;
     const scene: Scene;
     const storage: Storage;
+    const network: Network;
 }
