@@ -15,11 +15,12 @@ void knot::PauseMenu::on_widget_render() {
 
     if (engine.get_is_pause_menu()) {
         ImGui::SetNextWindowPos(ImVec2(0, 0));
-        ImGui::SetNextWindowSize(ImVec2(m_x, m_y),ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowSize(ImVec2(m_x, m_y), ImGuiCond_FirstUseEver);
 
-        ImGui::Begin("Pause", NULL ,ImGuiCond_FirstUseEver);
+        ImGui::Begin("Pause", NULL,
+                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground |
+                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
         ImGui::SetWindowFontScale(3.0f);
-
 
         const char* text = "PAUSE";
         ImGui::SetCursorPos(ImVec2(m_x / 2 - (150 * 0.5 - 25), 250));
@@ -37,11 +38,9 @@ void knot::PauseMenu::on_widget_render() {
             engine.get_window_module().lock()->close();
         }
 
-
         ImGui::End();
     }
 }
-
 
 knot::PauseMenu::~PauseMenu() {
     log::info("DemoWidget destroyed");

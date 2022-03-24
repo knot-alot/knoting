@@ -16,7 +16,8 @@ void knot::Menu::on_widget_render() {
         ImGui::SetNextWindowPos(ImVec2(0, 0));
         ImGui::SetNextWindowSize(ImVec2(m_x, m_y),ImGuiCond_FirstUseEver);
 
-        ImGui::Begin("Menu", NULL ,ImGuiCond_FirstUseEver);
+        ImGui::Begin("Menu", NULL ,ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground |
+                                       ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
 
         ImGui::SetWindowFontScale(3.0f);
 
