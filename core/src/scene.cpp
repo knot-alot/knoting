@@ -50,7 +50,8 @@ GameObject Scene::create_bullet(bool is_teamA, vec3 spawnPos) {
     GameObject e(m_registry.create(), *this);
     e.add_component<components::Transform>();
     e.add_component<components::Hierarchy>();
-    std::string n = is_teamA ? "teamA" : "teamB";
+    std::string n;
+    is_teamA ? n = "RED" : n = "BLUE";
     e.add_component<components::Name>(n);
     e.add_component<components::InstanceMesh>("uv_cube.obj");
 
@@ -60,12 +61,15 @@ GameObject Scene::create_bullet(bool is_teamA, vec3 spawnPos) {
     log::debug("Created game object with id {}", to_string(e.get_id()));
 
     e.add_component<components::PhysicsMaterial>();
+
     auto& shape = e.add_component<components::Shape>();
     shape.set_geometry(shape.create_sphere_geometry(0.2f));
-    is_teamA ? shape.set_filter_data(filter_group::eParticle_A, filter_group::eAll | filter_group::ePlayer_B)
-             : shape.set_filter_data(filter_group::eParticle_B, filter_group::eAll | filter_group::ePlayer_A);
+    is_teamA ? shape.set_filter_data(filter_group::eParticle_red, filter_group::eAll | filter_group::ePlayer_blue)
+             : shape.set_filter_data(filter_group::eParticle_blue, filter_group::eAll | filter_group::ePlayer_red);
+
     auto& rigidBody = e.add_component<components::RigidBody>();
     rigidBody.create_actor(true, 1.0f);
+    rigidBody.set_name(n);
 
     e.add_component<components::RigidController>();
     auto& detection = e.add_component<components::Collision_Detection>();
@@ -79,6 +83,7 @@ GameObject Scene::create_bullet(bool is_teamA, vec3 spawnPos) {
     material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
     e.add_component<components::Material>(material);
 
+    e.add_component<components::InstanceScript>("bullet.js");
     return e;
 }
 

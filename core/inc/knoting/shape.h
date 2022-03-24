@@ -9,10 +9,10 @@ namespace knot {
 struct filter_group {
     enum Enum {
         eAll = (1 << 0),
-        eParticle_A = (1 << 1),
-        eParticle_B = (1 << 2),
-        ePlayer_A = (1 << 3),
-        ePlayer_B = (1 << 4),
+        eParticle_red = (1 << 1),
+        eParticle_blue = (1 << 2),
+        ePlayer_red = (1 << 3),
+        ePlayer_blue = (1 << 4),
     };
 };
 namespace components {

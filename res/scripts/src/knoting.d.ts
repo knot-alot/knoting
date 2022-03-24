@@ -36,7 +36,7 @@ declare module "knoting" {
     }
 
     class RigidBody {
-        getActor(): GameObject;
+        getActor(): UUID;
 
         getPosition(): Vec3;
 
@@ -221,6 +221,8 @@ declare module "knoting" {
         setUnitDir(unitDir: Vec3): void;
 
         setMaxDistance(maxDistance: number): void;
+
+        setFlags()
 
         getHitActor(): GameObject;
 
@@ -500,12 +502,29 @@ declare module "knoting" {
         TouchPersists,
     }
 
+    enum RaycastFilterFlag {
+        AnyHit,
+        Static,
+        Dynamic,
+    }
+
     class ContactData {
         getContactPoint(): Vec3
 
         getContactActor(): UUID
 
+        getContactActorName(): string
+
         getContactType(): ContactType
+    }
+
+    enum Team {
+        TeamRed,
+        TeamBule,
+    }
+
+    class Mesh {
+        addContactPosition(position: Vec3, team: Team): void
     }
 
     class CollisionDetection {

@@ -9,6 +9,7 @@ import {
     Hierarchy,
     Vec3,
     Transform,
+    Raycast,
 } from "knoting";
 
 import * as math from "./math.js";
@@ -23,6 +24,7 @@ export default class Player extends GameObject {
     transform?: Transform;
     Hierarchy?: Hierarchy;
     Particle?: Particle;
+    Raycast?: Raycast;
 
 
     awake() {
@@ -34,7 +36,7 @@ export default class Player extends GameObject {
             this.removeHealth(1);
             this.shoot()
             //shoot
-        }else{
+        } else {
             this.Particle.setParticlesPerSecond(0);
         }
 
@@ -44,11 +46,12 @@ export default class Player extends GameObject {
 
     }
 
-    lateUpdate() {
-        this.bullets.forEach(this.deleteBullet);
+    /*
+        lateUpdate() {
+            this.bullets.forEach(this.deleteBullet);
 
-    }
-
+        }
+    */
     shoot() {
         let spawnPos: Vec3 = math.add(this.transform.getPosition(), this.transform.getForward());
         let shooDir: Vec3 = this.getShootDir(spawnPos);
@@ -66,16 +69,17 @@ export default class Player extends GameObject {
         rigidBody.addForce(math.multiplyConst(shootDir, 100.0));
     }
 
-    deleteBullet(bullet) {
-        let detection = bullet.getComponent("CollisionDetection");
-        let rigiBody = bullet.getComponent("rigidBody");
-        if (!detection.getContactDataByActor(
-            rigiBody.getActor().getID()).empty()) {
-            detection.removeSearchActor(rigiBody.getActor().getID());
-            scene.removeGameObject(bullet.getID());
+    /*
+        deleteBullet(bullet) {
+            let detection = bullet.getComponent("CollisionDetection");
+            let rigiBody = bullet.getComponent("rigidBody");
+            let len = detection.getContactDataByActor(rigiBody.getActor().getID()).length;
+            if (!(len == 0)) {
+                detection.removeSearchActor(rigiBody.getActor().getID());
+                scene.removeGameObject(bullet.getID());
+            }
         }
-    }
-
+    */
     getShootDir(spawnPos: Vec3): Vec3 {
         if (this.Hierarchy.hasChildren()) {
             let len = this.Hierarchy.getChildren().length;
@@ -93,7 +97,7 @@ export default class Player extends GameObject {
             }
         }
 
-        return
+        return this.transform.getRotation();
     }
 
     removeHealth(health: number) {

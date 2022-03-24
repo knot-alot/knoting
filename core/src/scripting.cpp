@@ -563,27 +563,15 @@ class JSRigidBody : public JSObjectBase {
         return gameObjectOpt.value().get_component<components::RigidController>();
     }
 
-    JSValue get_actor() {
-        auto rigidbodyOpt = get_rigidbody();
-        if (!rigidbodyOpt)
-            return JS_UNDEFINED;
-
-        auto& rigidbody = rigidbodyOpt.value().get();
-
-        uuid* uuidPtr;
-        if (rigidbody.get_is_dynamic()) {
-            uuidPtr = reinterpret_cast<uuid*>(rigidbody.get_dynamic().lock().get()->get()->userData);
-        } else {
-            uuidPtr = reinterpret_cast<uuid*>(rigidbody.get_static().lock().get()->get()->userData);
-        }
+    uuid get_actor() {
 
         JSValue obj = create_js_object_from_name("GameObject");
         auto opaque = static_cast<std::shared_ptr<JSObjectBase>*>(
             JS_GetOpaque(obj, qjs::js_traits<std::shared_ptr<JSGameObject>>::QJSClassId));
 
-        (*opaque)->set_uuid(*uuidPtr);
+        (*opaque)->set_uuid(m_id);
 
-        return obj;
+        return m_id;
     }
 
     void set_rotation(vec3 rotation) {
