@@ -119,13 +119,11 @@ Untie::Untie() {
     }
     // PLAYER 1
     {
-
         auto cubeObj = scene.create_game_object("stanford_dragon_1");
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-20, 5.0f, -20));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 240, 0));
         cubeObj.add_component<components::InstanceMesh>("dragon.obj");
-
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
@@ -153,13 +151,10 @@ Untie::Untie() {
         material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
         cubeObj.add_component<components::Material>(material);
 
-
-
         cubeOne = cubeObj;
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
         client.m_clientNum = 0;
-
     }
     // PLAYER 2
     {
