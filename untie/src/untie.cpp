@@ -429,6 +429,7 @@ void Untie::run() {
             m_engine->switch_pause_menu();
         }
         if (im->key_on_trigger(KeyCode::GraveAccent)) {
+            log::debug("QIJWFQJWFJQW");
             if (open) {
                 m_debug->setOpen(open);
             }

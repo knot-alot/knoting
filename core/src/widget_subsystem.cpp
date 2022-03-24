@@ -26,7 +26,6 @@ void WidgetSubsystem::on_update(double deltaTime) {
 }
 
 WidgetSubsystem::WidgetSubsystem(Engine& engine):m_engine(engine) {}
-
 void WidgetSubsystem::on_late_update() {
 
 
@@ -35,9 +34,14 @@ void WidgetSubsystem::on_late_update() {
         window->set_window_resize_flag(false);
         imgui_reset(window->get_window_width(), window->get_window_height());
     }
+    auto input = window->get_input_manager();
+
+    if(input->key_on_trigger(KeyCode::GraveAccent)){
+        log::debug("QWRQWR");
+        log::debug("================");
+    }
 
     ImGui::NewFrame();
-
     for (auto& widget : m_widgets) {
         widget->on_widget_render();
     }

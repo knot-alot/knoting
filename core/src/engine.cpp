@@ -62,7 +62,6 @@ void Engine::update_modules() {
         }
 
         start = std::chrono::steady_clock::now();
-        module->on_late_update();
         end = std::chrono::steady_clock::now();
         time_span = std::chrono::duration_cast<std::chrono::duration<double>>(end - start);
         m_GuiTimes = time_span.count() * 1000000.0;

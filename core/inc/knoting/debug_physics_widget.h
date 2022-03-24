@@ -20,7 +20,10 @@ class DebugPhysics : public Widget {
     ImDrawList* draw_list;
     int m_x;
     int m_y;
+    bool active = false;
 };
+
+
 
 }  // namespace knot
 
