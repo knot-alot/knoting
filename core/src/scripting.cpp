@@ -789,14 +789,6 @@ class JSHierarchy : public JSObjectBase {
 
         return gameObjectOpt.value().get_component<components::Hierarchy>();
     }
-    // getParent(): UUID;
-    // hasParent(): boolean;
-    // setParent(parent: UUID): void;
-    // hasChildren(): boolean;
-    // hasChild(child: UUID): boolean;
-    // getChildren(): Array<UUID>;
-    // addChild(child: UUID): void;
-    // removeChild(child: UUID): void;
 
     uuid get_parent() {
         auto hierarchyOpt = get_hierarchy();
@@ -1908,6 +1900,8 @@ JSValue create_game_object(std::string name) {
 
     auto gameObject = scene.create_game_object(name);
     (*opaque)->set_uuid(gameObject.get_id());
+
+    return obj;
 }
 
 void remove_game_object(uuid id) {
@@ -2089,7 +2083,7 @@ void Scripting::add_knoting_module() {
         .fun<&JSParticles::get_paticles_per_second>("getParticlesPerSecond")
         .fun<&JSParticles::get_position>("getPosition")
         .fun<&JSParticles::get_lookat>("getLookat");
-/*
+
     knoting.class_<JSConllisionDetection>("ConllisionDetection")
         .constructor()
         .fun<&JSConllisionDetection::get_name_contact_data>("getNameContactData")
@@ -2103,7 +2097,7 @@ void Scripting::add_knoting_module() {
         .fun<&JSConllisionDetection::remove_search_actor>("removeSearchActor")
         .fun<&JSConllisionDetection::remove_search_actor>("removeSearchActor")
         .fun<&JSConllisionDetection::remove_search_name>("removeSearchActor");
-*/
+
     auto storage = m_context->newObject();
     storage.add("store", script_storage_store);
     storage.add("retrieve", script_storage_retrieve);
