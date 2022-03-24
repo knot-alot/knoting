@@ -37,7 +37,6 @@ Engine::Engine() {
     for (auto& module : m_engineModules) {
         module->on_awake();
     }
-    log::debug("init engine");
 }
 
 void Engine::update_modules() {
