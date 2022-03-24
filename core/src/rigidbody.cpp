@@ -160,11 +160,13 @@ void RigidBody::create_actor(bool isDynamic, const float& mass) {
         m_dynamic->get()->attachShape(*m_shape->get());
         PxRigidBodyExt::updateMassAndInertia(*m_dynamic->get(), mass);
         m_aggregate->get_aggregate()->addActor(*m_dynamic->get());
+        m_isDynamic = isDynamic;
     } else {
         m_static = std::make_shared<PxStatic_ptr_wrapper>(m_physics->get()->createRigidStatic(
             PxTransform(get_position_from_transform(), get_rotation_from_transform())));
         m_static->get()->attachShape(*m_shape->get());
         m_aggregate->get_aggregate()->addActor(*m_static->get());
+        m_isDynamic = isDynamic;
     }
 }
 

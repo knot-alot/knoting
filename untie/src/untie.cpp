@@ -22,6 +22,7 @@
 #include <iostream>
 
 #include <bx/timer.h>
+#include <knoting/collision_detection.h>
 #include <knoting/widget_subsystem.h>
 #include <cereal/archives/json.hpp>
 #include <cstdio>
@@ -140,9 +141,10 @@ Untie::Untie() {
         aggregate.add_aggregate("player1", 10, false);
 
         auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+        auto& detection = cubeObj.add_component<components::Collision_Detection>();
 
         rigidbody.create_actor(true, 4.0f);
-
+        detection.add_search_actor(rigidbody.get_dynamic().lock());
         auto& rigidController = cubeObj.add_component<components::RigidController>();
         rigidController.lockRotations(true, false, true);
         rigidController.set_linear_damping(1.0f);
@@ -400,6 +402,8 @@ void Untie::run() {
         m_debug->set_Phy_Time(m_engine->get_Phy_Time_cost());
         m_debug->set_Gui_Time(m_engine->get_Gui_Time_cost());
         m_engine->update_modules();
+        m_debug->get_contact_data();
+
         auto im = m_engine->get_window_module().lock()->get_input_manager();
 
         if (im->key_on_trigger(KeyCode::P)) {
