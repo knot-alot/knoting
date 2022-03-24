@@ -1,7 +1,7 @@
 #pragma once
 
-#include <knoting/physics.h>
 #include <knoting/component.h>
+#include <knoting/physics.h>
 
 namespace knot {
 namespace components {
