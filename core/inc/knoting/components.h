@@ -9,6 +9,7 @@
 #include <knoting/instance_mesh.h>
 #include <knoting/material.h>
 #include <knoting/mesh.h>
+#include <knoting/particles.h>
 #include <knoting/px_material.h>
 #include <knoting/raycast.h>
 #include <knoting/rigid_controller.h>
