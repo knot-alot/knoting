@@ -378,6 +378,9 @@ Untie::Untie() {
      m_engine->get_Widget().lock()->add_widget(m_menu);
     m_debug = std::make_shared<Debug_gui>("Debug");
     m_engine->get_Widget().lock()->add_widget(m_debug);
+
+    m_debugPhysics = std::make_shared<DebugPhysics>("debugPhys");
+    m_engine->get_Widget().lock()->add_widget(m_debugPhysics);
 }
 
 void Untie::run() {
