@@ -42,13 +42,29 @@ Untie::Untie() {
     m_engine = std::make_unique<knot::Engine>();
     Engine::set_active_engine(*m_engine);
     create_level();
+    // auto demoWidget = std::make_shared<DemoWidget>("demo");
+    // m_engine->get_Widget().lock()->add_widget(demoWidget);
+    m_Pause_menu = std::make_shared<PauseMenu>("Pausemenu");
+    m_Pause_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),
+                           m_engine->get_window_module().lock()->get_window_height());
+    m_engine->get_Widget().lock()->add_widget(m_Pause_menu);
+    m_menu = std::make_shared<Menu>("menu");
+    m_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),
+                     m_engine->get_window_module().lock()->get_window_height());
+    m_engine->get_Widget().lock()->add_widget(m_menu);
+    m_debug = std::make_shared<Debug_gui>("Debug");
+    m_engine->get_Widget().lock()->add_widget(m_debug);
 }
 
 void Untie::run() {
     auto cliMod = m_engine->get_client_module().lock();
     cliMod->attempt_connection();
     while (m_engine->is_open()) {
+        m_debug->set_bgfx_Time(m_engine->get_bgfx_Time_cost());
+        m_debug->set_Phy_Time(m_engine->get_Phy_Time_cost());
+        m_debug->set_Gui_Time(m_engine->get_Gui_Time_cost());
         m_engine->update_modules();
+
         auto im = m_engine->get_window_module().lock()->get_input_manager();
 
         if (im->key_on_trigger(KeyCode::P)) {
@@ -73,9 +89,29 @@ void Untie::run() {
             }
         }
 
-        if (im->key_pressed(KeyCode::Escape)) {
-            m_engine->get_window_module().lock()->close();
+        if (im->key_on_trigger(KeyCode::Escape)) {
+            m_engine->switch_paused();
+            m_engine->switch_pause_menu();
         }
+        if (im->key_on_trigger(KeyCode::GraveAccent)) {
+            if (open) {
+                m_debug->setOpen(open);
+            }
+            if (!open) {
+                m_debug->setOpen(open);
+            }
+            open = !open;
+        }
+        if(im->key_pressed(KeyCode::M)){
+            m_debug->get_contact_data();
+        }
+        int64_t now = bx::getHPCounter();
+        static int64_t last = now;
+        const int64_t frameTime = now - last;
+        last = now;
+        const double freq = double(bx::getHPFrequency());
+        const double toMs = 1000.0 / freq;
+        m_debug->setFrame(1000 / (double(frameTime) * toMs));
     }
 }
 
@@ -135,7 +171,6 @@ GameObject Untie::create_master_floor(const std::string& name, vec3 position, ve
     material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
     material.set_texture_scale(vec2(8, 4));
     cubeObj.add_component<components::Material>(material);
-
 
     return cubeObj;
 }
@@ -456,8 +491,10 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     aggregate.add_aggregate(name, 5, false);
 
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
-
     rigidbody.create_actor(true, 4.0f);
+
+    auto& detection = cubeObj.add_component<components::Collision_Detection>();
+    detection.add_search_actor(rigidbody.get_dynamic().lock());
 
     auto& rigidController = cubeObj.add_component<components::RigidController>();
     rigidController.lockRotations(true, false, true);
@@ -540,7 +577,6 @@ void Untie::create_level() {
         editorCamera.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 50.0f, 0.0f));
         editorCamera.add_component<components::AudioListener>();
     }
-
 
     create_skybox();
     create_point_light("main_light", vec3(0, 80, 0), 8, 0.5f, vec3(to_color(vec3(192, 192, 192))));
@@ -709,26 +745,25 @@ void Untie::create_level() {
     create_player("player_6", vec3(0, 5, 20), vec3(0), 5);
 
     // CREATE PARTICLE SYSTEM
+    /*
+        {
+            auto psObj = m_scene->create_game_object("ps1");
+            psObj.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 10.0f, 0.0f));
+            partSystem = &psObj.add_component<components::Particles>();
+            partSystem->set_max_particles_start_scale(0.5f);
+            partSystem->set_max_particles_end_scale(0.01f);
+            partSystem->set_particles_per_second(10);
+        }
 
-    {
-        auto psObj = m_scene->create_game_object("ps1");
-        psObj.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 10.0f, 0.0f));
-        partSystem = &psObj.add_component<components::Particles>();
-        partSystem->set_max_particles_start_scale(0.5f);
-        partSystem->set_max_particles_end_scale(0.01f);
-        partSystem->set_particles_per_second(10);
-    }
-
-    {
-        auto psObj = m_scene->create_game_object("ps2");
-        psObj.get_component<components::Transform>().set_position(glm::vec3(-10.0f, 10.0f, 10.0f));
-        psObj.add_component<components::Particles>();
-    }
-
+        {
+            auto psObj = m_scene->create_game_object("ps2");
+            psObj.get_component<components::Transform>().set_position(glm::vec3(-10.0f, 10.0f, 10.0f));
+            psObj.add_component<components::Particles>();
+        }
+    */
     // END PARTICLE SYSTEM
 
     create_post_processing();
-
 }
 GameObject Untie::create_level_bottom() {
     auto cubeObj = m_scene->create_game_object("level_bottom");
@@ -737,17 +772,14 @@ GameObject Untie::create_level_bottom() {
     cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 0, 0));
     cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
-
     auto& shape = cubeObj.add_component<components::Shape>();
     vec3 halfsize = vec3(vec3(0.1f, 0.1f, 0.1f));
     shape.set_geometry(shape.create_cube_geometry(halfsize));
-
 
     auto& aggregate = cubeObj.add_component<components::Aggregate>();
     aggregate.add_aggregate("level", 100, false);
 
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
-
 
     rigidbody.create_actor(false);
 
@@ -760,7 +792,6 @@ GameObject Untie::create_level_bottom() {
     cubeObj.add_component<components::Material>(material);
 
     return cubeObj;
-
 }
 
 }  // namespace knot
