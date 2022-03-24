@@ -55,62 +55,57 @@ void CameraRotation::on_update(double m_delta_time) {
     //= 'E' TOGGLE MOUSE HIDDEN ==
     camera_key_input();
 
-    auto sceneOpt = Scene::get_active_scene();
-    if (!sceneOpt) {
+    auto cameraOpt = EditorCamera::get_active_camera();
+    if (!cameraOpt)
+        return;
+    auto& editorCamera = cameraOpt.value().get();
+
+    if (m_lockState == false) {
+        return;
+    }
+    auto goOpt = GameObject::get_game_object_from_component(editorCamera);
+    if (!goOpt) {
         return;
     }
 
-    Scene& scene = sceneOpt.value();
-    entt::registry& registry = scene.get_registry();
-    auto cameras = registry.view<Transform, EditorCamera, Name>();
+    GameObject go = goOpt.value();
+    Transform& transform = go.get_component<Transform>();
+    Name& name = go.get_component<Name>();
 
-    for (auto& cam : cameras) {
-        if (m_lockState == false) {
-            continue;
-        }
-        auto goOpt = scene.get_game_object_from_handle(cam);
-        if (!goOpt) {
-            continue;
-        }
+    //= CAMERA ROTATION
+    m_roll = 0.0f;
+    m_pitch -= ((float)m_mouseDelta.y * (float)m_mouseSensitivity.y) * (float)m_delta_time;
+    m_yaw -= ((float)-m_mouseDelta.x * (float)m_mouseSensitivity.x) * (float)m_delta_time;
 
-        GameObject go = goOpt.value();
-        Transform& transform = go.get_component<Transform>();
-        EditorCamera& editorCamera = go.get_component<EditorCamera>();
-        Name& name = go.get_component<Name>();
+    m_pitch = clamp(m_pitch, -89.f, 89.f);
+    transform.set_rotation_euler(vec3(m_pitch, m_yaw, m_roll));
 
-        //= CAMERA ROTATION
-        m_roll = 0.0f;
-        m_pitch -= ((float)m_mouseDelta.y * (float)m_mouseSensitivity.y) * (float)m_delta_time;
-        m_yaw -= ((float)-m_mouseDelta.x * (float)m_mouseSensitivity.x) * (float)m_delta_time;
+    //= CALCULATE FORWARD VECTOR == // TODO STORE / CALC THESE IN TRANSFORM
+    vec3 look;
+    look.x = cosf(radians(m_yaw)) * cosf(radians(m_pitch));
+    look.y = sinf(radians(m_pitch));
+    look.z = sinf(radians(m_yaw)) * cosf(radians(m_pitch));
 
-        m_pitch = clamp(m_pitch, -89.f, 89.f);
-        transform.set_rotation_euler(vec3(m_pitch, m_yaw, m_roll));
+    m_forward = normalize(look);
 
-        //= CALCULATE FORWARD VECTOR == // TODO STORE / CALC THESE IN TRANSFORM
-        vec3 look;
-        look.x = cosf(radians(m_yaw)) * cosf(radians(m_pitch));
-        look.y = sinf(radians(m_pitch));
-        look.z = sinf(radians(m_yaw)) * cosf(radians(m_pitch));
+    //= CALCULATE LOCAL RIGHT AND UP == // TODO STORE / CALC THESE IN TRANSFORM
+    m_right = normalize(cross(m_forward, vec3(0, 1, 0)));
+    m_up = normalize(cross(m_right, m_forward));
 
-        m_forward = normalize(look);
+    //= CAMERA MOVEMENT
+    vec3 position = transform.get_position();
+    vec3 nextPosition = position + (m_keyboardDirection * m_movementMultiplier * m_moveSpeed * (float)m_delta_time);
+    transform.set_position(nextPosition);
 
-        //= CALCULATE LOCAL RIGHT AND UP == // TODO STORE / CALC THESE IN TRANSFORM
-        m_right = normalize(cross(m_forward, vec3(0, 1, 0)));
-        m_up = normalize(cross(m_right, m_forward));
+    //= SET LOOK TARGET POSITION USING FORWARD VECTOR
+    vec3 targetPos = transform.get_position() + m_forward;
+    editorCamera.set_look_target(targetPos);
 
-        //= CAMERA MOVEMENT
-        vec3 position = transform.get_position();
-        vec3 nextPosition = position + (m_keyboardDirection * m_movementMultiplier * m_moveSpeed * (float)m_delta_time);
-        transform.set_position(nextPosition);
-
-        //= SET LOOK TARGET POSITION USING FORWARD VECTOR
-        vec3 targetPos = transform.get_position() + m_forward;
-        editorCamera.set_look_target(targetPos);
-
-        m_lastMousePosition = currentMousePos;
-    }
+    m_lastMousePosition = currentMousePos;
 }
+
 void CameraRotation::on_late_update() {}
+
 void CameraRotation::on_destroy() {}
 
 void CameraRotation::camera_key_input() {

@@ -58,7 +58,42 @@ void Scripting::on_late_update() {
     }
 }
 
-void Scripting::on_destroy() {}
+void Scripting::on_destroy() {
+    auto sceneOpt = Scene::get_active_scene();
+    if (!sceneOpt)
+        return;
+    auto& scene = sceneOpt.value().get();
+
+    auto& registry = scene.get_registry();
+    auto view = registry.view<components::InstanceScript>();
+
+    for (auto entity : view) {
+        auto goOpt = scene.get_game_object_from_handle(entity);
+        if (!goOpt)
+            continue;
+        auto go = goOpt.value();
+
+        auto& is = go.get_component<components::InstanceScript>();
+        JSValue v = is.obj->release();
+        JS_FreeValue(m_context->ctx, v);
+        is.obj = std::nullopt;
+
+        for (int i = 0; i < is.m_defaultFunctions.size(); ++i) {
+            if (!is.m_defaultFunctions[i].second)
+                continue;
+            JS_FreeValue(m_context->ctx, is.m_defaultFunctions[i].first);
+            is.m_defaultFunctions[i].second = false;
+            is.m_defaultFunctions[i].first = JS_NULL;
+        }
+    }
+
+    for (auto [key, val] : storage) {
+        if (!JS_IsObject(val))
+            continue;
+
+        JS_FreeValue(m_context->ctx, val);
+    }
+}
 
 std::shared_ptr<qjs::Context> Scripting::get_script_context() const {
     return m_context;
@@ -572,6 +607,15 @@ class JSRigidBody : public JSObjectBase {
         rigidbody.set_rotation(rotation);
     }
 
+    void set_rotation_euler(vec3 rotation) {
+        auto rigidbodyOpt = get_rigidbody();
+        if (!rigidbodyOpt)
+            return;
+
+        auto& rigidbody = rigidbodyOpt.value().get();
+        rigidbody.set_rotation(quat(radians(rotation)));
+    }
+
     void add_force(vec3 force) {
         auto rigidControllerOpt = get_rigid_controller();
         if (!rigidControllerOpt)
@@ -842,10 +886,12 @@ class JSHierarchy : public JSObjectBase {
     std::vector<uuid> get_children() {
         auto hierarchyOpt = get_hierarchy();
         if (!hierarchyOpt)
-            return std::vector<uuid>();
+            return {};
 
         auto& hierarchy = hierarchyOpt.value().get();
-        return hierarchy.get_children();
+        auto children = hierarchy.get_children();
+
+        return children;
     }
 
     void add_child(uuid child) {
@@ -1096,6 +1142,43 @@ class JSEditorCamera : public JSObjectBase {
         return gameObjectOpt.value().get_component<components::EditorCamera>();
     }
 
+    void set_as_active_camera() {
+        auto editorCameraOpt = get_editor_camera();
+        if (!editorCameraOpt)
+            return;
+        auto& editorCamera = editorCameraOpt.value().get();
+
+        components::EditorCamera::set_active_camera(editorCamera);
+    }
+
+    vec3 get_rotation_euler() {
+        auto engineOpt = Engine::get_active_engine();
+        if (!engineOpt)
+            return {};
+        auto& engine = engineOpt.value().get();
+
+        auto cameraRotationWeak = engine.get_camera_rotation_module();
+        if (cameraRotationWeak.expired())
+            return {};
+
+        auto cameraRotation = cameraRotationWeak.lock();
+        return cameraRotation->get_rotation_euler();
+    }
+
+    void set_rotation_euler(vec3 rotation) {
+        auto engineOpt = Engine::get_active_engine();
+        if (!engineOpt)
+            return;
+        auto& engine = engineOpt.value().get();
+
+        auto cameraRotationWeak = engine.get_camera_rotation_module();
+        if (cameraRotationWeak.expired())
+            return;
+
+        auto cameraRotation = cameraRotationWeak.lock();
+        cameraRotation->set_rotation_euler(rotation);
+    }
+
     void set_look_target(const glm::vec3& target) {
         auto editorCameraOpt = get_editor_camera();
         if (!editorCameraOpt)
@@ -1334,6 +1417,15 @@ class JSClientPlayer : public JSObjectBase {
         return gameObjectOpt.value().get_component<components::ClientPlayer>();
     }
 
+    int get_client_number() {
+        auto clientPlayerOpt = get_client_player();
+        if (!clientPlayerOpt)
+            return -1;
+
+        auto& clientPlayer = clientPlayerOpt.value().get();
+        return clientPlayer.m_clientNum;
+    }
+
     void set_look_axis(vec2 axis) {
         auto clientPlayerOpt = get_client_player();
         if (!clientPlayerOpt)
@@ -1434,10 +1526,13 @@ JSValue script_storage_retrieve(std::string key) {
         return JS_UNDEFINED;
     auto scripting = weakScripting.lock();
 
-    log::debug("Retrieving key: {}", key);
-
-    if (scripting->storage.count(key))
-        return scripting->storage[key];
+    if (scripting->storage.count(key)) {
+        JSValue v = scripting->storage[key];
+        if (JS_IsObject(v)) {
+            return JS_DupValue(scripting->get_script_context()->ctx, v);
+        }
+        return v;
+    }
 
     log::debug("Failed to retrieve key: {}", key);
 
@@ -1749,12 +1844,14 @@ void remove_game_object(uuid id) {
 JSValue get_game_object_from_id(uuid id) {
     auto sceneOpt = Scene::get_active_scene();
     if (!sceneOpt) {
+        log::debug(1);
         return JS_UNDEFINED;
     }
     auto& scene = sceneOpt.value().get();
 
     auto gameObjectOpt = scene.get_game_object_from_id(id);
     if (!gameObjectOpt) {
+        log::debug(2);
         return JS_UNDEFINED;
     }
 
@@ -1802,6 +1899,21 @@ void load_scene(const std::string& filename) {
     serializedSceneStream.close();
 }
 
+int get_client_number() {
+    auto engineOpt = Engine::get_active_engine();
+    if (!engineOpt)
+        return -1;
+    auto& engine = engineOpt.value().get();
+
+    auto networkClientWeak = engine.get_client_module();
+    if (networkClientWeak.expired())
+        return -1;
+
+    auto networkClient = networkClientWeak.lock();
+
+    return networkClient->get_client_number();
+}
+
 void Scripting::add_knoting_module() {
     knoting_module = m_context->addModule("knoting");
     auto& knoting = knoting_module.value().get();
@@ -1833,6 +1945,7 @@ void Scripting::add_knoting_module() {
     knoting.class_<JSRigidBody>("RigidBody")
         .constructor()
         .fun<&JSRigidBody::set_rotation>("setRotation")
+        .fun<&JSRigidBody::set_rotation_euler>("setRotationEuler")
         .fun<&JSRigidBody::add_force>("addForce")
         .fun<&JSRigidBody::get_position>("getPosition")
         .fun<&JSRigidBody::get_rotation>("getRotation")
@@ -1879,7 +1992,10 @@ void Scripting::add_knoting_module() {
 
     knoting.class_<JSEditorCamera>("EditorCamera")
         .constructor()
+        .fun<&JSEditorCamera::get_rotation_euler>("getRotationEuler")
+        .fun<&JSEditorCamera::set_rotation_euler>("setRotationEuler")
         .fun<&JSEditorCamera::set_look_target>("setLookTarget")
+        .fun<&JSEditorCamera::set_as_active_camera>("setAsActiveCamera")
         .fun<&JSEditorCamera::set_fov>("setFov")
         .fun<&JSEditorCamera::set_z_near>("setZNear")
         .fun<&JSEditorCamera::set_z_far>("setZFar")
@@ -1900,6 +2016,7 @@ void Scripting::add_knoting_module() {
         .fun<&JSClientPlayer::get_look_axis>("getLookAxis")
         .fun<&JSClientPlayer::get_move_axis>("getMoveAxis")
         .fun<&JSClientPlayer::get_is_shooting>("getIsShooting")
+        .fun<&JSClientPlayer::get_client_number>("getClientNumber")
         .fun<&JSClientPlayer::JSClientPlayer::get_jump_pressed>("getJumpPressed");
 
     auto storage = m_context->newObject();
@@ -1907,6 +2024,11 @@ void Scripting::add_knoting_module() {
     storage.add("retrieve", script_storage_retrieve);
 
     knoting.add("storage", storage);
+
+    auto network = m_context->newObject();
+    network.add("getClientNumber", get_client_number);
+
+    knoting.add("network", network);
 
     auto input = m_context->newObject();
     input.add("keyPressed", input_key_pressed);

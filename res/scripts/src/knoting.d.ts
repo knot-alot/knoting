@@ -194,6 +194,8 @@ declare module "knoting" {
         setMoveSpeed(speed: number): void;
 
         getMoveSpeed(): number;
+
+        setAsActiveCamera(): void;
     }
 
     class Raycast {
@@ -474,9 +476,16 @@ declare module "knoting" {
         setJumpPressed(jumpingPressed: boolean): boolean;
 
         setIsShooting(isShooting: boolean): boolean;
+
+        getClientNumber(): number;
+    }
+
+    class Network {
+        getClientNumber(): number;
     }
 
     const input: InputManager;
     const scene: Scene;
     const storage: Storage;
+    const network: Network;
 }

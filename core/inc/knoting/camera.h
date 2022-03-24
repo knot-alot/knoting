@@ -6,10 +6,14 @@
 
 namespace knot {
 namespace components {
-class EditorCamera {
+
+class EditorCamera : public Component<EditorCamera> {
    public:
     EditorCamera();
     ~EditorCamera();
+
+    void on_awake() override;
+    void on_destroy() override;
 
     vec3 get_look_target() { return m_lookTarget; };
     float get_fov() { return radians(m_fov); };
@@ -31,6 +35,12 @@ class EditorCamera {
                 CEREAL_NVP(m_moveSpeed), CEREAL_NVP(m_moveSpeedMultiplier));
     }
 
+    static std::optional<std::reference_wrapper<EditorCamera>> get_active_camera() { return s_activeCamera; }
+
+    static void set_active_camera(std::optional<std::reference_wrapper<EditorCamera>> editorCamera) {
+        s_activeCamera = editorCamera;
+    }
+
    private:
     glm::vec3 m_lookTarget = vec3(0, 0, -1);
 
@@ -41,6 +51,8 @@ class EditorCamera {
 
     float m_moveSpeed = 5;
     float m_moveSpeedMultiplier = 4;
+
+    inline static std::optional<std::reference_wrapper<EditorCamera>> s_activeCamera = std::nullopt;
 };
 
 }  // namespace components

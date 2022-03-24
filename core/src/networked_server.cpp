@@ -106,7 +106,7 @@ bool NetworkedServer::handle_recieved_packets(double m_delta_time) {
 
                 uint16_t playerNum = playerComp.m_clientNum;
 
-                if (!(playerNum == i)) {
+                if (playerNum != i) {
                     continue;
                 }
 
@@ -115,28 +115,29 @@ bool NetworkedServer::handle_recieved_packets(double m_delta_time) {
                 playerComp.m_jumpPressed = (cliMess->jumpPressed);
                 playerComp.m_isShooting = (cliMess->isShooting);
 
-                // here downwards will be removed and handled by scripts
-
-                vec2i inputs = playerComp.m_moveAxis;
-                vec3 playerInputs = vec3(inputs.x, 0, -inputs.y);
-
-                float boost = 1.0f;
-                if (playerComp.m_jumpPressed) {
-                    boost = 200.0f;
-                }
-
-                if (glm::length(playerInputs) <= 0.1f) {
-                    continue;
-                }
-
-                vec3 normInp = glm::normalize(playerInputs);
-                float baseMulti = 1000000.0f;
-                float speedMulti = 0.2f;
-
-                const vec3 directionForce =
-                    (float)(m_delta_time * baseMulti * speedMulti * boost) * vec3(normInp.x, 0, normInp.z);
-
-                rigidController.add_force(directionForce);
+                //                // here downwards will be removed and handled by scripts
+                //
+                //                vec2i inputs = playerComp.m_moveAxis;
+                //                vec3 playerInputs = vec3(inputs.x, 0, -inputs.y);
+                //
+                //                float boost = 1.0f;
+                //                if (playerComp.m_jumpPressed) {
+                //                    boost = 200.0f;
+                //                }
+                //
+                //                if (glm::length(playerInputs) <= 0.1f) {
+                //                    continue;
+                //                }
+                //
+                //                vec3 normInp = glm::normalize(playerInputs);
+                //                float baseMulti = 1000000.0f;
+                //                float speedMulti = 0.2f;
+                //
+                //                const vec3 directionForce =
+                //                    (float)(m_delta_time * baseMulti * speedMulti * boost) * vec3(normInp.x, 0,
+                //                    normInp.z);
+                //
+                //                rigidController.add_force(directionForce);
             }
 
             m_server->ReleaseMessage(i, mess);

@@ -155,7 +155,7 @@ Untie::Untie() {
         auto editorCamera = scene.create_game_object("camera");
         auto& cam = editorCamera.add_component<components::EditorCamera>();
         auto& transform = cubeObj.get_component<components::Transform>();
-        editorCamera.get_component<components::Transform>().set_position({0, 10.f, transform.get_scale().z});
+        editorCamera.get_component<components::Transform>().set_position({0.f, 10.f, 0.f});
 
         editorCamera.add_component<components::AudioListener>();
 
@@ -204,6 +204,18 @@ Untie::Untie() {
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
         client.m_clientNum = (1);
+
+        auto editorCamera = scene.create_game_object("camera");
+        auto& cam = editorCamera.add_component<components::EditorCamera>();
+        auto& transform = cubeObj.get_component<components::Transform>();
+        editorCamera.get_component<components::Transform>().set_position({0.f, 10.f, 0.f});
+
+        editorCamera.add_component<components::AudioListener>();
+
+        auto& hier = cubeObj.get_component<components::Hierarchy>();
+        hier.add_child(editorCamera);
+
+        cubeObj.add_component<components::InstanceScript>("playerMovement.js");
     }
     // PLAYER 3
     {
@@ -241,6 +253,18 @@ Untie::Untie() {
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
         client.m_clientNum = (2);
+
+        auto editorCamera = scene.create_game_object("camera");
+        auto& cam = editorCamera.add_component<components::EditorCamera>();
+        auto& transform = cubeObj.get_component<components::Transform>();
+        editorCamera.get_component<components::Transform>().set_position({0.f, 10.f, 0.f});
+
+        editorCamera.add_component<components::AudioListener>();
+
+        auto& hier = cubeObj.get_component<components::Hierarchy>();
+        hier.add_child(editorCamera);
+
+        cubeObj.add_component<components::InstanceScript>("playerMovement.js");
     }
     // PLAYER 4
     {
@@ -278,6 +302,18 @@ Untie::Untie() {
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
         client.m_clientNum = (3);
+
+        auto editorCamera = scene.create_game_object("camera");
+        auto& cam = editorCamera.add_component<components::EditorCamera>();
+        auto& transform = cubeObj.get_component<components::Transform>();
+        editorCamera.get_component<components::Transform>().set_position({0.f, 10.f, 0.f});
+
+        editorCamera.add_component<components::AudioListener>();
+
+        auto& hier = cubeObj.get_component<components::Hierarchy>();
+        hier.add_child(editorCamera);
+
+        cubeObj.add_component<components::InstanceScript>("playerMovement.js");
     }
     // PLAYER 5
     {
@@ -315,6 +351,18 @@ Untie::Untie() {
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
         client.m_clientNum = (4);
+
+        auto editorCamera = scene.create_game_object("camera");
+        auto& cam = editorCamera.add_component<components::EditorCamera>();
+        auto& transform = cubeObj.get_component<components::Transform>();
+        editorCamera.get_component<components::Transform>().set_position({0.f, 10.f, 0.f});
+
+        editorCamera.add_component<components::AudioListener>();
+
+        auto& hier = cubeObj.get_component<components::Hierarchy>();
+        hier.add_child(editorCamera);
+
+        cubeObj.add_component<components::InstanceScript>("playerMovement.js");
     }
     // PLAYER 6
     {
@@ -352,6 +400,18 @@ Untie::Untie() {
 
         auto& client = cubeObj.add_component<components::ClientPlayer>();
         client.m_clientNum = (5);
+
+        auto editorCamera = scene.create_game_object("camera");
+        auto& cam = editorCamera.add_component<components::EditorCamera>();
+        auto& transform = cubeObj.get_component<components::Transform>();
+        editorCamera.get_component<components::Transform>().set_position({0.f, 10.f, 0.f});
+
+        editorCamera.add_component<components::AudioListener>();
+
+        auto& hier = cubeObj.get_component<components::Hierarchy>();
+        hier.add_child(editorCamera);
+
+        cubeObj.add_component<components::InstanceScript>("playerMovement.js");
     }
     {
         auto cubeObj = scene.create_game_object("post processing");
@@ -372,6 +432,14 @@ Untie::Untie() {
         auto psObj = scene.create_game_object("ps2");
         psObj.get_component<components::Transform>().set_position(glm::vec3(-10.0f, 10.0f, 10.0f));
         psObj.add_component<components::Particles>();
+    }
+    {
+        auto pauseCamera = scene.create_game_object("pauseCamera");
+        auto& cam = pauseCamera.add_component<components::EditorCamera>();
+        pauseCamera.get_component<components::Transform>().set_position({0.f, 50.f, 0.f});
+
+        pauseCamera.add_component<components::AudioListener>();
+        pauseCamera.add_component<components::InstanceScript>("pauseCamera.js");
     }
     //    std::string filename("post_process.json");
     //    std::filesystem::path path = AssetManager::get_resources_path().append(filename);

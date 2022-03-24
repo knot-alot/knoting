@@ -1,9 +1,9 @@
 #pragma once
 
-#include <knoting/script.h>
-#include <knoting/scripting.h>
 #include <knoting/assert.h>
 #include <knoting/component.h>
+#include <knoting/script.h>
+#include <knoting/scripting.h>
 #include <knoting/types.h>
 #include <knoting/quickjs.hpp>
 
@@ -59,8 +59,7 @@ class InstanceScript : public Component<InstanceScript> {
 
         JSValue argv[sizeof...(Args) + 1];
         qjs::detail::wrap_args(context->ctx, argv, std::forward<Args>(args)...);
-        qjs::Value ret =
-            JS_Call(context->ctx, functionDup.v, obj->v, sizeof...(args), const_cast<JSValueConst*>(argv));
+        qjs::Value ret = JS_Call(context->ctx, functionDup.v, obj->v, sizeof...(args), const_cast<JSValueConst*>(argv));
 
         for (auto& arg : argv)
             JS_FreeValue(context->ctx, arg);
@@ -76,6 +75,8 @@ class InstanceScript : public Component<InstanceScript> {
     std::optional<qjs::Value> obj;
 
    private:
+    friend class Scripting;
+
     std::shared_ptr<components::Script> m_script;
     std::string m_path;
 

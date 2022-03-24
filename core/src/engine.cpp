@@ -27,11 +27,11 @@ Engine::Engine() {
     m_engineModules.emplace_back(m_cameraRotationModule);
     m_engineModules.emplace_back(m_forwardRenderModule);
     m_engineModules.emplace_back(m_physicsModule);
-    m_engineModules.emplace_back(m_scriptingModule);
     m_engineModules.emplace_back(m_audioModule);
     if (!isClient) {
         m_engineModules.emplace_back(m_serverModule);
     }
+    m_engineModules.emplace_back(m_scriptingModule);
     m_engineModules.emplace_back(m_clientModule);
 
     for (auto& module : m_engineModules) {
