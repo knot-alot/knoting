@@ -97,6 +97,22 @@ void RigidBody::set_name(const std::string& name) {
     }
 }
 
+void RigidBody::set_flag(PxActorFlag::Enum flag) {
+    if (m_dynamic) {
+        m_dynamic->get()->setActorFlag(flag, true);
+    } else {
+        m_static->get()->setActorFlag(flag, true);
+    }
+}
+
+void RigidBody::remove_flag(PxActorFlag::Enum flag) {
+    if (m_dynamic) {
+        m_dynamic->get()->setActorFlag(flag, false);
+    } else {
+        m_static->get()->setActorFlag(flag, false);
+    }
+}
+
 void RigidBody::set_shape(std::shared_ptr<PxShape_ptr_wrapper> shape) {
     if (m_dynamic) {
         if (m_shape) {
@@ -144,11 +160,21 @@ void RigidBody::create_actor(bool isDynamic, const float& mass) {
         m_dynamic->get()->attachShape(*m_shape->get());
         PxRigidBodyExt::updateMassAndInertia(*m_dynamic->get(), mass);
         m_aggregate->get_aggregate()->addActor(*m_dynamic->get());
+        m_isDynamic = isDynamic;
     } else {
         m_static = std::make_shared<PxStatic_ptr_wrapper>(m_physics->get()->createRigidStatic(
             PxTransform(get_position_from_transform(), get_rotation_from_transform())));
         m_static->get()->attachShape(*m_shape->get());
         m_aggregate->get_aggregate()->addActor(*m_static->get());
+        m_isDynamic = isDynamic;
+    }
+}
+
+PxActorFlags RigidBody::get_flags() {
+    if (m_dynamic) {
+        return m_dynamic->get()->getActorFlags();
+    } else {
+        return m_static->get()->getActorFlags();
     }
 }
 
@@ -190,10 +216,11 @@ std::shared_ptr<PxShape_ptr_wrapper> RigidBody::get_shape_from_shape() {
     if (!goOpt) {
         return nullptr;
     }
-    if (goOpt->has_component<components::Shape>()) {
-        Shape& shape = goOpt->get_component<components::Shape>();
-        return shape.get_shape().lock();
+    if (!goOpt->has_component<components::Shape>()) {
+        return nullptr;
     }
+    Shape& shape = goOpt->get_component<components::Shape>();
+    return shape.get_shape().lock();
 }
 
 std::shared_ptr<PxAggregate_ptr_wrapper> RigidBody::get_aggregate_from_aggregate() {
@@ -207,10 +234,11 @@ std::shared_ptr<PxAggregate_ptr_wrapper> RigidBody::get_aggregate_from_aggregate
     if (!goOpt) {
         return nullptr;
     }
-    if (goOpt->has_component<components::Aggregate>()) {
-        Aggregate& aggregate = goOpt->get_component<components::Aggregate>();
-        return aggregate.get_aggregate().lock();
+    if (!goOpt->has_component<components::Aggregate>()) {
+        return nullptr;
     }
+    Aggregate& aggregate = goOpt->get_component<components::Aggregate>();
+    return aggregate.get_aggregate().lock();
 }
 
 vec3 RigidBody::PxVec3_to_vec3(PxVec3 v) {

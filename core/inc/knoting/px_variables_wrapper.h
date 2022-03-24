@@ -1,4 +1,5 @@
 #pragma once
+
 #include <PxPhysicsAPI.h>
 #include <iostream>
 #include <vector>
@@ -211,4 +212,23 @@ class PxAggregate_ptr_wrapper {
     std::string m_aggregate_name;
 };
 
+class PxActor_ptr_wrapper {
+   public:
+    PxActor_ptr_wrapper(PxActor* actor = nullptr) : m_actor(actor) {}
+    ~PxActor_ptr_wrapper() { clean(); }
+
+    void set(PxActor* actor) { m_actor = actor; }
+
+    PxActor* get() { return m_actor; }
+
+    void clean() {
+        if (m_actor) {
+            m_actor->release();
+            m_actor = nullptr;
+        }
+    }
+
+   private:
+    PxActor* m_actor;
+};
 };  // namespace knot

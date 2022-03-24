@@ -7,9 +7,12 @@ void knot::Debug_gui::on_widget_render() {
     // ImGui::ShowDemoWindow();
 
     if (Open) {
-        ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
-        ImGui::SetNextWindowSize(ImVec2(300, 150), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos(
 
+            ImVec2(0, 0), ImGuiCond_FirstUseEver
+
+        );
+        ImGui::SetNextWindowSize(ImVec2(300, 150), ImGuiCond_FirstUseEver);
         ImGui::Begin("debug info", NULL);
 
         ImGui::Text("FPS : ");
@@ -24,7 +27,15 @@ void knot::Debug_gui::on_widget_render() {
         ImGui::Text("Update Gui time:");
         ImGui::SameLine();
         ImGui::Text("% 7.3f[microsecond]", GUI_time_cost);
+        ImGui::Text("Physic detection:");
+        ImGui::Text(PhysicName.c_str());
+
         ImGui::End();
+        if (flag >= 20) {
+            PhysicName.clear();
+            flag = 0;
+        }
+        flag++;
     }
 }
 
