@@ -102,6 +102,96 @@ GameObject Untie::create_lower_floor(const std::string& name, vec3 position, vec
     return cubeObj;
 }
 
+GameObject Untie::create_paint_tank_base(const std::string& name, vec3 position, vec3 rotation, vec3 scale) {
+    auto cubeObj = m_scene->create_game_object(name);
+    cubeObj.get_component<components::Transform>().set_position(position);
+    cubeObj.get_component<components::Transform>().set_scale(glm::vec3(scale));
+    cubeObj.get_component<components::Transform>().set_rotation_euler(rotation);
+    cubeObj.add_component<components::InstanceMesh>("tank_base.obj");
+
+    auto& shape = cubeObj.add_component<components::Shape>();
+    vec3 halfsize = vec3(vec3(scale));
+    shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+    auto& aggregate = cubeObj.add_component<components::Aggregate>();
+    aggregate.find_aggregate("level");
+
+    auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+    rigidbody.create_actor(false);
+
+    auto material = components::Material();
+    material.set_texture_slot_path(TextureType::Albedo, "metal_base.png");
+    material.set_texture_slot_path(TextureType::Normal, "marble_floor_normal.png");
+    material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Roughness, "marble_floor_rough.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+    material.set_texture_scale(vec2(8, 4));
+    cubeObj.add_component<components::Material>(material);
+
+    return cubeObj;
+}
+
+GameObject Untie::create_paint_tank_glass_red(const std::string& name, vec3 position, vec3 rotation, vec3 scale) {
+    auto cubeObj = m_scene->create_game_object(name);
+    cubeObj.get_component<components::Transform>().set_position(position);
+    cubeObj.get_component<components::Transform>().set_scale(glm::vec3(scale));
+    cubeObj.get_component<components::Transform>().set_rotation_euler(rotation);
+    cubeObj.add_component<components::InstanceMesh>("tank_glass.obj");
+
+    auto& shape = cubeObj.add_component<components::Shape>();
+    vec3 halfsize = vec3(vec3(scale));
+    shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+    auto& aggregate = cubeObj.add_component<components::Aggregate>();
+    aggregate.find_aggregate("level");
+
+    auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+    rigidbody.create_actor(false);
+
+    auto material = components::Material();
+    material.set_texture_slot_path(TextureType::Albedo, "red_glass.png");
+    material.set_texture_slot_path(TextureType::Normal, "glass_normal.png");
+    material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Roughness, "glass_rough.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "glass_occlusion.png");
+    material.set_texture_scale(vec2(8, 4));
+    cubeObj.add_component<components::Material>(material);
+
+    return cubeObj;
+}
+
+GameObject Untie::create_paint_tank_glass_blue(const std::string& name, vec3 position, vec3 rotation, vec3 scale) {
+    auto cubeObj = m_scene->create_game_object(name);
+    cubeObj.get_component<components::Transform>().set_position(position);
+    cubeObj.get_component<components::Transform>().set_scale(glm::vec3(scale));
+    cubeObj.get_component<components::Transform>().set_rotation_euler(rotation);
+    cubeObj.add_component<components::InstanceMesh>("tank_glass.obj");
+
+    auto& shape = cubeObj.add_component<components::Shape>();
+    vec3 halfsize = vec3(vec3(scale));
+    shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+    auto& aggregate = cubeObj.add_component<components::Aggregate>();
+    aggregate.find_aggregate("level");
+
+    auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+    rigidbody.create_actor(false);
+
+    auto material = components::Material();
+    material.set_texture_slot_path(TextureType::Albedo, "water.png");
+    material.set_texture_slot_path(TextureType::Normal, "water_norm.png");
+    material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Roughness, "water_rough.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "glass_occlusion.png");
+    material.set_texture_scale(vec2(8, 4));
+    cubeObj.add_component<components::Material>(material);
+
+    return cubeObj;
+}
+
 GameObject Untie::create_slim_lower_floor(const std::string& name, vec3 position, vec3 scale) {
     auto cubeObj = m_scene->create_game_object(name);
     cubeObj.get_component<components::Transform>().set_position(position);
@@ -260,7 +350,7 @@ GameObject Untie::create_wall(const std::string& name, vec3 position, vec3 rotat
     cubeObj.add_component<components::InstanceMesh>("EG_wall_main.obj");
 
     auto& shape = cubeObj.add_component<components::Shape>();
-    vec3 halfsize = vec3(scale) * vec3(0.5, 0.5, 0.3);
+    vec3 halfsize = vec3(scale) * vec3(0.8, 0.8, 1);
     shape.set_geometry(shape.create_cube_geometry(halfsize));
 
     auto& aggregate = cubeObj.add_component<components::Aggregate>();
@@ -316,12 +406,12 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     cubeObj.get_component<components::Transform>().set_position(position);
     cubeObj.get_component<components::Transform>().set_scale(glm::vec3(1, 1, 1));
     cubeObj.get_component<components::Transform>().set_rotation_euler(rotation);
-    cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+    cubeObj.add_component<components::InstanceMesh>("slug.obj");
 
     auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
     auto& shape = cubeObj.add_component<components::Shape>();
-    vec3 halfsize = vec3(1.5f, 1.f, 0.5f);
+    vec3 halfsize = vec3(1.5f, 1.0f, 1.0f);
     shape.set_geometry(shape.create_cube_geometry(halfsize));
 
     auto& aggregate = cubeObj.add_component<components::Aggregate>();
@@ -421,6 +511,12 @@ void Untie::create_level() {
     // create_point_light("blue_light_secondary",vec3(-27,1.99999952,-48),5,0.2f,vec3(to_color(vec3(0,0,128))));
 
     create_level_bottom();
+    create_paint_tank_base("blue_tank_base", vec3(25.9200001,1,-47), vec3(0,0,0), vec3(0.7,0.7,0.7));
+    create_paint_tank_glass_blue("blue_tank_glass", vec3(25.9200001,1,-47), vec3(0,0,0), vec3(0.7,0.7,0.7));
+
+    create_paint_tank_base("red_tank_base", vec3(-24.7299995,1,47.0099983),vec3(0,0,0), vec3(0.7,0.7,0.7));
+    create_paint_tank_glass_red("red_tank_glass", vec3(-24.7299995,1,47.0099983),vec3(0,0,0), vec3(0.7,0.7,0.7));
+
     create_lower_floor("lower_floor_top", vec3(0.229999542, 0, -28.25), vec3(30, 1, 22.86033));
     create_lower_floor("lower_floor_bottom", vec3(0.229999542, 0, 34.5), vec3(30, 1, 16.14291));
     create_slim_lower_floor("lower_floor_left", vec3(25.25, 0, 6.5), vec3(4.6, 1, 12.09042));
