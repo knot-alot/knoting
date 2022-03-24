@@ -42,6 +42,7 @@ class Physics : public Subsystem {
     std::shared_ptr<PxDispatcher_ptr_wrapper> m_dispatcher;
     std::shared_ptr<PxScene_ptr_wrapper> m_scene;
     std::shared_ptr<std::vector<std::shared_ptr<PxAggregate_ptr_wrapper>>> m_aggregates;
+
     PxVec3 m_gravity;
 };
 

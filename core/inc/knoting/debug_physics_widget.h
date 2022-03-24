@@ -10,9 +10,16 @@ class DebugPhysics : public Widget {
     DebugPhysics(const std::string& name);
     ~DebugPhysics();
     void on_widget_render() override;
+
+    void setWindow(int x, int y) {
+        m_x = x;
+        m_y = y;
+    };
+
    private:
     ImDrawList* draw_list;
-
+    int m_x;
+    int m_y;
 };
 
 }  // namespace knot

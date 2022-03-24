@@ -1,7 +1,6 @@
 #include <knoting/engine.h>
 #include <knoting/physics.h>
 #include <knoting/scene.h>
-
 PxDefaultAllocator g_Allocator;
 PxDefaultErrorCallback g_ErrorCallback;
 
@@ -31,6 +30,13 @@ void Physics::on_awake() {
     ags.push_back(ag);
     m_aggregates = std::make_shared<std::vector<std::shared_ptr<PxAggregate_ptr_wrapper>>>(ags);
     m_scene->get()->addAggregate(*ag->get_aggregate());
+
+    physx::PxPvdTransport* mTransport = physx::PxDefaultPvdSocketTransportCreate("10.70.33.113", 5425, 10000);
+    if(mTransport == NULL)
+        return;
+    physx::PxPvdInstrumentationFlags mPvdFlags = physx::PxPvdInstrumentationFlag::eALL;
+    physx::PxPvd* mPvd = physx::PxCreatePvd( *m_foundation->get());
+    mPvd->connect(*mTransport,mPvdFlags);
 }
 
 void Physics::on_update(double m_deltatime) {}

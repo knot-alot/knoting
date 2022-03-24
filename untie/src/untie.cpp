@@ -373,6 +373,10 @@ Untie::Untie() {
     //    serializedSceneStream.close();
     // auto demoWidget = std::make_shared<DemoWidget>("demo");
     // m_engine->get_Widget().lock()->add_widget(demoWidget);
+    m_debugPhysics = std::make_shared<DebugPhysics>("debugPhys");
+    m_debugPhysics->setWindow(m_engine->get_window_module().lock()->get_window_width(),
+                              m_engine->get_window_module().lock()->get_window_height());
+    m_engine->get_Widget().lock()->add_widget(m_debugPhysics);
     m_Pause_menu = std::make_shared<PauseMenu>("Pausemenu");
     m_Pause_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),
                            m_engine->get_window_module().lock()->get_window_height());
@@ -384,8 +388,8 @@ Untie::Untie() {
     m_debug = std::make_shared<Debug_gui>("Debug");
     m_engine->get_Widget().lock()->add_widget(m_debug);
 
-    m_debugPhysics = std::make_shared<DebugPhysics>("debugPhys");
-    m_engine->get_Widget().lock()->add_widget(m_debugPhysics);
+
+
 }
 
 void Untie::run() {
