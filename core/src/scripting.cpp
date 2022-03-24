@@ -563,6 +563,29 @@ class JSRigidBody : public JSObjectBase {
         return gameObjectOpt.value().get_component<components::RigidController>();
     }
 
+    JSValue get_actor() {
+        auto rigidbodyOpt = get_rigidbody();
+        if (!rigidbodyOpt)
+            return JS_UNDEFINED;
+
+        auto& rigidbody = rigidbodyOpt.value().get();
+
+        uuid* uuidPtr;
+        if (rigidbody.get_is_dynamic()) {
+            uuidPtr = reinterpret_cast<uuid*>(rigidbody.get_dynamic().lock().get()->get()->userData);
+        } else {
+            uuidPtr = reinterpret_cast<uuid*>(rigidbody.get_static().lock().get()->get()->userData);
+        }
+
+        JSValue obj = create_js_object_from_name("GameObject");
+        auto opaque = static_cast<std::shared_ptr<JSObjectBase>*>(
+            JS_GetOpaque(obj, qjs::js_traits<std::shared_ptr<JSGameObject>>::QJSClassId));
+
+        (*opaque)->set_uuid(*uuidPtr);
+
+        return obj;
+    }
+
     void set_rotation(vec3 rotation) {
         auto rigidbodyOpt = get_rigidbody();
         if (!rigidbodyOpt)
@@ -645,12 +668,12 @@ class JSRigidBody : public JSObjectBase {
     }
 
     bool is_dynamic() {
-        auto rigidControllerOpt = get_rigid_controller();
-        if (!rigidControllerOpt)
+        auto rigidbodyOpt = get_rigidbody();
+        if (!rigidbodyOpt)
             return false;
 
-        auto& rigidController = rigidControllerOpt.value().get();
-        return !rigidController.get_dynamic().expired();
+        auto& rigidbody = rigidbodyOpt.value().get();
+        return rigidbody.get_is_dynamic();
     }
 
     bool is_kinematic() {
@@ -1888,6 +1911,23 @@ JSValue create_game_object(std::string name) {
     return obj;
 }
 
+JSValue creat_bullet(bool is_teamA, vec3 spawnPos) {
+    auto sceneOpt = Scene::get_active_scene();
+    if (!sceneOpt) {
+        return JS_UNDEFINED;
+    }
+    auto& scene = sceneOpt.value().get();
+
+    JSValue obj = create_js_object_from_name("GameObject");
+    std::shared_ptr<JSObjectBase>* opaque = static_cast<std::shared_ptr<JSObjectBase>*>(
+        JS_GetOpaque(obj, qjs::js_traits<std::shared_ptr<JSGameObject>>::QJSClassId));
+
+    auto gameObject = scene.create_bullet(is_teamA, spawnPos);
+    (*opaque)->set_uuid(gameObject.get_id());
+
+    return obj;
+}
+
 void remove_game_object(uuid id) {
     auto sceneOpt = Scene::get_active_scene();
     if (!sceneOpt) {
@@ -1989,6 +2029,7 @@ void Scripting::add_knoting_module() {
 
     knoting.class_<JSRigidBody>("RigidBody")
         .constructor()
+        .fun<&JSRigidBody::get_actor>("getActor")
         .fun<&JSRigidBody::set_rotation>("setRotation")
         .fun<&JSRigidBody::add_force>("addForce")
         .fun<&JSRigidBody::get_position>("getPosition")
@@ -2117,6 +2158,7 @@ void Scripting::add_knoting_module() {
 
     auto scene = m_context->newObject();
     scene.add("createGameObject", create_game_object);
+    scene.add("createBullet", creat_bullet);
     scene.add("removeGameObject", remove_game_object);
     scene.add("getGameObjectFromID", get_game_object_from_id);
     scene.add("findGameObject", find_game_object);

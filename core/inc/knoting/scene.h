@@ -18,6 +18,7 @@ class Scene {
     ~Scene();
 
     GameObject create_game_object(const std::string& name = "");
+    GameObject create_bullet(bool team, vec3 spawnPos);
     GameObject add_game_object(entt::entity handle);
     void remove_game_object(GameObject game_object);
     std::optional<GameObject> get_game_object_from_id(uuid id);

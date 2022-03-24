@@ -46,6 +46,42 @@ GameObject Scene::create_game_object(const std::string& name) {
     return e;
 }
 
+GameObject Scene::create_bullet(bool is_teamA, vec3 spawnPos) {
+    GameObject e(m_registry.create(), *this);
+    e.add_component<components::Transform>();
+    e.add_component<components::Hierarchy>();
+    std::string n = is_teamA ? "teamA" : "teamB";
+    e.add_component<components::Name>(n);
+    e.add_component<components::InstanceMesh>("uv_cube.obj");
+
+    m_uuidGameObjectMap.insert(std::make_pair(e.get_id(), e));
+    m_entityGameObjectMap.insert(std::make_pair(e.m_handle, e));
+
+    log::debug("Created game object with id {}", to_string(e.get_id()));
+
+    e.add_component<components::PhysicsMaterial>();
+    auto& shape = e.add_component<components::Shape>();
+    shape.set_geometry(shape.create_sphere_geometry(0.2f));
+    is_teamA ? shape.set_filter_data(filter_group::eParticle_A, filter_group::eAll | filter_group::ePlayer_B)
+             : shape.set_filter_data(filter_group::eParticle_B, filter_group::eAll | filter_group::ePlayer_A);
+    auto& rigidBody = e.add_component<components::RigidBody>();
+    rigidBody.create_actor(true, 1.0f);
+
+    e.add_component<components::RigidController>();
+    auto& detection = e.add_component<components::Collision_Detection>();
+    detection.add_search_actor(rigidBody.get_dynamic().lock());
+
+    auto material = components::Material();
+    material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
+    material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
+    material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+    e.add_component<components::Material>(material);
+
+    return e;
+}
+
 void Scene::remove_game_object(GameObject game_object) {
     KNOTING_ASSERT_MESSAGE(m_registry.valid(game_object.m_handle),
                            "Trying to remove Game object with id {}, which is not valid",

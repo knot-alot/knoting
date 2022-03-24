@@ -36,6 +36,8 @@ declare module "knoting" {
     }
 
     class RigidBody {
+        getActor(): GameObject;
+
         getPosition(): Vec3;
 
         getRotation(): Quat;
@@ -143,6 +145,8 @@ declare module "knoting" {
 
     class Scene {
         createGameObject(name: string): GameObject;
+
+        createBullet(is_teamA: boolean, spawnPos: Vec3);
 
         removeGameObject(object: UUID): void;
 

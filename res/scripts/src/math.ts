@@ -32,6 +32,16 @@ export function add(x: Vec, y: Vec): Vec {
     return x;
 }
 
+export function subtract(x: Vec, y:Vec):Vec{
+    if (x.length != y.length) throw "Length of both vectors don't match";
+
+    for (let i = 0; i < x.length; i++) {
+        x[i] -= y[i];
+    }
+
+    return x;
+}
+
 export function multiply(x: Vec3, y: Vec3): Vec3 {
     if (x.length != y.length) throw "Length of both vectors don't match";
 
