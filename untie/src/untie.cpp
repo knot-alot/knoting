@@ -11,6 +11,7 @@
 #include "knoting/Menu.h"
 #include "knoting/demo_widget.h"
 
+#include <knoting/Font.h>
 #include <knoting/audio_listener.h>
 #include <knoting/audio_source.h>
 #include <knoting/audio_subsystem.h>
@@ -18,7 +19,6 @@
 #include <knoting/scene.h>
 #include <knoting/skybox.h>
 #include <knoting/spot_light.h>
-#include <knoting/Font.h>
 #include <fstream>
 #include <iostream>
 
@@ -109,7 +109,7 @@ void Untie::run() {
             }
             open = !open;
         }
-        if(im->key_pressed(KeyCode::M)){
+        if (im->key_pressed(KeyCode::M)) {
             m_debug->get_contact_data();
         }
         int64_t now = bx::getHPCounter();
@@ -118,6 +118,14 @@ void Untie::run() {
         last = now;
         const double freq = double(bx::getHPFrequency());
         const double toMs = 1000.0 / freq;
+
+        m_debugPhysics->setWindow(m_engine->get_window_module().lock()->get_window_width(),
+                                  m_engine->get_window_module().lock()->get_window_height());
+        m_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),
+                          m_engine->get_window_module().lock()->get_window_height());
+        m_Pause_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),
+                                m_engine->get_window_module().lock()->get_window_height());
+
         m_debug->setFrame(1000 / (double(frameTime) * toMs));
     }
 }

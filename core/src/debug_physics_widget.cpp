@@ -98,8 +98,8 @@ void knot::DebugPhysics::on_widget_render() {
                      ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground |
                          ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoMouseInputs);
         ImGuizmo::SetDrawlist();
-        float windowWidth = (float)ImGui::GetWindowWidth();
-        float windowHeight = (float)ImGui::GetWindowHeight();
+        float windowWidth = m_x;
+        float windowHeight = m_y;
         ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
         //    draw_list = ImGui::GetWindowDrawList();
         Transform modelTrans = Transform();
