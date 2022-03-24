@@ -91,7 +91,7 @@ Untie::Untie() {
     {
         auto cubeObj = scene.create_game_object("floor");
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 0.0f, -0.0f));
-        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(25, 1, 25));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(25, 2, 25));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 0, 0));
         cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
@@ -122,7 +122,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-20, 5.0f, -20));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 240, 0));
-        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
@@ -159,7 +159,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(20, 5.0f, 20));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 10, 0));
-        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
@@ -201,7 +201,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(-20, 5.0f, 20));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 10, 0));
-        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
@@ -240,7 +240,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(20, 5.0f, -20));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 10, 0));
-        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
@@ -279,7 +279,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(0, 5.0f, 20));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 10, 0));
-        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
@@ -316,7 +316,7 @@ Untie::Untie() {
         cubeObj.get_component<components::Transform>().set_position(glm::vec3(0, 5.0f, -20));
         cubeObj.get_component<components::Transform>().set_scale(glm::vec3(3, 3, 3));
         cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 10, 0));
-        cubeObj.add_component<components::InstanceMesh>("dragon.obj");
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
 
         auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 

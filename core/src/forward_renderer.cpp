@@ -216,6 +216,8 @@ void ForwardRenderer::color_pass(uint16_t idx) {
 
     //=PBR PIPELINE===========================
 
+    vec3 pos = vec3(0, 0, 0) + vec3(rand() % (int)25 * 2 - (int)25, 1.0f, rand() % (int)25 * 2 - (int)25);
+
     auto entities = registry.view<Transform, InstanceMesh, Material, Name>();
     for (auto& e : entities) {
         auto goOpt = scene.get_game_object_from_handle(e);
@@ -242,9 +244,7 @@ void ForwardRenderer::color_pass(uint16_t idx) {
         m_lightData.set_spotlight_uniforms();
         // Bind Uniforms & textures.
 
-        //        vec3 scale = transform.get_scale();
-        //        vec3 pos = transform.get_position() +vec3(rand()% (int)scale.x * 2 - (int)scale.x, 0.5,
-        //        rand()%(int)scale.x *2 - (int)scale.x); mesh.addContactPoint(pos,Team::BLUE);
+        mesh.addContactPoint(pos, Team::BLUE);
 
         auto paintQueue = mesh.get_paint_data();
         int i = 0;
@@ -252,6 +252,7 @@ void ForwardRenderer::color_pass(uint16_t idx) {
             paintData[i] = *it;
             i++;
         }
+
         material.set_mask_data(paintData.data());
         material.set_uniforms();
 
