@@ -65,6 +65,8 @@ class Untie {
                              vec3 rotation = vec3(0),
                              int playerNum = 0);
 
+    GameObject create_audio_hub();
+
     void create_level();
 
     void run();

@@ -50,7 +50,7 @@ void Physics::on_awake() {
 
     m_physics = std::make_shared<PxPhysics_ptr_wrapper>(
         PxCreatePhysics(PX_PHYSICS_VERSION, *m_foundation->get(), PxTolerancesScale(), false, NULL));
-    constexpr float defalut_gravity = -9.81f;
+    constexpr float defalut_gravity = -9.81f * 3.0f;
     PxSceneDesc sceneDesc(m_physics->get()->getTolerancesScale());
     sceneDesc.gravity = PxVec3(0, defalut_gravity, 0);
     m_dispatcher = std::make_shared<PxDispatcher_ptr_wrapper>(PxDefaultCpuDispatcherCreate(2));

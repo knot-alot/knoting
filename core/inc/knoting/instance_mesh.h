@@ -11,8 +11,7 @@
 
 namespace knot {
 namespace components {
-  
-  
+
 enum class Team { RED = 1, BLUE = 2 };
 class InstanceMesh : public Component<InstanceMesh> {
    public:
