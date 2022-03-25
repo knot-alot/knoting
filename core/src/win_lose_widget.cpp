@@ -4,7 +4,7 @@
 #include <knoting/win_lose_widget.h>
 
 knot::WinLoseWidget::WinLoseWidget(const std::string& name) : Widget(name) {
-    m_backTex = AssetManager::load_asset<components::Texture>("you_win_lose.png").lock();
+    m_backTex = AssetManager::load_asset<components::Texture>("you_win_lose_meme.png").lock();
 }
 
 void knot::WinLoseWidget::on_widget_render() {
