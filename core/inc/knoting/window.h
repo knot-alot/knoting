@@ -59,7 +59,7 @@ class Window : public Subsystem {
     void setup_callbacks();
     static void window_size_callback(GLFWwindow* window, int width, int height);
     static void window_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-    static void window_char_callback(GLFWwindow* window, unsigned int);
+    static void window_char_callback(GLFWwindow* window, unsigned int codepoint);
     static void window_mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
     static void window_scroll_event(GLFWwindow* window, double xoffset, double yoffset);
     static void window_mouse_event_callback(GLFWwindow* window, double x, double y);

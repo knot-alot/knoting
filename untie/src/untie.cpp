@@ -8,7 +8,9 @@
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/scene.h>
 #include <knoting/texture.h>
+#include "knoting/Menu.h"
 
+#include <knoting/Font.h>
 #include <knoting/audio_listener.h>
 #include <knoting/audio_source.h>
 #include <knoting/audio_subsystem.h>
@@ -19,8 +21,12 @@
 #include <fstream>
 #include <iostream>
 
+#include <bx/timer.h>
+#include <knoting/collision_detection.h>
+#include <knoting/widget_subsystem.h>
 #include <cereal/archives/json.hpp>
-
+#include <cstdio>
+#include <ctime>
 #include <iostream>
 
 namespace knot {
@@ -36,13 +42,51 @@ Untie::Untie() {
     m_engine = std::make_unique<knot::Engine>();
     Engine::set_active_engine(*m_engine);
     create_level();
+
+    auto fontObj = m_scene->create_game_object("font");
+    fontObj.add_component<components::Font>();
+    m_demoWidget = std::make_shared<DemoWidget>("demo");
+    m_demoWidget->setWinow(m_engine->get_window_module().lock()->get_window_width(),
+                           m_engine->get_window_module().lock()->get_window_height());
+
+
+
+    m_engine->get_Widget().lock()->add_widget(m_demoWidget);
+
+    m_debugPhysics = std::make_shared<DebugPhysics>("debugPhys");
+    m_debugPhysics->setWindow(m_engine->get_window_module().lock()->get_window_width(),
+                              m_engine->get_window_module().lock()->get_window_height());
+    m_engine->get_Widget().lock()->add_widget(m_debugPhysics);
+
+    m_winLoseWidget = std::make_shared<WinLoseWidget>("winlosewidget");
+    m_winLoseWidget->setWinow(m_engine->get_window_module().lock()->get_window_width(),
+                              m_engine->get_window_module().lock()->get_window_height());
+    m_engine->get_Widget().lock()->add_widget(m_winLoseWidget);
+
+
+    m_Pause_menu = std::make_shared<PauseMenu>("Pausemenu");
+    m_Pause_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),
+                           m_engine->get_window_module().lock()->get_window_height());
+    m_engine->get_Widget().lock()->add_widget(m_Pause_menu);
+    m_menu = std::make_shared<Menu>("menu");
+    m_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),
+                     m_engine->get_window_module().lock()->get_window_height());
+    m_engine->get_Widget().lock()->add_widget(m_menu);
+    m_debug = std::make_shared<Debug_gui>("Debug");
+    m_engine->get_Widget().lock()->add_widget(m_debug);
+
+
 }
 
 void Untie::run() {
     auto cliMod = m_engine->get_client_module().lock();
     cliMod->attempt_connection();
     while (m_engine->is_open()) {
+        m_debug->set_bgfx_Time(m_engine->get_bgfx_Time_cost());
+        m_debug->set_Phy_Time(m_engine->get_Phy_Time_cost());
+        m_debug->set_Gui_Time(m_engine->get_Gui_Time_cost());
         m_engine->update_modules();
+
         auto im = m_engine->get_window_module().lock()->get_input_manager();
 
         if (im->key_on_trigger(KeyCode::P)) {
@@ -67,9 +111,41 @@ void Untie::run() {
             }
         }
 
-        if (im->key_pressed(KeyCode::Escape)) {
-            m_engine->get_window_module().lock()->close();
+        if (im->key_on_trigger(KeyCode::Escape)) {
+            m_engine->switch_paused();
+            m_engine->switch_pause_menu();
         }
+        if (im->key_on_trigger(KeyCode::GraveAccent)) {
+            if (open) {
+                m_debug->setOpen(open);
+            }
+            if (!open) {
+                m_debug->setOpen(open);
+            }
+            open = !open;
+        }
+        if (im->key_pressed(KeyCode::M)) {
+            m_debug->get_contact_data();
+        }
+        int64_t now = bx::getHPCounter();
+        static int64_t last = now;
+        const int64_t frameTime = now - last;
+        last = now;
+        const double freq = double(bx::getHPFrequency());
+        const double toMs = 1000.0 / freq;
+
+        m_debugPhysics->setWindow(m_engine->get_window_module().lock()->get_window_width(),
+                                  m_engine->get_window_module().lock()->get_window_height());
+        m_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),
+                         m_engine->get_window_module().lock()->get_window_height());
+        m_Pause_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),
+                               m_engine->get_window_module().lock()->get_window_height());
+        m_demoWidget->setWinow(m_engine->get_window_module().lock()->get_window_width(),
+                               m_engine->get_window_module().lock()->get_window_height());
+        m_winLoseWidget->setWinow(m_engine->get_window_module().lock()->get_window_width(),
+                                  m_engine->get_window_module().lock()->get_window_height());
+
+        m_debug->setFrame(1000 / (double(frameTime) * toMs));
     }
 }
 
@@ -449,8 +525,10 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     aggregate.add_aggregate(name, 5, false);
 
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
-
     rigidbody.create_actor(true, 4.0f);
+
+    auto& detection = cubeObj.add_component<components::Collision_Detection>();
+    detection.add_search_actor(rigidbody.get_dynamic().lock());
 
     auto& rigidController = cubeObj.add_component<components::RigidController>();
     rigidController.lockRotations(true, false, true);
@@ -701,22 +779,22 @@ void Untie::create_level() {
     create_player("player_6", vec3(0, 5, 20), vec3(0), 5);
 
     // CREATE PARTICLE SYSTEM
+    /*
+        {
+            auto psObj = m_scene->create_game_object("ps1");
+            psObj.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 10.0f, 0.0f));
+            partSystem = &psObj.add_component<components::Particles>();
+            partSystem->set_max_particles_start_scale(0.5f);
+            partSystem->set_max_particles_end_scale(0.01f);
+            partSystem->set_particles_per_second(10);
+        }
 
-    {
-        auto psObj = m_scene->create_game_object("ps1");
-        psObj.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 10.0f, 0.0f));
-        partSystem = &psObj.add_component<components::Particles>();
-        partSystem->set_max_particles_start_scale(0.5f);
-        partSystem->set_max_particles_end_scale(0.01f);
-        partSystem->set_particles_per_second(10);
-    }
-
-    {
-        auto psObj = m_scene->create_game_object("ps2");
-        psObj.get_component<components::Transform>().set_position(glm::vec3(-10.0f, 10.0f, 10.0f));
-        psObj.add_component<components::Particles>();
-    }
-
+        {
+            auto psObj = m_scene->create_game_object("ps2");
+            psObj.get_component<components::Transform>().set_position(glm::vec3(-10.0f, 10.0f, 10.0f));
+            psObj.add_component<components::Particles>();
+        }
+    */
     // END PARTICLE SYSTEM
 
     create_post_processing();

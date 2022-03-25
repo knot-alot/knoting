@@ -31,6 +31,7 @@ class RigidBody {
     quat get_rotation();
     std::weak_ptr<PxDynamic_ptr_wrapper> get_dynamic();
     std::weak_ptr<PxStatic_ptr_wrapper> get_static();
+    bool get_is_dynamic() { return m_isDynamic; }
 
     // could use after creat rigid
     void set_transform(const vec3& position, const quat& rotation = quat());

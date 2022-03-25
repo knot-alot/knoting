@@ -212,7 +212,9 @@ class Name {
 
     inline bool operator==(const Name& other) const { return name == other.name; }
     inline bool operator!=(const Name& other) const { return name != other.name; }
-
+    std::string get_name(){
+        return name;
+    }
     template <class Archive>
     void serialize(Archive& archive) {
         archive(CEREAL_NVP(name));

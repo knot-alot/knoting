@@ -1,7 +1,6 @@
 #include <knoting/engine.h>
 #include <knoting/physics.h>
 #include <knoting/scene.h>
-
 PxDefaultAllocator g_Allocator;
 PxDefaultErrorCallback g_ErrorCallback;
 
