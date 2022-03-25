@@ -11,24 +11,14 @@ knot::DemoWidget::DemoWidget(const std::string& name) : Widget(name) {
         return;
     }
     auto& engine = engineOpt.value();
-    auto cliModule = engine.get().get_client_module().lock();
-    uint16_t playerNum = cliModule->get_client_num();
+    m_cliModule = engine.get().get_client_module().lock();
 
-    isRedTeam = true;
-    if (playerNum % 2 == 0) {
-        isRedTeam = false;
-    }
-
-    if (isRedTeam) {
-        m_tex = AssetManager::load_asset<components::Texture>("test_red.png").lock();
-    } else {
-        m_tex = AssetManager::load_asset<components::Texture>("test_blue.png").lock();
-    }
+    m_texRed = AssetManager::load_asset<components::Texture>("test_red.png").lock();
+    m_texBlue = AssetManager::load_asset<components::Texture>("test_blue.png").lock();
 }
 
 void knot::DemoWidget::on_widget_render() {
     // ImGui::ShowDemoWindow();
-
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetWindowSize("health", ImVec2(m_x, m_y));
 
@@ -37,7 +27,17 @@ void knot::DemoWidget::on_widget_render() {
                      ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
 
     static float i1 = 0;
-    ImTextureID imTex = (void*)m_tex->get_texture_handle().idx;
+    uint16_t playerNum = m_cliModule->get_client_num();
+    isRedTeam = true;
+    if (playerNum % 2 == 0) {
+        isRedTeam = false;
+    }
+    ImTextureID imTex;
+    if(isRedTeam){
+        imTex = (void*)m_texRed->get_texture_handle().idx;
+    } else{
+        imTex = (void*)m_texBlue->get_texture_handle().idx;
+    }
     ImTextureID imTexBack = (void*)m_backTex->get_texture_handle().idx;
 
     ImVec2 uv_min = ImVec2(0.0f, 0.0f);                    // Top-left
