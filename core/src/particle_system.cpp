@@ -46,6 +46,10 @@ void EmitterUniforms::reset() {
     m_angle[1] = 0.0f;
     m_angle[2] = 0.0f;
 
+    m_lookat[0] = 0.0f;
+    m_lookat[1] = 1.0f;
+    m_lookat[2] = 0.0f;
+
     m_particlesPerSecond = 0;
 
     m_offsetStart[0] = 0.0f;
@@ -188,7 +192,7 @@ struct Emitter {
         const uint32_t numParticles = uint32_t(m_dt / timePerParticle);
         m_dt -= numParticles * timePerParticle;
 
-        constexpr bx::Vec3 up = {0.0f, 1.0f, 0.0f};
+        bx::Vec3 up = bx::Vec3(m_uniforms.m_lookat[0], m_uniforms.m_lookat[1], m_uniforms.m_lookat[2]);
 
         float time = 0.0f;
         for (uint32_t ii = 0; ii < numParticles && m_num < m_max; ++ii) {

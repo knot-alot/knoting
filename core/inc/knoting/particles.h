@@ -2,24 +2,24 @@
 #include <bgfx/bgfx.h>
 #include <bgfx/embedded_shader.h>
 #include <bimg/bimg.h>
+#include <knoting/component.h>
 #include <knoting/components.h>
 #include <knoting/particle_system.h>
 
 namespace knot {
 namespace components {
-
 class Particles : public Component<Particles> {
    public:
     Particles();
     ~Particles();
 
     // For ECS
-    void on_awake();
+    void on_awake() override;
     void on_destroy();
     //=======
 
     void set_position(vec3 position);
-    void set_rotation_euler(vec3 rotation);
+    void set_lookat(vec3 rotation);
     void set_max_particles(float maxParticles);
     void set_gravity_scale(float gravity);
     void set_shape(EmitterShape::Enum shape);
@@ -50,7 +50,7 @@ class Particles : public Component<Particles> {
     void set_texture(const std::string& path);
 
     vec3 get_position();
-    vec3 get_rotation_euler();
+    vec3 get_lookat();
     float get_max_particles();
     float get_gravity_scale();
     EmitterShape::Enum get_shape();

@@ -13,7 +13,7 @@ class Raycast : public Component<Raycast> {
     Raycast();
     ~Raycast();
 
-    void on_awake();
+    void on_awake() override;
 
     void raycast();
 

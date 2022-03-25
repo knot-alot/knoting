@@ -41,7 +41,7 @@ Untie::Untie() {
     Scene::set_active_scene(*m_scene);
     log::Logger::setup();
     m_engine = std::make_unique<knot::Engine>();
-  
+
     create_level();
 
     auto fontObj = m_scene->create_game_object("font");
@@ -162,9 +162,12 @@ GameObject Untie::create_lower_floor(const std::string& name, vec3 position, vec
     material.set_texture_scale(vec2(8, 4));
     cubeObj.add_component<components::Material>(material);
 
+    auto& detection = cubeObj.add_component<components::Collision_Detection>();
+    detection.add_search_actor(rigidbody.get_static().lock());
+
     return cubeObj;
 }
-  
+
 GameObject Untie::create_master_floor(const std::string& name, vec3 position, vec3 scale) {
     auto cubeObj = m_scene->create_game_object(name);
     cubeObj.get_component<components::Transform>().set_position(position);
@@ -180,7 +183,6 @@ GameObject Untie::create_master_floor(const std::string& name, vec3 position, ve
     aggregate.find_aggregate("level");
 
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
-
     rigidbody.create_actor(false);
 
     auto material = components::Material();
@@ -192,6 +194,9 @@ GameObject Untie::create_master_floor(const std::string& name, vec3 position, ve
     material.set_texture_scale(vec2(8, 4));
     cubeObj.add_component<components::Material>(material);
 
+    auto& detection = cubeObj.add_component<components::Collision_Detection>();
+    detection.add_search_actor(rigidbody.get_static().lock());
+
     return cubeObj;
 }
 
@@ -202,16 +207,16 @@ GameObject Untie::create_paint_tank_base(const std::string& name, vec3 position,
     cubeObj.get_component<components::Transform>().set_rotation_euler(rotation);
     cubeObj.add_component<components::InstanceMesh>("tank_base.obj");
 
-//    auto& shape = cubeObj.add_component<components::Shape>();
-//    vec3 halfsize = vec3(vec3(scale));
-//    shape.set_geometry(shape.create_cube_geometry(halfsize));
+    //    auto& shape = cubeObj.add_component<components::Shape>();
+    //    vec3 halfsize = vec3(vec3(scale));
+    //    shape.set_geometry(shape.create_cube_geometry(halfsize));
 
-//    auto& aggregate = cubeObj.add_component<components::Aggregate>();
-//    aggregate.find_aggregate("level");
-//
-//    auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+    //    auto& aggregate = cubeObj.add_component<components::Aggregate>();
+    //    aggregate.find_aggregate("level");
+    //
+    //    auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
-//    rigidbody.create_actor(false);
+    //    rigidbody.create_actor(false);
 
     auto material = components::Material();
     material.set_texture_slot_path(TextureType::Albedo, "metal_base.png");
@@ -233,9 +238,9 @@ GameObject Untie::create_paint_tank_glass_red(const std::string& name, vec3 posi
     cubeObj.add_component<components::InstanceMesh>("tank_glass.obj");
 
     auto& shape = cubeObj.add_component<components::Shape>();
-    vec3 halfsize = vec3(vec3(scale) * vec3(2.5f,7.5f,2.5f));
+    vec3 halfsize = vec3(vec3(scale) * vec3(2.5f, 7.5f, 2.5f));
     shape.set_geometry(shape.create_cube_geometry(halfsize));
-    shape.set_local_position(vec3(scale) * vec3(0,7.0f,0));
+    shape.set_local_position(vec3(scale) * vec3(0, 7.0f, 0));
 
     auto& aggregate = cubeObj.add_component<components::Aggregate>();
     aggregate.find_aggregate("level");
@@ -264,9 +269,9 @@ GameObject Untie::create_paint_tank_glass_blue(const std::string& name, vec3 pos
     cubeObj.add_component<components::InstanceMesh>("tank_glass.obj");
 
     auto& shape = cubeObj.add_component<components::Shape>();
-    vec3 halfsize = vec3(vec3(scale) * vec3(2.5f,7.5f,2.5f));
+    vec3 halfsize = vec3(vec3(scale) * vec3(2.5f, 7.5f, 2.5f));
     shape.set_geometry(shape.create_cube_geometry(halfsize));
-    shape.set_local_position(vec3(scale) * vec3(0,7.0f,0));
+    shape.set_local_position(vec3(scale) * vec3(0, 7.0f, 0));
 
     auto& aggregate = cubeObj.add_component<components::Aggregate>();
     aggregate.find_aggregate("level");
@@ -314,6 +319,9 @@ GameObject Untie::create_slim_lower_floor(const std::string& name, vec3 position
     material.set_texture_scale(vec2(1.5, 3));
     cubeObj.add_component<components::Material>(material);
 
+    auto& detection = cubeObj.add_component<components::Collision_Detection>();
+    detection.add_search_actor(rigidbody.get_static().lock());
+
     return cubeObj;
 }
 
@@ -343,6 +351,9 @@ GameObject Untie::create_upper_floor(const std::string& name, vec3 position, vec
     material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
     material.set_texture_scale(vec2(3, 10));
     cubeObj.add_component<components::Material>(material);
+
+    auto& detection = cubeObj.add_component<components::Collision_Detection>();
+    detection.add_search_actor(rigidbody.get_static().lock());
 
     return cubeObj;
 }
@@ -374,6 +385,9 @@ GameObject Untie::create_slim_upper_floor(const std::string& name, vec3 position
     material.set_texture_scale(vec2(4, 2.5));
     cubeObj.add_component<components::Material>(material);
 
+    auto& detection = cubeObj.add_component<components::Collision_Detection>();
+    detection.add_search_actor(rigidbody.get_static().lock());
+
     return cubeObj;
 }
 
@@ -403,6 +417,9 @@ GameObject Untie::create_grass(const std::string& name, vec3 position, vec3(scal
     material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
     material.set_texture_scale(vec2(4, 3));
     cubeObj.add_component<components::Material>(material);
+
+    auto& detection = cubeObj.add_component<components::Collision_Detection>();
+    detection.add_search_actor(rigidbody.get_static().lock());
 
     return cubeObj;
 }
@@ -434,6 +451,9 @@ GameObject Untie::create_ramp(const std::string& name, vec3 position, vec3 rotat
     material.set_texture_scale(vec2(1, 1));
     cubeObj.add_component<components::Material>(material);
 
+    auto& detection = cubeObj.add_component<components::Collision_Detection>();
+    detection.add_search_actor(rigidbody.get_static().lock());
+
     return cubeObj;
 }
 
@@ -447,7 +467,7 @@ GameObject Untie::create_wall(const std::string& name, vec3 position, vec3 rotat
     auto& shape = cubeObj.add_component<components::Shape>();
     vec3 halfsize = vec3(scale) * vec3(0.5f, 1.5f, 0.3f);
     shape.set_geometry(shape.create_cube_geometry(halfsize));
-    shape.set_local_position(vec3(scale) * vec3(0,1.5f,0));
+    shape.set_local_position(vec3(scale) * vec3(0, 1.5f, 0));
     auto& aggregate = cubeObj.add_component<components::Aggregate>();
     aggregate.find_aggregate("level");
 
@@ -476,7 +496,7 @@ GameObject Untie::create_brick_wall(const std::string& name, vec3 position, vec3
     auto& shape = cubeObj.add_component<components::Shape>();
     vec3 halfsize = vec3(scale) * vec3(0.5f, 1.5f, 0.3f);
     shape.set_geometry(shape.create_cube_geometry(halfsize));
-    shape.set_local_position(vec3(scale) * vec3(0,1.5f,0));
+    shape.set_local_position(vec3(scale) * vec3(0, 1.5f, 0));
 
     auto& aggregate = cubeObj.add_component<components::Aggregate>();
     aggregate.find_aggregate("level");
@@ -493,6 +513,9 @@ GameObject Untie::create_brick_wall(const std::string& name, vec3 position, vec3
     material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
     material.set_texture_scale(vec2(8, 1.5));
     cubeObj.add_component<components::Material>(material);
+
+    auto& detection = cubeObj.add_component<components::Collision_Detection>();
+    detection.add_search_actor(rigidbody.get_static().lock());
 
     return cubeObj;
 }
@@ -551,6 +574,13 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     auto& shape = cubeObj.add_component<components::Shape>();
     vec3 halfsize = vec3(0.5f, 1.0f, 1.0f);
     shape.set_geometry(shape.create_cube_geometry(halfsize));
+    if (playerNum % 2 == 0) {
+        shape.set_filter_data(filter_group::ePlayer_blue,
+                              filter_group::eAll | filter_group::ePlayer_red | filter_group::eParticle_red);
+    } else {
+        shape.set_filter_data(filter_group::ePlayer_red,
+                              filter_group::eAll | filter_group::ePlayer_blue | filter_group::eParticle_blue);
+    }
 
     auto& aggregate = cubeObj.add_component<components::Aggregate>();
     aggregate.add_aggregate(name, 5, false);
@@ -573,6 +603,18 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     material.set_texture_slot_path(TextureType::Roughness, "oldiron/OldIron01_1K_BaseColor.png");
     material.set_texture_slot_path(TextureType::Occlusion, "oldiron/OldIron01_1K_BaseColor.png");
     cubeObj.add_component<components::Material>(material);
+
+    auto& p = cubeObj.add_component<components::Particles>();
+    p.set_direction_type(EmitterDirection::Up);
+    p.set_min_end_offset(10.0f);
+    p.set_max_end_offset(10.1f);
+    p.set_gravity_scale(1.0f);
+    p.set_min_life_span(1.5f);
+    p.set_max_life_span(1.6f);
+    p.set_min_particles_start_scale(0.5f);
+    p.set_max_particles_start_scale(0.6f);
+    p.set_min_particles_end_scale(0.5f);
+    p.set_max_particles_end_scale(0.6f);
 
     auto& client = cubeObj.add_component<components::ClientPlayer>();
     client.m_clientNum = playerNum;
@@ -605,7 +647,7 @@ void Untie::serializeTest() {
     //        }
     //        serializedSceneStream.close();
 }
-  
+
 GameObject Untie::create_point_light(const std::string& name,
                                      vec3 position,
                                      float innerRadius,
@@ -620,7 +662,7 @@ GameObject Untie::create_point_light(const std::string& name,
 
     return light;
 }
-  
+
 GameObject Untie::create_skybox() {
     auto cubeObj = m_scene->create_game_object("skybox");
     cubeObj.get_component<components::Transform>().set_position(glm::vec3(0, 8, 0));
@@ -637,7 +679,7 @@ GameObject Untie::create_skybox() {
 
     return cubeObj;
 }
-  
+
 GameObject Untie::create_post_processing() {
     auto cubeObj = m_scene->create_game_object("post processing");
     cubeObj.get_component<components::Transform>().set_position(vec3(0));
@@ -647,7 +689,7 @@ GameObject Untie::create_post_processing() {
 
     return cubeObj;
 }
-  
+
 void Untie::create_level() {
     {
         auto editorCamera = m_scene->create_game_object("camera");
@@ -664,6 +706,7 @@ void Untie::create_level() {
         ray.set_max_distance(100);
     }
 
+    create_bullet_aggregate();
     create_skybox();
     create_point_light("main_light", vec3(0, 80, 0), 8, 0.5f, vec3(to_color(vec3(192, 192, 192))));
     create_point_light("red_light_main", vec3(-26, 2, 45), 2, 0.2f, vec3(to_color(vec3(255, 0, 0))));
@@ -708,7 +751,7 @@ void Untie::create_level() {
                 vec3(2.80200028, 0.0252700001, 8.42736721));
     create_ramp("Top_ramp", vec3(-10.5, 4, -26.5), vec3(338.550018, 0, 0), vec3(3.10413098, 0.128035069, 8.33843422));
     create_ramp("floor_cover", vec3(17.5, 7, 32.5), vec3(0, 0, 0), vec3(3.30587935, 0.100000001, 7.7004447));
-//
+    //
     create_wall("edge_wall_left1", vec3(29.6299992, 1.12, 10.8999996), vec3(0, 90, 0), vec3(16, 2, 1));
     create_wall("edge_wall_left2", vec3(29.6200008, 1.12, 26.8400002), vec3(0, 90, 0), vec3(16, 2, 1));
     create_wall("edge_wall_left3", vec3(29.6299992, 1.12, 42.2400017), vec3(0, 90, 0), vec3(15.58, 2, 1));
@@ -922,21 +965,40 @@ GameObject Untie::create_death_location(const std::string& name, vec3 position, 
     
 
 GameObject Untie::create_audio_hub() {
-   auto listener = m_scene->create_game_object("listener");
-   listener.get_component<components::Transform>().set_position(vec3(0, -200, 0));
-   listener.get_component<components::Transform>().set_scale(glm::vec3(0, 0, 0));
-   listener.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 0, 0));
+    auto listener = m_scene->create_game_object("listener");
+    listener.get_component<components::Transform>().set_position(vec3(0, -200, 0));
+    listener.get_component<components::Transform>().set_scale(glm::vec3(0, 0, 0));
+    listener.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 0, 0));
 
-   listener.add_component<components::AudioListener>();
+    listener.add_component<components::AudioListener>();
 
-   auto& source = m_scene->create_game_object("source");
-   source.get_component<components::Transform>().set_position(vec3(0, -199, 0));
-   source.get_component<components::Transform>().set_scale(glm::vec3(0, 0, 0));
-   source.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 0, 0));
+    auto source = m_scene->create_game_object("source");
+    source.get_component<components::Transform>().set_position(vec3(0, -199, 0));
+    source.get_component<components::Transform>().set_scale(glm::vec3(0, 0, 0));
+    source.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 0, 0));
 
-   auto& audio = source.add_component<components::AudioSource>("house_party.mp3",true);
-   cubeOne = source;
+    auto& audio = source.add_component<components::AudioSource>("house_party.mp3", true);
+    cubeOne = source;
     m_engine->get_audio_module().lock()->play(audio);
-   return source;
+    return source;
+}
+GameObject Untie::create_bullet_aggregate() {
+    auto cubeObj = m_scene->create_game_object("bullet_agg");
+    cubeObj.get_component<components::Transform>().set_position(vec3(0, -100, 0));
+    cubeObj.get_component<components::Transform>().set_scale(glm::vec3(0, 0, 0));
+    cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 0, 0));
+
+    auto& shape = cubeObj.add_component<components::Shape>();
+    vec3 halfsize = vec3(vec3(0.1f, 0.1f, 0.1f));
+    shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+    auto& aggregate = cubeObj.add_component<components::Aggregate>();
+    aggregate.add_aggregate("BULLET", 128, false);
+
+    auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+    auto& raycast = cubeObj.add_component<components::Raycast>();
+
+    rigidbody.create_actor(false);
+    return cubeObj;
 }
 }  // namespace knot

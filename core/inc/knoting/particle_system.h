@@ -50,6 +50,7 @@ struct EmitterUniforms {
 
     float m_position[3];
     float m_angle[3];
+    float m_lookat[3];
 
     float m_blendStart[2];
     float m_blendEnd[2];

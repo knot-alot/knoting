@@ -46,6 +46,54 @@ GameObject Scene::create_game_object(const std::string& name) {
     return e;
 }
 
+GameObject Scene::create_bullet(bool is_teamA, vec3 spawnPos) {
+    std::string n;
+    is_teamA ? n = "RED" : n = "BLUE";
+    auto bullet = this->create_game_object(n);
+    bullet.get_component<components::Transform>().set_position(spawnPos);
+    bullet.get_component<components::Transform>().set_scale(vec3(0.1f));
+    bullet.add_component<components::InstanceMesh>("sphere.obj");
+
+    log::debug("Created game object with id {}", to_string(bullet.get_id()));
+
+    bullet.add_component<components::PhysicsMaterial>();
+
+    auto& shape = bullet.add_component<components::Shape>();
+    shape.set_geometry(shape.create_sphere_geometry(0.1f));
+
+    is_teamA ? shape.set_filter_data(filter_group::eParticle_red, filter_group::eAll | filter_group::ePlayer_blue)
+             : shape.set_filter_data(filter_group::eParticle_blue, filter_group::eAll | filter_group::ePlayer_red);
+
+//    auto& aggregate = bullet.add_component<components::Aggregate>();
+//    aggregate.find_aggregate("BULLET");
+
+    auto& rigidBody = bullet.add_component<components::RigidBody>();
+    rigidBody.create_actor(true, 1.0f);
+    rigidBody.set_name(n);
+
+    bullet.add_component<components::RigidController>();
+    auto& detection = bullet.add_component<components::Collision_Detection>();
+    detection.add_search_actor(rigidBody.get_dynamic().lock());
+
+    auto material = components::Material();
+    if(is_teamA){
+        material.set_texture_slot_path(TextureType::Albedo, "test_red.png");
+    } else {
+        material.set_texture_slot_path(TextureType::Albedo, "test_blue.png");
+    }
+    material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
+    material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+    bullet.add_component<components::Material>(material);
+
+    auto& raycast = bullet.add_component<components::Raycast>();
+
+
+    bullet.add_component<components::InstanceScript>("bullet.js");
+    return bullet;
+}
+
 void Scene::remove_game_object(GameObject game_object) {
     KNOTING_ASSERT_MESSAGE(m_registry.valid(game_object.m_handle),
                            "Trying to remove Game object with id {}, which is not valid",
