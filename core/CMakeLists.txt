@@ -74,6 +74,8 @@ target_include_directories(knoting PUBLIC ${CMAKE_SOURCE_DIR}/core/inc)
 target_include_directories(knoting PUBLIC ${PHYSX_INCLUDE_DIRS})
 target_include_directories(knoting PUBLIC ${CMAKE_SOURCE_DIR}/third/yojimbo)
 
+target_include_directories(knoting PUBLIC ${CMAKE_SOURCE_DIR}/third/imguizmo)
+
 if (GLFW_FOUND)
     target_include_directories(knoting PUBLIC ${GLFW_INCLUDE_DIR})
 endif ()

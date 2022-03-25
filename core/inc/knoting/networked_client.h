@@ -39,6 +39,8 @@ class NetworkedClient : public Subsystem {
 
     void test_player_input();
 
+    uint16_t get_client_num() {return m_clientNum;}
+
    protected:
     Engine& m_engine;
     std::shared_ptr<yojimbo::Client> m_client;

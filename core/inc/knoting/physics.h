@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include <knoting/event_callback.h>
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/rigidbody.h>
 #include <knoting/subsystem.h>
@@ -32,16 +33,19 @@ class Physics : public Subsystem {
     std::weak_ptr<PxPhysics_ptr_wrapper> get_physics() { return m_physics; }
     PxVec3 get_gravity() { return m_gravity; }
     std::weak_ptr<std::vector<std::shared_ptr<PxAggregate_ptr_wrapper>>> get_aggregates() { return m_aggregates; }
+    Event_Callback* get_event_callback() { return m_event_callback; }
 
     void set_gravity(PxVec3 gravity);
 
    private:
     Engine& m_engine;
+    Event_Callback* m_event_callback;
     std::shared_ptr<PxFoundation_ptr_wrapper> m_foundation;
     std::shared_ptr<PxPhysics_ptr_wrapper> m_physics;
     std::shared_ptr<PxDispatcher_ptr_wrapper> m_dispatcher;
     std::shared_ptr<PxScene_ptr_wrapper> m_scene;
     std::shared_ptr<std::vector<std::shared_ptr<PxAggregate_ptr_wrapper>>> m_aggregates;
+
     PxVec3 m_gravity;
 };
 

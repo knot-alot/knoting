@@ -8,6 +8,9 @@
 
 namespace knot {
 namespace components {
+struct FilterGroup {
+    enum Enum { eAll = (1 << 0) };
+};
 
 class Shape : public Component<Shape> {
    public:
@@ -24,18 +27,23 @@ class Shape : public Component<Shape> {
     void set_material(std::shared_ptr<PxMaterial_ptr_wrapper> material) { m_material = material; }
     void set_geometry(const PxGeometry& geometry);
     void set_local_rotation(quat rotation);
+    void set_flag(PxShapeFlag::Enum flag);
+    void remove_flag(PxShapeFlag::Enum flag);
 
     PxBoxGeometry create_cube_geometry(const vec3& halfsize);
     PxSphereGeometry create_sphere_geometry(const float& radius);
     PxCapsuleGeometry create_capsule_geometry(const float& radius, const float& halfheight);
 
-    std::shared_ptr<PxMaterial_ptr_wrapper> get_PxMaterial_from_pxmaterial();
+    PxShapeFlags get_flags() { return m_shape->get()->getFlags(); }
 
     template <class Archive>
     void save(Archive& archive) const;
 
     template <class Archive>
     void load(Archive& archive);
+
+   private:
+    std::shared_ptr<PxMaterial_ptr_wrapper> get_PxMaterial_from_pxmaterial();
 
    protected:
     std::shared_ptr<PxPhysics_ptr_wrapper> m_physics;

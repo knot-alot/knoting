@@ -1,4 +1,5 @@
 #pragma once
+
 #include <PxPhysicsAPI.h>
 #include <iostream>
 #include <vector>
@@ -8,7 +9,10 @@ using namespace physx;
 namespace knot {
 class PxScene_ptr_wrapper {
    public:
-    PxScene_ptr_wrapper(PxScene* scene = nullptr) : m_pxScene(scene) {}
+    PxScene_ptr_wrapper(PxScene* scene = nullptr) : m_pxScene(scene) {
+        m_pxScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
+        m_pxScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES,1.0);
+    }
     ~PxScene_ptr_wrapper() {
         if (m_pxScene) {
             m_pxScene->release();
@@ -16,7 +20,10 @@ class PxScene_ptr_wrapper {
         }
     }
 
-    void set(PxScene* scene) { m_pxScene = scene; }
+    void set(PxScene* scene) { m_pxScene = scene;
+        m_pxScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
+        m_pxScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES,1.0);
+    }
 
     PxScene* get() { return m_pxScene; }
 
@@ -135,11 +142,15 @@ class PxStatic_ptr_wrapper {
 
 class PxShape_ptr_wrapper {
    public:
-    PxShape_ptr_wrapper(PxShape* shape = nullptr) : m_shape(shape) {}
+    PxShape_ptr_wrapper(PxShape* shape = nullptr) : m_shape(shape) {
+        m_shape = shape;
+        m_shape->setFlag(PxShapeFlag::eVISUALIZATION, true);
+    }
     ~PxShape_ptr_wrapper() { clean(); }
     void set(PxShape* shape) {
         clean();
         m_shape = shape;
+        m_shape->setFlag(PxShapeFlag::eVISUALIZATION, true);
     }
 
     PxShape* get() { return m_shape; }
@@ -201,4 +212,23 @@ class PxAggregate_ptr_wrapper {
     std::string m_aggregate_name;
 };
 
+class PxActor_ptr_wrapper {
+   public:
+    PxActor_ptr_wrapper(PxActor* actor = nullptr) : m_actor(actor) {}
+    ~PxActor_ptr_wrapper() { clean(); }
+
+    void set(PxActor* actor) { m_actor = actor; }
+
+    PxActor* get() { return m_actor; }
+
+    void clean() {
+        if (m_actor) {
+            m_actor->release();
+            m_actor = nullptr;
+        }
+    }
+
+   private:
+    PxActor* m_actor;
+};
 };  // namespace knot

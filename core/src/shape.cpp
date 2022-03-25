@@ -28,9 +28,17 @@ void Shape::on_awake() {
 void Shape::set_geometry(const PxGeometry& geometry) {
     if (!m_shape) {
         m_shape = std::make_shared<PxShape_ptr_wrapper>(m_physics->get()->createShape(geometry, *m_material->get()));
+        PxFilterData data;
+        data.word0 = FilterGroup::eAll;
+        data.word1 = FilterGroup::eAll;
+        m_shape->get()->setSimulationFilterData(data);
 
     } else {
         m_shape->get()->setGeometry(geometry);
+        PxFilterData data;
+        data.word0 = FilterGroup::eAll;
+        data.word1 = FilterGroup::eAll;
+        m_shape->get()->setSimulationFilterData(data);
     }
 }
 
@@ -38,6 +46,14 @@ void Shape::set_local_rotation(quat rotation) {
     if (m_shape) {
         m_shape->get()->setLocalPose(PxTransform(RigidBody::quat_to_PxQuat(rotation)));
     }
+}
+
+void Shape::set_flag(PxShapeFlag::Enum flag) {
+    m_shape->get()->setFlag(flag, true);
+}
+
+void Shape::remove_flag(PxShapeFlag::Enum flag) {
+    m_shape->get()->setFlag(flag, false);
 }
 
 PxBoxGeometry Shape::create_cube_geometry(const vec3& halfsize) {

@@ -10,8 +10,15 @@
 
 #include <bgfx/bgfx.h>
 #include <fstream>
+#include <stb_image.h>
+#include <array>
+#include <fstream>
+#include <memory>
+#include <string_view>
+#include <type_traits>
+#include <utility>
 #include <vector>
-
+#include <knoting/Font.h>
 #include <bx/math.h>
 
 namespace knot {
@@ -25,6 +32,12 @@ ForwardRenderer::ForwardRenderer(Engine& engine) : m_engine(engine), m_lightData
 void ForwardRenderer::on_awake() {}
 
 void ForwardRenderer::on_update(double m_delta_time) {
+    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
+    const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
+    if (glm::isnan(aspectRatio)) {
+        return;
+    }
+
     m_timePassed += (float)m_delta_time;
     m_dt = m_delta_time;
     m_engine.get_framebuffer_manager_module().lock()->clear_all_framebuffers();
@@ -123,6 +136,43 @@ void ForwardRenderer::depth_pass(uint16_t idx) {
 
     auto [view, proj] = get_camera_view();
     bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
+  
+//    mat4 invProj;
+//    glm::mat4 view;
+//    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
+//
+//    //=CAMERA===========================
+//    auto cameras = registry.view<Transform, EditorCamera, Name>();
+//
+//    for (auto& cam : cameras) {
+//        auto goOpt = scene.get_game_object_from_handle(cam);
+//        if (!goOpt) {
+//            continue;
+//        }
+//
+//        GameObject go = goOpt.value();
+//       Transform& transform = go.get_component<Transform>();
+//        EditorCamera& editorCamera = go.get_component<EditorCamera>();
+//        Name& name = go.get_component<Name>();
+//
+//        const glm::vec3 pos = transform.get_position();
+//        const glm::vec3 lookTarget = editorCamera.get_look_target();
+//        const glm::vec3 up = editorCamera.get_up();
+//
+//        const float fovY = editorCamera.get_fov();
+//        const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
+//
+//        const float zNear = editorCamera.get_z_near();
+//        const float zFar = editorCamera.get_z_far();
+//
+//        // Set view and projection matrix for view 0.
+//        {
+//            view = glm::lookAt(pos, lookTarget, up);
+//
+//            glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
+//            bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
+//        }
+//    }
 
     auto entities = registry.view<Transform, InstanceMesh, Material, Name>();
     for (auto& e : entities) {
@@ -214,6 +264,8 @@ void ForwardRenderer::color_pass(uint16_t idx) {
 
     //=PBR PIPELINE===========================
 
+    vec3 pos = vec3(0, 0, 0) + vec3(rand() % (int)25 * 2 - (int)25, 1.0f, rand() % (int)25 * 2 - (int)25);
+
     auto entities = registry.view<Transform, InstanceMesh, Material, Name>();
     for (auto& e : entities) {
         auto goOpt = scene.get_game_object_from_handle(e);
@@ -239,12 +291,34 @@ void ForwardRenderer::color_pass(uint16_t idx) {
         // Bind spotlight uniforms
         m_lightData->set_spotlight_uniforms();
         // Bind Uniforms & textures.
+
+        mesh.addContactPoint(pos, Team::BLUE);
+
+        auto paintQueue = mesh.get_paint_data();
+        int i = 0;
+        for (auto it = paintQueue.begin(); it != paintQueue.end(); ++it) {
+            paintData[i] = *it;
+            i++;
+        }
+
+        material.set_mask_data(paintData.data());
         material.set_uniforms();
 
         bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
                        BGFX_STATE_DEPTH_TEST_LESS);
 
         bgfx::submit(idx, material.get_program());
+    }
+    auto f = registry.view<Font>();
+    for (auto& e : f) {
+        auto goOpt = scene.get_game_object_from_handle(e);
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        Font& font = go.get_component<Font>();
+        font.get_textBuffer()->submitTextBuffer(font.get_text(), 1);
     }
 }
 

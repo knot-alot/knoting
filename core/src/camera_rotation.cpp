@@ -45,6 +45,9 @@ void CameraRotation::on_awake() {
 void CameraRotation::on_update(double m_delta_time) {
     using namespace components;
 
+    //= 'E' TOGGLE MOUSE HIDDEN ==
+    camera_key_input();
+
     //= CHECK VALID INPUT ==
     vec2d currentMousePos = m_inputManager->get_absolute_position();
     if (glm::isinf(currentMousePos.x) || glm::isinf(currentMousePos.y)) {
@@ -52,8 +55,7 @@ void CameraRotation::on_update(double m_delta_time) {
     }
     m_mouseDelta = (currentMousePos - m_lastMousePosition);
 
-    //= 'E' TOGGLE MOUSE HIDDEN ==
-    camera_key_input();
+
 
     auto cameraOpt = EditorCamera::get_active_camera();
     if (!cameraOpt)

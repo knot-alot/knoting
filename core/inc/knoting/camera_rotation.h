@@ -56,7 +56,7 @@ class CameraRotation : public Subsystem {
     vec3 m_forward = vec3(0, 0, 1);
 
     bool m_ePressed = true;
-    bool m_lockState = true;
+    bool m_lockState = false;
 };
 
 }  // namespace knot
