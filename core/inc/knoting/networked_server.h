@@ -29,6 +29,8 @@ class NetworkedServer : public Subsystem {
     void reset_tick(double m_delta_time);
     Message* generateMessage(uint16_t cliNum);
 
+    void update_collisions_buffer();
+
    protected:
     Engine& m_engine;
     std::shared_ptr<yojimbo::Server> m_server;
@@ -39,5 +41,7 @@ class NetworkedServer : public Subsystem {
     std::array<uint16_t, MAX_CLIENTS> cliAck;
 
     double m_tickTime = 0.0;
+
+    std::deque<vec4> paintCollisionBuffer;
 };
 }  // namespace knot

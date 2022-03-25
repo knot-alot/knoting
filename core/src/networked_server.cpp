@@ -25,6 +25,7 @@ void NetworkedServer::on_awake() {
 }
 
 void NetworkedServer::on_update(double m_delta_time) {
+    update_collisions_buffer();
     if (!m_server->IsRunning()) {
         log::debug("server not running!");
         return;
@@ -179,7 +180,17 @@ Message* NetworkedServer::generateMessage(uint16_t cliNum) {
         mess->playerPos[cliNum] = transform.get_position();
         mess->playerRots[cliNum] = transform.get_rotation();
         mess->playerHealth[cliNum] = 92;
-        mess->paintCollisions.fill(vec3(1, 5, -1));
+        mess->paintCollisions.fill(vec4(0));
+
+        int paintCollisionBufferSize = paintCollisionBuffer.size();
+        for (int i = 0; i < 20; i++) {
+            if (paintCollisionBufferSize < 1)
+                break;
+            mess->paintCollisions[i] = paintCollisionBuffer.front();
+            paintCollisionBuffer.pop_front();
+            paintCollisionBufferSize--;
+        }
+        paintCollisionBuffer.clear();
     }
     return mess;
 }
@@ -187,6 +198,62 @@ void NetworkedServer::reset_tick(double m_delta_time) {
     m_tickTime += m_delta_time;
     if (m_tickTime >= TICK) {
         m_tickTime -= TICK;
+    }
+}
+void NetworkedServer::update_collisions_buffer() {
+    using namespace components;
+
+    auto sceneOpt = Scene::get_active_scene();
+    if (!sceneOpt) {
+        return;
+    }
+    Scene& scene = sceneOpt.value();
+    entt::registry& registry = scene.get_registry();
+    auto collView = registry.view<Collision_Detection>();
+    std::vector<actor_contact_data> contacts;
+    for (auto entity : collView) {
+        auto goOpt = scene.get_game_object_from_handle(entity);
+        if (!goOpt) {
+            continue;
+        }
+        auto go = goOpt.value();
+
+        Collision_Detection& colDetect = go.get_component<Collision_Detection>();
+        contacts = colDetect.get_actor_contact_data();
+        break;
+    }
+
+    for (auto& contact : contacts) {
+        bool isDynamic = contact.m_search_actor.m_is_dynamic;
+        std::string contact_name = "";
+        if (isDynamic) {
+            auto dynamActor = contact.m_search_actor.m_search_dynamic;
+            if (dynamActor->get()->getName()) {
+                contact_name = dynamActor->get()->getName();
+            }
+        } else {
+            auto staticActor = contact.m_search_actor.m_search_static;
+            if (staticActor->get()->getName()) {
+                contact_name = staticActor->get()->getName();
+            }
+        }
+        if (!(contact_name == "RED" || contact_name == "BLUE")) {
+            continue;
+        }
+        auto& bulletContacts = contact.m_contact_data;
+        for (auto& bulletContact : bulletContacts) {
+            if (!(bulletContact.m_contact_actor->getType() == PxActorType::eRIGID_STATIC)) {
+                continue;
+            }
+            int colour = 0;
+            if (contact_name == "RED") {
+                colour = static_cast<size_t>(Team::RED);
+            } else {
+                colour = static_cast<size_t>(Team::BLUE);
+            }
+            vec4 collisionPoint = vec4(bulletContact.m_contact_point, colour);
+            paintCollisionBuffer.push_back(collisionPoint);
+        }
     }
 }
 

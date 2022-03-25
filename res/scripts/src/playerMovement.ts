@@ -10,7 +10,7 @@ import {
     Vec3,
     Quat,
     EditorCamera,
-    storage, Hierarchy, UUID, scene, network, Particle,
+    storage, Hierarchy, UUID, scene, network,
 } from "knoting";
 
 import * as math from "./math.js";
@@ -20,7 +20,6 @@ export default class PlayerMovement extends GameObject {
     transform?: Transform;
     rigidBody?: RigidBody;
     hierarchy?: Hierarchy;
-    particle?: Particle;
 
     maxHealth: number = 100;
 
@@ -53,7 +52,6 @@ export default class PlayerMovement extends GameObject {
         this.transform = this.getComponent("transform");
         this.rigidBody = this.getComponent("rigidBody");
         this.hierarchy = this.getComponent("hierarchy");
-        this.particle = this.getComponent("particles");
 
         if (!this.clientPlayer) {
             console.error("Failed to acquire ClientPlayer inside Player");
@@ -176,6 +174,7 @@ export default class PlayerMovement extends GameObject {
         if (this.clientPlayer.getClientNumber() == network.getClientNumber()) {
             this.currentPlayerUpdate();
         }
+
 
         if (!network.isServer()) {
             return;

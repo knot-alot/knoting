@@ -4,7 +4,7 @@
 #include <knoting/win_lose_widget.h>
 
 knot::WinLoseWidget::WinLoseWidget(const std::string& name) : Widget(name) {
-    m_backTex = AssetManager::load_asset<components::Texture>("you_win_lose.png").lock();
+    m_backTex = AssetManager::load_asset<components::Texture>("you_win_lose_meme.png").lock();
 }
 
 void knot::WinLoseWidget::on_widget_render() {
@@ -14,6 +14,13 @@ void knot::WinLoseWidget::on_widget_render() {
     if (!engineOpt) {
         return;
     }
+    auto input = engineOpt->get().get_window_module().lock()->get_input_manager();
+
+    if (input->key_on_trigger(KeyCode::GraveAccent)) {
+        active = !active;
+
+    }
+    if (active) {
     auto& engine = engineOpt.value();
     auto cliModule = engine.get().get_client_module().lock();
     uint16_t playerNum = cliModule->get_client_num();
@@ -44,33 +51,34 @@ void knot::WinLoseWidget::on_widget_render() {
             }
         }
 
-        ImGui::SetNextWindowPos(ImVec2(0, 0));
-        ImGui::SetWindowSize("winlosetext", ImVec2(m_x, m_y));
+            ImGui::SetNextWindowPos(ImVec2(0, 0));
+            ImGui::SetWindowSize("winlosetext", ImVec2(m_x, m_y));
 
-        ImGui::Begin("winlosetext", NULL,
-                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground |
-                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
+            ImGui::Begin("winlosetext", NULL,
+                         ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground |
+                             ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
 
-        ImTextureID imTexBack = (void*)m_backTex->get_texture_handle().idx;
+            ImTextureID imTexBack = (void*)m_backTex->get_texture_handle().idx;
 
-        ImVec2 uv_min = ImVec2(0.0f, 0.0f);                  // Top-left
-        ImVec2 uv_max = ImVec2(1.0f, 1.0f);                  // Lower-right
-        ImVec4 tint_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);    // No tint
-        ImVec4 border_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);  // 50% opaque white
-        ImGui::SetCursorPos(ImVec2(0, 0));
-        ImGui::Image(imTexBack, ImVec2(m_x, m_y), uv_min, uv_max, tint_col);
-        ImGui::SetCursorPos(ImVec2((m_x * 0.5) - 225, m_y * 0.5 - 125));
-        ImGui::SetWindowFontScale(4.0);
-        ImGui::TextColored(color, winText.c_str());
-        //        ImGui::Text(winText.c_str());
+            ImVec2 uv_min = ImVec2(0.0f, 0.0f);                  // Top-left
+            ImVec2 uv_max = ImVec2(1.0f, 1.0f);                  // Lower-right
+            ImVec4 tint_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);    // No tint
+            ImVec4 border_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);  // 50% opaque white
+            ImGui::SetCursorPos(ImVec2(0, 0));
+            ImGui::Image(imTexBack, ImVec2(m_x, m_y), uv_min, uv_max, tint_col);
+            ImGui::SetCursorPos(ImVec2((m_x * 0.5) - 225, m_y * 0.5 - 125));
+            ImGui::SetWindowFontScale(4.0);
+            ImGui::TextColored(color, winText.c_str());
+            //        ImGui::Text(winText.c_str());
+            ImGui::End();
+        }
+
+        ImGui::Begin("DEBUG TEST WIN LOSE");
+        ImGui::Checkbox("GAME OVER ", &isGameOver);
+        ImGui::Checkbox("RED TEAM WIN ", &playerRedWins);
+        ImGui::Checkbox("IS RED ", &isRedTeam);
         ImGui::End();
     }
-
-    ImGui::Begin("DEBUG TEST WIN LOSE");
-    ImGui::Checkbox("GAME OVER ", &isGameOver);
-    ImGui::Checkbox("RED TEAM WIN ", &playerRedWins);
-    ImGui::Checkbox("IS RED ", &isRedTeam);
-    ImGui::End();
 }
 
 knot::WinLoseWidget::~WinLoseWidget() {

@@ -34,8 +34,7 @@ void knot::DebugPhysics::on_widget_render() {
 
     if (input->key_on_trigger(KeyCode::GraveAccent)) {
         active = !active;
-        log::debug("TRIGGER");
-        log::debug("--");
+
     }
 
     if (active) {
