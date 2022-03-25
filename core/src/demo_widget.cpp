@@ -21,6 +21,7 @@ void knot::DemoWidget::on_widget_render() {
     if (m_input->key_on_trigger(KeyCode::GraveAccent)) {
         active = !active;
     }
+
     // ImGui::ShowDemoWindow();
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetWindowSize("health", ImVec2(m_x, m_y));

@@ -20,7 +20,7 @@ void AssetManager::on_destroy() {
         it->second->on_destroy();
     }
     m_assets.clear();
-    log::info("AssetManager destroyed");
+    log::debug("AssetManager destroyed");
 }
 
 void AssetManager::load_assets_manual() {

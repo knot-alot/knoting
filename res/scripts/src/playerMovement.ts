@@ -21,13 +21,16 @@ export default class PlayerMovement extends GameObject {
     rigidBody?: RigidBody;
     hierarchy?: Hierarchy;
 
+    maxHealth: number = 100;
+
     cameraChild?: GameObject;
-    maxHealth: number = 1000;
-    currentHealth: number = 0;
-    bullets: Array<GameObject>;
     is_teamA: boolean;
+
     fireRate: number = 6;
     timePassed: number = 0;
+    timeToRespawn: number = 5;
+    currentTimeRespawn: number = 0;
+    deltaTime: number = 0;
 
     getCameraChild() {
         let children: Array<UUID> = this.hierarchy.getChildren();
@@ -40,6 +43,8 @@ export default class PlayerMovement extends GameObject {
             this.cameraChild = childObj;
             break;
         }
+
+        storage.store("health" + this.clientPlayer.getClientNumber(), this.maxHealth);
     }
 
     awake() {
@@ -55,6 +60,8 @@ export default class PlayerMovement extends GameObject {
 
         let playerNum = this.clientPlayer.getClientNumber();
         this.is_teamA = (playerNum % 2 != 0);
+
+        storage.store("spawnUsage", 0);
     }
 
     shoot() {
@@ -65,10 +72,10 @@ export default class PlayerMovement extends GameObject {
         let shooDir: Vec3 = this.getShootDir(spawnPos);
         console.log(`shootDir = ${shooDir}`);
 
-        this.creatBullet(shooDir, spawnPos);
+        this.createBullet(shooDir, spawnPos);
     }
 
-    creatBullet(shootDir: Vec3, spawnPos: Vec3) {
+    createBullet(shootDir: Vec3, spawnPos: Vec3) {
         let bullet = scene.createBullet(this.is_teamA, spawnPos);
         let rigidBody = bullet.getComponent("rigidBody");
         let forward = math.multiplyConst(this.transform.getForward(), 20.0);
@@ -79,88 +86,118 @@ export default class PlayerMovement extends GameObject {
     getShootDir(spawnPos: Vec3): Vec3 {
         let edcam = this.cameraChild.getComponent("editorCamera");
         let lookTarg: Vec3 = edcam.getLookTarget();
-        // let pitch = edcam.getRotationEuler()[0];
-        // let a: Vec3 = [0, 0, -1];
-        // let cos = Math.cos(pitch * 3.14 / 180);
-        // let sin = Math.sin(pitch * 3.14 / 180);
-        // let b: Vec3 = [0, 0, 0];
-        // b[0] = a[0];
-        // b[1] = ((a[1] * cos) - (a[2] * sin)) * -1.0;
-        // b[2] = (a[1] * sin) + (a[2] * cos);
-        // b = math.normalize(b);
-        // b = multiplyQuat(b,this.transform.getRotation());
-        // b= math.normalize(b);
 
         let b: Vec3 = math.normalize(lookTarg);
-        // let b: Vec3 = math.minus(lookTarg,spawnPos);
-        // b = math.normalize(b);
-        // this.creatBullet(b,spawnPos);
         return b;
     }
 
     removeHealth(health: number) {
-        this.currentHealth -= health;
+        let currentHealth = storage.retrieve("health" + this.clientPlayer.getClientNumber());
+        currentHealth -= health;
 
-        if (this.currentHealth < 0) this.currentHealth = 0;
+        if (currentHealth < 0) currentHealth = 0;
+
+        storage.store("health" + this.clientPlayer.getClientNumber(), currentHealth);
     }
 
     addHealth(health: number) {
-        this.currentHealth += health;
+        let currentHealth = storage.retrieve("health" + this.clientPlayer.getClientNumber());
+        currentHealth += health;
 
-        if (this.currentHealth > this.maxHealth) this.currentHealth = this.maxHealth;
+        if (currentHealth > this.maxHealth) currentHealth = this.maxHealth;
+
+        storage.store("health" + this.clientPlayer.getClientNumber(), currentHealth);
     }
 
     death() {
-        //respawn stuff
+        this.transform.setPosition([0, 100, 0]);
+        this.rigidBody.setPosition([0, 100, 0]);
+
+        if (this.currentTimeRespawn > 0) {
+            if (this.currentTimeRespawn - this.deltaTime <= 0) {
+                this.respawn();
+                this.currentTimeRespawn = 0;
+                console.log("respawning");
+            } else {
+                this.currentTimeRespawn -= this.deltaTime;
+                console.log("reducing the time to respawn " + this.currentTimeRespawn);
+            }
+        } else {
+            console.log("setting the timeToRespawn");
+            this.currentTimeRespawn = this.timeToRespawn;
+        }
+    }
+
+    respawn() {
+        storage.store("spawnUsage", storage.retrieve("spawnUsage") + 1);
+        storage.store("health" + this.clientPlayer.getClientNumber(), this.maxHealth);
+        let rnd: number = storage.retrieve("spawnUsage");
+        rnd = rnd % 3;
+        let spawns: Array<Vec3> = [];
+        if (this.clientPlayer.getClientNumber() % 2 == 0) {
+            spawns[0] = storage.retrieve("blue_spawn1");
+            spawns[1] = storage.retrieve("blue_spawn2");
+            spawns[2] = storage.retrieve("blue_spawn3");
+        } else {
+            spawns[0] = storage.retrieve("red_spawn1");
+            spawns[1] = storage.retrieve("red_spawn2");
+            spawns[2] = storage.retrieve("red_spawn3");
+        }
+        let spawn = spawns[rnd];
+
+        this.transform.setPosition(spawn);
+        this.rigidBody.setPosition(spawn);
     }
 
     currentPlayerUpdate() {
         this.playerInputs();
 
-        if (input.keyOnTrigger(KeyCode.U)) {
-            let pauseCamera: GameObject = storage.retrieve("pauseCamera");
-            let pauseCameraCamera: EditorCamera = pauseCamera.getComponent("editorCamera");
-            pauseCameraCamera.setAsActiveCamera();
-        }
-        if (input.keyOnTrigger(KeyCode.I)) {
-            let editorCamera = this.cameraChild.getComponent("editorCamera");
-            editorCamera.setAsActiveCamera();
-        }
-
-        if (input.keyPressed(KeyCode.Enter)) { //AND looking at paint reservoir
-            this.addHealth(1);
-        }
+        // if (input.keyOnTrigger(KeyCode.U)) {
+        //     let clientNumber = this.clientPlayer.getClientNumber();
+        //     storage.store("health" + clientNumber, storage.retrieve("health" + clientNumber) == this.maxHealth ? 0 : this.maxHealth);
+        // }
+        // if (input.keyOnTrigger(KeyCode.I)) {
+        //     this.respawn();
+        // }
     }
 
     update(deltaTime: number) {
+        this.deltaTime = deltaTime;
         this.timePassed += deltaTime;
 
         if (!this.cameraChild) {
             this.getCameraChild();
         }
-
-        if (this.clientPlayer.getClientNumber() == network.getClientNumber()) {
-            this.currentPlayerUpdate();
-        }
     }
 
     lateUpdate() {
-        if (network.isServer()) {
-            this.playerRotation();
-            this.playerMovement();
+        if (this.clientPlayer.getClientNumber() == network.getClientNumber()) {
+            this.currentPlayerUpdate();
+        }
 
-            if (this.clientPlayer.getIsShooting()) {
-                if (this.timePassed > (1.0 / this.fireRate)) {
-                    console.log("SHOOTING");
-                    this.removeHealth(1);
-                    this.shoot()
-                    this.timePassed = 0;
-                }
-                let forward: Vec3 = math.multiplyConst(this.transform.getForward(), 1.0);
-                let spawnPos: Vec3 = math.add(this.transform.getPosition(), forward);
-                let shooDir: Vec3 = this.getShootDir(spawnPos);
 
+        if (!network.isServer()) {
+            return;
+        }
+
+        this.playerRotation();
+        this.playerMovement();
+
+        if (this.clientPlayer.getIsShooting()) {
+            if (this.timePassed > (1.0 / this.fireRate)) {
+                console.log("SHOOTING");
+                this.removeHealth(3);
+                this.shoot()
+                this.timePassed = 0;
             }
+            let forward: Vec3 = math.multiplyConst(this.transform.getForward(), 1.0);
+            let spawnPos: Vec3 = math.add(this.transform.getPosition(), forward);
+            let shooDir: Vec3 = this.getShootDir(spawnPos);
+            this.particle.setLookAt(math.multiplyConst(shooDir, 4));
+            this.particle.setPosition(spawnPos);
+            this.particle.setParticlesPerSecond(100);
+        } else {
+            this.particle.setParticlesPerSecond(0);
         }
     }
 
@@ -186,18 +223,6 @@ export default class PlayerMovement extends GameObject {
             input.mouseButtonPressed(MouseButtonCode.Left)
         );
 
-        // let playerLook: Vec2 = [0, 0];
-        // let relMousePosition: Vec2 = input.getRelativePosition();
-        // if (relMousePosition[0] > 0) {
-        //     playerLook[0] = 1;
-        // } else if (relMousePosition[0] < 0) {
-        //     playerLook[0] = -1;
-        // }
-        // if (relMousePosition[1] > 0) {
-        //     playerLook[1] = 1;
-        // } else if (relMousePosition[1] < 0) {
-        //     playerLook[1] = -1;
-        // }
         let childCamera: EditorCamera = this.cameraChild.getComponent("editorCamera");
         let rotation = childCamera.getRotationEuler();
 
@@ -221,8 +246,13 @@ export default class PlayerMovement extends GameObject {
     }
 
     playerMovement() {
-        let moveAxis: Vec2 = this.clientPlayer!.getMoveAxis();
+        let currentHealth = storage.retrieve("health" + this.clientPlayer.getClientNumber());
+        if (currentHealth <= 0) {
+            this.death();
+            return;
+        }
 
+        let moveAxis: Vec2 = this.clientPlayer!.getMoveAxis();
         let playerForward: Vec3 = this.transform!.getForward();
         playerForward = math.multiply(
             [moveAxis[0], moveAxis[0], moveAxis[0]],
@@ -240,11 +270,14 @@ export default class PlayerMovement extends GameObject {
         playerDir = math.normalize(playerDir);
 
         let baseMulti: number = 1000;
+        let boostMulti: number = 10
         let moveMulti: number = 2;
 
         baseMulti = baseMulti * moveMulti;
+        if (this.clientPlayer.getJumpPressed())
+            baseMulti *= boostMulti;
 
-        let force = math.multiply([baseMulti, baseMulti, baseMulti], playerDir);
+        let force = math.multiplyConst(playerDir, baseMulti);
 
         if (math.notNaN(force)) {
             this.rigidBody?.addForce(force);

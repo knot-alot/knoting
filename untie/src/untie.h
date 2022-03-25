@@ -66,6 +66,9 @@ class Untie {
                              vec3 rotation = vec3(0),
                              int playerNum = 0);
 
+    GameObject create_spawn_location(const std::string& name = "", vec3 position= vec3(0), vec3 rotation = vec3(0), vec3 scale = vec3(1));
+
+    GameObject create_death_location(const std::string& name = "", vec3 position= vec3(0), vec3 rotation = vec3(0), vec3 scale = vec3(1));
     GameObject create_audio_hub();
 
     void create_level();

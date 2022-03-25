@@ -520,6 +520,48 @@ GameObject Untie::create_brick_wall(const std::string& name, vec3 position, vec3
     return cubeObj;
 }
 
+GameObject Untie::create_spawn_location(const std::string& name, vec3 position, vec3 rotation, vec3 scale) {
+    auto cubeObj = m_scene->create_game_object(name);
+    cubeObj.get_component<components::Transform>().set_position(position);
+    cubeObj.get_component<components::Transform>().set_scale(scale);
+    cubeObj.get_component<components::Transform>().set_rotation_euler(rotation);
+    cubeObj.add_component<components::InstanceMesh>("EG_wall_main.obj");
+
+    auto& shape = cubeObj.add_component<components::Shape>();
+    vec3 halfsize = vec3(scale) * vec3(0.1, 0.1, 0.1);
+    shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+    auto& aggregate = cubeObj.add_component<components::Aggregate>();
+    aggregate.find_aggregate("level");
+
+    auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+    rigidbody.create_actor(false);
+
+    auto material = components::Material();
+    material.set_texture_slot_path(TextureType::Albedo, "wall_tex.png");
+    material.set_texture_slot_path(TextureType::Normal, "wall_normal.png");
+    material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+    material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
+    material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
+    cubeObj.add_component<components::Material>(material);
+
+    auto engineOpt = Engine::get_active_engine();
+    if (!engineOpt)
+        return cubeObj;
+    auto& engine = engineOpt->get();
+
+    auto scriptingWeak = engine.get_scripting_module();
+    if (scriptingWeak.expired())
+        return cubeObj;
+
+    auto scripting = scriptingWeak.lock();
+
+    scripting->add_to_storage(name, position);
+
+    return cubeObj;
+}
+
 GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rotation, int playerNum) {
     auto cubeObj = m_scene->create_game_object(name);
     cubeObj.get_component<components::Transform>().set_position(position);
@@ -661,6 +703,15 @@ void Untie::create_level() {
     // create_point_light("blue_light_secondary",vec3(-27,1.99999952,-48),5,0.2f,vec3(to_color(vec3(0,0,128))));
 
     create_level_bottom();
+    create_death_location();
+
+    create_spawn_location("blue_spawn1", vec3(22, 1, -45), vec3(0, 90, 0), vec3(1, 10, 1));
+    create_spawn_location("blue_spawn2", vec3(20, 1, -45), vec3(0, 90, 0), vec3(1, 10, 1));
+    create_spawn_location("blue_spawn3", vec3(18, 1, -45), vec3(0, 90, 0), vec3(1, 10, 1));
+    create_spawn_location("red_spawn1", vec3(-25, 1, 42), vec3(0, 90, 0), vec3(1, 10, 1));
+    create_spawn_location("red_spawn2", vec3(-22, 1, 42), vec3(0, 90, 0), vec3(1, 10, 1));
+    create_spawn_location("red_spawn3", vec3(-19, 1, 42), vec3(0, 90, 0), vec3(1, 10, 1));
+
     create_paint_tank_base("blue_tank_base", vec3(25.9200001, 1, -47), vec3(0, 0, 0), vec3(0.7, 0.7, 0.7));
     create_paint_tank_glass_blue("blue_tank_glass", vec3(25.9200001, 1, -47), vec3(0, 0, 0), vec3(0.7, 0.7, 0.7));
 
@@ -870,6 +921,37 @@ GameObject Untie::create_level_bottom() {
 
     return cubeObj;
 }
+
+GameObject Untie::create_death_location(const std::string& name, vec3 position, vec3 rotation, vec3 scale) {
+        auto cubeObj = m_scene->create_game_object("death_location");
+        cubeObj.get_component<components::Transform>().set_position(vec3(0, -100, 0));
+        cubeObj.get_component<components::Transform>().set_scale(glm::vec3(0, 0, 0));
+        cubeObj.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 0, 0));
+        cubeObj.add_component<components::InstanceMesh>("uv_cube.obj");
+
+        auto& shape = cubeObj.add_component<components::Shape>();
+        vec3 halfsize = vec3(vec3(0.1f, 0.1f, 0.1f));
+        shape.set_geometry(shape.create_cube_geometry(halfsize));
+
+        auto& aggregate = cubeObj.add_component<components::Aggregate>();
+        aggregate.find_aggregate("level");
+
+        auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+
+        rigidbody.create_actor(false);
+
+        auto material = components::Material();
+        material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
+        material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
+        material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
+        material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
+        cubeObj.add_component<components::Material>(material);
+
+        return cubeObj;
+    }
+    
+
 GameObject Untie::create_audio_hub() {
     auto listener = m_scene->create_game_object("listener");
     listener.get_component<components::Transform>().set_position(vec3(0, -200, 0));
@@ -907,5 +989,4 @@ GameObject Untie::create_bullet_aggregate() {
     rigidbody.create_actor(false);
     return cubeObj;
 }
-
 }  // namespace knot
