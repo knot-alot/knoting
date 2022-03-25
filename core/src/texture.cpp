@@ -21,7 +21,7 @@ void Texture::on_awake() {
 void Texture::on_destroy() {
     stbi_image_free(data);
     bgfx::destroy(m_textureHandle);
-    log::info("removed texture : {}", m_fullPath);
+    log::debug("removed texture : {}", m_fullPath);
 }
 
 void Texture::load_texture(const std::string& path) {
@@ -29,9 +29,9 @@ void Texture::load_texture(const std::string& path) {
 
     if (std::count(m_supported_texture_2d.begin(), m_supported_texture_2d.end(), ext)) {
         load_texture_2d(path);
-        log::info(ext);
+        log::debug(ext);
     } else if (std::count(m_supported_skybox.begin(), m_supported_skybox.end(), ext)) {
-        log::info("loading HDR texture");
+        log::debug("loading HDR texture");
         m_assetState = AssetState::Failed;
         // TODO .hdr files using stbi for loading incorrectly
         load_texture_hdri(path);

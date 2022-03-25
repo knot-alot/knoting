@@ -18,6 +18,24 @@ knot::DemoWidget::DemoWidget(const std::string& name) : Widget(name) {
 }
 
 void knot::DemoWidget::on_widget_render() {
+    auto engineOpt = Engine::get_active_engine();
+    if (!engineOpt)
+        return;
+
+    auto weakNetworkClient = engineOpt->get().get_client_module();
+    if (weakNetworkClient.expired())
+        return;
+    auto networkClient = weakNetworkClient.lock();
+
+    auto weakScripting = engineOpt->get().get_scripting_module();
+    if (weakScripting.expired())
+        return;
+    auto scripting = weakScripting.lock();
+
+    auto health = scripting->get_from_storage<float>(std::string("health" + networkClient->get_client_number()));
+    log::debug("health: {}", health);
+//    m_health = health;
+
     // ImGui::ShowDemoWindow();
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetWindowSize("health", ImVec2(m_x, m_y));

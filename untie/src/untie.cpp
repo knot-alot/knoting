@@ -549,7 +549,7 @@ GameObject Untie::create_spawn_location(const std::string& name, vec3 position, 
     auto engineOpt = Engine::get_active_engine();
     if (!engineOpt)
         return cubeObj;
-    auto engine = engineOpt->get();
+    auto& engine = engineOpt->get();
 
     auto scriptingWeak = engine.get_scripting_module();
     if (scriptingWeak.expired())

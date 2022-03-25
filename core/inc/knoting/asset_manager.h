@@ -65,7 +65,7 @@ class AssetManager : public Subsystem {
             log::warn("Asset manager failed to load {} loading fallback");
             return std::static_pointer_cast<T>(m_assets[tempAsset.get()->get_fallback_name()]);
         } else {
-            log::info("adding asset: {}", path);
+            log::debug("adding asset: {}", path);
             m_assets.insert({path, tempAsset});
             std::shared_ptr<T> result = std::static_pointer_cast<T>(m_assets[path]);
             return result;

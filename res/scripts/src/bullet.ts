@@ -1,11 +1,12 @@
 import {
+    ClientPlayer,
     CollisionDetection,
     ContactData,
     GameObject,
-    Mesh,
+    Mesh, Name,
     Raycast,
     RigidBody,
-    scene,
+    scene, storage,
     Team,
     Transform,
     Vec3
@@ -69,8 +70,24 @@ export default class bullet extends GameObject {
             return;
         }
 
-        let name = this.rigidBody.getName();
-        mesh.addContactPosition(contactPoint, name == "BLUE" ? Team.Blue : Team.Red);
+        let name: string = this.rigidBody.getName();
+        let otherName: Name = otherObj.getComponent("name");
+        console.log(`Other's name ${otherName}`);
+        let isPlayer: boolean = otherName.getName().startsWith("player");
+
+        if (isPlayer) {
+            console.log("IT WAS A PLAYER BABY!");
+            let otherClientPlayer: ClientPlayer = otherObj.getComponent("clientPlayer");
+            let playerToken: string = "health" + otherClientPlayer.getClientNumber();
+            let otherHealth: number = storage.retrieve(playerToken);
+            otherHealth -= 10;
+            if (otherHealth < 0)
+                otherHealth = 0;
+            storage.store(playerToken, otherHealth);
+            console.log(`new health: ${otherHealth}`);
+        } else {
+            mesh.addContactPosition(contactPoint, name == "BLUE" ? Team.Blue : Team.Red);
+        }
 
         scene.removeGameObject(this.getID());
     }

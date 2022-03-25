@@ -31,7 +31,7 @@ void Mesh::on_destroy() {
         bgfx::destroy(m_ibh);
         m_ibh = BGFX_INVALID_HANDLE;
     }
-    log::info("removed mesh : {}", m_fullPath);
+    log::debug("removed mesh : {}", m_fullPath);
 }
 
 void Mesh::generate_post_process_plane() {

@@ -522,8 +522,7 @@ class JSTransform : public JSObjectBase {
         if (!transformOpt)
             return vec3(0.0f, 0.0f, 0.0f);
 
-        auto& transform = transformOpt.value().get();
-        return transform.get_position();
+        auto& transform = transformOpt.value().get(); return transform.get_position();
     }
 
     vec3 get_scale() {
@@ -2235,6 +2234,12 @@ bool network_is_server() {
     return !engine.isClient;
 }
 
+void set_health(float health) {
+    auto engineOpt = Engine::get_active_engine();
+    if (!engineOpt)
+        return;
+}
+
 void Scripting::add_knoting_module() {
     knoting_module = m_context->addModule("knoting");
     auto& knoting = knoting_module.value().get();
@@ -2269,6 +2274,7 @@ void Scripting::add_knoting_module() {
         .fun<&JSRigidBody::set_rotation>("setRotation")
         .fun<&JSRigidBody::set_rotation_euler>("setRotationEuler")
         .fun<&JSRigidBody::add_force>("addForce")
+        .fun<&JSRigidBody::set_position>("setPosition")
         .fun<&JSRigidBody::get_position>("getPosition")
         .fun<&JSRigidBody::get_rotation>("getRotation")
         .fun<&JSRigidBody::get_rotation_euler>("getRotationEuler")
