@@ -42,8 +42,10 @@ class ForwardRenderer : public Subsystem {
     void transparent_pass(uint16_t idx);
     void post_process_pass(uint16_t idx);
 
+    static std::pair<mat4, mat4> get_camera_view();
+
     Engine& m_engine;
-    LightData m_lightData;
+    std::unique_ptr<LightData> m_lightData;
 
    private:
     static constexpr uint32_t m_clearColor = 0x303030ff;

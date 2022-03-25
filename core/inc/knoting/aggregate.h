@@ -1,13 +1,16 @@
 #pragma once
 
+#include <knoting/component.h>
 #include <knoting/physics.h>
 
 namespace knot {
 namespace components {
-class Aggregate {
+
+class Aggregate : public Component<Aggregate> {
    public:
     Aggregate();
     ~Aggregate();
+
     void on_awake();
     void on_destory();
     std::weak_ptr<PxAggregate_ptr_wrapper> get_aggregate() { return m_aggregate; }

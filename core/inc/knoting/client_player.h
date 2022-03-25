@@ -23,7 +23,7 @@ class ClientPlayer {
 
     uint16_t m_clientNum = 0;
 
-    vec2i m_lookAxis = vec2i(0);
+    vec3 m_lookAxis = vec3(0);
     vec2i m_moveAxis = vec2i(0);
 
     bool m_jumpPressed = false;

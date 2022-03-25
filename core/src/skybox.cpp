@@ -49,6 +49,7 @@ SkyBox::SkyBox() {
 }
 
 SkyBox::~SkyBox() {}
+
 void SkyBox::set_uniforms() {
     m_skyboxData.x = m_exposure;
     m_skyboxData.y = (int)m_backgroundType;

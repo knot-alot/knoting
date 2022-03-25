@@ -15,7 +15,7 @@ class AudioSubsystem;
 
 namespace knot::components {
 
-class AudioSource : public Asset {
+class AudioSource : public Asset, public Component<AudioSource> {
    public:
     AudioSource(const std::string& path = {}, bool loops = false);
 

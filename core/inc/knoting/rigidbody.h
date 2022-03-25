@@ -1,6 +1,7 @@
 #pragma once
 
 #include <PxPhysicsAPI.h>
+#include <knoting/component.h>
 #include <knoting/components.h>
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/types.h>
@@ -11,7 +12,7 @@ using namespace physx;
 namespace knot {
 namespace components {
 
-class RigidBody {
+class RigidBody : public Component<RigidBody> {
     // fllow this way
     // set physics and scene
     // set material(already defalut)
@@ -23,9 +24,10 @@ class RigidBody {
     RigidBody();
     ~RigidBody();
 
-    void on_awake();
+    void on_awake() override;
+    void on_destroy() override;
+
     void on_load();
-    void on_destroy();
 
     vec3 get_position();
     quat get_rotation();

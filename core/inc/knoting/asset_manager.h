@@ -51,26 +51,25 @@ class AssetManager : public Subsystem {
 
         auto iterator = m_assets.find(path);
 
-        if (iterator == m_assets.end()) {
-            log::debug("Asset : " + path + " is being loaded");
-            std::shared_ptr<T> tempAsset = std::make_shared<T>(path);
-            tempAsset.get()->on_awake();
-
-            if (tempAsset.get()->get_asset_state() == AssetState::Failed) {
-                log::warn("Asset manager failed to load {} loading fallback");
-                return std::static_pointer_cast<T>(m_assets[tempAsset.get()->get_fallback_name()]);
-            } else {
-                log::info("adding asset: {}", path);
-                m_assets.insert({path, tempAsset});
-                std::shared_ptr<T> result = std::static_pointer_cast<T>(m_assets[path]);
-                result.get()->on_awake();
-                return result;
-            }
+        if (iterator != m_assets.end()) {
+            auto r = std::static_pointer_cast<T>(m_assets[path]);
+            r->on_awake();
+            return r;
         }
 
-        auto r = std::static_pointer_cast<T>(m_assets[path]);
-        r->on_awake();
-        return r;
+        log::debug("Asset : " + path + " is being loaded");
+        std::shared_ptr<T> tempAsset = std::make_shared<T>(path);
+        tempAsset.get()->on_awake();
+
+        if (tempAsset.get()->get_asset_state() == AssetState::Failed) {
+            log::warn("Asset manager failed to load {} loading fallback");
+            return std::static_pointer_cast<T>(m_assets[tempAsset.get()->get_fallback_name()]);
+        } else {
+            log::info("adding asset: {}", path);
+            m_assets.insert({path, tempAsset});
+            std::shared_ptr<T> result = std::static_pointer_cast<T>(m_assets[path]);
+            return result;
+        }
     }
 };
 }  // namespace knot

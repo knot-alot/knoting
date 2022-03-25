@@ -1,10 +1,13 @@
 #pragma once
+
+#include <knoting/component.h>
 #include <knoting/components.h>
 #include <knoting/px_variables_wrapper.h>
 
 namespace knot {
 namespace components {
-class RigidController {
+
+class RigidController : public Component<RigidController> {
    public:
     RigidController();
     ~RigidController();

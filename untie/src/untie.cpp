@@ -2,6 +2,7 @@
 #include <knoting/components.h>
 #include <knoting/game_object.h>
 #include <knoting/instance_mesh.h>
+#include <knoting/instance_script.h>
 #include <knoting/log.h>
 #include <knoting/mesh.h>
 #include <knoting/post_processing.h>
@@ -40,7 +41,7 @@ Untie::Untie() {
     Scene::set_active_scene(*m_scene);
     log::Logger::setup();
     m_engine = std::make_unique<knot::Engine>();
-    Engine::set_active_engine(*m_engine);
+  
     create_level();
 
     auto fontObj = m_scene->create_game_object("font");
@@ -178,7 +179,7 @@ GameObject Untie::create_lower_floor(const std::string& name, vec3 position, vec
 
     return cubeObj;
 }
-
+  
 GameObject Untie::create_master_floor(const std::string& name, vec3 position, vec3 scale) {
     auto cubeObj = m_scene->create_game_object(name);
     cubeObj.get_component<components::Transform>().set_position(position);
@@ -565,6 +566,7 @@ void Untie::serializeTest() {
     //        }
     //        serializedSceneStream.close();
 }
+  
 GameObject Untie::create_point_light(const std::string& name,
                                      vec3 position,
                                      float innerRadius,
@@ -579,6 +581,7 @@ GameObject Untie::create_point_light(const std::string& name,
 
     return light;
 }
+  
 GameObject Untie::create_skybox() {
     auto cubeObj = m_scene->create_game_object("skybox");
     cubeObj.get_component<components::Transform>().set_position(glm::vec3(0, 8, 0));
@@ -595,6 +598,7 @@ GameObject Untie::create_skybox() {
 
     return cubeObj;
 }
+  
 GameObject Untie::create_post_processing() {
     auto cubeObj = m_scene->create_game_object("post processing");
     cubeObj.get_component<components::Transform>().set_position(vec3(0));
@@ -604,6 +608,7 @@ GameObject Untie::create_post_processing() {
 
     return cubeObj;
 }
+  
 void Untie::create_level() {
     {
         auto editorCamera = m_scene->create_game_object("camera");

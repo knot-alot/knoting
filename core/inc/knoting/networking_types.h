@@ -36,40 +36,6 @@ bool serialize_vec2i(Stream& stream, vec2i& val) {
     return true;
 }
 
-class ClientMessage : public Message {
-   public:
-    ClientMessage()
-        : m_sequence(0),
-          m_recentAck(0),
-          m_lookAxis(vec2i()),
-          m_moveAxis(vec2i()),
-          jumpPressed(false),
-          isShooting(false) {}
-
-    template <typename Stream>
-    bool Serialize(Stream& stream) {
-        serialize_bits(stream, m_sequence, 16);
-        serialize_bits(stream, m_recentAck, 16);
-
-        serialize_vec2i(stream, m_lookAxis);
-        serialize_vec2i(stream, m_moveAxis);
-        serialize_bool(stream, jumpPressed);
-        serialize_bool(stream, isShooting);
-        return true;
-    }
-
-    vec2i m_lookAxis;
-    vec2i m_moveAxis;
-
-    bool jumpPressed = false;
-    bool isShooting = false;
-
-    uint16_t m_sequence;
-    uint16_t m_recentAck;
-
-    YOJIMBO_VIRTUAL_SERIALIZE_FUNCTIONS();
-};
-
 template <typename Stream>
 bool serialize_vec3(Stream& stream, vec3& val) {
     serialize_float(stream, val.x);
@@ -86,6 +52,41 @@ bool serialize_quat(Stream& stream, quat& val) {
     serialize_float(stream, val.w);
     return true;
 }
+
+class ClientMessage : public Message {
+   public:
+    ClientMessage()
+        : m_sequence(0),
+          m_recentAck(0),
+          m_lookAxis(vec3()),
+          m_moveAxis(vec2i()),
+          jumpPressed(false),
+          isShooting(false) {}
+
+    template <typename Stream>
+    bool Serialize(Stream& stream) {
+        serialize_bits(stream, m_sequence, 16);
+        serialize_bits(stream, m_recentAck, 16);
+
+        serialize_vec3(stream, m_lookAxis);
+        serialize_vec2i(stream, m_moveAxis);
+        serialize_bool(stream, jumpPressed);
+        serialize_bool(stream, isShooting);
+        return true;
+    }
+
+    vec3 m_lookAxis;
+    vec2i m_moveAxis;
+    bool jumpPressed = false;
+    bool isShooting = false;
+
+    uint16_t m_sequence;
+    uint16_t m_recentAck;
+
+    YOJIMBO_VIRTUAL_SERIALIZE_FUNCTIONS();
+};
+
+
 
 constexpr uint16_t MAX_COLLISIONS = 20;
 

@@ -22,6 +22,7 @@ set(PUBLIC_LIBS
         NoesisGUI
         FMod
         glfw
+        quickjs
         )
 
 set(PRIVATE_LIBS

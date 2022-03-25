@@ -2,6 +2,7 @@
 
 #include <bgfx/bgfx.h>
 #include <knoting/asset_manager.h>
+#include <knoting/component.h>
 #include <knoting/shader_program.h>
 #include <knoting/texture.h>
 #include <knoting/types.h>
@@ -49,15 +50,13 @@ enum class UniformSamplerHandle {
     LAST
 };
 
-class Material {
+class Material : public Component<Material> {
    public:
     Material();
     ~Material();
 
-    //=For ECS========
-    void on_awake();
-    void on_destroy();
-    //================
+    void on_awake() override;
+    void on_destroy() override;
 
     void set_texture_slot_path(const TextureType slot, const std::string& path);
     void set_albedo_mix_color(const vec4& color){m_albedoColor = color;};
