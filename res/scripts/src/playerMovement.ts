@@ -193,11 +193,6 @@ export default class PlayerMovement extends GameObject {
             let forward: Vec3 = math.multiplyConst(this.transform.getForward(), 1.0);
             let spawnPos: Vec3 = math.add(this.transform.getPosition(), forward);
             let shooDir: Vec3 = this.getShootDir(spawnPos);
-            this.particle.setLookAt(math.multiplyConst(shooDir, 4));
-            this.particle.setPosition(spawnPos);
-            this.particle.setParticlesPerSecond(100);
-        } else {
-            this.particle.setParticlesPerSecond(0);
         }
     }
 
