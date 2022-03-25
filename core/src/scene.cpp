@@ -61,11 +61,11 @@ GameObject Scene::create_bullet(bool is_teamA, vec3 spawnPos) {
     auto& shape = bullet.add_component<components::Shape>();
     shape.set_geometry(shape.create_sphere_geometry(0.1f));
 
-//    is_teamA ? shape.set_filter_data(filter_group::eParticle_red, filter_group::eAll | filter_group::ePlayer_blue)
-//             : shape.set_filter_data(filter_group::eParticle_blue, filter_group::eAll | filter_group::ePlayer_red);
+    is_teamA ? shape.set_filter_data(filter_group::eParticle_red, filter_group::eAll | filter_group::ePlayer_blue)
+             : shape.set_filter_data(filter_group::eParticle_blue, filter_group::eAll | filter_group::ePlayer_red);
 
-    auto& aggregate = bullet.add_component<components::Aggregate>();
-    aggregate.find_aggregate("BULLET");
+//    auto& aggregate = bullet.add_component<components::Aggregate>();
+//    aggregate.find_aggregate("BULLET");
 
     auto& rigidBody = bullet.add_component<components::RigidBody>();
     rigidBody.create_actor(true, 1.0f);

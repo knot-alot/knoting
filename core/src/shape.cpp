@@ -31,13 +31,13 @@ void Shape::set_geometry(const PxGeometry& geometry) {
         m_shape = std::make_shared<PxShape_ptr_wrapper>(m_physics->get()->createShape(geometry, *m_material->get()));
         PxFilterData data;
         set_filter_data(filter_group::eAll, filter_group::eAll | filter_group::eParticle_red |
-                                                filter_group::ePlayer_blue | filter_group::ePlayer_red |
+                                                filter_group::eParticle_blue | filter_group::ePlayer_red |
                                                 filter_group::ePlayer_blue);
 
     } else {
         m_shape->get()->setGeometry(geometry);
         set_filter_data(filter_group::eAll, filter_group::eAll | filter_group::eParticle_red |
-                                                filter_group::ePlayer_blue | filter_group::ePlayer_red |
+                                                filter_group::eParticle_blue | filter_group::ePlayer_red |
                                                 filter_group::ePlayer_blue);
     }
 }
