@@ -166,7 +166,7 @@ void RigidBody::create_actor(bool isDynamic, const float& mass) {
 
         if (goOpt)
             m_dynamic.get()->get()->userData = new uuid(goOpt->get_id());
-      
+
         m_isDynamic = isDynamic;
     } else {
         m_static = std::make_shared<PxStatic_ptr_wrapper>(m_physics->get()->createRigidStatic(

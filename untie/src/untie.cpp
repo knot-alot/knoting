@@ -97,17 +97,6 @@ void Untie::run() {
             }
         }
 
-        if (im->key_on_trigger(KeyCode::Y)) {
-            if (cubeOne) {
-                components::AudioSource& source = cubeTwo->get_component<components::AudioSource>();
-                auto weakAudioModule = m_engine->get_audio_module();
-                if (!weakAudioModule.expired()) {
-                    auto audioModule = weakAudioModule.lock();
-                    audioModule->play(source);
-                }
-            }
-        }
-
         if (im->key_on_trigger(KeyCode::Escape)) {
             m_engine->switch_paused();
             m_engine->switch_pause_menu();
@@ -213,16 +202,16 @@ GameObject Untie::create_paint_tank_base(const std::string& name, vec3 position,
     cubeObj.get_component<components::Transform>().set_rotation_euler(rotation);
     cubeObj.add_component<components::InstanceMesh>("tank_base.obj");
 
-    auto& shape = cubeObj.add_component<components::Shape>();
-    vec3 halfsize = vec3(vec3(scale));
-    shape.set_geometry(shape.create_cube_geometry(halfsize));
+//    auto& shape = cubeObj.add_component<components::Shape>();
+//    vec3 halfsize = vec3(vec3(scale));
+//    shape.set_geometry(shape.create_cube_geometry(halfsize));
 
-    auto& aggregate = cubeObj.add_component<components::Aggregate>();
-    aggregate.find_aggregate("level");
+//    auto& aggregate = cubeObj.add_component<components::Aggregate>();
+//    aggregate.find_aggregate("level");
+//
+//    auto& rigidbody = cubeObj.add_component<components::RigidBody>();
 
-    auto& rigidbody = cubeObj.add_component<components::RigidBody>();
-
-    rigidbody.create_actor(false);
+//    rigidbody.create_actor(false);
 
     auto material = components::Material();
     material.set_texture_slot_path(TextureType::Albedo, "metal_base.png");
@@ -244,8 +233,9 @@ GameObject Untie::create_paint_tank_glass_red(const std::string& name, vec3 posi
     cubeObj.add_component<components::InstanceMesh>("tank_glass.obj");
 
     auto& shape = cubeObj.add_component<components::Shape>();
-    vec3 halfsize = vec3(vec3(scale));
+    vec3 halfsize = vec3(vec3(scale) * vec3(2.5f,7.5f,2.5f));
     shape.set_geometry(shape.create_cube_geometry(halfsize));
+    shape.set_local_position(vec3(scale) * vec3(0,7.0f,0));
 
     auto& aggregate = cubeObj.add_component<components::Aggregate>();
     aggregate.find_aggregate("level");
@@ -274,8 +264,9 @@ GameObject Untie::create_paint_tank_glass_blue(const std::string& name, vec3 pos
     cubeObj.add_component<components::InstanceMesh>("tank_glass.obj");
 
     auto& shape = cubeObj.add_component<components::Shape>();
-    vec3 halfsize = vec3(vec3(scale));
+    vec3 halfsize = vec3(vec3(scale) * vec3(2.5f,7.5f,2.5f));
     shape.set_geometry(shape.create_cube_geometry(halfsize));
+    shape.set_local_position(vec3(scale) * vec3(0,7.0f,0));
 
     auto& aggregate = cubeObj.add_component<components::Aggregate>();
     aggregate.find_aggregate("level");
@@ -454,9 +445,9 @@ GameObject Untie::create_wall(const std::string& name, vec3 position, vec3 rotat
     cubeObj.add_component<components::InstanceMesh>("EG_wall_main.obj");
 
     auto& shape = cubeObj.add_component<components::Shape>();
-    vec3 halfsize = vec3(scale) * vec3(0.1, 0.1, 0.1);
+    vec3 halfsize = vec3(scale) * vec3(0.5f, 1.5f, 0.3f);
     shape.set_geometry(shape.create_cube_geometry(halfsize));
-
+    shape.set_local_position(vec3(scale) * vec3(0,1.5f,0));
     auto& aggregate = cubeObj.add_component<components::Aggregate>();
     aggregate.find_aggregate("level");
 
@@ -483,8 +474,9 @@ GameObject Untie::create_brick_wall(const std::string& name, vec3 position, vec3
     cubeObj.add_component<components::InstanceMesh>("EG_wall_main.obj");
 
     auto& shape = cubeObj.add_component<components::Shape>();
-    vec3 halfsize = vec3(scale) * vec3(0.1, 0.1, 0.1);
+    vec3 halfsize = vec3(scale) * vec3(0.5f, 1.5f, 0.3f);
     shape.set_geometry(shape.create_cube_geometry(halfsize));
+    shape.set_local_position(vec3(scale) * vec3(0,1.5f,0));
 
     auto& aggregate = cubeObj.add_component<components::Aggregate>();
     aggregate.find_aggregate("level");
@@ -557,14 +549,14 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     auto& physics_material = cubeObj.add_component<components::PhysicsMaterial>();
 
     auto& shape = cubeObj.add_component<components::Shape>();
-    vec3 halfsize = vec3(1.5f, 1.0f, 1.0f);
+    vec3 halfsize = vec3(0.5f, 1.0f, 1.0f);
     shape.set_geometry(shape.create_cube_geometry(halfsize));
 
     auto& aggregate = cubeObj.add_component<components::Aggregate>();
     aggregate.add_aggregate(name, 5, false);
 
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
-    rigidbody.create_actor(true, 4.0f);
+    rigidbody.create_actor(true, 7.0f);
 
     auto& detection = cubeObj.add_component<components::Collision_Detection>();
     detection.add_search_actor(rigidbody.get_dynamic().lock());
@@ -588,13 +580,11 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     auto editorCamera = m_scene->create_game_object("playerCamera");
     auto& cam = editorCamera.add_component<components::EditorCamera>();
     editorCamera.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 1.5f, 0.0f));
-    editorCamera.add_component<components::AudioListener>();
 
     auto& hierarchy = cubeObj.get_component<components::Hierarchy>();
     hierarchy.add_child(editorCamera);
 
     cubeObj.add_component<components::InstanceScript>("playerMovement.js");
-
     return cubeObj;
 }
 
@@ -663,7 +653,6 @@ void Untie::create_level() {
         auto editorCamera = m_scene->create_game_object("camera");
         auto& cam = editorCamera.add_component<components::EditorCamera>();
         editorCamera.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 50.0f, 0.0f));
-        editorCamera.add_component<components::AudioListener>();
 
         editorCamera.add_component<components::InstanceScript>("pauseCamera.js");
     }
@@ -719,7 +708,7 @@ void Untie::create_level() {
                 vec3(2.80200028, 0.0252700001, 8.42736721));
     create_ramp("Top_ramp", vec3(-10.5, 4, -26.5), vec3(338.550018, 0, 0), vec3(3.10413098, 0.128035069, 8.33843422));
     create_ramp("floor_cover", vec3(17.5, 7, 32.5), vec3(0, 0, 0), vec3(3.30587935, 0.100000001, 7.7004447));
-
+//
     create_wall("edge_wall_left1", vec3(29.6299992, 1.12, 10.8999996), vec3(0, 90, 0), vec3(16, 2, 1));
     create_wall("edge_wall_left2", vec3(29.6200008, 1.12, 26.8400002), vec3(0, 90, 0), vec3(16, 2, 1));
     create_wall("edge_wall_left3", vec3(29.6299992, 1.12, 42.2400017), vec3(0, 90, 0), vec3(15.58, 2, 1));
@@ -850,6 +839,8 @@ void Untie::create_level() {
     create_player("player_5", vec3(0, 5, -20), vec3(0), 4);
     create_player("player_6", vec3(0, 5, 20), vec3(0), 5);
 
+    create_audio_hub();
+
     // CREATE PARTICLE SYSTEM
     /*
         {
@@ -899,6 +890,7 @@ GameObject Untie::create_level_bottom() {
 
     return cubeObj;
 }
+
 GameObject Untie::create_death_location(const std::string& name, vec3 position, vec3 rotation, vec3 scale) {
         auto cubeObj = m_scene->create_game_object("death_location");
         cubeObj.get_component<components::Transform>().set_position(vec3(0, -100, 0));
@@ -927,4 +919,24 @@ GameObject Untie::create_death_location(const std::string& name, vec3 position, 
 
         return cubeObj;
     }
+    
+
+GameObject Untie::create_audio_hub() {
+   auto listener = m_scene->create_game_object("listener");
+   listener.get_component<components::Transform>().set_position(vec3(0, -200, 0));
+   listener.get_component<components::Transform>().set_scale(glm::vec3(0, 0, 0));
+   listener.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 0, 0));
+
+   listener.add_component<components::AudioListener>();
+
+   auto& source = m_scene->create_game_object("source");
+   source.get_component<components::Transform>().set_position(vec3(0, -199, 0));
+   source.get_component<components::Transform>().set_scale(glm::vec3(0, 0, 0));
+   source.get_component<components::Transform>().set_rotation_euler(glm::vec3(0, 0, 0));
+
+   auto& audio = source.add_component<components::AudioSource>("house_party.mp3",true);
+   cubeOne = source;
+    m_engine->get_audio_module().lock()->play(audio);
+   return source;
+}
 }  // namespace knot

@@ -9,7 +9,8 @@
 #include <knoting/spot_light.h>
 
 #include <bgfx/bgfx.h>
-#include <fstream>
+#include <bx/math.h>
+#include <knoting/Font.h>
 #include <stb_image.h>
 #include <array>
 #include <fstream>
@@ -18,8 +19,6 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
-#include <knoting/Font.h>
-#include <bx/math.h>
 
 namespace knot {
 
@@ -136,43 +135,43 @@ void ForwardRenderer::depth_pass(uint16_t idx) {
 
     auto [view, proj] = get_camera_view();
     bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
-  
-//    mat4 invProj;
-//    glm::mat4 view;
-//    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
-//
-//    //=CAMERA===========================
-//    auto cameras = registry.view<Transform, EditorCamera, Name>();
-//
-//    for (auto& cam : cameras) {
-//        auto goOpt = scene.get_game_object_from_handle(cam);
-//        if (!goOpt) {
-//            continue;
-//        }
-//
-//        GameObject go = goOpt.value();
-//       Transform& transform = go.get_component<Transform>();
-//        EditorCamera& editorCamera = go.get_component<EditorCamera>();
-//        Name& name = go.get_component<Name>();
-//
-//        const glm::vec3 pos = transform.get_position();
-//        const glm::vec3 lookTarget = editorCamera.get_look_target();
-//        const glm::vec3 up = editorCamera.get_up();
-//
-//        const float fovY = editorCamera.get_fov();
-//        const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
-//
-//        const float zNear = editorCamera.get_z_near();
-//        const float zFar = editorCamera.get_z_far();
-//
-//        // Set view and projection matrix for view 0.
-//        {
-//            view = glm::lookAt(pos, lookTarget, up);
-//
-//            glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
-//            bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
-//        }
-//    }
+
+    //    mat4 invProj;
+    //    glm::mat4 view;
+    //    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
+    //
+    //    //=CAMERA===========================
+    //    auto cameras = registry.view<Transform, EditorCamera, Name>();
+    //
+    //    for (auto& cam : cameras) {
+    //        auto goOpt = scene.get_game_object_from_handle(cam);
+    //        if (!goOpt) {
+    //            continue;
+    //        }
+    //
+    //        GameObject go = goOpt.value();
+    //       Transform& transform = go.get_component<Transform>();
+    //        EditorCamera& editorCamera = go.get_component<EditorCamera>();
+    //        Name& name = go.get_component<Name>();
+    //
+    //        const glm::vec3 pos = transform.get_position();
+    //        const glm::vec3 lookTarget = editorCamera.get_look_target();
+    //        const glm::vec3 up = editorCamera.get_up();
+    //
+    //        const float fovY = editorCamera.get_fov();
+    //        const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
+    //
+    //        const float zNear = editorCamera.get_z_near();
+    //        const float zFar = editorCamera.get_z_far();
+    //
+    //        // Set view and projection matrix for view 0.
+    //        {
+    //            view = glm::lookAt(pos, lookTarget, up);
+    //
+    //            glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
+    //            bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
+    //        }
+    //    }
 
     auto entities = registry.view<Transform, InstanceMesh, Material, Name>();
     for (auto& e : entities) {

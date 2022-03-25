@@ -9,8 +9,7 @@ using namespace physx;
 namespace knot {
 class PxScene_ptr_wrapper {
    public:
-    PxScene_ptr_wrapper(PxScene* scene = nullptr) : m_pxScene(scene) {
-    }
+    PxScene_ptr_wrapper(PxScene* scene = nullptr) : m_pxScene(scene) {}
     ~PxScene_ptr_wrapper() {
         if (m_pxScene) {
             m_pxScene->release();
@@ -18,8 +17,7 @@ class PxScene_ptr_wrapper {
         }
     }
 
-    void set(PxScene* scene) { m_pxScene = scene;
-    }
+    void set(PxScene* scene) { m_pxScene = scene; }
 
     PxScene* get() { return m_pxScene; }
 
@@ -138,9 +136,7 @@ class PxStatic_ptr_wrapper {
 
 class PxShape_ptr_wrapper {
    public:
-    PxShape_ptr_wrapper(PxShape* shape = nullptr) : m_shape(shape) {
-        m_shape = shape;
-    }
+    PxShape_ptr_wrapper(PxShape* shape = nullptr) : m_shape(shape) { m_shape = shape; }
     ~PxShape_ptr_wrapper() { clean(); }
     void set(PxShape* shape) {
         clean();

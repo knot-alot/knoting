@@ -111,12 +111,12 @@ void knot::DebugPhysics::on_widget_render() {
         view = glm::lookAt(pos, lookTarget, up);
         proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
 
-        mat4 projView = proj * view;
+        mat4 projView = view * proj;
         auto physScene = m_engine.get_physics_module().lock()->get_active_Scene();
 
         const PxRenderBuffer& rendBuffer = physScene.lock().get()->get()->getRenderBuffer();
 
-        ImGui::SetNextWindowPos(ImVec2(0, 0));
+        ImGui::SetWindowPos("DebugPhysics",ImVec2(0, 0));
 
         ImGuizmo::BeginFrame();
         ImGui::SetWindowSize("DebugPhysics", ImVec2(m_x, m_y));
@@ -154,8 +154,8 @@ void knot::DebugPhysics::on_widget_render() {
             }
 
             mat4 modelMatrix = mat4(1.0f);
-            modelMatrix = translate(mat4(1.0f), transform.get_position()) * toMat4(transform.get_rotation()) *
-                          scale(mat4(1.0f), (halfSize * 2.0f));
+            modelMatrix = translate(mat4(1.0f), transform.get_position() + colliderShapeComp.get_offset_pos()) *
+                          toMat4(transform.get_rotation()) * scale(mat4(1.0f), (halfSize * 2.0f));
 
             ImGuizmo::DrawCubes(value_ptr(view), value_ptr(proj), value_ptr(modelMatrix), 1);
         }

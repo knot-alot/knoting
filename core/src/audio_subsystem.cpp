@@ -116,11 +116,14 @@ void AudioSubsystem::set_loop(components::AudioSource& source, bool loops) {
 }
 
 void AudioSubsystem::add_sound(components::AudioSource& source) {
-    log::debug("TRYING TO LOAD AUDIO FILE {}", source.m_path.string());
+    log::warn("TRYING TO LOAD AUDIO FILE {}", source.m_path.string());
     m_result =
         m_system->createSound(source.m_fullPath.string().c_str(), FMOD_3D_LINEARROLLOFF, nullptr, &source.get_sound());
 
     m_result = source.get_sound()->set3DMinMaxDistance(m_minDis, m_maxDis);
+    if (!source.get_sound()) {
+        log::error("Did NOT LOAD!");
+    }
     set_loop(source, source.m_loops);
     source.get_sound()->setDefaults(m_frequency, m_priority);
 }
