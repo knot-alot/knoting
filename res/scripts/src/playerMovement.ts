@@ -61,7 +61,7 @@ export default class PlayerMovement extends GameObject {
     }
 
     shoot() {
-        let forward: Vec3 = math.multiplyConst(this.transform.getForward(), 1.0);
+        let forward: Vec3 = math.multiplyConst(this.transform.getForward(), 3.0);
         let spawnPos: Vec3 = math.add(this.transform.getPosition(), forward);
         console.log(`spawnPos = ${spawnPos}`);
         console.log(`position = ${this.transform.getPosition()}`);
@@ -74,22 +74,28 @@ export default class PlayerMovement extends GameObject {
     creatBullet(shootDir: Vec3, spawnPos: Vec3) {
         let bullet = scene.createBullet(this.is_teamA, spawnPos);
         let rigidBody = bullet.getComponent("rigidBody");
-        rigidBody.addForce(math.multiplyConst(shootDir, 100.0));
+        rigidBody.addForce(math.multiplyConst(math.add(shootDir,this.transform.getForward()), 10.0));
     }
 
     getShootDir(spawnPos: Vec3): Vec3 {
-        let edcam = this.cameraChild.getComponent("editorCamera")
-        let pitch = edcam.getRotationEuler()[0];
-        let a: Vec3 = [0, 0, 1];
-        let cos = Math.cos(pitch * 3.14 / 180);
-        let sin = Math.sin(pitch * 3.14 / 180);
-        let b: Vec3 = [0, 0, 0];
-        b[0] = a[0];
-        b[1] = ((a[1] * cos) - (a[2] * sin)) * -1.0;
-        b[2] = (a[1] * sin) - (a[2] * cos);
-        b = math.normalize(b);
-        b = multiplyQuat(b,this.transform.getRotation());
-        this.creatBullet(b,spawnPos);
+        let edcam = this.cameraChild.getComponent("editorCamera");
+        let lookTarg: Vec3 = edcam.getLookTarget();
+        // let pitch = edcam.getRotationEuler()[0];
+        // let a: Vec3 = [0, 0, -1];
+        // let cos = Math.cos(pitch * 3.14 / 180);
+        // let sin = Math.sin(pitch * 3.14 / 180);
+        // let b: Vec3 = [0, 0, 0];
+        // b[0] = a[0];
+        // b[1] = ((a[1] * cos) - (a[2] * sin)) * -1.0;
+        // b[2] = (a[1] * sin) + (a[2] * cos);
+        // b = math.normalize(b);
+        // b = multiplyQuat(b,this.transform.getRotation());
+        // b= math.normalize(b);
+
+        let b:Vec3 = math.normalize(lookTarg);
+        // let b: Vec3 = math.minus(lookTarg,spawnPos);
+        // b = math.normalize(b);
+        // this.creatBullet(b,spawnPos);
         return b;
     }
 

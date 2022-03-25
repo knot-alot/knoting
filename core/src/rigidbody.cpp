@@ -22,7 +22,7 @@ void RigidBody::on_awake() {
         this->m_physics = engine.get_physics_module().lock()->get_physics().lock();
         this->m_scene = engine.get_physics_module().lock()->get_active_Scene().lock();
     }
-    this->m_shape = get_shape_from_shape();
+    this->m_shape = get_shape_from_shape();;
     this->m_aggregate = get_aggregate_from_aggregate();
 }
 void RigidBody::on_destroy() {

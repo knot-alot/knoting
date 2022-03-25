@@ -13,7 +13,7 @@ export default class bullet extends GameObject {
 
     lateUpdate() {
         this.data = this.detection.getContactDataByActor(this.rigidBody.getActor());
-        if (!(this.data.length == 0)) {
+        if (this.data.length > 0) {
             this.detection.removeSearchActor(this.rigidBody.getActor());
             scene.removeGameObject(this.getID());
         }

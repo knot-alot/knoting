@@ -47,45 +47,48 @@ GameObject Scene::create_game_object(const std::string& name) {
 }
 
 GameObject Scene::create_bullet(bool is_teamA, vec3 spawnPos) {
-    GameObject e(m_registry.create(), *this);
-    e.add_component<components::Transform>();
-    e.add_component<components::Hierarchy>();
     std::string n;
     is_teamA ? n = "RED" : n = "BLUE";
-    e.add_component<components::Name>(n);
-    e.add_component<components::InstanceMesh>("uv_cube.obj");
+    auto bullet = this->create_game_object(n);
+    bullet.get_component<components::Transform>().set_position(spawnPos);
+    bullet.get_component<components::Transform>().set_scale(vec3(0.1f));
+    bullet.add_component<components::InstanceMesh>("sphere.obj");
 
-    m_uuidGameObjectMap.insert(std::make_pair(e.get_id(), e));
-    m_entityGameObjectMap.insert(std::make_pair(e.m_handle, e));
+    log::debug("Created game object with id {}", to_string(bullet.get_id()));
 
-    log::debug("Created game object with id {}", to_string(e.get_id()));
+    bullet.add_component<components::PhysicsMaterial>();
 
-    e.add_component<components::PhysicsMaterial>();
+    auto& shape = bullet.add_component<components::Shape>();
+    shape.set_geometry(shape.create_sphere_geometry(0.1f));
 
-    auto& shape = e.add_component<components::Shape>();
-    shape.set_geometry(shape.create_cube_geometry(vec3(0.2f)));
+//    is_teamA ? shape.set_filter_data(filter_group::eParticle_red, filter_group::eAll | filter_group::ePlayer_blue)
+//             : shape.set_filter_data(filter_group::eParticle_blue, filter_group::eAll | filter_group::ePlayer_red);
 
-    is_teamA ? shape.set_filter_data(filter_group::eParticle_red, filter_group::eAll | filter_group::ePlayer_blue)
-             : shape.set_filter_data(filter_group::eParticle_blue, filter_group::eAll | filter_group::ePlayer_red);
+    auto& aggregate = bullet.add_component<components::Aggregate>();
+    aggregate.find_aggregate("BULLET");
 
-    auto& rigidBody = e.add_component<components::RigidBody>();
+    auto& rigidBody = bullet.add_component<components::RigidBody>();
     rigidBody.create_actor(true, 1.0f);
     rigidBody.set_name(n);
 
-    e.add_component<components::RigidController>();
-    auto& detection = e.add_component<components::Collision_Detection>();
+    bullet.add_component<components::RigidController>();
+    auto& detection = bullet.add_component<components::Collision_Detection>();
     detection.add_search_actor(rigidBody.get_dynamic().lock());
 
     auto material = components::Material();
-    material.set_texture_slot_path(TextureType::Albedo, "UV_Grid_test.png");
+    if(is_teamA){
+        material.set_texture_slot_path(TextureType::Albedo, "test_red.png");
+    } else {
+        material.set_texture_slot_path(TextureType::Albedo, "test_blue.png");
+    }
     material.set_texture_slot_path(TextureType::Normal, "normal_tiles_1k.png");
     material.set_texture_slot_path(TextureType::Metallic, "whiteTexture");
     material.set_texture_slot_path(TextureType::Roughness, "whiteTexture");
     material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
-    e.add_component<components::Material>(material);
+    bullet.add_component<components::Material>(material);
 
-    e.add_component<components::InstanceScript>("bullet.js");
-    return e;
+    bullet.add_component<components::InstanceScript>("bullet.js");
+    return bullet;
 }
 
 void Scene::remove_game_object(GameObject game_object) {

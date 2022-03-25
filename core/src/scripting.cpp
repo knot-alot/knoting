@@ -1562,7 +1562,16 @@ class JSContactData : public JSObjectBase {
 
     uuid get_contact_actor() { return *reinterpret_cast<uuid*>(m_data.m_contact_actor->userData); }
 
-    std::string get_contact_actor_name() { return m_data.m_contact_actor->getName(); }
+    std::string get_contact_actor_name() {
+        if(m_data.m_contact_actor->getName()) {
+            std::string name = m_data.m_contact_actor->getName();
+//            log::debug("{}", name);
+            if(name == "RED" || name == "BLUE"){
+                return name;
+            }
+        }
+            return "";
+    }
 
     int get_contact_type() { return static_cast<int>(m_data.type); }
 
@@ -1648,6 +1657,8 @@ class JSCollisionDetection : public JSObjectBase {
 
             (*opaque)->set_uuid(m_id);
             (*opaque)->m_data = cd;
+
+            log::debug("creating ContactData with name {}", cd.m_contact_actor->getName());
 
             JS_DefinePropertyValueUint32(scripting->get_script_context()->ctx, jsarray, i, jsContactData,
                                          JS_PROP_C_W_E);
@@ -2044,6 +2055,8 @@ JSValue JSGameObject::get_component(const std::string& name) {
         opaque = static_cast<std::shared_ptr<JSObjectBase>*>(
             JS_GetOpaque(obj, qjs::js_traits<std::shared_ptr<JSClientPlayer>>::QJSClassId));
     } else if (name == "instanceMesh" || name == "mesh") {
+        opaque = static_cast<std::shared_ptr<JSObjectBase>*>(
+            JS_GetOpaque(obj, qjs::js_traits<std::shared_ptr<JSMesh>>::QJSClassId));
     } else if (name == "instanceScript" || name == "script") {
     } else if (name == "material") {
     } else if (name == "particles") {

@@ -26,6 +26,7 @@ class Untie {
     GameObject create_post_processing();
 
     GameObject create_level_bottom();
+    GameObject create_bullet_aggregate();
     GameObject create_paint_tank_base(const std::string& name = "",
                                       vec3 position = vec3(1),
                                       vec3 rotation = vec3(0),
