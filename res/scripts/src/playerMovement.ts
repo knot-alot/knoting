@@ -120,8 +120,9 @@ export default class Player_movement extends GameObject {
     }
 
     playerRotation() {
-        if (this.clientPlayer.getClientNumber() == network.getClientNumber())
+        if (!network.isServer() && this.clientPlayer.getClientNumber() == network.getClientNumber())
             return;
+
         let lookTarget: Vec3 = this.clientPlayer.getLookAxis();
 
         if (this.clientPlayer.getClientNumber() == 0)
