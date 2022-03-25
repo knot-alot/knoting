@@ -44,7 +44,6 @@ class Raycast : public Component<Raycast> {
     void set_unit_dir(const vec3& unitDir);
     void set_max_distance(const float& maxDistance);
     void set_raycast(const vec3& origin, const vec3& unitDir, const float& maxDistance);
-    void set_raycast_filter(PxQueryFlags flags);
 
     PxVec3 get_position_from_transform();
 
@@ -59,7 +58,6 @@ class Raycast : public Component<Raycast> {
     PxVec3 m_origin;
     PxVec3 m_unitDir;
     PxReal m_maxDistance;
-    PxQueryFlags m_flags;
     bool m_isHit;
     PxRaycastBuffer m_hit;
 };

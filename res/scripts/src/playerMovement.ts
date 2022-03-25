@@ -9,99 +9,141 @@ import {
     Vec2,
     Vec3,
     Quat,
-    storage,
+    EditorCamera,
+    storage, Hierarchy, UUID, scene, network,
 } from "knoting";
 
 import * as math from "./math.js";
 
-export default class Player_movement extends GameObject {
+export default class PlayerMovement extends GameObject {
     clientPlayer?: ClientPlayer;
     transform?: Transform;
     rigidBody?: RigidBody;
+    hierarchy?: Hierarchy;
+
+    cameraChild?: GameObject;
+
+    getCameraChild() {
+        let children: Array<UUID> = this.hierarchy.getChildren();
+
+        for (let c in children) {
+            let childObj = scene.getGameObjectFromID(children[c]);
+            if (!childObj.hasComponent("editorCamera"))
+                continue;
+
+            this.cameraChild = childObj;
+            break;
+        }
+    }
 
     awake() {
         this.clientPlayer = this.getComponent("clientPlayer");
         this.transform = this.getComponent("transform");
         this.rigidBody = this.getComponent("rigidBody");
+        this.hierarchy = this.getComponent("hierarchy");
     }
 
     update(deltaTime: number) {
-        this.playerInputs();
-        storage.store("asd", this);
+        if (!this.cameraChild) {
+            this.getCameraChild();
+        }
+
+        if (this.clientPlayer.getClientNumber() == network.getClientNumber()) {
+            this.playerInputs();
+
+            if (input.keyOnTrigger(KeyCode.U)) {
+                let pauseCamera: GameObject = storage.retrieve("pauseCamera");
+                let pauseCameraCamera: EditorCamera = pauseCamera.getComponent("editorCamera");
+                pauseCameraCamera.setAsActiveCamera();
+            }
+            if (input.keyOnTrigger(KeyCode.I)) {
+                let editorCamera = this.cameraChild.getComponent("editorCamera");
+                editorCamera.setAsActiveCamera();
+            }
+        }
     }
 
     lateUpdate() {
-        this.playerMovement();
-        let asd: Player_movement = storage.retrieve("asd");
-        let id = asd.getID();
-        console.log(`id: ${id}`);
+        if (network.isServer()) {
+            this.playerRotation();
+            this.playerMovement();
+        }
     }
 
     playerInputs() {
         let player_inputs: Vec2 = [0, 0];
 
         if (input.keyPressed(KeyCode.A)) {
-            player_inputs = math.add(player_inputs, [-1, 0]);
+            player_inputs = math.add([0, 1], player_inputs);
         }
         if (input.keyPressed(KeyCode.D)) {
-            player_inputs = math.add(player_inputs, [1, 0]);
+            player_inputs = math.add([0, -1], player_inputs);
         }
         if (input.keyPressed(KeyCode.W)) {
-            player_inputs = math.add(player_inputs, [0, -1]);
+            player_inputs = math.add(player_inputs, [1, 0]);
         }
         if (input.keyPressed(KeyCode.S)) {
-            player_inputs = math.add(player_inputs, [0, 1]);
+            player_inputs = math.add(player_inputs, [-1, 0]);
         }
         this.clientPlayer?.setMoveAxis(player_inputs);
 
         this.clientPlayer?.setJumpPressed(input.keyOnTrigger(KeyCode.Space));
         this.clientPlayer?.setIsShooting(
-            input.mouseButtonHeldDown(MouseButtonCode.Left)
+            input.mouseButtonPressed(MouseButtonCode.Left)
         );
 
-        let player_look: Vec2 = [0, 0];
-        let relMousePosition: Vec2 = input.getRelativePosition();
-        if (relMousePosition[0] > 0) {
-            player_look[0] = 1;
-        } else if (relMousePosition[0] < 0) {
-            player_look[0] = -1;
-        }
-        if (relMousePosition[1] > 0) {
-            player_look[1] = 1;
-        } else if (relMousePosition[1] < 0) {
-            player_look[1] = -1;
-        }
-        this.clientPlayer?.setLookAxis(player_look);
+        // let playerLook: Vec2 = [0, 0];
+        // let relMousePosition: Vec2 = input.getRelativePosition();
+        // if (relMousePosition[0] > 0) {
+        //     playerLook[0] = 1;
+        // } else if (relMousePosition[0] < 0) {
+        //     playerLook[0] = -1;
+        // }
+        // if (relMousePosition[1] > 0) {
+        //     playerLook[1] = 1;
+        // } else if (relMousePosition[1] < 0) {
+        //     playerLook[1] = -1;
+        // }
+        let childCamera: EditorCamera = this.cameraChild.getComponent("editorCamera");
+        let rotation = childCamera.getRotationEuler();
+
+        rotation[0] = 0.0;
+        rotation[1] = -rotation[1] + 90.0;
+        rotation[2] = 0.0;
+        this.transform.setRotationEuler(rotation);
+        this.rigidBody.setRotationEuler(rotation);
+
+        if (this.clientPlayer.getClientNumber() == 0)
+            console.log(`rotation: ${rotation}`);
+
+        this.clientPlayer?.setLookAxis(rotation);
+    }
+
+    playerRotation() {
+        if (!network.isServer() && this.clientPlayer.getClientNumber() == network.getClientNumber())
+            return;
+
+        let lookTarget: Vec3 = this.clientPlayer.getLookAxis();
+
+        if (this.clientPlayer.getClientNumber() == 0)
+            console.log(`lookTarget: ${lookTarget}`);
+
+        this.transform.setRotationEuler([0, lookTarget[1], 0]);
+        this.rigidBody.setRotationEuler([0, lookTarget[1], 0]);
     }
 
     playerMovement() {
-        //Camera Rotation X
-        let player_look: Vec2 = this.clientPlayer!.getLookAxis();
-        let look_x: number = player_look[0];
-
-        let rotDeg: Vec3 = [0, 0, 0];
-        let lookMulti: number = 3;
-        if (look_x > 0) {
-            rotDeg[1] = -1 * lookMulti;
-        } else if (look_x < 0) {
-            rotDeg[1] = 1 * lookMulti;
-        }
-
-        let playerRot: Quat = this.transform!.getRotation();
-        let newRot: Vec3 = math.multiplyQuat(rotDeg, playerRot);
-        this.transform!.setRotation(newRot);
-        this.rigidBody!.setRotation(this.transform!.getRotation());
-
         let moveAxis: Vec2 = this.clientPlayer!.getMoveAxis();
+
         let playerForward: Vec3 = this.transform!.getForward();
         playerForward = math.multiply(
-            [moveAxis[1], moveAxis[1], moveAxis[1]],
+            [moveAxis[0], moveAxis[0], moveAxis[0]],
             playerForward
         );
 
         let playerRight: Vec3 = this.transform!.getRight();
         playerRight = math.multiply(
-            [moveAxis[0], moveAxis[0], moveAxis[0]],
+            [moveAxis[1], moveAxis[1], moveAxis[1]],
             playerRight
         );
 
@@ -116,6 +158,8 @@ export default class Player_movement extends GameObject {
 
         let force = math.multiply([baseMulti, baseMulti, baseMulti], playerDir);
 
-        if (math.notNaN(force)) this.rigidBody?.addForce(force);
+        if (math.notNaN(force)) {
+            this.rigidBody?.addForce(force);
+        }
     }
 }

@@ -10,6 +10,7 @@
 #include <knoting/camera_rotation.h>
 #include <knoting/forward_renderer.h>
 
+#include <knoting/widget_subsystem.h>
 #include <knoting/framebuffer_manager.h>
 #include <knoting/networked_client.h>
 #include <knoting/networked_server.h>
@@ -41,11 +42,36 @@ class Engine {
     std::weak_ptr<AudioSubsystem> get_audio_module() { return m_audioModule; }
     std::weak_ptr<CameraRotation> get_camera_rotation_module() { return m_cameraRotationModule; }
 
+    std::weak_ptr<WidgetSubsystem>get_Widget(){return m_WidgetSubsystem;}
+
     static std::optional<std::reference_wrapper<Engine>> get_active_engine();
     static void set_active_engine(std::optional<std::reference_wrapper<Engine>> engine);
 
     void add_subsystem(std::shared_ptr<Subsystem> subsystem);
-
+    double get_bgfx_Time_cost(){
+        return m_bgfxTimes;
+    }
+    double get_Phy_Time_cost(){
+        return m_PhyTimes;
+    }
+    double get_Gui_Time_cost(){
+        return m_GuiTimes;
+    }
+    void switch_paused(){
+        m_ispaused = !m_ispaused;
+    }
+    void set_Pause(bool ispause){
+        m_ispaused = ispause;
+    }
+    bool get_pause(){
+        return m_ispaused;
+    }
+    bool get_is_pause_menu(){
+        return m_pause_menu;
+    }
+    void switch_pause_menu(){
+        m_pause_menu= !m_pause_menu;
+    }
     inline static bool isClient = true;
 
    private:
@@ -53,11 +79,18 @@ class Engine {
     void reset_physics_module();
 
    private:
+    bool m_pause_menu = false;
+    bool m_ispaused = true;
     int m_windowWidth = 1024;
     int m_windowHeight = 768;
     std::string m_windowTitle = "hello knotting!";
 
+    double m_bgfxTimes;
+    double m_PhyTimes;
+    double m_GuiTimes;
    private:
+
+
     std::vector<std::shared_ptr<Subsystem>> m_engineModules;
 
     std::shared_ptr<Window> m_windowModule;
@@ -71,6 +104,8 @@ class Engine {
     std::shared_ptr<FramebufferManager> m_framebufferManager;
     std::shared_ptr<AudioSubsystem> m_audioModule;
     std::shared_ptr<CameraRotation> m_cameraRotationModule;
+
+    std::shared_ptr<WidgetSubsystem>m_WidgetSubsystem;
 
     inline static std::optional<std::reference_wrapper<Engine>> s_activeEngine = std::nullopt;
     std::shared_ptr<AssetManager> m_assetManager;

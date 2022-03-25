@@ -1,21 +1,24 @@
-#include <bgfx/bgfx.h>
 #include <knoting/forward_renderer.h>
-#include <knoting/instance_mesh.h>
-#include <knoting/mesh.h>
-#include <knoting/skybox.h>
-#include <knoting/spot_light.h>
-#include <knoting/texture.h>
 
 #include <knoting/components.h>
 #include <knoting/engine.h>
+#include <knoting/instance_mesh.h>
 #include <knoting/post_processing.h>
 #include <knoting/scene.h>
-#include <stb_image.h>
-#include <fstream>
-#include <string_view>
-#include <vector>
+#include <knoting/skybox.h>
+#include <knoting/spot_light.h>
 
+#include <bgfx/bgfx.h>
 #include <bx/math.h>
+#include <knoting/Font.h>
+#include <stb_image.h>
+#include <array>
+#include <fstream>
+#include <memory>
+#include <string_view>
+#include <type_traits>
+#include <utility>
+#include <vector>
 
 namespace knot {
 
@@ -28,6 +31,12 @@ ForwardRenderer::ForwardRenderer(Engine& engine) : m_engine(engine), m_lightData
 void ForwardRenderer::on_awake() {}
 
 void ForwardRenderer::on_update(double m_delta_time) {
+    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
+    const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
+    if (glm::isnan(aspectRatio)) {
+        return;
+    }
+
     m_timePassed += (float)m_delta_time;
     m_dt = m_delta_time;
     m_engine.get_framebuffer_manager_module().lock()->clear_all_framebuffers();
@@ -51,6 +60,68 @@ void ForwardRenderer::on_update(double m_delta_time) {
     post_process_pass(0);
 }
 
+std::pair<mat4, mat4> ForwardRenderer::get_camera_view() {
+    using namespace components;
+
+    mat4 view(1.f);
+    mat4 proj(1.f);
+    auto cameraOpt = EditorCamera::get_active_camera();
+    if (!cameraOpt)
+        return std::make_pair(view, proj);
+    auto& editorCamera = cameraOpt.value().get();
+
+    auto goOpt = GameObject::get_game_object_from_component(cameraOpt.value().get());
+    if (!goOpt)
+        return std::make_pair(view, proj);
+
+    GameObject go = goOpt.value();
+    Transform& transform = go.get_component<Transform>();
+
+    vec3 pos = transform.get_position();
+    vec3 lookTarget = editorCamera.get_look_target();
+    vec3 up = editorCamera.get_up();
+
+    auto engineOpt = Engine::get_active_engine();
+    if (!engineOpt)
+        return std::make_pair(view, proj);
+    auto& engine = engineOpt.value().get();
+    auto windowWeak = engine.get_window_module();
+    if (windowWeak.expired())
+        return std::make_pair(view, proj);
+    auto window = windowWeak.lock();
+    auto windowSize = window->get_window_size();
+
+    float fovY = editorCamera.get_fov();
+    float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
+    float zNear = editorCamera.get_z_near();
+    float zFar = editorCamera.get_z_far();
+
+    Hierarchy& hierarchy = go.get_component<Hierarchy>();
+    auto parentIDOpt = hierarchy.get_parent();
+
+    if (parentIDOpt) {
+        auto sceneOpt = Scene::get_active_scene();
+        if (sceneOpt) {
+            auto& scene = sceneOpt.value().get();
+            auto parentOpt = scene.get_game_object_from_id(parentIDOpt.value());
+            if (parentOpt) {
+                auto transform = parentOpt.value().get_component<Transform>();
+                transform.set_rotation_euler({0, 0, 0});
+
+                auto modelMatrix = transform.get_model_matrix();
+                auto parentDiff = modelMatrix * vec4{0.f, 0.f, 0.f, 1.f};
+
+                pos += vec3(parentDiff);
+                lookTarget += vec3(parentDiff);
+            }
+        }
+    }
+
+    view = glm::lookAt(pos, lookTarget, up);
+    proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
+    return std::make_pair(view, proj);
+}
+
 void ForwardRenderer::shadow_pass(uint16_t idx) {}
 void ForwardRenderer::depth_pass(uint16_t idx) {
     using namespace components;
@@ -61,39 +132,46 @@ void ForwardRenderer::depth_pass(uint16_t idx) {
 
     Scene& scene = sceneOpt.value();
     entt::registry& registry = scene.get_registry();
-    mat4 invProj;
-    glm::mat4 view;
-    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
-    //=CAMERA===========================
-    auto cameras = registry.view<Transform, EditorCamera, Name>();
 
-    for (auto& cam : cameras) {
-        auto goOpt = scene.get_game_object_from_handle(cam);
-        if (!goOpt) {
-            continue;
-        }
+    auto [view, proj] = get_camera_view();
+    bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
 
-        GameObject go = goOpt.value();
-        Transform& transform = go.get_component<Transform>();
-        EditorCamera& editorCamera = go.get_component<EditorCamera>();
-        Name& name = go.get_component<Name>();
-
-        const glm::vec3 pos = transform.get_position();
-        const glm::vec3 lookTarget = editorCamera.get_look_target();
-        const glm::vec3 up = editorCamera.get_up();
-
-        const float fovY = editorCamera.get_fov();
-        const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
-        const float zNear = editorCamera.get_z_near();
-        const float zFar = editorCamera.get_z_far();
-
-        // Set view and projection matrix for view 0.
-        {
-            view = glm::lookAt(pos, lookTarget, up);
-            glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
-            bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
-        }
-    }
+    //    mat4 invProj;
+    //    glm::mat4 view;
+    //    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
+    //
+    //    //=CAMERA===========================
+    //    auto cameras = registry.view<Transform, EditorCamera, Name>();
+    //
+    //    for (auto& cam : cameras) {
+    //        auto goOpt = scene.get_game_object_from_handle(cam);
+    //        if (!goOpt) {
+    //            continue;
+    //        }
+    //
+    //        GameObject go = goOpt.value();
+    //       Transform& transform = go.get_component<Transform>();
+    //        EditorCamera& editorCamera = go.get_component<EditorCamera>();
+    //        Name& name = go.get_component<Name>();
+    //
+    //        const glm::vec3 pos = transform.get_position();
+    //        const glm::vec3 lookTarget = editorCamera.get_look_target();
+    //        const glm::vec3 up = editorCamera.get_up();
+    //
+    //        const float fovY = editorCamera.get_fov();
+    //        const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
+    //
+    //        const float zNear = editorCamera.get_z_near();
+    //        const float zFar = editorCamera.get_z_far();
+    //
+    //        // Set view and projection matrix for view 0.
+    //        {
+    //            view = glm::lookAt(pos, lookTarget, up);
+    //
+    //            glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
+    //            bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
+    //        }
+    //    }
 
     auto entities = registry.view<Transform, InstanceMesh, Material, Name>();
     for (auto& e : entities) {
@@ -135,76 +213,44 @@ void ForwardRenderer::color_pass(uint16_t idx) {
     }
     Scene& scene = sceneOpt.value();
     entt::registry& registry = scene.get_registry();
-    mat4 invProj;
-    glm::mat4 view;
-    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
-    //=CAMERA===========================
-    auto cameras = registry.view<Transform, EditorCamera, Name>();
 
-    for (auto& cam : cameras) {
-        auto goOpt = scene.get_game_object_from_handle(cam);
-        if (!goOpt) {
+    auto [view, proj] = get_camera_view();
+    bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
+
+    auto cameraOpt = EditorCamera::get_active_camera();
+    if (!cameraOpt)
+        return;
+    auto& camera = cameraOpt->get();
+
+    auto goOpt = GameObject::get_game_object_from_component(camera);
+    if (!goOpt)
+        return;
+    auto go = goOpt.value();
+    auto& transform = go.get_component<Transform>();
+
+    //=PARTICLES SYSTEM=======================
+    auto particles = registry.view<Particles>();
+
+    for (auto& e : particles) {
+        auto gooOpt = scene.get_game_object_from_handle(e);
+        if (!gooOpt) {
             continue;
         }
 
-        GameObject go = goOpt.value();
-        Transform& transform = go.get_component<Transform>();
-        EditorCamera& editorCamera = go.get_component<EditorCamera>();
-        Name& name = go.get_component<Name>();
+        GameObject goo = gooOpt.value();
+        Particles& ps = goo.get_component<Particles>();
 
-        glm::vec3 cameraPos = transform.get_position();
-        const glm::vec3 lookTarget = editorCamera.get_look_target();
-        const glm::vec3 up = editorCamera.get_up();
+        const bx::Vec3 eye =
+            bx::Vec3(transform.get_position().x, transform.get_position().y, transform.get_position().z);
+        float viewMtx[16];
 
-        const float fovY = editorCamera.get_fov();
-        const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
-        const float zNear = editorCamera.get_z_near();
-        const float zFar = editorCamera.get_z_far();
+        vec3 lookTarget = camera.get_look_target();
+        vec3 up = camera.get_up();
+        bx::mtxLookAt(viewMtx, bx::load<bx::Vec3>(&eye.x), bx::load<bx::Vec3>(&lookTarget.x),
+                      bx::load<bx::Vec3>(&up.x));
 
-        // Set view and projection matrix for view 0.
-        {
-            view = glm::lookAt(cameraPos, lookTarget, up);
-            glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
-            invProj = inverse(proj);
-            bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
-        }
-
-        //=PARTICLES SYSTEM=======================
-        auto particles = registry.view<Particles>();
-
-        for (auto& e : particles) {
-            auto gooOpt = scene.get_game_object_from_handle(e);
-            if (!gooOpt) {
-                continue;
-            }
-
-            GameObject goo = gooOpt.value();
-            Transform& psTransform = go.get_component<Transform>();
-            Particles& ps = goo.get_component<Particles>();
-            auto& hi = goo.get_component<Hierarchy>();
-            vec3 particlePos = psTransform.get_position();
-            vec3 pPos = vec3(0);
-
-            if (hi.has_parent()) {
-                auto parentOpt = scene.get_game_object_from_id(hi.get_parent().value());
-
-                if (parentOpt) {
-                    auto& pTransform = parentOpt.value().get_component<Transform>();
-                    particlePos = pTransform.get_model_matrix() * vec4(particlePos, 1.0f);
-                    ps.set_position(particlePos);
-                }
-            }
-
-            const bx::Vec3 eye =
-                bx::Vec3(transform.get_position().x, transform.get_position().y, transform.get_position().z);
-            float viewMtx[16];
-
-            bx::mtxLookAt(viewMtx, bx::load<bx::Vec3>(&eye.x), bx::load<bx::Vec3>(&lookTarget.x),
-                          bx::load<bx::Vec3>(&up.x));
-
-            ps.update(m_dt);
-            ps.render(idx, viewMtx, eye);
-        }
+        ps.update(m_dt);
+        ps.render(idx, viewMtx, eye);
     }
 
     //=SPOT LIGHTS======================
@@ -254,6 +300,8 @@ void ForwardRenderer::color_pass(uint16_t idx) {
 
     //=PBR PIPELINE===========================
 
+    vec3 pos = vec3(0, 0, 0) + vec3(rand() % (int)25 * 2 - (int)25, 1.0f, rand() % (int)25 * 2 - (int)25);
+
     auto entities = registry.view<Transform, InstanceMesh, Material, Name>();
     for (auto& e : entities) {
         auto goOpt = scene.get_game_object_from_handle(e);
@@ -279,12 +327,34 @@ void ForwardRenderer::color_pass(uint16_t idx) {
         // Bind spotlight uniforms
         m_lightData->set_spotlight_uniforms();
         // Bind Uniforms & textures.
+
+        mesh.addContactPoint(pos, Team::BLUE);
+
+        auto paintQueue = mesh.get_paint_data();
+        int i = 0;
+        for (auto it = paintQueue.begin(); it != paintQueue.end(); ++it) {
+            paintData[i] = *it;
+            i++;
+        }
+
+        material.set_mask_data(paintData.data());
         material.set_uniforms();
 
         bgfx::setState(0 | BGFX_STATE_MSAA | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_WRITE_Z |
                        BGFX_STATE_DEPTH_TEST_LESS);
 
         bgfx::submit(idx, material.get_program());
+    }
+    auto f = registry.view<Font>();
+    for (auto& e : f) {
+        auto goOpt = scene.get_game_object_from_handle(e);
+        if (!goOpt) {
+            continue;
+        }
+
+        GameObject go = goOpt.value();
+        Font& font = go.get_component<Font>();
+        font.get_textBuffer()->submitTextBuffer(font.get_text(), 1);
     }
 }
 
@@ -297,37 +367,9 @@ void ForwardRenderer::gui_pass(uint16_t idx) {
 
     Scene& scene = sceneOpt.value();
     entt::registry& registry = scene.get_registry();
-    mat4 invProj;
-    glm::mat4 view;
-    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
-    //=CAMERA===========================
-    auto cameras = registry.view<Transform, EditorCamera, Name>();
-    for (auto& cam : cameras) {
-        auto goOpt = scene.get_game_object_from_handle(cam);
-        if (!goOpt) {
-            continue;
-        }
-        GameObject go = goOpt.value();
-        Transform& transform = go.get_component<Transform>();
-        EditorCamera& editorCamera = go.get_component<EditorCamera>();
-        Name& name = go.get_component<Name>();
 
-        const glm::vec3 pos = transform.get_position();
-        const glm::vec3 lookTarget = editorCamera.get_look_target();
-        const glm::vec3 up = editorCamera.get_up();
-
-        const float fovY = editorCamera.get_fov();
-        const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
-        const float zNear = editorCamera.get_z_near();
-        const float zFar = editorCamera.get_z_far();
-
-        // Set view and projection matrix for view 0.
-        {
-            view = glm::lookAt(pos, lookTarget, up);
-            glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
-            bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
-        }
-    }
+    auto [view, proj] = get_camera_view();
+    bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
 
     auto entities = registry.view<Transform, InstanceMesh, Material, Name, PostProcessing>();
     for (auto& e : entities) {
@@ -372,41 +414,10 @@ void ForwardRenderer::post_process_pass(uint16_t idx) {
     Scene& scene = sceneOpt.value();
     entt::registry& registry = scene.get_registry();
 
+    auto [view, proj] = get_camera_view();
+    bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
+
     //=SET BGFX GLOBAL UNIFORMS===============
-
-    mat4 invProj;
-    glm::mat4 view;
-    auto windowSize = m_engine.get_window_module().lock()->get_window_size();
-    //=CAMERA===========================
-    auto cameras = registry.view<Transform, EditorCamera, Name>();
-
-    for (auto& cam : cameras) {
-        auto goOpt = scene.get_game_object_from_handle(cam);
-        if (!goOpt) {
-            continue;
-        }
-
-        GameObject go = goOpt.value();
-        Transform& transform = go.get_component<Transform>();
-        EditorCamera& editorCamera = go.get_component<EditorCamera>();
-        Name& name = go.get_component<Name>();
-
-        const glm::vec3 pos = transform.get_position();
-        const glm::vec3 lookTarget = editorCamera.get_look_target();
-        const glm::vec3 up = editorCamera.get_up();
-
-        const float fovY = editorCamera.get_fov();
-        const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
-        const float zNear = editorCamera.get_z_near();
-        const float zFar = editorCamera.get_z_far();
-
-        // Set view and projection matrix for view 0.
-        {
-            view = glm::lookAt(pos, lookTarget, up);
-            glm::mat4 proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
-            bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
-        }
-    }
 
     //=POST PROCESSING========================
     {

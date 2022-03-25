@@ -93,6 +93,10 @@ void serialize(Archive& archive, knot::vec4d& v) {
 
 namespace glm {
 
+static vec3 to_color(vec3 color) {
+    return color / 255.0f;
+}
+
 template <class Archive>
 void serialize(Archive& archive, glm::vec2& v) {
     archive(CEREAL_NVP(v.x), CEREAL_NVP(v.y));

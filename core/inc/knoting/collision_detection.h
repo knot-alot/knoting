@@ -5,13 +5,12 @@
 
 namespace knot {
 namespace components {
-class Collision_Detection : public Component<Collision_Detection>{
+class Collision_Detection : public Component<Collision_Detection> {
    public:
     Collision_Detection();
     ~Collision_Detection();
 
     void on_awake() override;
-    void on_destroy();
 
     void add_search_actor(std::shared_ptr<PxDynamic_ptr_wrapper> actor);
     void add_search_actor(std::shared_ptr<PxStatic_ptr_wrapper> actor);

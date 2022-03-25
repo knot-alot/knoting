@@ -37,6 +37,11 @@ class Mesh : public Asset, public Component<Mesh> {
 
     void create_cube();
 
+    static constexpr int NUM_RANDOM_POINTS = 100;
+    void generate_random_points();
+    static vec3 generate_point_on_triangle(vec3 pos1, vec3 pos2, vec3 pos3);
+    std::array<vec3, Mesh::NUM_RANDOM_POINTS>& get_random_points() { return m_randomPointsOnMesh; }
+
     bgfx::VertexBufferHandle get_vertex_buffer() { return m_vbh; }
     bgfx::IndexBufferHandle get_index_buffer() { return m_ibh; }
 
@@ -54,6 +59,7 @@ class Mesh : public Asset, public Component<Mesh> {
     std::vector<VertexLayout> m_vertexLayout;
     std::shared_ptr<IndexBuffer> m_indexBuffer;
     std::vector<std::string> m_splitResult;
+    std::array<vec3, Mesh::NUM_RANDOM_POINTS> m_randomPointsOnMesh;
 
    private:
     bgfx::VertexBufferHandle m_vbh;
@@ -64,8 +70,11 @@ class IndexBuffer {
    public:
     void set_index_buffer(const std::vector<unsigned int>& in_indices) { m_indices = in_indices; }
     size_t get_memory_size() { return sizeof(m_indices[0]) * m_indices.size(); }
+    uint get_indices_size() { return m_indices.size(); }
+
     unsigned int& get_index_start() { return m_indices[0]; }
 
+    unsigned int get_mesh_index_at_index(uint index) { return m_indices[index]; }
     template <class Archive>
     void serialize(Archive& archive) {
         archive(cereal::make_nvp("indices", m_indices));

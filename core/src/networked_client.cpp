@@ -17,6 +17,7 @@ void NetworkedClient::on_awake() {
 void NetworkedClient::on_update(double m_delta_time) {
     if (m_client->IsDisconnected()) {
         log::debug("Client is not Connected to Server!");
+        cliNumSet = false;
         while (!attempt_connection()) {
         }
         return;
@@ -30,7 +31,7 @@ void NetworkedClient::on_update(double m_delta_time) {
             log::debug("Client {} connected to server", m_clientId);
         }
         handle_recieved_packets();
-        // test_player_input();
+        //        test_player_input();
         send_message();
     }
     reset_tick(m_delta_time);
@@ -71,6 +72,47 @@ bool NetworkedClient::attempt_connection() {
     return m_client->IsConnecting();
 }
 
+void NetworkedClient::set_current_player() {
+    auto sceneOpt = Scene::get_active_scene();
+    if (!sceneOpt)
+        return;
+    auto& scene = sceneOpt.value().get();
+
+    auto& registry = scene.get_registry();
+    auto view = registry.view<components::ClientPlayer>();
+
+    for (auto entity : view) {
+        auto goOpt = scene.get_game_object_from_handle(entity);
+        if (!goOpt)
+            continue;
+        auto go = goOpt.value();
+
+        auto& clientPlayer = go.get_component<components::ClientPlayer>();
+        if (clientPlayer.m_clientNum != m_clientNum)
+            continue;
+
+        auto& hierarchy = go.get_component<components::Hierarchy>();
+
+        std::optional<GameObject> editorCameraOpt;
+        for (auto& c : hierarchy.get_children()) {
+            auto childOpt = scene.get_game_object_from_id(c);
+            if (!childOpt)
+                continue;
+            auto child = childOpt;
+            if (!child->has_component<components::EditorCamera>())
+                continue;
+
+            editorCameraOpt = child;
+        }
+
+        if (!editorCameraOpt)
+            return;
+
+        auto& editorCamera = editorCameraOpt.value().get_component<components::EditorCamera>();
+        components::EditorCamera::set_active_camera(editorCamera);
+    }
+}
+
 bool NetworkedClient::handle_recieved_packets() {
     if (!m_client->IsConnected()) {
         return false;
@@ -98,7 +140,10 @@ bool NetworkedClient::handle_recieved_packets() {
         serverSeq = serMess->m_sequence;
         serverAck = serMess->m_recentAck;
         if (!cliNumSet) {
+            log::debug("CONNECTED TO SERVER");
             m_clientNum = serMess->m_clientNum;
+            cliNumSet = true;
+            set_current_player();
         }
         for (auto playerHandle : players) {
             auto playerOpt = scene.get_game_object_from_handle(playerHandle);
@@ -213,7 +258,7 @@ void NetworkedClient::test_player_input() {
         }
 
         playerComp.m_moveAxis = (vec2i(m_playerInputs.x, m_playerInputs.z));
-        playerComp.m_lookAxis = (vec2i(0, -1));
+        //        playerComp.m_lookAxis = (vec2i(0, -1));
     }
 }
 void NetworkedClient::reset_tick(double m_delta_time) {

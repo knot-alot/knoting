@@ -16,6 +16,9 @@ struct filter_group {
     };
 };
 namespace components {
+struct FilterGroup {
+    enum Enum { eAll = (1 << 0) };
+};
 
 class Shape : public Component<Shape> {
    public:

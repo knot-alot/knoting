@@ -1,7 +1,6 @@
 #include <knoting/engine.h>
 #include <knoting/physics.h>
 #include <knoting/scene.h>
-
 PxDefaultAllocator g_Allocator;
 PxDefaultErrorCallback g_ErrorCallback;
 
@@ -112,24 +111,19 @@ void Physics::update_info_to_transform() {
 
         transform.set_rotation(rigidbody.get_rotation());
     }
-    // could for dubug
-    /*
-    auto collision = registry.view<components::Collision_Detection>();
-    for (auto& cd : collision) {
-        auto goOpt = scene.get_game_object_from_handle(cd);
+
+    auto raycast = registry.view<components::Raycast>();
+    for(auto& ray:raycast){
+        auto goOpt = scene.get_game_object_from_handle(ray);
+
         if (!goOpt) {
             continue;
         }
+
         GameObject go = goOpt.value();
-        components::Collision_Detection& collision_detection =
-            registry.get<components::Collision_Detection>(go.get_handle());
-        if (!collision_detection.get_actor_contact_data().empty()) {
-            if (!collision_detection.get_actor_contact_data().at(0).m_contact_data.empty()) {
-                log::error(collision_detection.get_actor_contact_data().at(0).m_contact_data.at(0).m_contact_point.x);
-            }
-        }
+        components::Raycast& r = registry.get<components::Raycast>(go.get_handle());
+        r.raycast();
     }
-    */
 }
 
 void Physics::set_gravity(PxVec3 gravity) {

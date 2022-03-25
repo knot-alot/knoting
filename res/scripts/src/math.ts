@@ -1,25 +1,25 @@
 // Refer to https://github.com/lmariscal/visualkey/blob/main/csharp/Math.cs to copy new math functions
 
-import { Vec2, Vec3, Quat } from "knoting";
+import {Vec2, Vec3, Quat} from "knoting";
 
 type Vec = Vec2 | Vec3 | Quat;
 
-export function length(x: Vec): number {
+export function length(v: Vec3): number {
     let length = 0;
-    for (let i = 0; i < x.length; i++) {
-        length += x[i] * x[i];
+    for (let i = 0; i < v.length; i++) {
+        length += v[i] * v[i];
     }
     return Math.sqrt(length);
 }
 
-export function normalize(x: Vec): Vec {
-    let len = length(x);
+export function normalize(v: Vec): Vec {
+    let len = length(v);
 
-    for (let i = 0; i < x.length; i++) {
-        x[i] /= len;
+    for (let i = 0; i < v.length; i++) {
+        v[i] /= len;
     }
 
-    return x;
+    return v;
 }
 
 export function add(x: Vec, y: Vec): Vec {
@@ -108,4 +108,14 @@ export function multiplyQuat(x: Vec3, q: Quat): Vec3 {
     let uuv: Vec3 = cross(q, uv);
 
     return multiplyConst(add(x, add(multiplyConst(uv, q[0]), uuv)), 2.0);
+}
+
+export function minus(x: Vec3, y: Vec3) {
+    if (x.length != y.length) throw "Length of both vectors don't match";
+
+    for (let i = 0; i < x.length; i++) {
+        x[i] -= y[i];
+    }
+
+    return x;
 }

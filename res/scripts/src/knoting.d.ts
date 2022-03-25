@@ -199,6 +199,8 @@ declare module "knoting" {
         setMoveSpeed(speed: number): void;
 
         getMoveSpeed(): number;
+
+        setAsActiveCamera(): void;
     }
 
     class Raycast {
@@ -466,7 +468,7 @@ declare module "knoting" {
     }
 
     class ClientPlayer {
-        getLookAxis(): Vec2;
+        getLookAxis(): Vec3;
 
         getMoveAxis(): Vec2;
 
@@ -474,13 +476,21 @@ declare module "knoting" {
 
         getIsShooting(): boolean;
 
-        setLookAxis(lookAxis: Vec2): void;
+        setLookAxis(lookAxis: Vec3): void;
 
         setMoveAxis(moveAxis: Vec2): void;
 
         setJumpPressed(jumpingPressed: boolean): boolean;
 
         setIsShooting(isShooting: boolean): boolean;
+
+        getClientNumber(): number;
+    }
+
+    class Network {
+        getClientNumber(): number;
+        
+        isServer(): boolean;
     }
 
     class Particle {
@@ -544,4 +554,5 @@ declare module "knoting" {
     const input: InputManager;
     const scene: Scene;
     const storage: Storage;
+    const network: Network;
 }

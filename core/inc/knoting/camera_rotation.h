@@ -21,6 +21,13 @@ class CameraRotation : public Subsystem {
     void on_late_update() override;
     void on_destroy() override;
 
+    vec3 get_rotation_euler() { return {m_pitch, m_yaw, m_roll}; }
+    void set_rotation_euler(vec3 rotation) {
+        m_pitch = rotation.x;
+        m_yaw = rotation.y;
+        m_roll = rotation.z;
+    }
+
    private:
     void camera_key_input();
 
@@ -49,7 +56,7 @@ class CameraRotation : public Subsystem {
     vec3 m_forward = vec3(0, 0, 1);
 
     bool m_ePressed = true;
-    bool m_lockState = true;
+    bool m_lockState = false;
 };
 
 }  // namespace knot

@@ -1425,10 +1425,19 @@ class Context {
         JSValue err_line = JS_GetPropertyStr(ctx, exception, "lineNumber");
         JSValue err_msg = JS_GetPropertyStr(ctx, exception, "message");
         JSValue err_stack = JS_GetPropertyStr(ctx, exception, "stack");
+        const char* err_file_str = JS_ToCString(ctx, err_file);
+        const char* err_line_str = JS_ToCString(ctx, err_line);
+        const char* err_msg_str = JS_ToCString(ctx, err_msg);
+        const char* err_stack_str = JS_ToCString(ctx, err_stack);
 
         log::error("Error: {}", JS_ToCString(ctx, err_msg));
         log::error("   File: {}:{}", JS_ToCString(ctx, err_file), JS_ToCString(ctx, err_line));
         log::error("   Stack: {}", JS_ToCString(ctx, err_stack));
+
+        JS_FreeCString(ctx, err_file_str);
+        JS_FreeCString(ctx, err_line_str);
+        JS_FreeCString(ctx, err_msg_str);
+        JS_FreeCString(ctx, err_stack_str);
 
         JS_Throw(ctx, exception);
     }
@@ -1680,6 +1689,7 @@ struct js_traits<knot::GameObject> {
             if (!idOpt)
                 JS_ThrowTypeError(ctx, "js_traits<knot::uuid>::unwrap expects valid UUID");
         }
+        JS_FreeCString(ctx, str);
 
         auto sceneOpt = knot::Scene::get_active_scene();
         if (!sceneOpt)
@@ -1710,7 +1720,10 @@ struct js_traits<knot::uuid> {
             auto idOpt = knot::uuid::from_string(str);
             if (!idOpt)
                 JS_ThrowTypeError(ctx, "js_traits<knot::uuid>::unwrap expects valid UUID");
+
+            uuid = idOpt.value();
         }
+        JS_FreeCString(ctx, str);
         return uuid;
     }
 
@@ -1738,7 +1751,7 @@ struct js_traits<knot::vec2> {
         return ret;
     }
 
-    static JSValue wrap(JSContext* ctx, const knot::vec2& value) {
+    static JSValue wrap(JSContext* ctx, knot::vec2 value) {
         auto jsarray = Value{ctx, JS_NewArray(ctx)};
         jsarray[0] = value.x;
         jsarray[1] = value.y;
@@ -1764,11 +1777,11 @@ struct js_traits<knot::vec3> {
 
         ret.x = static_cast<float>(jsarray[0]);
         ret.y = static_cast<float>(jsarray[1]);
-        ret.z = static_cast<float>(jsarray[1]);
+        ret.z = static_cast<float>(jsarray[2]);
         return ret;
     }
 
-    static JSValue wrap(JSContext* ctx, const knot::vec3& value) {
+    static JSValue wrap(JSContext* ctx, knot::vec3 value) {
         auto jsarray = Value{ctx, JS_NewArray(ctx)};
         jsarray[0] = value.x;
         jsarray[1] = value.y;
@@ -1800,7 +1813,7 @@ struct js_traits<knot::vec4> {
         return ret;
     }
 
-    static JSValue wrap(JSContext* ctx, const knot::vec4& value) {
+    static JSValue wrap(JSContext* ctx, knot::vec4 value) {
         auto jsarray = Value{ctx, JS_NewArray(ctx)};
         jsarray[0] = value.x;
         jsarray[1] = value.y;
@@ -1833,7 +1846,7 @@ struct js_traits<knot::quat> {
         return ret;
     }
 
-    static JSValue wrap(JSContext* ctx, const knot::quat& value) {
+    static JSValue wrap(JSContext* ctx, knot::quat value) {
         auto jsarray = Value{ctx, JS_NewArray(ctx)};
         jsarray[0] = value.w;
         jsarray[1] = value.x;

@@ -50,18 +50,6 @@ InstanceScript::~InstanceScript() {
         return;
     }
 
-    auto engineOpt = Engine::get_active_engine();
-    if (!engineOpt)
-        return;
-
-    auto& engine = engineOpt.value().get();
-    auto scriptingWeak = engine.get_scripting_module();
-    if (scriptingWeak.expired())
-        return;
-
-    auto scripting = scriptingWeak.lock();
-    auto context = scripting->get_script_context();
-
     for (size_t i = 0; i < static_cast<size_t>(DefaultScriptFunction::LAST); ++i) {
         auto& func = m_defaultFunctions[i];
         if (!func.second)

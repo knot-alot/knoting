@@ -27,9 +27,7 @@ class Scene {
     void unload();
     void save_scene_to_stream(std::ostream& serialized);
     void load_scene_from_stream(std::istream& serializedSc);
-    const std::map<uuid, GameObject>& get_game_objects() const {
-        return m_uuidGameObjectMap;
-    }
+    const std::map<uuid, GameObject>& get_game_objects() const { return m_uuidGameObjectMap; }
 
     static std::optional<std::reference_wrapper<Scene>> get_active_scene();
     static void set_active_scene(std::optional<std::reference_wrapper<Scene>> scene);

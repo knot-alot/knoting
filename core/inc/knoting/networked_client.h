@@ -26,6 +26,9 @@ class NetworkedClient : public Subsystem {
     void on_update(double m_delta_time) override;
     void on_destroy() override;
 
+    void set_current_player();
+    int get_client_number() { return m_clientNum; }
+
     double get_time();
 
     bool attempt_connection();
@@ -35,6 +38,8 @@ class NetworkedClient : public Subsystem {
     void reset_tick(double m_delta_time);
 
     void test_player_input();
+
+    uint16_t get_client_num() {return m_clientNum;}
 
    protected:
     Engine& m_engine;

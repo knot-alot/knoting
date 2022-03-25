@@ -56,6 +56,12 @@ else ()
     target_compile_definitions(knoting PUBLIC NDEBUG=1)
 endif ()
 
+if (WIN32)
+    target_compile_definitions(knoting PUBLIC BX_PLATFORM_WINDOWS=1)
+elseif (UNIX)
+    target_compile_definitions(knoting PUBLIC BX_PLATFORM_LINUX=1)
+endif()
+
 if (CMAKE_SIZEOF_VOID_P EQUAL 8)
     target_compile_definitions(knoting PUBLIC KNOTING_64=1)
 elseif (CMAKE_SIZEOF_VOID_P EQUAL 4)
@@ -73,6 +79,8 @@ endforeach ()
 target_include_directories(knoting PUBLIC ${CMAKE_SOURCE_DIR}/core/inc)
 target_include_directories(knoting PUBLIC ${PHYSX_INCLUDE_DIRS})
 target_include_directories(knoting PUBLIC ${CMAKE_SOURCE_DIR}/third/yojimbo)
+
+target_include_directories(knoting PUBLIC ${CMAKE_SOURCE_DIR}/third/imguizmo)
 
 if (GLFW_FOUND)
     target_include_directories(knoting PUBLIC ${GLFW_INCLUDE_DIR})

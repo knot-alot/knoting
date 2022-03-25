@@ -120,7 +120,7 @@ void Scene::remove_game_object(GameObject game_object) {
     m_entityGameObjectMap.erase(game_object.m_handle);
 
     m_registry.destroy(game_object.m_handle);
-
+  
     log::debug("Removed game object with id {}", to_string(id));
 }
 

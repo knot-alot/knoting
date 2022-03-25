@@ -17,11 +17,10 @@ void Raycast::on_awake() {
     }
     m_isHit = false;
     m_origin = get_position_from_transform();
-    m_flags = PxQueryFlag::eANY_HIT | PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC;
 }
 
 void Raycast::raycast() {
-    m_scene->get()->raycast(m_origin, m_unitDir, m_maxDistance, m_hit,PxHitFlag::eDEFAULT,PxQueryFilterData(m_flags));
+    m_isHit = m_scene->get()->raycast(m_origin, m_unitDir, m_maxDistance, m_hit);
 }
 
 vec3 Raycast::get_origin() {
