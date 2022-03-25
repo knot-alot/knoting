@@ -23,6 +23,9 @@ export default class PlayerMovement extends GameObject {
 
     cameraChild?: GameObject;
 
+    maxHealth: number = 100;
+    currentHealth: number = 0;
+
     getCameraChild() {
         let children: Array<UUID> = this.hierarchy.getChildren();
 
@@ -34,6 +37,8 @@ export default class PlayerMovement extends GameObject {
             this.cameraChild = childObj;
             break;
         }
+
+        storage.store("isAlive" + this.clientPlayer.getClientNumber(), false);
     }
 
     awake() {
@@ -41,32 +46,44 @@ export default class PlayerMovement extends GameObject {
         this.transform = this.getComponent("transform");
         this.rigidBody = this.getComponent("rigidBody");
         this.hierarchy = this.getComponent("hierarchy");
+        this.currentHealth = this.maxHealth;
     }
 
     update(deltaTime: number) {
         if (!this.cameraChild) {
             this.getCameraChild();
         }
+    }
+
+    lateUpdate() {
+        if (!network.isServer()) {
+            return;
+        }
+
+        this.playerRotation();
+        this.playerMovement();
+
+        if (input.keyOnTrigger(KeyCode.U) && this.clientPlayer.getClientNumber() == 0) {
+            let clientNumber = this.clientPlayer.getClientNumber();
+            storage.store("isAlive" + clientNumber, !storage.retrieve("isAlive" + clientNumber));
+        }
+
 
         if (this.clientPlayer.getClientNumber() == network.getClientNumber()) {
             this.playerInputs();
 
-            if (input.keyOnTrigger(KeyCode.U)) {
+            if (!storage.retrieve("isAlive" + this.clientPlayer.getClientNumber())) {
                 let pauseCamera: GameObject = storage.retrieve("pauseCamera");
                 let pauseCameraCamera: EditorCamera = pauseCamera.getComponent("editorCamera");
                 pauseCameraCamera.setAsActiveCamera();
-            }
-            if (input.keyOnTrigger(KeyCode.I)) {
+
+                this.transform.setPosition([0, 100, 0]);
+                this.rigidBody.setPosition([0, 100, 0]);
+
+            } else {
                 let editorCamera = this.cameraChild.getComponent("editorCamera");
                 editorCamera.setAsActiveCamera();
             }
-        }
-    }
-
-    lateUpdate() {
-        if (network.isServer()) {
-            this.playerRotation();
-            this.playerMovement();
         }
     }
 
@@ -92,18 +109,6 @@ export default class PlayerMovement extends GameObject {
             input.mouseButtonPressed(MouseButtonCode.Left)
         );
 
-        // let playerLook: Vec2 = [0, 0];
-        // let relMousePosition: Vec2 = input.getRelativePosition();
-        // if (relMousePosition[0] > 0) {
-        //     playerLook[0] = 1;
-        // } else if (relMousePosition[0] < 0) {
-        //     playerLook[0] = -1;
-        // }
-        // if (relMousePosition[1] > 0) {
-        //     playerLook[1] = 1;
-        // } else if (relMousePosition[1] < 0) {
-        //     playerLook[1] = -1;
-        // }
         let childCamera: EditorCamera = this.cameraChild.getComponent("editorCamera");
         let rotation = childCamera.getRotationEuler();
 
@@ -134,7 +139,6 @@ export default class PlayerMovement extends GameObject {
 
     playerMovement() {
         let moveAxis: Vec2 = this.clientPlayer!.getMoveAxis();
-
         let playerForward: Vec3 = this.transform!.getForward();
         playerForward = math.multiply(
             [moveAxis[0], moveAxis[0], moveAxis[0]],
@@ -152,9 +156,12 @@ export default class PlayerMovement extends GameObject {
         playerDir = math.normalize(playerDir);
 
         let baseMulti: number = 1000;
+        let boostMulti: number = 10
         let moveMulti: number = 2;
 
         baseMulti = baseMulti * moveMulti;
+        if (this.clientPlayer.getJumpPressed())
+            baseMulti *= boostMulti;
 
         let force = math.multiply([baseMulti, baseMulti, baseMulti], playerDir);
 
