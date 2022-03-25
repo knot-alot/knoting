@@ -115,7 +115,8 @@ bool NetworkedServer::handle_recieved_packets(double m_delta_time) {
                 playerComp.m_jumpPressed = (cliMess->jumpPressed);
                 playerComp.m_isShooting = (cliMess->isShooting);
 
-//                log::debug("player #{} is moving in axis {}", playerNum, to_string(playerComp.m_moveAxis));
+                //                log::debug("player #{} is moving in axis {}", playerNum,
+                //                to_string(playerComp.m_moveAxis));
 
                 //                // here downwards will be removed and handled by scripts
                 //
@@ -178,7 +179,17 @@ Message* NetworkedServer::generateMessage(uint16_t cliNum) {
         mess->playerPos[cliNum] = transform.get_position();
         mess->playerRots[cliNum] = transform.get_rotation();
         mess->playerHealth[cliNum] = 92;
-        mess->paintCollisions.fill(vec3(1, 5, -1));
+        mess->paintCollisions.fill(vec4(0));
+
+        int paintCollisionBufferSize = paintCollisionBuffer.size();
+        for (int i = 0; i < 20; i++) {
+            if (paintCollisionBufferSize < 1)
+                break;
+            mess->paintCollisions[i] = paintCollisionBuffer.front();
+            paintCollisionBuffer.pop_front();
+            paintCollisionBufferSize--;
+        }
+        paintCollisionBuffer.clear();
     }
     return mess;
 }
@@ -187,6 +198,21 @@ void NetworkedServer::reset_tick(double m_delta_time) {
     if (m_tickTime >= TICK) {
         m_tickTime -= TICK;
     }
+}
+void NetworkedServer::update_collisions_buffer() {
+    using namespace components;
+
+    auto sceneOpt = Scene::get_active_scene();
+    if (!sceneOpt) {
+        return;
+    }
+    Scene& scene = sceneOpt.value();
+    entt::registry& registry = scene.get_registry();
+    // Get a collision Detection component
+    // Get all the collisions
+    // Find all the ones where a bullet is involved
+    // if the other one is not a player then add to collisions buffer
+    // set the final bit to 1 for blue, 2 for red
 }
 
 }  // namespace knot

@@ -156,7 +156,16 @@ bool NetworkedClient::handle_recieved_packets() {
             transform.set_position(serMess->playerPos[playerNum]);
             transform.set_rotation(serMess->playerRots[playerNum]);
             rigidBody.set_transform(serMess->playerPos[playerNum], serMess->playerRots[playerNum]);
-            // TODO: set player health, pass the paint collisions to somewhere they can be handled?
+
+
+            for (int i = 0; i < 20; ++i) {
+                if (serMess->paintCollisions[i].w == 0) {
+                    continue;
+                }
+                // TODO: scene create bullet for correct Team
+            }
+            // TODO: set player health correctly?
+
         }
 
         m_client->ReleaseMessage(mess);

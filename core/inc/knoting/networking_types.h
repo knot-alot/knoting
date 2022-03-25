@@ -45,6 +45,15 @@ bool serialize_vec3(Stream& stream, vec3& val) {
 }
 
 template <typename Stream>
+bool serialize_vec4(Stream& stream, vec4& val) {
+    serialize_float(stream, val.x);
+    serialize_float(stream, val.y);
+    serialize_float(stream, val.z);
+    serialize_float(stream, val.w);
+    return true;
+}
+
+template <typename Stream>
 bool serialize_quat(Stream& stream, quat& val) {
     serialize_float(stream, val.x);
     serialize_float(stream, val.y);
@@ -86,8 +95,6 @@ class ClientMessage : public Message {
     YOJIMBO_VIRTUAL_SERIALIZE_FUNCTIONS();
 };
 
-
-
 constexpr uint16_t MAX_COLLISIONS = 20;
 
 class ServerMessage : public Message {
@@ -96,7 +103,7 @@ class ServerMessage : public Message {
         playerPos.fill(vec3(0));
         playerRots.fill(quat(1, 0, 0, 0));
         playerHealth.fill(100);
-        paintCollisions.fill(vec3(0, 0, 0));
+        paintCollisions.fill(vec4(0));
     }
 
     template <typename Stream>
@@ -113,8 +120,8 @@ class ServerMessage : public Message {
         for (int16_t& hp : playerHealth) {
             serialize_int(stream, hp, -100, 200);
         }
-        for (vec3& pc : paintCollisions) {
-            serialize_vec3(stream, pc);
+        for (vec4& pc : paintCollisions) {
+            serialize_vec4(stream, pc);
         }
         return true;
     }
@@ -123,7 +130,7 @@ class ServerMessage : public Message {
     std::array<vec3, MAX_CLIENTS> playerPos;
     std::array<quat, MAX_CLIENTS> playerRots;
     std::array<int16_t, MAX_CLIENTS> playerHealth;
-    std::array<vec3, MAX_COLLISIONS> paintCollisions;
+    std::array<vec4, MAX_COLLISIONS> paintCollisions;
 
     uint16_t m_sequence;
     uint16_t m_recentAck;
