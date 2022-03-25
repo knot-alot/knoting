@@ -36,7 +36,7 @@ class InstanceMesh : public Component<InstanceMesh> {
 
     std::deque<vec4> get_paint_data() { return m_paintData; }
 
-    void addContactPoint(vec3 position, Team team);
+    void add_contact_point(vec3 position, Team team);
 
    private:
     std::shared_ptr<components::Mesh> m_mesh;

@@ -1,4 +1,5 @@
 declare module "knoting" {
+    type float = number;
     type Vec2 = Array<number>;
     type Vec3 = Array<number>;
     type Quat = Array<number>;
@@ -35,6 +36,8 @@ declare module "knoting" {
     }
 
     class RigidBody {
+        getActor(): UUID;
+
         getPosition(): Vec3;
 
         getRotation(): Quat;
@@ -143,6 +146,8 @@ declare module "knoting" {
     class Scene {
         createGameObject(name: string): GameObject;
 
+        createBullet(is_teamA: boolean, spawnPos: Vec3);
+
         removeGameObject(object: UUID): void;
 
         getGameObjectFromID(id: UUID): GameObject;
@@ -219,9 +224,13 @@ declare module "knoting" {
 
         setMaxDistance(maxDistance: number): void;
 
+        setFlags()
+
         getHitActor(): GameObject;
 
         setRaycast(origin: Vec3, unitDir: Vec3, maxDis: number): void;
+
+        raycast();
     }
 
     enum MouseButtonCode {
@@ -484,6 +493,58 @@ declare module "knoting" {
         getClientNumber(): number;
         
         isServer(): boolean;
+    }
+
+    class Particle {
+        setParticlesPerSecond(rate: float): void
+
+        setPosition(position: Vec3): void
+
+        setLookAt(lookat: Vec3): void
+
+        getParticlesPerSecond(): float
+
+        getPosition(): Vec3
+
+        getLookAt(): Vec3
+    }
+
+    enum ContactType {
+        TouchFound,
+        TouchPersists,
+    }
+
+    class ContactData {
+        getContactPoint(): Vec3
+
+        getContactActor(): UUID
+
+        getContactActorName(): string
+
+        getContactType(): ContactType
+    }
+
+    enum Team {
+        Red,
+        Blue,
+    }
+
+    class Mesh {
+        addContactPosition(position: Vec3, team: Team): void
+    }
+
+    class CollisionDetection {
+        getContactDataByActor(id: UUID): Array<ContactData>
+
+        getContactDataByName(name: string): Array<ContactData>
+
+        addSearchActor(id: UUID): void
+
+        addSearchName(name: string): void
+
+        removeSearchActor(id: UUID): void
+
+        removeSearchName(name: string): void
     }
 
     const input: InputManager;

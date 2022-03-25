@@ -213,8 +213,45 @@ void ForwardRenderer::color_pass(uint16_t idx) {
     }
     Scene& scene = sceneOpt.value();
     entt::registry& registry = scene.get_registry();
+
     auto [view, proj] = get_camera_view();
     bgfx::setViewTransform(idx, &view[0][0], &proj[0][0]);
+
+    auto cameraOpt = EditorCamera::get_active_camera();
+    if (!cameraOpt)
+        return;
+    auto& camera = cameraOpt->get();
+
+    auto goOpt = GameObject::get_game_object_from_component(camera);
+    if (!goOpt)
+        return;
+    auto go = goOpt.value();
+    auto& transform = go.get_component<Transform>();
+
+    //=PARTICLES SYSTEM=======================
+    auto particles = registry.view<Particles>();
+
+    for (auto& e : particles) {
+        auto gooOpt = scene.get_game_object_from_handle(e);
+        if (!gooOpt) {
+            continue;
+        }
+
+        GameObject goo = gooOpt.value();
+        Particles& ps = goo.get_component<Particles>();
+
+        const bx::Vec3 eye =
+            bx::Vec3(transform.get_position().x, transform.get_position().y, transform.get_position().z);
+        float viewMtx[16];
+
+        vec3 lookTarget = camera.get_look_target();
+        vec3 up = camera.get_up();
+        bx::mtxLookAt(viewMtx, bx::load<bx::Vec3>(&eye.x), bx::load<bx::Vec3>(&lookTarget.x),
+                      bx::load<bx::Vec3>(&up.x));
+
+        ps.update(m_dt);
+        ps.render(idx, viewMtx, eye);
+    }
 
     //=SPOT LIGHTS======================
     // TODO consider writing a system to skip this system if light data has not changed between frames
@@ -263,8 +300,6 @@ void ForwardRenderer::color_pass(uint16_t idx) {
 
     //=PBR PIPELINE===========================
 
-    vec3 pos = vec3(0, 0, 0) + vec3(rand() % (int)25 * 2 - (int)25, 1.0f, rand() % (int)25 * 2 - (int)25);
-
     auto entities = registry.view<Transform, InstanceMesh, Material, Name>();
     for (auto& e : entities) {
         auto goOpt = scene.get_game_object_from_handle(e);
@@ -290,8 +325,6 @@ void ForwardRenderer::color_pass(uint16_t idx) {
         // Bind spotlight uniforms
         m_lightData->set_spotlight_uniforms();
         // Bind Uniforms & textures.
-
-        mesh.addContactPoint(pos, Team::BLUE);
 
         auto paintQueue = mesh.get_paint_data();
         int i = 0;

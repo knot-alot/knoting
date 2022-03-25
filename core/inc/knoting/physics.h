@@ -16,6 +16,14 @@ class Engine;
 
 namespace knot {
 
+class PhysicsAbstract {
+   public:
+    PhysicsAbstract() : dynamic(nullptr), statik(nullptr) {}
+
+    std::shared_ptr<PxDynamic_ptr_wrapper> dynamic;
+    std::shared_ptr<PxStatic_ptr_wrapper> statik;
+};
+
 class Physics : public Subsystem {
    public:
     Physics(Engine& engine);
@@ -36,6 +44,8 @@ class Physics : public Subsystem {
     Event_Callback* get_event_callback() { return m_event_callback; }
 
     void set_gravity(PxVec3 gravity);
+
+    inline static std::unordered_map<uuid, PhysicsAbstract> uuidToAbstract;
 
    private:
     Engine& m_engine;

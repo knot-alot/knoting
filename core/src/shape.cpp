@@ -4,7 +4,6 @@
 
 namespace knot {
 namespace components {
-
 Shape::Shape() : m_material(nullptr), m_shape(nullptr) {}
 Shape::~Shape() {}
 
@@ -25,20 +24,21 @@ void Shape::on_awake() {
     }
 }
 
+void Shape::on_destroy() {}
+
 void Shape::set_geometry(const PxGeometry& geometry) {
     if (!m_shape) {
         m_shape = std::make_shared<PxShape_ptr_wrapper>(m_physics->get()->createShape(geometry, *m_material->get()));
         PxFilterData data;
-        data.word0 = FilterGroup::eAll;
-        data.word1 = FilterGroup::eAll;
-        m_shape->get()->setSimulationFilterData(data);
+        set_filter_data(filter_group::eAll, filter_group::eAll | filter_group::eParticle_red |
+                                                filter_group::eParticle_blue | filter_group::ePlayer_red |
+                                                filter_group::ePlayer_blue);
 
     } else {
         m_shape->get()->setGeometry(geometry);
-        PxFilterData data;
-        data.word0 = FilterGroup::eAll;
-        data.word1 = FilterGroup::eAll;
-        m_shape->get()->setSimulationFilterData(data);
+        set_filter_data(filter_group::eAll, filter_group::eAll | filter_group::eParticle_red |
+                                                filter_group::eParticle_blue | filter_group::ePlayer_red |
+                                                filter_group::ePlayer_blue);
     }
 }
 
@@ -54,6 +54,13 @@ void Shape::set_flag(PxShapeFlag::Enum flag) {
 
 void Shape::remove_flag(PxShapeFlag::Enum flag) {
     m_shape->get()->setFlag(flag, false);
+}
+
+void Shape::set_filter_data(PxU32 group, PxU32 mask) {
+    PxFilterData data;
+    data.word0 = group;
+    data.word1 = mask;
+    m_shape->get()->setSimulationFilterData(data);
 }
 
 PxBoxGeometry Shape::create_cube_geometry(const vec3& halfsize) {
