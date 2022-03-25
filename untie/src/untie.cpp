@@ -46,11 +46,10 @@ Untie::Untie() {
 
     auto fontObj = m_scene->create_game_object("font");
     fontObj.add_component<components::Font>();
+
     m_demoWidget = std::make_shared<DemoWidget>("demo");
     m_demoWidget->setWinow(m_engine->get_window_module().lock()->get_window_width(),
                            m_engine->get_window_module().lock()->get_window_height());
-
-
 
     m_engine->get_Widget().lock()->add_widget(m_demoWidget);
 
@@ -64,7 +63,6 @@ Untie::Untie() {
                               m_engine->get_window_module().lock()->get_window_height());
     m_engine->get_Widget().lock()->add_widget(m_winLoseWidget);
 
-
     m_Pause_menu = std::make_shared<PauseMenu>("Pausemenu");
     m_Pause_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),
                            m_engine->get_window_module().lock()->get_window_height());
@@ -75,8 +73,6 @@ Untie::Untie() {
     m_engine->get_Widget().lock()->add_widget(m_menu);
     m_debug = std::make_shared<Debug_gui>("Debug");
     m_engine->get_Widget().lock()->add_widget(m_debug);
-
-
 }
 
 void Untie::run() {
@@ -615,6 +611,13 @@ void Untie::create_level() {
         auto& cam = editorCamera.add_component<components::EditorCamera>();
         editorCamera.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 50.0f, 0.0f));
         editorCamera.add_component<components::AudioListener>();
+    }
+    {
+        auto raycastObj = m_scene->create_game_object("ray");
+        auto& ray = raycastObj.add_component<components::Raycast>();
+        ray.set_origin(vec3(0, 10, 0));
+        ray.set_unit_dir(vec3(0, -1, 0));
+        ray.set_max_distance(100);
     }
 
     create_skybox();
