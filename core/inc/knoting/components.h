@@ -6,9 +6,7 @@
 #include <knoting/camera.h>
 
 #include <knoting/collision_detection.h>
-
 #include <knoting/client_player.h>
-
 #include <knoting/Font.h>
 #include <knoting/game_object.h>
 #include <knoting/instance_mesh.h>

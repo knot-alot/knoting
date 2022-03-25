@@ -21,11 +21,13 @@ PxFilterFlags SampleFilterShader(PxFilterObjectAttributes attributes0,
 
     // trigger the contact callback for pairs (A,B) where
     // the filtermask of A contains the ID of B and vice versa.
-    if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+    if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1)) {
         pairFlags |= PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_LOST |
                      PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eNOTIFY_CONTACT_POINTS;
+        return PxFilterFlag::eDEFAULT;
+    }
 
-    return PxFilterFlag::eDEFAULT;
+    return PxFilterFlag::eKILL;
 }
 
 namespace knot {
@@ -109,40 +111,19 @@ void Physics::update_info_to_transform() {
 
         transform.set_rotation(rigidbody.get_rotation());
     }
-    auto raycast = registry.view<components::Raycast>();
 
-    //    for(auto& ray:raycast){
-    //        auto goOpt = scene.get_game_object_from_handle(ray);
-    //
-    //        if (!goOpt) {
-    //            continue;
-    //        }
-    //
-    //        GameObject go = goOpt.value();
-    //        components::Raycast& r = registry.get<components::Raycast>(go.get_handle());
-    //        r.raycast();
-    //        uuid* uuidPtr = reinterpret_cast<uuid*>(r.get_hit_actor()->userData);
-    //    }
-    // could for dubug
-    /*
-    auto collision = registry.view<components::Collision_Detection>();
-    for (auto& cd : collision) {
-        auto goOpt = scene.get_game_object_from_handle(cd);
+    auto raycast = registry.view<components::Raycast>();
+    for(auto& ray:raycast){
+        auto goOpt = scene.get_game_object_from_handle(ray);
 
         if (!goOpt) {
             continue;
         }
 
         GameObject go = goOpt.value();
-        components::Collision_Detection& collision_detection =
-            registry.get<components::Collision_Detection>(go.get_handle());
-        if (!collision_detection.get_actor_contact_data().empty()) {
-            if (!collision_detection.get_actor_contact_data().at(0).m_contact_data.empty()) {
-                log::error(collision_detection.get_actor_contact_data().at(0).m_contact_data.at(0).m_contact_point.x);
-            }
-        }
+        components::Raycast& r = registry.get<components::Raycast>(go.get_handle());
+        r.raycast();
     }
-    */
 }
 
 void Physics::set_gravity(PxVec3 gravity) {

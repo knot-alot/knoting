@@ -10,7 +10,7 @@ import {
     Vec3,
     Quat,
     EditorCamera,
-    storage, Hierarchy, UUID, scene, network,
+    storage, Hierarchy, UUID, scene, network, Particle,
 } from "knoting";
 
 import * as math from "./math.js";
@@ -20,8 +20,15 @@ export default class PlayerMovement extends GameObject {
     transform?: Transform;
     rigidBody?: RigidBody;
     hierarchy?: Hierarchy;
+    particle?: Particle;
 
     cameraChild?: GameObject;
+    maxHealth: number = 1000;
+    currentHealth: number = 0;
+    bullets: Array<GameObject>;
+    is_teamA: boolean;
+    fireRate: number = 6;
+    timePassed: number = 0;
 
     getCameraChild() {
         let children: Array<UUID> = this.hierarchy.getChildren();
@@ -41,25 +48,101 @@ export default class PlayerMovement extends GameObject {
         this.transform = this.getComponent("transform");
         this.rigidBody = this.getComponent("rigidBody");
         this.hierarchy = this.getComponent("hierarchy");
+        this.particle = this.getComponent("particles");
+
+        if (!this.clientPlayer) {
+            console.error("Failed to acquire ClientPlayer inside Player");
+            return;
+        }
+
+        let playerNum = this.clientPlayer.getClientNumber();
+        this.is_teamA = (playerNum % 2 != 0);
+    }
+
+    shoot() {
+        let forward: Vec3 = math.multiplyConst(this.transform.getForward(), 3.0);
+        let spawnPos: Vec3 = math.add(this.transform.getPosition(), forward);
+        console.log(`spawnPos = ${spawnPos}`);
+        console.log(`position = ${this.transform.getPosition()}`);
+        let shooDir: Vec3 = this.getShootDir(spawnPos);
+        console.log(`shootDir = ${shooDir}`);
+
+        this.creatBullet(shooDir, spawnPos);
+    }
+
+    creatBullet(shootDir: Vec3, spawnPos: Vec3) {
+        let bullet = scene.createBullet(this.is_teamA, spawnPos);
+        let rigidBody = bullet.getComponent("rigidBody");
+        let forward = math.multiplyConst(this.transform.getForward(), 20.0);
+        let arc = math.multiplyConst(shootDir, 5.00);
+        rigidBody.addForce(math.add(arc, forward));
+    }
+
+    getShootDir(spawnPos: Vec3): Vec3 {
+        let edcam = this.cameraChild.getComponent("editorCamera");
+        let lookTarg: Vec3 = edcam.getLookTarget();
+        // let pitch = edcam.getRotationEuler()[0];
+        // let a: Vec3 = [0, 0, -1];
+        // let cos = Math.cos(pitch * 3.14 / 180);
+        // let sin = Math.sin(pitch * 3.14 / 180);
+        // let b: Vec3 = [0, 0, 0];
+        // b[0] = a[0];
+        // b[1] = ((a[1] * cos) - (a[2] * sin)) * -1.0;
+        // b[2] = (a[1] * sin) + (a[2] * cos);
+        // b = math.normalize(b);
+        // b = multiplyQuat(b,this.transform.getRotation());
+        // b= math.normalize(b);
+
+        let b: Vec3 = math.normalize(lookTarg);
+        // let b: Vec3 = math.minus(lookTarg,spawnPos);
+        // b = math.normalize(b);
+        // this.creatBullet(b,spawnPos);
+        return b;
+    }
+
+    removeHealth(health: number) {
+        this.currentHealth -= health;
+
+        if (this.currentHealth < 0) this.currentHealth = 0;
+    }
+
+    addHealth(health: number) {
+        this.currentHealth += health;
+
+        if (this.currentHealth > this.maxHealth) this.currentHealth = this.maxHealth;
+    }
+
+    death() {
+        //respawn stuff
+    }
+
+    currentPlayerUpdate() {
+        this.playerInputs();
+
+        if (input.keyOnTrigger(KeyCode.U)) {
+            let pauseCamera: GameObject = storage.retrieve("pauseCamera");
+            let pauseCameraCamera: EditorCamera = pauseCamera.getComponent("editorCamera");
+            pauseCameraCamera.setAsActiveCamera();
+        }
+        if (input.keyOnTrigger(KeyCode.I)) {
+            let editorCamera = this.cameraChild.getComponent("editorCamera");
+            editorCamera.setAsActiveCamera();
+        }
+
+        if (input.keyPressed(KeyCode.Enter)) { //AND looking at paint reservoir
+            this.addHealth(1);
+        }
     }
 
     update(deltaTime: number) {
+        this.timePassed += deltaTime;
+
         if (!this.cameraChild) {
             this.getCameraChild();
         }
 
         if (this.clientPlayer.getClientNumber() == network.getClientNumber()) {
-            this.playerInputs();
-
-            if (input.keyOnTrigger(KeyCode.U)) {
-                let pauseCamera: GameObject = storage.retrieve("pauseCamera");
-                let pauseCameraCamera: EditorCamera = pauseCamera.getComponent("editorCamera");
-                pauseCameraCamera.setAsActiveCamera();
-            }
-            if (input.keyOnTrigger(KeyCode.I)) {
-                let editorCamera = this.cameraChild.getComponent("editorCamera");
-                editorCamera.setAsActiveCamera();
-            }
+            this.currentPlayerUpdate();
         }
     }
 
@@ -67,6 +150,23 @@ export default class PlayerMovement extends GameObject {
         if (network.isServer()) {
             this.playerRotation();
             this.playerMovement();
+
+            if (this.clientPlayer.getIsShooting()) {
+                if (this.timePassed > (1.0 / this.fireRate)) {
+                    console.log("SHOOTING");
+                    this.removeHealth(1);
+                    this.shoot()
+                    this.timePassed = 0;
+                }
+                let forward: Vec3 = math.multiplyConst(this.transform.getForward(), 1.0);
+                let spawnPos: Vec3 = math.add(this.transform.getPosition(), forward);
+                let shooDir: Vec3 = this.getShootDir(spawnPos);
+                this.particle.setLookAt(math.multiplyConst(shooDir, 4));
+                this.particle.setPosition(spawnPos);
+                this.particle.setParticlesPerSecond(100);
+            } else {
+                this.particle.setParticlesPerSecond(0);
+            }
         }
     }
 
@@ -113,9 +213,6 @@ export default class PlayerMovement extends GameObject {
         this.transform.setRotationEuler(rotation);
         this.rigidBody.setRotationEuler(rotation);
 
-        if (this.clientPlayer.getClientNumber() == 0)
-            console.log(`rotation: ${rotation}`);
-
         this.clientPlayer?.setLookAxis(rotation);
     }
 
@@ -124,9 +221,6 @@ export default class PlayerMovement extends GameObject {
             return;
 
         let lookTarget: Vec3 = this.clientPlayer.getLookAxis();
-
-        if (this.clientPlayer.getClientNumber() == 0)
-            console.log(`lookTarget: ${lookTarget}`);
 
         this.transform.setRotationEuler([0, lookTarget[1], 0]);
         this.rigidBody.setRotationEuler([0, lookTarget[1], 0]);

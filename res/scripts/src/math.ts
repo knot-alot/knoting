@@ -32,6 +32,16 @@ export function add(x: Vec, y: Vec): Vec {
     return x;
 }
 
+export function subtract(x: Vec, y:Vec):Vec{
+    if (x.length != y.length) throw "Length of both vectors don't match";
+
+    for (let i = 0; i < x.length; i++) {
+        x[i] -= y[i];
+    }
+
+    return x;
+}
+
 export function multiply(x: Vec3, y: Vec3): Vec3 {
     if (x.length != y.length) throw "Length of both vectors don't match";
 
@@ -66,38 +76,38 @@ export function cross(x: Vec3, y: Vec3): Vec3 {
 }
 
 export function multiplyQuat(x: Vec3, q: Quat): Vec3 {
-    // let num = q[0] * 2.0;
-    // let num2 = q[1] * 2.0;
-    // let num3 = q[2] * 2.0;
-    // let num4 = q[0] * num;
-    // let num5 = q[1] * num2;
-    // let num6 = q[2] * num3;
-    // let num7 = q[0] * num2;
-    // let num8 = q[0] * num3;
-    // let num9 = q[1] * num3;
-    // let num10 = q[3] * num;
-    // let num11 = q[3] * num2;
-    // let num12 = q[3] * num3;
-    // let result: Vec3 = [0, 0, 0];
-    // result[0] =
-    //     (1.0 - (num5 + num6)) * x[0] +
-    //     (num7 - num12) * x[1] +
-    //     (num8 + num11) * x[2];
-    // result[1] =
-    //     (num7 + num12) * x[0] +
-    //     (1.0 - (num4 + num6)) * x[1] +
-    //     (num9 - num10) * x[2];
-    // result[2] =
-    //     (num8 - num11) * x[0] +
-    //     (num9 + num10) * x[1] +
-    //     (1.0 - (num4 + num5)) * x[2];
-    // return result;
+    let num = q[0] * 2.0;
+    let num2 = q[1] * 2.0;
+    let num3 = q[2] * 2.0;
+    let num4 = q[0] * num;
+    let num5 = q[1] * num2;
+    let num6 = q[2] * num3;
+    let num7 = q[0] * num2;
+    let num8 = q[0] * num3;
+    let num9 = q[1] * num3;
+    let num10 = q[3] * num;
+    let num11 = q[3] * num2;
+    let num12 = q[3] * num3;
+    let result: Vec3 = [0, 0, 0];
+    result[0] =
+        (1.0 - (num5 + num6)) * x[0] +
+        (num7 - num12) * x[1] +
+        (num8 + num11) * x[2];
+    result[1] =
+        (num7 + num12) * x[0] +
+        (1.0 - (num4 + num6)) * x[1] +
+        (num9 - num10) * x[2];
+    result[2] =
+        (num8 - num11) * x[0] +
+        (num9 + num10) * x[1] +
+        (1.0 - (num4 + num5)) * x[2];
+    return result;
 
-    let qVec: Vec3 = [q[1], q[2], q[3]];
-    let uv: Vec3 = cross(q, x);
-    let uuv: Vec3 = cross(q, uv);
-
-    return multiplyConst(add(x, add(multiplyConst(uv, q[0]), uuv)), 2.0);
+    // let qVec: Vec3 = [q[1], q[2], q[3]];
+    // let uv: Vec3 = cross(q, x);
+    // let uuv: Vec3 = cross(q, uv);
+    //
+    // return multiplyConst(add(x, add(multiplyConst(uv, q[0]), uuv)), 2.0);
 }
 
 export function minus(x: Vec3, y: Vec3) {

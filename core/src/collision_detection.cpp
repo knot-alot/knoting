@@ -3,7 +3,9 @@
 
 namespace knot {
 namespace components {
+
 Collision_Detection::Collision_Detection() : m_event_callback(nullptr) {}
+
 Collision_Detection::~Collision_Detection() {}
 
 void Collision_Detection::on_awake() {
@@ -13,7 +15,6 @@ void Collision_Detection::on_awake() {
         m_event_callback = engine.get_physics_module().lock()->get_event_callback();
     }
 }
-void Collision_Detection::on_destroy() {}
 
 void Collision_Detection::add_search_actor(std::shared_ptr<PxDynamic_ptr_wrapper> actor) {
     m_event_callback->add_search_actor(actor);
