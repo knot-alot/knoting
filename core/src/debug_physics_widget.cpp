@@ -116,7 +116,7 @@ void knot::DebugPhysics::on_widget_render() {
 
         const PxRenderBuffer& rendBuffer = physScene.lock().get()->get()->getRenderBuffer();
 
-        ImGui::SetNextWindowPos(ImVec2(0, 0));
+        ImGui::SetWindowPos("DebugPhysics",ImVec2(0, 0));
 
         ImGuizmo::BeginFrame();
         ImGui::SetWindowSize("DebugPhysics", ImVec2(m_x, m_y));
