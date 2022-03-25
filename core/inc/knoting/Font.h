@@ -13,6 +13,7 @@
 #include <wchar.h>
 
 #include <bgfx/bgfx.h>
+#include <knoting/component.h>
 #include <knoting/components.h>
 #include <knoting/component.h>
 #include <knoting/entry.h>
@@ -26,6 +27,7 @@ class Font : public Component<Font> {
     Font();
     ~Font();
     void on_awake();
+
     void set_PenPosition(float x, float y);
     void set_text(char* text);
 
