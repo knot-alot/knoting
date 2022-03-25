@@ -15,7 +15,7 @@ void knot::PauseMenu::on_widget_render() {
 
     if (engine.get_is_pause_menu()) {
         ImGui::SetNextWindowPos(ImVec2(0, 0));
-        ImGui::SetNextWindowSize(ImVec2(m_x, m_y), ImGuiCond_FirstUseEver);
+        ImGui::SetWindowSize("Pause", ImVec2(m_x, m_y));
 
         ImGui::Begin("Pause", NULL,
                      ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground |

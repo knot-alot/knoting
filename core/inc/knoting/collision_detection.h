@@ -1,10 +1,11 @@
 #pragma once
 
 #include <knoting/event_callback.h>
+#include <knoting/component.h>
 
 namespace knot {
 namespace components {
-class Collision_Detection {
+class Collision_Detection : public Component<Collision_Detection> {
    public:
     Collision_Detection();
     ~Collision_Detection();

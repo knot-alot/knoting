@@ -15,7 +15,7 @@ import {
 
 import * as math from "./math.js";
 
-export default class Player_movement extends GameObject {
+export default class PlayerMovement extends GameObject {
     clientPlayer?: ClientPlayer;
     transform?: Transform;
     rigidBody?: RigidBody;
@@ -50,6 +50,16 @@ export default class Player_movement extends GameObject {
 
         if (this.clientPlayer.getClientNumber() == network.getClientNumber()) {
             this.playerInputs();
+
+            if (input.keyOnTrigger(KeyCode.U)) {
+                let pauseCamera: GameObject = storage.retrieve("pauseCamera");
+                let pauseCameraCamera: EditorCamera = pauseCamera.getComponent("editorCamera");
+                pauseCameraCamera.setAsActiveCamera();
+            }
+            if (input.keyOnTrigger(KeyCode.I)) {
+                let editorCamera = this.cameraChild.getComponent("editorCamera");
+                editorCamera.setAsActiveCamera();
+            }
         }
     }
 
@@ -58,32 +68,22 @@ export default class Player_movement extends GameObject {
             this.playerRotation();
             this.playerMovement();
         }
-
-        if (input.keyOnTrigger(KeyCode.U)) {
-            let pauseCamera: GameObject = storage.retrieve("pauseCamera");
-            let pauseCameraCamera: EditorCamera = pauseCamera.getComponent("editorCamera");
-            pauseCameraCamera.setAsActiveCamera();
-        }
-        if (input.keyOnTrigger(KeyCode.I)) {
-            let editorCamera = this.cameraChild.getComponent("editorCamera");
-            editorCamera.setAsActiveCamera();
-        }
     }
 
     playerInputs() {
         let player_inputs: Vec2 = [0, 0];
 
         if (input.keyPressed(KeyCode.A)) {
-            player_inputs = math.add([1, 0], player_inputs);
+            player_inputs = math.add([0, 1], player_inputs);
         }
         if (input.keyPressed(KeyCode.D)) {
-            player_inputs = math.add([-1, 0], player_inputs);
+            player_inputs = math.add([0, -1], player_inputs);
         }
         if (input.keyPressed(KeyCode.W)) {
-            player_inputs = math.add(player_inputs, [0, -1]);
+            player_inputs = math.add(player_inputs, [1, 0]);
         }
         if (input.keyPressed(KeyCode.S)) {
-            player_inputs = math.add(player_inputs, [0, 1]);
+            player_inputs = math.add(player_inputs, [-1, 0]);
         }
         this.clientPlayer?.setMoveAxis(player_inputs);
 
@@ -108,7 +108,7 @@ export default class Player_movement extends GameObject {
         let rotation = childCamera.getRotationEuler();
 
         rotation[0] = 0.0;
-        rotation[1] = -rotation[1] - 180.0;
+        rotation[1] = -rotation[1] + 90.0;
         rotation[2] = 0.0;
         this.transform.setRotationEuler(rotation);
         this.rigidBody.setRotationEuler(rotation);

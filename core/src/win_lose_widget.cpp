@@ -4,7 +4,7 @@
 #include <knoting/win_lose_widget.h>
 
 knot::WinLoseWidget::WinLoseWidget(const std::string& name) : Widget(name) {
-    m_backTex = AssetManager::load_asset<components::Texture>("whiteTexture").lock();
+    m_backTex = AssetManager::load_asset<components::Texture>("you_win_lose.png").lock();
 
     auto engineOpt = Engine::get_active_engine();
     if (!engineOpt) {
@@ -50,7 +50,7 @@ void knot::WinLoseWidget::on_widget_render() {
         }
 
         ImGui::SetNextWindowPos(ImVec2(0, 0));
-        ImGui::SetNextWindowSize(ImVec2(m_x, m_y), ImGuiCond_FirstUseEver);
+        ImGui::SetWindowSize("winlosetext", ImVec2(m_x, m_y));
 
         ImGui::Begin("winlosetext", NULL,
                      ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground |
@@ -60,22 +60,22 @@ void knot::WinLoseWidget::on_widget_render() {
 
         ImVec2 uv_min = ImVec2(0.0f, 0.0f);                  // Top-left
         ImVec2 uv_max = ImVec2(1.0f, 1.0f);                  // Lower-right
-        ImVec4 tint_col = ImVec4(1.0f, 1.0f, 1.0f, 0.5f);    // No tint
+        ImVec4 tint_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);    // No tint
         ImVec4 border_col = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);  // 50% opaque white
         ImGui::SetCursorPos(ImVec2(0, 0));
         ImGui::Image(imTexBack, ImVec2(m_x, m_y), uv_min, uv_max, tint_col);
-        ImGui::SetCursorPos(ImVec2((m_x * 0.5) - 300, m_y * 0.5));
+        ImGui::SetCursorPos(ImVec2((m_x * 0.5) - 225, m_y * 0.5 - 125));
         ImGui::SetWindowFontScale(4.0);
         ImGui::TextColored(color, winText.c_str());
 //        ImGui::Text(winText.c_str());
         ImGui::End();
     }
 
-//    ImGui::Begin("DEBUG TEST WIN LOSE");
-//    ImGui::Checkbox("GAME OVER ", &isGameOver);
-//    ImGui::Checkbox("RED TEAM WIN ", &playerRedWins);
-//    ImGui::Checkbox("IS RED ", &isRedTeam);
-//    ImGui::End();
+    ImGui::Begin("DEBUG TEST WIN LOSE");
+    ImGui::Checkbox("GAME OVER ", &isGameOver);
+    ImGui::Checkbox("RED TEAM WIN ", &playerRedWins);
+    ImGui::Checkbox("IS RED ", &isRedTeam);
+    ImGui::End();
 
 }
 

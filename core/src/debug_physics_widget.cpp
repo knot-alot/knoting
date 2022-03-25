@@ -1,7 +1,6 @@
 #include <knoting/debug_physics_widget.h>
 #include <knoting/engine.h>
 #include <knoting/scene.h>
-#include <knoting/engine.h>
 
 knot::DebugPhysics::DebugPhysics(const std::string& name) : Widget(name) {}
 
@@ -26,19 +25,17 @@ ImVec2 worldToPos(const glm::vec4 worldPos,
 }
 
 void knot::DebugPhysics::on_widget_render() {
-
     auto engineOpt = Engine::get_active_engine();
-    if(!engineOpt){
+    if (!engineOpt) {
         return;
     }
     auto input = engineOpt->get().get_window_module().lock()->get_input_manager();
 
-    if(input->key_on_trigger(KeyCode::GraveAccent)){
+    if (input->key_on_trigger(KeyCode::GraveAccent)) {
         active = !active;
         log::debug("TRIGGER");
         log::debug("--");
     }
-
 
     if (active) {
         using namespace components;
@@ -91,9 +88,9 @@ void knot::DebugPhysics::on_widget_render() {
         const PxRenderBuffer& rendBuffer = physScene.lock().get()->get()->getRenderBuffer();
 
         ImGui::SetNextWindowPos(ImVec2(0, 0));
-        ImGui::SetNextWindowSize(ImVec2(m_x, m_y));
 
         ImGuizmo::BeginFrame();
+        ImGui::SetWindowSize("DebugPhysics", ImVec2(m_x, m_y));
         ImGui::Begin("DebugPhysics", NULL,
                      ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground |
                          ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoMouseInputs);
