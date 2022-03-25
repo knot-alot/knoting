@@ -562,18 +562,6 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     material.set_texture_slot_path(TextureType::Occlusion, "oldiron/OldIron01_1K_BaseColor.png");
     cubeObj.add_component<components::Material>(material);
 
-    auto& p = cubeObj.add_component<components::Particles>();
-    p.set_direction_type(EmitterDirection::Up);
-    p.set_min_end_offset(10.0f);
-    p.set_max_end_offset(10.1f);
-    p.set_gravity_scale(1.0f);
-    p.set_min_life_span(1.5f);
-    p.set_max_life_span(1.6f);
-    p.set_min_particles_start_scale(0.5f);
-    p.set_max_particles_start_scale(0.6f);
-    p.set_min_particles_end_scale(0.5f);
-    p.set_max_particles_end_scale(0.6f);
-
     auto& client = cubeObj.add_component<components::ClientPlayer>();
     client.m_clientNum = playerNum;
 
