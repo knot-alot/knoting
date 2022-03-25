@@ -5,6 +5,7 @@
 #include <bimg/decode.h>
 #include <knoting/asset.h>
 #include <knoting/asset_manager.h>
+#include <knoting/component.h>
 #include <knoting/types.h>
 #include <cereal/cereal.hpp>
 #include <filesystem>
@@ -13,18 +14,16 @@
 namespace knot {
 namespace components {
 
-class Texture : public Asset {
+class Texture : public Asset, public Component<Texture> {
    public:
     Texture();
     Texture(const std::string& path);
     ~Texture();
 
-    //=For ECS========
     void on_awake() override;
     void on_destroy() override;
-    //=For Asset=======
+
     void generate_default_asset() override;
-    //=================
     void set_texture_handle(const bgfx::TextureHandle& textureHandle) { m_textureHandle = textureHandle; };
     void set_pixel(vec2i position, vec4 color, float radius);
 

@@ -14,9 +14,6 @@ Transform::Transform(const vec3& position, const vec3& scale, const quat& rotati
       m_modelMatrix(1.0f),
       m_parentModelMatrix(1.0f) {}
 
-void Transform::on_awake() {}
-void Transform::on_destroy() {}
-
 vec3 Transform::get_position() const {
     return m_position;
 }

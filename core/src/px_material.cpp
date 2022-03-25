@@ -20,8 +20,6 @@ void PhysicsMaterial::on_awake() {
         m_physics->get()->createMaterial(default_staticFriction, default_dynamicFriction, default_restitution));
 }
 
-void PhysicsMaterial::on_destroy() {}
-
 void PhysicsMaterial::set_px_material(float staticFriction, float dynamicFriction, float restitution) {
     m_material->get()->setDynamicFriction(dynamicFriction);
     m_material->get()->setStaticFriction(staticFriction);

@@ -1,11 +1,14 @@
 #pragma once
+
+#include <knoting/component.h>
 #include <knoting/components.h>
 #include <knoting/px_variables_wrapper.h>
 #include <knoting/types.h>
 
 namespace knot {
 namespace components {
-class Raycast {
+
+class Raycast : public Component<Raycast> {
    public:
     Raycast();
     ~Raycast();

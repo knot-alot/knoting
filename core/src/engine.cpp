@@ -5,8 +5,9 @@ namespace knot {
 
 Engine::Engine() {
     InitializeYojimbo();
+    set_active_engine(*this);
     srand(time(0));
-
+  
     m_framebufferManager = std::make_shared<knot::FramebufferManager>(*this);
     m_WidgetSubsystem = std::make_shared<knot::WidgetSubsystem>(*this);
     m_windowModule = std::make_shared<knot::Window>(m_windowWidth, m_windowHeight, m_windowTitle, *this);
@@ -14,6 +15,7 @@ Engine::Engine() {
     m_physicsModule = std::make_shared<knot::Physics>(*this);
     m_cameraRotationModule = std::make_shared<knot::CameraRotation>(*this);
     m_assetManager = std::make_shared<knot::AssetManager>();
+    m_scriptingModule = std::make_shared<knot::Scripting>(*this);
     m_audioModule = std::make_shared<knot::AudioSubsystem>();
     if (!isClient) {
         m_serverModule = std::make_shared<knot::NetworkedServer>(*this);
@@ -32,12 +34,13 @@ Engine::Engine() {
     if (!isClient) {
         m_engineModules.emplace_back(m_serverModule);
     }
+
+    m_engineModules.emplace_back(m_scriptingModule);
     m_engineModules.emplace_back(m_clientModule);
 
     for (auto& module : m_engineModules) {
         module->on_awake();
     }
-    log::debug("init engine");
 }
 
 void Engine::update_modules() {

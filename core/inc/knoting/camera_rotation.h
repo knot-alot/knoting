@@ -21,6 +21,13 @@ class CameraRotation : public Subsystem {
     void on_late_update() override;
     void on_destroy() override;
 
+    vec3 get_rotation_euler() { return {m_pitch, m_yaw, m_roll}; }
+    void set_rotation_euler(vec3 rotation) {
+        m_pitch = rotation.x;
+        m_yaw = rotation.y;
+        m_roll = rotation.z;
+    }
+
    private:
     void camera_key_input();
 

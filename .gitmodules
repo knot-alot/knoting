@@ -44,3 +44,6 @@
 [submodule "third/yojimbo"]
 	path = third/yojimbo
 	url = https://github.com/networkprotocol/yojimbo.git
+[submodule "third/quickjs"]
+	path = third/quickjs
+	url = https://github.com/knot-alot/quickjspp.git

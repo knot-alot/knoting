@@ -146,6 +146,8 @@ bool InputManager::mouse_double_clicked(MouseButtonCode button) {
     return false;
 }
 
+void InputManager::set_double_click_limit(float ms) {}
+
 bool InputManager::wheel_moved() {
     return m_lastScroll != vec2{};
 }

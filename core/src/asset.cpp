@@ -28,6 +28,9 @@ void Asset::set_fallback_name(AssetType type) {
         case AssetType::Cubemap:
             m_fallbackName = fallbackCubeMapName;
             break;
+        case AssetType::Script:
+            m_fallbackName = fallbackScriptName;
+            break;
     }
 }
 }  // namespace knot

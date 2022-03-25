@@ -25,9 +25,11 @@ void Mesh::on_awake() {
 void Mesh::on_destroy() {
     if (isValid(m_vbh)) {
         bgfx::destroy(m_vbh);
+        m_vbh = BGFX_INVALID_HANDLE;
     }
     if (isValid(m_ibh)) {
         bgfx::destroy(m_ibh);
+        m_ibh = BGFX_INVALID_HANDLE;
     }
     log::info("removed mesh : {}", m_fullPath);
 }

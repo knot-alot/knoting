@@ -5,7 +5,8 @@
       "configuration": {
         "request": "launch",
         "program": "${workspaceRoot}/bld/dist/bin/untie",
-        "cwd": "${workspaceRoot}/bld/dist/bin/"
+        "cwd": "${workspaceRoot}/bld/dist/bin/",
+        "args": ["server"]
       },
       "breakpoints": {
         "exception": {

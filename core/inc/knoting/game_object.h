@@ -1,6 +1,7 @@
 #pragma once
 
 #include <knoting/assert.h>
+#include <knoting/component.h>
 #include <knoting/scene.h>
 #include <knoting/transform.h>
 #include <knoting/types.h>
@@ -27,38 +28,6 @@ class UUIDGenerator {
    protected:
     std::unique_ptr<uuids::uuid_random_generator> m_uuidGenerator;
     std::mt19937 m_randomGenerator;
-};
-
-template <typename T>
-class HasOnAwake {
-    typedef char one;
-    struct two {
-        char x[2];
-    };
-
-    template <typename C>
-    static one test(decltype(&C::on_awake));
-    template <typename C>
-    static two test(...);
-
-   public:
-    enum { value = sizeof(test<T>(0)) == sizeof(char) };
-};
-
-template <typename T>
-class HasOnDestroy {
-    typedef char one;
-    struct two {
-        char x[2];
-    };
-
-    template <typename C>
-    static one test(decltype(&C::on_destroy));
-    template <typename C>
-    static two test(...);
-
-   public:
-    enum { value = sizeof(test<T>(0)) == sizeof(char) };
 };
 
 class GameObject {
@@ -152,20 +121,20 @@ class GameObject {
     struct enable_if<false, T> {};
 
     template <typename T>
-    typename enable_if<HasOnAwake<T>::value>::type call_on_awake(T& t) {
+    typename enable_if<std::is_base_of<Component<T>, T>::value>::type call_on_awake(T& t) {
         t.on_awake();
     }
 
     template <typename T>
-    typename enable_if<!HasOnAwake<T>::value>::type call_on_awake(T&) {}
+    typename enable_if<!std::is_base_of<Component<T>, T>::value>::type call_on_awake(T& t) {}
 
     template <typename T>
-    typename enable_if<HasOnDestroy<T>::value>::type call_on_destroy(T& t) {
+    typename enable_if<std::is_base_of<Component<T>, T>::value>::type call_on_destroy(T& t) {
         t.on_destroy();
     }
 
     template <typename T>
-    typename enable_if<!HasOnDestroy<T>::value>::type call_on_destroy(T&) {}
+    typename enable_if<!std::is_base_of<Component<T>, T>::value>::type call_on_destroy(T&) {}
 
     entt::entity m_handle;
 

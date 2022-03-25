@@ -140,6 +140,10 @@ add_library(rapidjson INTERFACE)
 
 target_include_directories(rapidjson INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/rapidjson/include)
 
+# QuickJS
+
+add_subdirectory(quickjs)
+
 # SPDLog
 
 set(SPDLOG_MASTER_PROJECT OFF CACHE BOOL "" FORCE)

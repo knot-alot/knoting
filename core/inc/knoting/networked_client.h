@@ -26,6 +26,9 @@ class NetworkedClient : public Subsystem {
     void on_update(double m_delta_time) override;
     void on_destroy() override;
 
+    void set_current_player();
+    int get_client_number() { return m_clientNum; }
+
     double get_time();
 
     bool attempt_connection();

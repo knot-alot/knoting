@@ -12,6 +12,7 @@ void InstanceMesh::on_awake() {
     }
 }
 
+
 void InstanceMesh::on_destroy() {}
 
 void InstanceMesh::addContactPoint(vec3 position, Team team) {

@@ -1,16 +1,17 @@
 #pragma once
+
+#include <knoting/component.h>
 #include <knoting/components.h>
 #include <knoting/px_variables_wrapper.h>
 
 namespace knot {
 namespace components {
-class PhysicsMaterial {
+class PhysicsMaterial : public Component<PhysicsMaterial> {
    public:
     PhysicsMaterial();
     ~PhysicsMaterial();
 
-    void on_awake();
-    void on_destroy();
+    void on_awake() override;
 
     std::weak_ptr<PxMaterial_ptr_wrapper> get_px_material() { return m_material; }
     float get_dynamic_friction() { return m_material->get()->getDynamicFriction(); }

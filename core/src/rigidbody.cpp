@@ -28,9 +28,10 @@ void RigidBody::on_awake() {
 void RigidBody::on_destroy() {
     if (m_dynamic) {
         m_scene->get()->removeActor(*m_dynamic->get());
-
+        delete reinterpret_cast<uuid*>(m_dynamic.get()->get()->userData);
     } else if (m_static) {
         m_scene->get()->removeActor(*m_static->get());
+        delete reinterpret_cast<uuid*>(m_static.get()->get()->userData);
     }
 }
 
@@ -154,18 +155,28 @@ void RigidBody::set_aggregate(std::shared_ptr<PxAggregate_ptr_wrapper> aggragate
 }
 
 void RigidBody::create_actor(bool isDynamic, const float& mass) {
+    auto goOpt = GameObject::get_game_object_from_component(*this);
+
     if (isDynamic) {
         m_dynamic = std::make_shared<PxDynamic_ptr_wrapper>(m_physics->get()->createRigidDynamic(
             PxTransform(get_position_from_transform(), get_rotation_from_transform())));
         m_dynamic->get()->attachShape(*m_shape->get());
         PxRigidBodyExt::updateMassAndInertia(*m_dynamic->get(), mass);
         m_aggregate->get_aggregate()->addActor(*m_dynamic->get());
+
+        if (goOpt)
+            m_dynamic.get()->get()->userData = new uuid(goOpt->get_id());
+      
         m_isDynamic = isDynamic;
     } else {
         m_static = std::make_shared<PxStatic_ptr_wrapper>(m_physics->get()->createRigidStatic(
             PxTransform(get_position_from_transform(), get_rotation_from_transform())));
         m_static->get()->attachShape(*m_shape->get());
         m_aggregate->get_aggregate()->addActor(*m_static->get());
+
+        if (goOpt)
+            m_static.get()->get()->userData = new uuid(goOpt->get_id());
+
         m_isDynamic = isDynamic;
     }
 }

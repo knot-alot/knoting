@@ -1,10 +1,12 @@
 #pragma once
+#include <knoting/component.h>
 #include <knoting/types.h>
 #include <cereal/cereal.hpp>
 
 namespace knot {
 namespace components {
-class SpotLight {
+
+class SpotLight : public Component<SpotLight> {
    public:
     SpotLight();
     ~SpotLight();
@@ -32,5 +34,6 @@ class SpotLight {
     float m_lightInnerRadius = 0.5f;
     vec3 m_color = vec3(3.0f);
 };
+
 }  // namespace components
 }  // namespace knot
