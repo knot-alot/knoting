@@ -159,7 +159,18 @@ bool NetworkedClient::handle_recieved_packets() {
             transform.set_position(serMess->playerPos[playerNum]);
             transform.set_rotation(serMess->playerRots[playerNum]);
             rigidBody.set_transform(serMess->playerPos[playerNum], serMess->playerRots[playerNum]);
-            // TODO: set player health, pass the paint collisions to somewhere they can be handled?
+            for (int i = 0; i < 20; ++i) {
+                vec4 paintColl = serMess->paintCollisions[i];
+                if (paintColl.w == 0) {
+                    continue;
+                }
+                bool isRed = true;
+                if (paintColl.w == 2.0f) {
+                    isRed = false;
+                }
+                scene.create_bullet(isRed, vec3(paintColl.x, paintColl.y, paintColl.z));
+            }
+            // TODO: set player health correctly?
         }
 
         m_client->ReleaseMessage(mess);
