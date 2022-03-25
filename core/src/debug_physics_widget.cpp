@@ -1,5 +1,6 @@
 #include <knoting/debug_physics_widget.h>
 #include <knoting/engine.h>
+#include <knoting/game_object.h>
 #include <knoting/scene.h>
 
 knot::DebugPhysics::DebugPhysics(const std::string& name) : Widget(name) {}
@@ -56,38 +57,66 @@ void knot::DebugPhysics::on_widget_render() {
         mat4 proj;
         glm::mat4 view;
         auto windowSize = m_engine.get_window_module().lock()->get_window_size();
-        auto cameras = registry.view<Transform, EditorCamera, Name>();
 
-        for (auto& cam : cameras) {
-            auto goOpt = scene.get_game_object_from_handle(cam);
-            if (!goOpt) {
-                continue;
-            }
-
-            GameObject go = goOpt.value();
-            Transform& transform = go.get_component<Transform>();
-            EditorCamera& editorCamera = go.get_component<EditorCamera>();
-            Name& name = go.get_component<Name>();
-
-            const glm::vec3 pos = transform.get_position();
-            const glm::vec3 lookTarget = editorCamera.get_look_target();
-            const glm::vec3 up = editorCamera.get_up();
-
-            const float fovY = editorCamera.get_fov();
-            const float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
-            const float zNear = editorCamera.get_z_near();
-            const float zFar = editorCamera.get_z_far();
-
-            view = glm::lookAt(pos, lookTarget, up);
-            proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
+        auto cameraOpt = EditorCamera::get_active_camera();
+        if (!cameraOpt) {
+            return;
         }
 
-        mat4 projView = proj * view;
+        auto& editorCamera = cameraOpt.value().get();
+
+        auto goOpt = GameObject::get_game_object_from_component(cameraOpt.value().get());
+        if (!goOpt) {
+            return;
+        }
+        GameObject go = goOpt.value();
+        Transform& transform = go.get_component<Transform>();
+
+        vec3 pos = transform.get_position();
+        vec3 lookTarget = editorCamera.get_look_target();
+        vec3 up = editorCamera.get_up();
+
+        auto windowWeak = m_engine.get_window_module();
+        if (windowWeak.expired()) {
+            return;
+        }
+        auto window = windowWeak.lock();
+
+        float fovY = editorCamera.get_fov();
+        float aspectRatio = float((float)windowSize.x / (float)windowSize.y);
+        float zNear = editorCamera.get_z_near();
+        float zFar = editorCamera.get_z_far();
+
+        Hierarchy& hierarchy = go.get_component<Hierarchy>();
+        auto parentIDOpt = hierarchy.get_parent();
+
+        if (parentIDOpt) {
+            auto sceneOpt = Scene::get_active_scene();
+            if (sceneOpt) {
+                auto& scene = sceneOpt.value().get();
+                auto parentOpt = scene.get_game_object_from_id(parentIDOpt.value());
+                if (parentOpt) {
+                    auto transform = parentOpt.value().get_component<Transform>();
+                    transform.set_rotation_euler({0, 0, 0});
+
+                    auto modelMatrix = transform.get_model_matrix();
+                    auto parentDiff = modelMatrix * vec4{0.f, 0.f, 0.f, 1.f};
+
+                    pos += vec3(parentDiff);
+                    lookTarget += vec3(parentDiff);
+                }
+            }
+        }
+
+        view = glm::lookAt(pos, lookTarget, up);
+        proj = glm::perspective(fovY, aspectRatio, zNear, zFar);
+
+        mat4 projView = view * proj;
         auto physScene = m_engine.get_physics_module().lock()->get_active_Scene();
 
         const PxRenderBuffer& rendBuffer = physScene.lock().get()->get()->getRenderBuffer();
 
-        ImGui::SetNextWindowPos(ImVec2(0, 0));
+        ImGui::SetWindowPos("DebugPhysics",ImVec2(0, 0));
 
         ImGuizmo::BeginFrame();
         ImGui::SetWindowSize("DebugPhysics", ImVec2(m_x, m_y));
@@ -125,8 +154,8 @@ void knot::DebugPhysics::on_widget_render() {
             }
 
             mat4 modelMatrix = mat4(1.0f);
-            modelMatrix = translate(mat4(1.0f), transform.get_position()) * toMat4(transform.get_rotation()) *
-                          scale(mat4(1.0f), (halfSize * 2.0f));
+            modelMatrix = translate(mat4(1.0f), transform.get_position() + colliderShapeComp.get_offset_pos()) *
+                          toMat4(transform.get_rotation()) * scale(mat4(1.0f), (halfSize * 2.0f));
 
             ImGuizmo::DrawCubes(value_ptr(view), value_ptr(proj), value_ptr(modelMatrix), 1);
         }

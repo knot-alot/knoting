@@ -6,7 +6,7 @@ namespace knot::components {
 
 AudioSource::AudioSource(const std::string& path, bool loops)
     : Asset{AssetType::Audio, path}, m_sound(nullptr), m_path(path), m_loops(loops) {
-    m_fullPath = AssetManager::get_resources_path().append("misc").append(path).string();
+    m_fullPath = AssetManager::get_resources_path().append("audio").append(path).string();
 }
 
 void AudioSource::on_awake() {

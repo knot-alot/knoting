@@ -1,8 +1,12 @@
 #pragma once
+
+// clang-format off
 #include <imgui.h>
+#include <ImGuizmo.h>
+// clang-format on
 #include <knoting/log.h>
 #include <knoting/widget.h>
-#include <ImGuizmo.h>
+
 namespace knot {
 
 class DebugPhysics : public Widget {
@@ -23,7 +27,4 @@ class DebugPhysics : public Widget {
     bool active = false;
 };
 
-
-
 }  // namespace knot
-

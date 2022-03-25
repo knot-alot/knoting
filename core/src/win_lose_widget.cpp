@@ -5,6 +5,10 @@
 
 knot::WinLoseWidget::WinLoseWidget(const std::string& name) : Widget(name) {
     m_backTex = AssetManager::load_asset<components::Texture>("you_win_lose.png").lock();
+}
+
+void knot::WinLoseWidget::on_widget_render() {
+    // ImGui::ShowDemoWindow();
 
     auto engineOpt = Engine::get_active_engine();
     if (!engineOpt) {
@@ -19,29 +23,20 @@ knot::WinLoseWidget::WinLoseWidget(const std::string& name) : Widget(name) {
         isRedTeam = false;
     }
 
-    if (isRedTeam) {
-        m_tex = AssetManager::load_asset<components::Texture>("test_red.png").lock();
-    } else {
-        m_tex = AssetManager::load_asset<components::Texture>("test_blue.png").lock();
-    }
-}
-
-void knot::WinLoseWidget::on_widget_render() {
-    // ImGui::ShowDemoWindow();
     ImVec4 color;
 
     if (isGameOver) {
         std::string winText;
 
         if (playerRedWins) {
-            color = ImVec4(1,0.1,0.1,1);
+            color = ImVec4(1, 0.1, 0.1, 1);
             if (isRedTeam) {
                 winText = "YOUR TEAM HAS WON";
             } else {
                 winText = "YOUR TEAM HAS LOST";
             }
         } else {
-            color = ImVec4(0.1,0.1,1.0,1.0);
+            color = ImVec4(0.1, 0.1, 1.0, 1.0);
             if (isRedTeam) {
                 winText = "YOUR TEAM HAS LOST";
             } else {
@@ -67,7 +62,7 @@ void knot::WinLoseWidget::on_widget_render() {
         ImGui::SetCursorPos(ImVec2((m_x * 0.5) - 225, m_y * 0.5 - 125));
         ImGui::SetWindowFontScale(4.0);
         ImGui::TextColored(color, winText.c_str());
-//        ImGui::Text(winText.c_str());
+        //        ImGui::Text(winText.c_str());
         ImGui::End();
     }
 
@@ -76,7 +71,6 @@ void knot::WinLoseWidget::on_widget_render() {
     ImGui::Checkbox("RED TEAM WIN ", &playerRedWins);
     ImGui::Checkbox("IS RED ", &isRedTeam);
     ImGui::End();
-
 }
 
 knot::WinLoseWidget::~WinLoseWidget() {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <knoting/event_callback.h>
 #include <knoting/component.h>
+#include <knoting/event_callback.h>
 
 namespace knot {
 namespace components {

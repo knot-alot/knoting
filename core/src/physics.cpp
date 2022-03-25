@@ -48,7 +48,7 @@ void Physics::on_awake() {
 
     m_physics = std::make_shared<PxPhysics_ptr_wrapper>(
         PxCreatePhysics(PX_PHYSICS_VERSION, *m_foundation->get(), PxTolerancesScale(), false, NULL));
-    constexpr float defalut_gravity = -9.81f;
+    constexpr float defalut_gravity = -9.81f * 3.0f;
     PxSceneDesc sceneDesc(m_physics->get()->getTolerancesScale());
     sceneDesc.gravity = PxVec3(0, defalut_gravity, 0);
     m_dispatcher = std::make_shared<PxDispatcher_ptr_wrapper>(PxDefaultCpuDispatcherCreate(2));
@@ -111,19 +111,18 @@ void Physics::update_info_to_transform() {
     }
     auto raycast = registry.view<components::Raycast>();
 
-
-//    for(auto& ray:raycast){
-//        auto goOpt = scene.get_game_object_from_handle(ray);
-//
-//        if (!goOpt) {
-//            continue;
-//        }
-//
-//        GameObject go = goOpt.value();
-//        components::Raycast& r = registry.get<components::Raycast>(go.get_handle());
-//        r.raycast();
-//        uuid* uuidPtr = reinterpret_cast<uuid*>(r.get_hit_actor()->userData);
-//    }
+    //    for(auto& ray:raycast){
+    //        auto goOpt = scene.get_game_object_from_handle(ray);
+    //
+    //        if (!goOpt) {
+    //            continue;
+    //        }
+    //
+    //        GameObject go = goOpt.value();
+    //        components::Raycast& r = registry.get<components::Raycast>(go.get_handle());
+    //        r.raycast();
+    //        uuid* uuidPtr = reinterpret_cast<uuid*>(r.get_hit_actor()->userData);
+    //    }
     // could for dubug
     /*
     auto collision = registry.view<components::Collision_Detection>();
