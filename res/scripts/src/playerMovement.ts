@@ -73,7 +73,9 @@ export default class PlayerMovement extends GameObject {
     creatBullet(shootDir: Vec3, spawnPos: Vec3) {
         let bullet = scene.createBullet(this.is_teamA, spawnPos);
         let rigidBody = bullet.getComponent("rigidBody");
-        rigidBody.addForce(math.multiplyConst(math.add(shootDir,this.transform.getForward()), 10.0));
+        let forward = math.multiplyConst(this.transform.getForward(), 20.0);
+        let arc = math.multiplyConst(shootDir, 5.00);
+        rigidBody.addForce(math.add(arc, forward));
     }
 
     getShootDir(spawnPos: Vec3): Vec3 {
@@ -91,7 +93,7 @@ export default class PlayerMovement extends GameObject {
         // b = multiplyQuat(b,this.transform.getRotation());
         // b= math.normalize(b);
 
-        let b:Vec3 = math.normalize(lookTarg);
+        let b: Vec3 = math.normalize(lookTarg);
         // let b: Vec3 = math.minus(lookTarg,spawnPos);
         // b = math.normalize(b);
         // this.creatBullet(b,spawnPos);
@@ -127,23 +129,6 @@ export default class PlayerMovement extends GameObject {
             editorCamera.setAsActiveCamera();
         }
 
-        if (input.mouseButtonPressed(MouseButtonCode.Left)) {
-            if (this.timePassed > (1.0 / this.fireRate)) {
-                console.log("SHOOTING");
-                this.removeHealth(1);
-                this.shoot()
-                this.timePassed = 0;
-            }
-            let forward: Vec3 = math.multiplyConst(this.transform.getForward(), 1.0);
-            let spawnPos: Vec3 = math.add(this.transform.getPosition(), forward);
-            let shooDir: Vec3 = this.getShootDir(spawnPos);
-            this.particle.setLookAt(math.multiplyConst(shooDir, 4));
-            this.particle.setPosition(spawnPos);
-            this.particle.setParticlesPerSecond(50);
-        } else {
-            this.particle.setParticlesPerSecond(0);
-        }
-
         if (input.keyPressed(KeyCode.Enter)) { //AND looking at paint reservoir
             this.addHealth(1);
         }
@@ -165,6 +150,23 @@ export default class PlayerMovement extends GameObject {
         if (network.isServer()) {
             this.playerRotation();
             this.playerMovement();
+
+            if (this.clientPlayer.getIsShooting()) {
+                if (this.timePassed > (1.0 / this.fireRate)) {
+                    console.log("SHOOTING");
+                    this.removeHealth(1);
+                    this.shoot()
+                    this.timePassed = 0;
+                }
+                let forward: Vec3 = math.multiplyConst(this.transform.getForward(), 1.0);
+                let spawnPos: Vec3 = math.add(this.transform.getPosition(), forward);
+                let shooDir: Vec3 = this.getShootDir(spawnPos);
+                this.particle.setLookAt(math.multiplyConst(shooDir, 4));
+                this.particle.setPosition(spawnPos);
+                this.particle.setParticlesPerSecond(100);
+            } else {
+                this.particle.setParticlesPerSecond(0);
+            }
         }
     }
 
