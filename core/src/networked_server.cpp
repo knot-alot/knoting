@@ -232,7 +232,7 @@ void NetworkedServer::update_collisions_buffer() {
                 contact_name = dynamActor->get()->getName();
             }
         } else {
-            auto staticActor = contact.m_search_actor.m_search_dynamic;
+            auto staticActor = contact.m_search_actor.m_search_static;
             if (staticActor->get()->getName()) {
                 contact_name = staticActor->get()->getName();
             }

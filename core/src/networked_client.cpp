@@ -160,9 +160,15 @@ bool NetworkedClient::handle_recieved_packets() {
             transform.set_rotation(serMess->playerRots[playerNum]);
             rigidBody.set_transform(serMess->playerPos[playerNum], serMess->playerRots[playerNum]);
             for (int i = 0; i < 20; ++i) {
-                if (serMess->paintCollisions[i].w == 0) {
+                vec4 paintColl = serMess->paintCollisions[i];
+                if (paintColl.w == 0) {
                     continue;
                 }
+                bool isRed = true;
+                if (paintColl.w == 2.0f) {
+                    isRed = false;
+                }
+                scene.create_bullet(isRed, vec3(paintColl.x, paintColl.y, paintColl.z));
             }
             // TODO: set player health correctly?
         }
