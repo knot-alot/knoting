@@ -19,10 +19,8 @@ void Raycast::on_awake() {
     m_origin = get_position_from_transform();
 }
 
-void Raycast::on_destroy() {}
-
 void Raycast::raycast() {
-    m_scene->get()->raycast(m_origin, m_unitDir, m_maxDistance, m_hit);
+    m_isHit = m_scene->get()->raycast(m_origin, m_unitDir, m_maxDistance, m_hit);
 }
 
 vec3 Raycast::get_origin() {
@@ -84,7 +82,7 @@ PxVec3 Raycast::get_position_from_transform() {
         Scene& scene = sceneOpt.value();
         entt::entity handle = entt::to_entity(scene.get_registry(), *this);
         auto goOpt = scene.get_game_object_from_handle(handle);
-        ;
+
         if (goOpt) {
             PxVec3 position = RigidBody::vec3_to_PxVec3(goOpt->get_component<components::Transform>().get_position());
 
