@@ -482,6 +482,8 @@ declare module "knoting" {
 
     class Network {
         getClientNumber(): number;
+        
+        isServer(): boolean;
     }
 
     const input: InputManager;

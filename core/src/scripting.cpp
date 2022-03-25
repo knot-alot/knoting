@@ -1899,7 +1899,7 @@ void load_scene(const std::string& filename) {
     serializedSceneStream.close();
 }
 
-int get_client_number() {
+int network_get_client_number() {
     auto engineOpt = Engine::get_active_engine();
     if (!engineOpt)
         return -1;
@@ -1912,6 +1912,14 @@ int get_client_number() {
     auto networkClient = networkClientWeak.lock();
 
     return networkClient->get_client_number();
+}
+
+bool network_is_server() {
+    auto engineOpt = Engine::get_active_engine();
+    if (!engineOpt)
+        return -1;
+    auto& engine = engineOpt.value().get();
+    return !engine.isClient;
 }
 
 void Scripting::add_knoting_module() {
@@ -2026,7 +2034,8 @@ void Scripting::add_knoting_module() {
     knoting.add("storage", storage);
 
     auto network = m_context->newObject();
-    network.add("getClientNumber", get_client_number);
+    network.add("getClientNumber", network_get_client_number);
+    network.add("isServer", network_is_server);
 
     knoting.add("network", network);
 

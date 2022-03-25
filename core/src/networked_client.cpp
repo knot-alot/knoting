@@ -255,7 +255,7 @@ void NetworkedClient::test_player_input() {
         }
 
         playerComp.m_moveAxis = (vec2i(m_playerInputs.x, m_playerInputs.z));
-//        playerComp.m_lookAxis = (vec2i(0, -1));
+        //        playerComp.m_lookAxis = (vec2i(0, -1));
     }
 }
 void NetworkedClient::reset_tick(double m_delta_time) {

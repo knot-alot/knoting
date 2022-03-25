@@ -54,8 +54,10 @@ export default class Player_movement extends GameObject {
     }
 
     lateUpdate() {
-        this.playerRotation();
-        this.playerMovement();
+        if (network.isServer()) {
+            this.playerRotation();
+            this.playerMovement();
+        }
 
         if (input.keyOnTrigger(KeyCode.U)) {
             let pauseCamera: GameObject = storage.retrieve("pauseCamera");
@@ -118,6 +120,8 @@ export default class Player_movement extends GameObject {
     }
 
     playerRotation() {
+        if (this.clientPlayer.getClientNumber() == network.getClientNumber())
+            return;
         let lookTarget: Vec3 = this.clientPlayer.getLookAxis();
 
         if (this.clientPlayer.getClientNumber() == 0)
