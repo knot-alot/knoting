@@ -10,8 +10,6 @@ namespace knot {
 class PxScene_ptr_wrapper {
    public:
     PxScene_ptr_wrapper(PxScene* scene = nullptr) : m_pxScene(scene) {
-        m_pxScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
-        m_pxScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES,1.0);
     }
     ~PxScene_ptr_wrapper() {
         if (m_pxScene) {
@@ -21,8 +19,6 @@ class PxScene_ptr_wrapper {
     }
 
     void set(PxScene* scene) { m_pxScene = scene;
-        m_pxScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
-        m_pxScene->setVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES,1.0);
     }
 
     PxScene* get() { return m_pxScene; }
@@ -144,13 +140,11 @@ class PxShape_ptr_wrapper {
    public:
     PxShape_ptr_wrapper(PxShape* shape = nullptr) : m_shape(shape) {
         m_shape = shape;
-        m_shape->setFlag(PxShapeFlag::eVISUALIZATION, true);
     }
     ~PxShape_ptr_wrapper() { clean(); }
     void set(PxShape* shape) {
         clean();
         m_shape = shape;
-        m_shape->setFlag(PxShapeFlag::eVISUALIZATION, true);
     }
 
     PxShape* get() { return m_shape; }
