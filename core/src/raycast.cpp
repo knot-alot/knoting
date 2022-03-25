@@ -20,7 +20,12 @@ void Raycast::on_awake() {
 }
 
 void Raycast::raycast() {
-    m_isHit = m_scene->get()->raycast(m_origin, m_unitDir, m_maxDistance, m_hit);
+    if (m_maxDistance == 0)
+        m_maxDistance = 1.0f;
+    else if (m_maxDistance < 0)
+        m_maxDistance = -m_maxDistance;
+    m_isHit = m_scene->get()->raycast(m_origin, m_unitDir.getNormalized(), m_maxDistance, m_hit, PxHitFlag::eDEFAULT,
+                                      PxQueryFilterData(PxQueryFlag::eANY_HIT | PxQueryFlag::eSTATIC));
 }
 
 vec3 Raycast::get_origin() {

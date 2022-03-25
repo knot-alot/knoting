@@ -14,7 +14,6 @@ import {
 } from "knoting";
 
 import * as math from "./math.js";
-import {multiplyQuat} from "./math.js";
 
 export default class PlayerMovement extends GameObject {
     clientPlayer?: ClientPlayer;
@@ -28,7 +27,7 @@ export default class PlayerMovement extends GameObject {
     currentHealth: number = 0;
     bullets: Array<GameObject>;
     is_teamA: boolean;
-    fireRate: number = 1;
+    fireRate: number = 6;
     timePassed: number = 0;
 
     getCameraChild() {

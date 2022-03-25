@@ -229,6 +229,8 @@ declare module "knoting" {
         getHitActor(): GameObject;
 
         setRaycast(origin: Vec3, unitDir: Vec3, maxDis: number): void;
+
+        raycast();
     }
 
     enum MouseButtonCode {

@@ -165,8 +165,6 @@ GameObject Untie::create_lower_floor(const std::string& name, vec3 position, vec
     auto& detection = cubeObj.add_component<components::Collision_Detection>();
     detection.add_search_actor(rigidbody.get_static().lock());
 
-    cubeObj.add_component<components::InstanceScript>("paintable.js");
-
     return cubeObj;
 }
 
@@ -198,8 +196,6 @@ GameObject Untie::create_master_floor(const std::string& name, vec3 position, ve
 
     auto& detection = cubeObj.add_component<components::Collision_Detection>();
     detection.add_search_actor(rigidbody.get_static().lock());
-
-    cubeObj.add_component<components::InstanceScript>("paintable.js");
 
     return cubeObj;
 }
@@ -326,8 +322,6 @@ GameObject Untie::create_slim_lower_floor(const std::string& name, vec3 position
     auto& detection = cubeObj.add_component<components::Collision_Detection>();
     detection.add_search_actor(rigidbody.get_static().lock());
 
-    cubeObj.add_component<components::InstanceScript>("paintable.js");
-
     return cubeObj;
 }
 
@@ -360,8 +354,6 @@ GameObject Untie::create_upper_floor(const std::string& name, vec3 position, vec
 
     auto& detection = cubeObj.add_component<components::Collision_Detection>();
     detection.add_search_actor(rigidbody.get_static().lock());
-
-    cubeObj.add_component<components::InstanceScript>("paintable.js");
 
     return cubeObj;
 }
@@ -396,8 +388,6 @@ GameObject Untie::create_slim_upper_floor(const std::string& name, vec3 position
     auto& detection = cubeObj.add_component<components::Collision_Detection>();
     detection.add_search_actor(rigidbody.get_static().lock());
 
-    cubeObj.add_component<components::InstanceScript>("paintable.js");
-
     return cubeObj;
 }
 
@@ -430,8 +420,6 @@ GameObject Untie::create_grass(const std::string& name, vec3 position, vec3(scal
 
     auto& detection = cubeObj.add_component<components::Collision_Detection>();
     detection.add_search_actor(rigidbody.get_static().lock());
-
-    cubeObj.add_component<components::InstanceScript>("paintable.js");
 
     return cubeObj;
 }
@@ -466,8 +454,6 @@ GameObject Untie::create_ramp(const std::string& name, vec3 position, vec3 rotat
     auto& detection = cubeObj.add_component<components::Collision_Detection>();
     detection.add_search_actor(rigidbody.get_static().lock());
 
-    cubeObj.add_component<components::InstanceScript>("paintable.js");
-
     return cubeObj;
 }
 
@@ -496,11 +482,6 @@ GameObject Untie::create_wall(const std::string& name, vec3 position, vec3 rotat
     material.set_texture_slot_path(TextureType::Roughness, "test_red.png");
     material.set_texture_slot_path(TextureType::Occlusion, "test_blue.png");
     cubeObj.add_component<components::Material>(material);
-
-    auto& detection = cubeObj.add_component<components::Collision_Detection>();
-    detection.add_search_actor(rigidbody.get_static().lock());
-
-    cubeObj.add_component<components::InstanceScript>("paintable.js");
 
     return cubeObj;
 }
@@ -535,8 +516,6 @@ GameObject Untie::create_brick_wall(const std::string& name, vec3 position, vec3
 
     auto& detection = cubeObj.add_component<components::Collision_Detection>();
     detection.add_search_actor(rigidbody.get_static().lock());
-
-    cubeObj.add_component<components::InstanceScript>("paintable.js");
 
     return cubeObj;
 }
@@ -935,6 +914,7 @@ GameObject Untie::create_bullet_aggregate() {
     aggregate.add_aggregate("BULLET", 128, false);
 
     auto& rigidbody = cubeObj.add_component<components::RigidBody>();
+    auto& raycast = cubeObj.add_component<components::Raycast>();
 
     rigidbody.create_actor(false);
     return cubeObj;

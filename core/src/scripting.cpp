@@ -1292,6 +1292,13 @@ class JSRaycast : public JSObjectBase {
         return gameObjectOpt.value().get_component<components::Raycast>();
     }
 
+    void do_raycast() {
+        auto raycastOpt = get_raycast();
+        if (!raycastOpt)
+            return;
+        raycastOpt->get().raycast();
+    }
+
     vec3 get_origin() {
         auto raycastOpt = get_raycast();
         if (!raycastOpt)
@@ -2349,6 +2356,22 @@ void Scripting::add_knoting_module() {
         .fun<&JSContactData::get_contact_actor>("getContactActor")
         .fun<&JSContactData::get_contact_actor_name>("getContactActorName")
         .fun<&JSContactData::get_contact_type>("getContactType");
+
+    knoting.class_<JSRaycast>("Raycast")
+        .constructor()
+        .fun<&JSRaycast::do_raycast>("raycast")
+        .fun<&JSRaycast::get_origin>("getOrigin")
+        .fun<&JSRaycast::set_origin>("setOrigin")
+        .fun<&JSRaycast::get_unit_dir>("getUnitDir")
+        .fun<&JSRaycast::get_max_distance>("getMaxDistance")
+        .fun<&JSRaycast::is_hit>("isHit")
+        .fun<&JSRaycast::get_hit_position>("getHitPosition")
+        .fun<&JSRaycast::get_hit_normal>("getHitNormal")
+        .fun<&JSRaycast::set_origin>("isHit")
+        .fun<&JSRaycast::set_unit_dir>("setUnitDir")
+        .fun<&JSRaycast::set_max_distance>("setMaxDistance")
+        .fun<&JSRaycast::set_raycast>("setRaycast")
+        .fun<&JSRaycast::get_hit_actor>("get_hit_actor");
 
     knoting.class_<JSMesh>("Mesh").constructor().fun<&JSMesh::add_contact_position>("addContactPosition");
 

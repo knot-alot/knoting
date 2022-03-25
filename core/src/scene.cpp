@@ -87,6 +87,9 @@ GameObject Scene::create_bullet(bool is_teamA, vec3 spawnPos) {
     material.set_texture_slot_path(TextureType::Occlusion, "whiteTexture");
     bullet.add_component<components::Material>(material);
 
+    auto& raycast = bullet.add_component<components::Raycast>();
+
+
     bullet.add_component<components::InstanceScript>("bullet.js");
     return bullet;
 }

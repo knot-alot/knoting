@@ -11,22 +11,19 @@ export default class floor extends GameObject {
         this.rigidBody = this.getComponent("rigidBody");
         this.detection = this.getComponent("collisionDetection");
         this.mesh = this.getComponent("instanceMesh");
-
-        if (!this.mesh)
-            console.log("asdopqwjdpqjdoqwjdpojqwopdjwqopjdqwpo djpqwo jdoqw djoqiwd ioqwhhdiuwhiqwjdijqwciojdqwipjdjasd");
     }
 
     update() {
-        this.data = this.detection.getContactDataByActor(this.rigidBody.getActor());
-        for (let i = 0; i < this.data.length; i++) {
-            // if (this.data[i].getContactActorName() == "RED") {
-            //     console.log(`${this.data[i].getContactActorName()}`);
-            //     this.mesh.addContactPosition(this.data[i].getContactPoint(), Team.Red);
-            // } else if (this.data[i].getContactActorName() == "BLUE") {
-            //     console.log(`${this.data[i].getContactActorName()}`);
-            //     this.mesh.addContactPosition(this.data[i].getContactPoint(), Team.Blue);
-            // }
-        }
+        // this.data = this.detection.getContactDataByActor(this.rigidBody.getActor());
+        // for (let i = 0; i < this.data.length; i++) {
+        //     // if (this.data[i].getContactActorName() == "RED") {
+        //     //     console.log(`${this.data[i].getContactActorName()}`);
+        //     //     this.mesh.addContactPosition(this.data[i].getContactPoint(), Team.Red);
+        //     // } else if (this.data[i].getContactActorName() == "BLUE") {
+        //     //     console.log(`${this.data[i].getContactActorName()}`);
+        //     //     this.mesh.addContactPosition(this.data[i].getContactPoint(), Team.Blue);
+        //     // }
+        // }
     }
 }
 
