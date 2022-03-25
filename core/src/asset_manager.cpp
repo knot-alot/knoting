@@ -53,7 +53,6 @@ void AssetManager::load_assets_manual() {
 
     AssetManager::load_asset<components::Mesh>("primitive_plane.obj");
     AssetManager::load_asset<components::Mesh>("uv_cube.obj");
-    AssetManager::load_asset<components::Mesh>("dragon.obj");
 }
 
 void AssetManager::load_assets_serialize() {}

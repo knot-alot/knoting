@@ -6,10 +6,10 @@
 #include <knoting/widget.h>
 namespace knot {
 
-class DemoWidget : public Widget {
+class WinLoseWidget : public Widget {
    public:
-    DemoWidget(const std::string& name);
-    ~DemoWidget();
+    WinLoseWidget(const std::string& name);
+    ~WinLoseWidget();
     void on_widget_render() override;
     void setWinow(int x, int y) {
         m_x = x;
