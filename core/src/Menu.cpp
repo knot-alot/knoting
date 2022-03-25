@@ -16,11 +16,11 @@ void knot::Menu::on_widget_render() {
         ImGui::SetNextWindowPos(ImVec2(0, 0));
         ImGui::SetWindowSize("Menu", ImVec2(m_x, m_y));
 
-        ImGui::Begin("Menu", NULL ,ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground |
-                                       ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
+        ImGui::Begin("Menu", NULL,
+                     ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground |
+                         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar);
 
         ImGui::SetWindowFontScale(3.0f);
-
 
         const char* text = "knoting game";
         ImGui::SetCursorPos(ImVec2(m_x / 2 - (150 * 0.5 + 50), 250));

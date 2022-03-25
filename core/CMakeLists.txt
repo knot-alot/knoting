@@ -60,7 +60,7 @@ if (WIN32)
     target_compile_definitions(knoting PUBLIC BX_PLATFORM_WINDOWS=1)
 elseif (UNIX)
     target_compile_definitions(knoting PUBLIC BX_PLATFORM_LINUX=1)
-endif()
+endif ()
 
 if (CMAKE_SIZEOF_VOID_P EQUAL 8)
     target_compile_definitions(knoting PUBLIC KNOTING_64=1)

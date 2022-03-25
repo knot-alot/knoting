@@ -34,14 +34,14 @@ void knot::WinLoseWidget::on_widget_render() {
         std::string winText;
 
         if (playerRedWins) {
-            color = ImVec4(1,0.1,0.1,1);
+            color = ImVec4(1, 0.1, 0.1, 1);
             if (isRedTeam) {
                 winText = "YOUR TEAM HAS WON";
             } else {
                 winText = "YOUR TEAM HAS LOST";
             }
         } else {
-            color = ImVec4(0.1,0.1,1.0,1.0);
+            color = ImVec4(0.1, 0.1, 1.0, 1.0);
             if (isRedTeam) {
                 winText = "YOUR TEAM HAS LOST";
             } else {
@@ -67,7 +67,7 @@ void knot::WinLoseWidget::on_widget_render() {
         ImGui::SetCursorPos(ImVec2((m_x * 0.5) - 225, m_y * 0.5 - 125));
         ImGui::SetWindowFontScale(4.0);
         ImGui::TextColored(color, winText.c_str());
-//        ImGui::Text(winText.c_str());
+        //        ImGui::Text(winText.c_str());
         ImGui::End();
     }
 
@@ -76,7 +76,6 @@ void knot::WinLoseWidget::on_widget_render() {
     ImGui::Checkbox("RED TEAM WIN ", &playerRedWins);
     ImGui::Checkbox("IS RED ", &isRedTeam);
     ImGui::End();
-
 }
 
 knot::WinLoseWidget::~WinLoseWidget() {

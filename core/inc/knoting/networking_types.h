@@ -86,8 +86,6 @@ class ClientMessage : public Message {
     YOJIMBO_VIRTUAL_SERIALIZE_FUNCTIONS();
 };
 
-
-
 constexpr uint16_t MAX_COLLISIONS = 20;
 
 class ServerMessage : public Message {

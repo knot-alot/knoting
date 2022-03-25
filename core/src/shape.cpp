@@ -145,6 +145,12 @@ void Shape::on_load() {
             break;
     }
 }
+void Shape::set_local_position(vec3 position) {
+    posOffset = position;
+    if (m_shape) {
+        m_shape->get()->setLocalPose(PxTransform(RigidBody::vec3_to_PxVec3(posOffset)));
+    }
+}
 
 template void Shape::save<cereal::JSONOutputArchive>(cereal::JSONOutputArchive&) const;
 template void Shape::load<cereal::JSONInputArchive>(cereal::JSONInputArchive&);

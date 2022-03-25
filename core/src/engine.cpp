@@ -7,7 +7,7 @@ Engine::Engine() {
     InitializeYojimbo();
     set_active_engine(*this);
     srand(time(0));
-  
+
     m_framebufferManager = std::make_shared<knot::FramebufferManager>(*this);
     m_WidgetSubsystem = std::make_shared<knot::WidgetSubsystem>(*this);
     m_windowModule = std::make_shared<knot::Window>(m_windowWidth, m_windowHeight, m_windowTitle, *this);
