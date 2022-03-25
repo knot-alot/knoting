@@ -28,7 +28,9 @@ class DemoWidget : public Widget {
     std::shared_ptr<components::Texture> m_texBlue;
     std::shared_ptr<components::Texture> m_backTex;
     std::shared_ptr<NetworkedClient> m_cliModule;
+    std::shared_ptr<InputManager>m_input;
     bool isRedTeam;
+    bool active = false;
 };
 
 }  // namespace knot

@@ -26,7 +26,7 @@ class WinLoseWidget : public Widget {
     std::shared_ptr<components::Texture> m_tex;
     std::shared_ptr<components::Texture> m_backTex;
     bool isRedTeam;
-
+    bool active = false;
     bool isGameOver = false;
     bool playerRedWins = false;
 };
