@@ -543,8 +543,19 @@ GameObject Untie::create_player(const std::string& name, vec3 position, vec3 rot
     auto& client = cubeObj.add_component<components::ClientPlayer>();
     client.m_clientNum = playerNum;
 
+    auto editorCamera = m_scene->create_game_object("playerCamera");
+    auto& cam = editorCamera.add_component<components::EditorCamera>();
+    editorCamera.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 1.5f, 0.0f));
+    editorCamera.add_component<components::AudioListener>();
+
+    auto& hierarchy = cubeObj.get_component<components::Hierarchy>();
+    hierarchy.add_child(editorCamera);
+
+    cubeObj.add_component<components::InstanceScript>("playerMovement.js");
+
     return cubeObj;
 }
+
 void Untie::serializeTest() {
     //        std::string filename("post_process.json");
     //        std::filesystem::path path = AssetManager::get_resources_path().append(filename);
@@ -611,6 +622,8 @@ void Untie::create_level() {
         auto& cam = editorCamera.add_component<components::EditorCamera>();
         editorCamera.get_component<components::Transform>().set_position(glm::vec3(-0.0f, 50.0f, 0.0f));
         editorCamera.add_component<components::AudioListener>();
+
+        editorCamera.add_component<components::InstanceScript>("pauseCamera.js");
     }
     {
         auto raycastObj = m_scene->create_game_object("ray");

@@ -15,6 +15,7 @@
 #include <bgfx/bgfx.h>
 #include <knoting/component.h>
 #include <knoting/components.h>
+#include <knoting/component.h>
 #include <knoting/entry.h>
 #include <cereal/cereal.hpp>
 
