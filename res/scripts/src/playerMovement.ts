@@ -14,6 +14,7 @@ import {
 } from "knoting";
 
 import * as math from "./math.js";
+import {multiplyQuat} from "./math.js";
 
 export default class PlayerMovement extends GameObject {
     clientPlayer?: ClientPlayer;
@@ -27,7 +28,7 @@ export default class PlayerMovement extends GameObject {
     currentHealth: number = 0;
     bullets: Array<GameObject>;
     is_teamA: boolean;
-    fireRate: number = 0.01;
+    fireRate: number = 1;
     timePassed: number = 0;
 
     getCameraChild() {
@@ -56,15 +57,16 @@ export default class PlayerMovement extends GameObject {
         }
 
         let playerNum = this.clientPlayer.getClientNumber();
-        this.is_teamA = playerNum % 2 != 0;
+        this.is_teamA = (playerNum % 2 != 0);
     }
 
     shoot() {
-        let forward: Vec3 = math.multiplyConst(this.transform.getForward(), 10.0);
+        let forward: Vec3 = math.multiplyConst(this.transform.getForward(), 1.0);
         let spawnPos: Vec3 = math.add(this.transform.getPosition(), forward);
         console.log(`spawnPos = ${spawnPos}`);
         console.log(`position = ${this.transform.getPosition()}`);
         let shooDir: Vec3 = this.getShootDir(spawnPos);
+        console.log(`shootDir = ${shooDir}`);
 
         this.creatBullet(shooDir, spawnPos);
     }
@@ -77,11 +79,18 @@ export default class PlayerMovement extends GameObject {
 
     getShootDir(spawnPos: Vec3): Vec3 {
         let edcam = this.cameraChild.getComponent("editorCamera")
-        let a = edcam.getLookTarget();
-        let shootDir = math.subtract(a, spawnPos);
-        shootDir = math.normalize(shootDir);
-
-        return shootDir;
+        let pitch = edcam.getRotationEuler()[0];
+        let a: Vec3 = [0, 0, 1];
+        let cos = Math.cos(pitch * 3.14 / 180);
+        let sin = Math.sin(pitch * 3.14 / 180);
+        let b: Vec3 = [0, 0, 0];
+        b[0] = a[0];
+        b[1] = ((a[1] * cos) - (a[2] * sin)) * -1.0;
+        b[2] = (a[1] * sin) - (a[2] * cos);
+        b = math.normalize(b);
+        b = multiplyQuat(b,this.transform.getRotation());
+        this.creatBullet(b,spawnPos);
+        return b;
     }
 
     removeHealth(health: number) {
@@ -114,7 +123,7 @@ export default class PlayerMovement extends GameObject {
         }
 
         if (input.mouseButtonPressed(MouseButtonCode.Left)) {
-            if (this.timePassed > (.0 / this.fireRate)) {
+            if (this.timePassed > (1.0 / this.fireRate)) {
                 console.log("SHOOTING");
                 this.removeHealth(1);
                 this.shoot()
