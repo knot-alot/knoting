@@ -31,6 +31,11 @@ class Scripting : public Subsystem {
 
     void add_knoting_module();
 
+    template <typename T>
+    void add_to_storage(const std::string& key, T&& val) {
+        storage[key] = qjs::js_traits<std::decay_t<T>>::wrap(m_context->ctx, val);
+    }
+
     std::unordered_map<std::string, JSValue> storage;
     std::optional<std::reference_wrapper<qjs::Context::Module>> knoting_module;
 

@@ -35,7 +35,7 @@ export default class Player extends GameObject {
     }
 
     death() {
-        //respawn stuff
+
     }
 
 }
