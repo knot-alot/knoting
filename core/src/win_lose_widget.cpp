@@ -5,6 +5,10 @@
 
 knot::WinLoseWidget::WinLoseWidget(const std::string& name) : Widget(name) {
     m_backTex = AssetManager::load_asset<components::Texture>("you_win_lose.png").lock();
+}
+
+void knot::WinLoseWidget::on_widget_render() {
+    // ImGui::ShowDemoWindow();
 
     auto engineOpt = Engine::get_active_engine();
     if (!engineOpt) {
@@ -19,15 +23,6 @@ knot::WinLoseWidget::WinLoseWidget(const std::string& name) : Widget(name) {
         isRedTeam = false;
     }
 
-    if (isRedTeam) {
-        m_tex = AssetManager::load_asset<components::Texture>("test_red.png").lock();
-    } else {
-        m_tex = AssetManager::load_asset<components::Texture>("test_blue.png").lock();
-    }
-}
-
-void knot::WinLoseWidget::on_widget_render() {
-    // ImGui::ShowDemoWindow();
     ImVec4 color;
 
     if (isGameOver) {
