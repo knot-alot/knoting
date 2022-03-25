@@ -42,17 +42,28 @@ Untie::Untie() {
     m_engine = std::make_unique<knot::Engine>();
     Engine::set_active_engine(*m_engine);
     create_level();
+
     auto fontObj = m_scene->create_game_object("font");
     fontObj.add_component<components::Font>();
     m_demoWidget = std::make_shared<DemoWidget>("demo");
     m_demoWidget->setWinow(m_engine->get_window_module().lock()->get_window_width(),
                            m_engine->get_window_module().lock()->get_window_height());
+
+
+
     m_engine->get_Widget().lock()->add_widget(m_demoWidget);
 
     m_debugPhysics = std::make_shared<DebugPhysics>("debugPhys");
     m_debugPhysics->setWindow(m_engine->get_window_module().lock()->get_window_width(),
                               m_engine->get_window_module().lock()->get_window_height());
     m_engine->get_Widget().lock()->add_widget(m_debugPhysics);
+
+    m_winLoseWidget = std::make_shared<WinLoseWidget>("winlosewidget");
+    m_winLoseWidget->setWinow(m_engine->get_window_module().lock()->get_window_width(),
+                              m_engine->get_window_module().lock()->get_window_height());
+    m_engine->get_Widget().lock()->add_widget(m_winLoseWidget);
+
+
     m_Pause_menu = std::make_shared<PauseMenu>("Pausemenu");
     m_Pause_menu->setWinow(m_engine->get_window_module().lock()->get_window_width(),
                            m_engine->get_window_module().lock()->get_window_height());
@@ -63,6 +74,8 @@ Untie::Untie() {
     m_engine->get_Widget().lock()->add_widget(m_menu);
     m_debug = std::make_shared<Debug_gui>("Debug");
     m_engine->get_Widget().lock()->add_widget(m_debug);
+
+
 }
 
 void Untie::run() {
@@ -129,6 +142,8 @@ void Untie::run() {
                                m_engine->get_window_module().lock()->get_window_height());
         m_demoWidget->setWinow(m_engine->get_window_module().lock()->get_window_width(),
                                m_engine->get_window_module().lock()->get_window_height());
+        m_winLoseWidget->setWinow(m_engine->get_window_module().lock()->get_window_width(),
+                                  m_engine->get_window_module().lock()->get_window_height());
 
         m_debug->setFrame(1000 / (double(frameTime) * toMs));
     }

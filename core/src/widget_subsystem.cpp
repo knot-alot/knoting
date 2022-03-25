@@ -14,6 +14,7 @@ static GLFWwindow* gWindow = NULL;
 static GLFWcursor* gMouseCursors[ImGuiMouseCursor_COUNT] = {0};
 
 namespace knot {
+
 void WidgetSubsystem::on_awake() {
     auto window = m_engine.get_window_module().lock();
     imgui_init(window.get()->get_glfw_window());

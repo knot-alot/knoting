@@ -26,6 +26,9 @@ class WinLoseWidget : public Widget {
     std::shared_ptr<components::Texture> m_tex;
     std::shared_ptr<components::Texture> m_backTex;
     bool isRedTeam;
+
+    bool isGameOver = false;
+    bool playerRedWins = false;
 };
 
 }  // namespace knot

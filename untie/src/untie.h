@@ -3,7 +3,7 @@
 
 #include <knoting/Debug_gui.h>
 #include "knoting/demo_widget.h"
-
+#include <knoting/win_lose_widget.h>
 #include <knoting/Menu.h>
 #include <knoting/PauseMenu.h>
 #include <knoting/debug_physics_widget.h>
@@ -76,6 +76,7 @@ class Untie {
     std::shared_ptr<knot::Debug_gui> m_debug;
     std::shared_ptr<knot::DebugPhysics> m_debugPhysics;
     std::shared_ptr<knot::DemoWidget> m_demoWidget;
+    std::shared_ptr<knot::WinLoseWidget> m_winLoseWidget;
     std::shared_ptr<knot::Menu> m_menu;
     std::unique_ptr<knot::Engine> m_engine;
     std::unique_ptr<knot::Scene> m_scene;

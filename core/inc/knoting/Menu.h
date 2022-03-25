@@ -1,7 +1,10 @@
 #pragma once
+
 #include <imgui.h>
 #include <knoting/log.h>
 #include <knoting/widget.h>
+#include <knoting/asset_manager.h>
+
 namespace knot {
 
 class Menu : public Widget {
@@ -12,10 +15,6 @@ class Menu : public Widget {
     void setWinow(int x, int y) {
         m_x = x;
         m_y = y;
-    };
-    void setFont(const char* path) {
-        ImGuiIO& io = ImGui::GetIO();
-        font = io.Fonts->AddFontFromFileTTF(path, 15);
     };
 
    private:
