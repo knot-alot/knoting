@@ -26,6 +26,7 @@ class Shape : public Component<Shape> {
 
     void set_material(std::shared_ptr<PxMaterial_ptr_wrapper> material) { m_material = material; }
     void set_geometry(const PxGeometry& geometry);
+    void set_local_position(vec3 position);
     void set_local_rotation(quat rotation);
     void set_flag(PxShapeFlag::Enum flag);
     void remove_flag(PxShapeFlag::Enum flag);
@@ -42,6 +43,8 @@ class Shape : public Component<Shape> {
     template <class Archive>
     void load(Archive& archive);
 
+    vec3 get_offset_pos() { return posOffset; }
+
    private:
     std::shared_ptr<PxMaterial_ptr_wrapper> get_PxMaterial_from_pxmaterial();
 
@@ -51,6 +54,7 @@ class Shape : public Component<Shape> {
     std::shared_ptr<PxMaterial_ptr_wrapper> m_material;
     vec3 m_shapeSize;
     PxGeometryType::Enum m_shapeType;
+    vec3 posOffset = vec3(0, 0, 0);
 };
 }  // namespace components
 }  // namespace knot

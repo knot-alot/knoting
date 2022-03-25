@@ -1,8 +1,8 @@
 #pragma once
+#include <bgfx/bgfx.h>
 #include <imgui.h>
 #include <knoting/log.h>
 #include <knoting/widget.h>
-#include <bgfx/bgfx.h>
 namespace knot {
 
 class PauseMenu : public Widget {
@@ -23,10 +23,6 @@ class PauseMenu : public Widget {
     ImFont* font;
     int m_x;
     int m_y;
-
-
-
-
 };
 
 }  // namespace knot

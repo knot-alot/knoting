@@ -38,7 +38,7 @@ class AudioSubsystem : public Subsystem {
 
    protected:
     FMOD::System* m_system = nullptr;
-    static constexpr int m_frequency = 20000;
+    static constexpr int m_frequency = 40000;
     static constexpr int m_priority = 128;
     static constexpr float m_minDis = 0.0f;
     static constexpr float m_maxDis = 50000.0f;

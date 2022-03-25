@@ -1,9 +1,9 @@
 #pragma once
 
 #include <imgui.h>
+#include <knoting/asset_manager.h>
 #include <knoting/log.h>
 #include <knoting/widget.h>
-#include <knoting/asset_manager.h>
 
 namespace knot {
 

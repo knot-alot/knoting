@@ -55,8 +55,6 @@ void CameraRotation::on_update(double m_delta_time) {
     }
     m_mouseDelta = (currentMousePos - m_lastMousePosition);
 
-
-
     auto cameraOpt = EditorCamera::get_active_camera();
     if (!cameraOpt)
         return;
