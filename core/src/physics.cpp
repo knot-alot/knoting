@@ -122,7 +122,7 @@ void Physics::update_info_to_transform() {
         components::Raycast& r = registry.get<components::Raycast>(go.get_handle());
         r.raycast();
         uuid* uuidPtr = reinterpret_cast<uuid*>(r.get_hit_actor()->userData);
-        log::error("pos : {}", to_string(*uuidPtr));
+      //  log::error("pos : {}", to_string(*uuidPtr));
     }
     // could for dubug
     /*

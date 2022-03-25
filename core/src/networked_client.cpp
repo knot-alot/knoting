@@ -104,7 +104,9 @@ void NetworkedClient::set_current_player() {
 
             editorCameraOpt = child;
         }
-
+        if(!editorCameraOpt){
+            return;
+        }
         auto& editorCamera = editorCameraOpt.value().get_component<components::EditorCamera>();
         components::EditorCamera::set_active_camera(editorCamera);
     }

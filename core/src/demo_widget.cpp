@@ -33,7 +33,7 @@ void knot::DemoWidget::on_widget_render() {
     // ImGui::ShowDemoWindow();
 
     ImGui::SetNextWindowPos(ImVec2(0, 0));
-    ImGui::SetNextWindowSize(ImVec2(m_x, m_y), ImGuiCond_FirstUseEver);
+    ImGui::SetWindowSize("health", ImVec2(m_x, m_y));
 
     ImGui::Begin("health", NULL,
                  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground |
