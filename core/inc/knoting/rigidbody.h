@@ -31,7 +31,6 @@ class RigidBody : public Component<RigidBody> {
 
     vec3 get_position();
     quat get_rotation();
-    bool get_is_dynamic(){return m_isDynamic;}
     std::weak_ptr<PxDynamic_ptr_wrapper> get_dynamic();
     std::weak_ptr<PxStatic_ptr_wrapper> get_static();
     bool get_is_dynamic() { return m_isDynamic; }

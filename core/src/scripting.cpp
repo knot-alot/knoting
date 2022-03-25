@@ -1,6 +1,7 @@
 #include <knoting/assert.h>
 #include <knoting/components.h>
 #include <knoting/engine.h>
+#include <knoting/event_callback.h>
 #include <knoting/game_object.h>
 #include <knoting/instance_script.h>
 #include <knoting/scene.h>
@@ -599,7 +600,6 @@ class JSRigidBody : public JSObjectBase {
     }
 
     uuid get_actor() {
-
         JSValue obj = create_js_object_from_name("GameObject");
         auto opaque = static_cast<std::shared_ptr<JSObjectBase>*>(
             JS_GetOpaque(obj, qjs::js_traits<std::shared_ptr<JSGameObject>>::QJSClassId));
@@ -1555,65 +1555,168 @@ class JSParticles : public JSObjectBase {
     }
 };
 
+class JSCollisionDetection;
+class JSContactData : public JSObjectBase {
+   public:
+    vec3 get_contact_point() { return m_data.m_contact_point; }
+
+    uuid get_contact_actor() { return *reinterpret_cast<uuid*>(m_data.m_contact_actor->userData); }
+
+    std::string get_contact_actor_name() { return m_data.m_contact_actor->getName(); }
+
+    int get_contact_type() { return static_cast<int>(m_data.type); }
+
+   protected:
+    friend class JSCollisionDetection;
+
+    contact_data m_data;
+};
+
+class JSMesh : public JSObjectBase {
+   public:
+    std::optional<std::reference_wrapper<components::InstanceMesh>> get_instance_mesh() {
+        auto gameObjectOpt = retrieve_game_object();
+        if (!gameObjectOpt)
+            return std::nullopt;
+
+        return gameObjectOpt.value().get_component<components::InstanceMesh>();
+    }
+
+    void add_contact_position(vec3 position, int team) {
+        auto meshOpt = get_instance_mesh();
+        if (!meshOpt)
+            return;
+
+        auto& mesh = meshOpt->get();
+
+        mesh.add_contact_point(position, static_cast<components::Team>(team));
+    }
+};
+
 class JSCollisionDetection : public JSObjectBase {
    public:
-    std::optional<std::reference_wrapper<components::Collision_Detection>> get_CollisionDetection() {
+    std::optional<std::reference_wrapper<components::Collision_Detection>> get_collision_detection() {
         auto gameObjectOpt = retrieve_game_object();
         if (!gameObjectOpt)
             return std::nullopt;
 
         return gameObjectOpt.value().get_component<components::Collision_Detection>();
     }
-    std::vector<actor_contact_data> get_actor_contact_data() {
-        auto detectionOpt = get_CollisionDetection();
-        if (!detectionOpt) {
-            std::vector<actor_contact_data> acd;
-            return acd;
-        }
+
+    JSValue get_contact_data_by_actor(uuid id) {
+        auto detectionOpt = get_collision_detection();
+        if (!detectionOpt)
+            return {};
         auto& detection = detectionOpt.value().get();
-        return detection.get_actor_contact_data();
-    }
-    std::vector<name_contact_data> get_name_contact_data() {
-        auto detectionOpt = get_CollisionDetection();
-        if (!detectionOpt) {
-            std::vector<name_contact_data> ncd;
-            return ncd;
+
+        if (!Physics::uuidToAbstract.count(id)) {
+            return {};
         }
-        auto& detection = detectionOpt.value().get();
-        return detection.get_name_contact_data();
-    }
-    std::vector<contact_data> get_contact_data_by_actor(std::shared_ptr<PxDynamic_ptr_wrapper> actor) {
-        auto detectionOpt = get_CollisionDetection();
-        if (!detectionOpt) {
-            std::vector<contact_data> cd;
-            return cd;
+
+        auto& abstract = Physics::uuidToAbstract[id];
+
+        std::vector<contact_data> contactData;
+        if (abstract.dynamic) {
+            contactData = detection.get_contact_data_by_actor(abstract.dynamic);
+        } else if (abstract.statik) {
+            contactData = detection.get_contact_data_by_actor(abstract.statik);
+        } else {
+            log::error("Invalid physics abstract based on id `{}`", to_string(id));
+            return {};
         }
-        auto& detection = detectionOpt.value().get();
-        return detection.get_contact_data_by_actor(actor);
+
+        if (contactData.empty())
+            return {};
+
+        auto engineOpt = Engine::get_active_engine();
+        if (!engineOpt)
+            return {};
+        auto& engine = engineOpt->get();
+
+        auto scriptingWeak = engine.get_scripting_module();
+        if (scriptingWeak.expired())
+            return {};
+
+        auto scripting = scriptingWeak.lock();
+
+        JSValue jsarray = JS_NewArray(scripting->get_script_context()->ctx);
+        int i = 0;
+        for (auto& cd : contactData) {
+            JSValue jsContactData = create_js_object_from_name("ContactData");
+            auto opaque = static_cast<std::shared_ptr<JSContactData>*>(
+                JS_GetOpaque(jsContactData, qjs::js_traits<std::shared_ptr<JSContactData>>::QJSClassId));
+
+            (*opaque)->set_uuid(m_id);
+            (*opaque)->m_data = cd;
+
+            JS_DefinePropertyValueUint32(scripting->get_script_context()->ctx, jsarray, i, jsContactData,
+                                         JS_PROP_C_W_E);
+            i++;
+        }
+        return jsarray;
     }
 
-    std::vector<contact_data> get_contact_data_by_name(std::string name) {
-        auto detectionOpt = get_CollisionDetection();
-        if (!detectionOpt) {
-            std::vector<contact_data> cd;
-            return cd;
-        }
+    JSValue get_contact_data_by_name(std::string name) {
+        auto detectionOpt = get_collision_detection();
+        if (!detectionOpt)
+            return {};
         auto& detection = detectionOpt.value().get();
-        return detection.get_contact_data_by_name(name);
+
+        std::vector<contact_data> contactData = detection.get_contact_data_by_name(name);
+
+        if (contactData.empty())
+            return {};
+
+        auto engineOpt = Engine::get_active_engine();
+        if (!engineOpt)
+            return {};
+        auto& engine = engineOpt->get();
+
+        auto scriptingWeak = engine.get_scripting_module();
+        if (scriptingWeak.expired())
+            return {};
+
+        auto scripting = scriptingWeak.lock();
+
+        JSValue jsarray = JS_NewArray(scripting->get_script_context()->ctx);
+        int i = 0;
+        for (auto& cd : contactData) {
+            JSValue jsContactData = create_js_object_from_name("ContactData");
+            auto opaque = static_cast<std::shared_ptr<JSContactData>*>(
+                JS_GetOpaque(jsContactData, qjs::js_traits<std::shared_ptr<JSContactData>>::QJSClassId));
+
+            (*opaque)->set_uuid(m_id);
+            (*opaque)->m_data = cd;
+
+            JS_DefinePropertyValueUint32(scripting->get_script_context()->ctx, jsarray, i, jsContactData,
+                                         JS_PROP_C_W_E);
+            i++;
+        }
+        return jsarray;
     }
 
-    void add_search_actor(std::shared_ptr<PxDynamic_ptr_wrapper> actor) {
-        auto detectionOpt = get_CollisionDetection();
-        if (!detectionOpt) {
-            std::vector<contact_data> cd;
+    void add_search_actor(uuid id) {
+        auto detectionOpt = get_collision_detection();
+        if (!detectionOpt)
+            return;
+        auto& detection = detectionOpt.value().get();
+
+        if (!Physics::uuidToAbstract.count(id)) {
             return;
         }
-        auto& detection = detectionOpt.value().get();
-        detection.add_search_actor(actor);
+
+        auto& abstract = Physics::uuidToAbstract[id];
+
+        std::vector<contact_data> contactData;
+        if (abstract.dynamic) {
+            detection.add_search_actor(abstract.dynamic);
+        } else if (abstract.statik) {
+            detection.add_search_actor(abstract.statik);
+        }
     }
 
     void add_search_name(std::string name) {
-        auto detectionOpt = get_CollisionDetection();
+        auto detectionOpt = get_collision_detection();
         if (!detectionOpt) {
             std::vector<contact_data> cd;
             return;
@@ -1621,26 +1724,31 @@ class JSCollisionDetection : public JSObjectBase {
         auto& detection = detectionOpt.value().get();
         detection.add_search_name(name);
     }
-    void remove_search_actor(std::shared_ptr<PxDynamic_ptr_wrapper> actor) {
-        auto detectionOpt = get_CollisionDetection();
-        if (!detectionOpt) {
-            std::vector<contact_data> cd;
+
+    void remove_search_actor(uuid id) {
+        auto detectionOpt = get_collision_detection();
+        if (!detectionOpt)
+            return;
+        auto& detection = detectionOpt.value().get();
+
+        if (!Physics::uuidToAbstract.count(id)) {
             return;
         }
-        auto& detection = detectionOpt.value().get();
-        detection.remove_search_actor(actor);
-    }
-    void remove_search_actor(std::shared_ptr<PxStatic_ptr_wrapper> actor) {
-        auto detectionOpt = get_CollisionDetection();
-        if (!detectionOpt) {
-            std::vector<contact_data> cd;
-            return;
+
+        auto& abstract = Physics::uuidToAbstract[id];
+
+        std::vector<contact_data> contactData;
+        if (abstract.dynamic) {
+            detection.remove_search_actor(abstract.dynamic);
+        } else if (abstract.statik) {
+            detection.remove_search_actor(abstract.statik);
+        } else {
+            js_throw_exception("Invalid id to remove search actor");
         }
-        auto& detection = detectionOpt.value().get();
-        detection.remove_search_actor(actor);
     }
+
     void remove_search_name(std::string name) {
-        auto detectionOpt = get_CollisionDetection();
+        auto detectionOpt = get_collision_detection();
         if (!detectionOpt) {
             std::vector<contact_data> cd;
             return;
@@ -1961,7 +2069,7 @@ JSValue JSGameObject::get_component(const std::string& name) {
     } else if (name == "hierarchy") {
         opaque = static_cast<std::shared_ptr<JSObjectBase>*>(
             JS_GetOpaque(obj, qjs::js_traits<std::shared_ptr<JSHierarchy>>::QJSClassId));
-    } else if (name == "conllisionDetection") {
+    } else if (name == "collisionDetection") {
         opaque = static_cast<std::shared_ptr<JSObjectBase>*>(
             JS_GetOpaque(obj, qjs::js_traits<std::shared_ptr<JSCollisionDetection>>::QJSClassId));
     }
@@ -2102,7 +2210,7 @@ int network_get_client_number() {
 bool network_is_server() {
     auto engineOpt = Engine::get_active_engine();
     if (!engineOpt)
-        return -1;
+        return false;
     auto& engine = engineOpt.value().get();
     return !engine.isClient;
 }
@@ -2217,22 +2325,26 @@ void Scripting::add_knoting_module() {
         .constructor()
         .fun<&JSParticles::set_particles_per_second>("setParticlesPerSecond")
         .fun<&JSParticles::set_position>("setPosition")
-        .fun<&JSParticles::set_lookat>("setLookat")
+        .fun<&JSParticles::set_lookat>("setLookAt")
         .fun<&JSParticles::get_paticles_per_second>("getParticlesPerSecond")
         .fun<&JSParticles::get_position>("getPosition")
-        .fun<&JSParticles::get_lookat>("getLookat");
+        .fun<&JSParticles::get_lookat>("getLookAt");
 
-    knoting.class_<JSCollisionDetection>("ConllisionDetection")
+    knoting.class_<JSContactData>("ContactData")
         .constructor()
-        .fun<&JSCollisionDetection::get_name_contact_data>("getNameContactData")
-        .fun<&JSCollisionDetection::get_contact_data_by_actor>("getContactDataByActor")
+        .fun<&JSContactData::get_contact_point>("getContactPoint")
+        .fun<&JSContactData::get_contact_actor>("getContactActor")
+        .fun<&JSContactData::get_contact_actor_name>("getContactActorName")
+        .fun<&JSContactData::get_contact_type>("getContactType");
+
+    knoting.class_<JSMesh>("Mesh").constructor().fun<&JSMesh::add_contact_position>("addContactPosition");
+
+    knoting.class_<JSCollisionDetection>("CollisionDetection")
+        .constructor()
         .fun<&JSCollisionDetection::get_contact_data_by_actor>("getContactDataByActor")
         .fun<&JSCollisionDetection::get_contact_data_by_name>("getContactDataByName")
-        .fun<&JSCollisionDetection::get_actor_contact_data>("getActorContactData")
-        .fun<&JSCollisionDetection::add_search_actor>("addSearchActor")
         .fun<&JSCollisionDetection::add_search_actor>("addSearchActor")
         .fun<&JSCollisionDetection::add_search_name>("addSearchName")
-        .fun<&JSCollisionDetection::remove_search_actor>("removeSearchActor")
         .fun<&JSCollisionDetection::remove_search_actor>("removeSearchActor")
         .fun<&JSCollisionDetection::remove_search_name>("removeSearchName");
 
@@ -2284,6 +2396,18 @@ void Scripting::add_knoting_module() {
     scene.add("loadScene", load_scene);
 
     knoting.add("scene", scene);
+
+    auto contactType = m_context->newObject();
+    contactType["TouchFound"] = static_cast<int>(contact_type::Enum::touch_found);
+    contactType["TouchPersists"] = static_cast<int>(contact_type::Enum::touch_persists);
+
+    knoting.add("ContactType", contactType);
+
+    auto team = m_context->newObject();
+    team["Red"] = static_cast<int>(components::Team::RED);
+    team["Blue"] = static_cast<int>(components::Team::BLUE);
+
+    knoting.add("Team", team);
 
     auto mouseButtonCode = m_context->newObject();
     mouseButtonCode["Left"] = static_cast<int>(MouseButtonCode::Left);

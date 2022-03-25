@@ -119,9 +119,6 @@ void WidgetSubsystem::imgui_init(GLFWwindow* window) {
     io.SetClipboardTextFn = imguiSetClipboardText;
     io.GetClipboardTextFn = imguiGetClipboardText;
     io.ClipboardUserData = gWindow;
-#if BX_PLATFORM_WINDOWS
-    io.ImeWindowHandle = (void*)glfwGetWin32Window(gWindow);
-#endif
 
     gMouseCursors[ImGuiMouseCursor_Arrow] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
     gMouseCursors[ImGuiMouseCursor_TextInput] = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);

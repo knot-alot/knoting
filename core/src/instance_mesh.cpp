@@ -12,7 +12,7 @@ void InstanceMesh::on_awake() {
     }
 }
 
-void InstanceMesh::addContactPoint(vec3 position, Team team) {
+void InstanceMesh::add_contact_point(vec3 position, Team team) {
     m_paintData.pop_front();
     m_paintData.emplace_back(vec4(position, static_cast<size_t>(team)));
 }

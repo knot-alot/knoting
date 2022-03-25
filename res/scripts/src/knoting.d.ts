@@ -498,24 +498,18 @@ declare module "knoting" {
 
         setPosition(position: Vec3): void
 
-        setLookat(lookat: Vec3): void
+        setLookAt(lookat: Vec3): void
 
         getParticlesPerSecond(): float
 
         getPosition(): Vec3
 
-        getLookat(): Vec3
+        getLookAt(): Vec3
     }
 
     enum ContactType {
         TouchFound,
         TouchPersists,
-    }
-
-    enum RaycastFilterFlag {
-        AnyHit,
-        Static,
-        Dynamic,
     }
 
     class ContactData {
@@ -529,8 +523,8 @@ declare module "knoting" {
     }
 
     enum Team {
-        TeamRed,
-        TeamBule,
+        Red,
+        Blue,
     }
 
     class Mesh {

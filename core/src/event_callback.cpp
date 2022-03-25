@@ -49,11 +49,7 @@ void Event_Callback::onContact(const PxContactPairHeader& pairHeader, const PxCo
                 }
             }
         }
-<<<<<<< HEAD
         if (cp.events & PxPairFlag::eNOTIFY_TOUCH_LOST ) {
-=======
-        if (cp.events & PxPairFlag::eNOTIFY_TOUCH_LOST) {
->>>>>>> main
             if (check_is_actor_in_actor_contact_data(pairHeader.actors[0])) {
                 remove_data_for_actor(pairHeader, cp, true);
 
