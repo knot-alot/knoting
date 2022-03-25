@@ -5,15 +5,19 @@
 #include <string>
 #include <vector>
 
+
+
 #include <knoting/asset_manager.h>
 #include <knoting/audio_subsystem.h>
 #include <knoting/camera_rotation.h>
 #include <knoting/forward_renderer.h>
 
+// clang-format off
+#include <knoting/widget_subsystem.h>
 #include <knoting/framebuffer_manager.h>
 #include <knoting/networked_client.h>
 #include <knoting/networked_server.h>
-#include <knoting/widget_subsystem.h>
+// clang-format on
 
 #include <knoting/physics.h>
 #include <knoting/scripting.h>

@@ -1,8 +1,12 @@
 #pragma once
-#include <ImGuizmo.h>
+
+// clang-format off
 #include <imgui.h>
+#include <ImGuizmo.h>
+// clang-format on
 #include <knoting/log.h>
 #include <knoting/widget.h>
+
 namespace knot {
 
 class DebugPhysics : public Widget {
